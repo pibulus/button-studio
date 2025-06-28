@@ -1,19 +1,40 @@
 import { ButtonCustomization, sliderConfig, buttonThemes, ButtonTheme } from '../types/customization.ts'
+import { signal } from '@preact/signals'
 
 interface CustomizationPanelProps {
   customization: ButtonCustomization
   onChange: (customization: ButtonCustomization) => void
   voiceEnabled?: boolean
   onVoiceToggle?: (enabled: boolean) => void
+  mode: 'master' | 'advanced'
 }
 
-export default function CustomizationPanel({ customization, onChange, voiceEnabled = false, onVoiceToggle }: CustomizationPanelProps) {
+// Collapsible panel state
+const expandedPanels = signal<Record<string, boolean>>({
+  shape: true,
+  effects: false,
+  interactions: false,
+  api: false,
+  export: false
+})
+
+export default function CustomizationPanel({ customization, onChange, voiceEnabled = false, onVoiceToggle, mode }: CustomizationPanelProps) {
   
   const updateAppearance = (key: keyof ButtonCustomization['appearance'], value: number | string) => {
     onChange({
       ...customization,
       appearance: {
         ...customization.appearance,
+        [key]: value
+      }
+    })
+  }
+  
+  const updateInteraction = (key: keyof ButtonCustomization['interactions'], value: string) => {
+    onChange({
+      ...customization,
+      interactions: {
+        ...customization.interactions,
         [key]: value
       }
     })
@@ -39,16 +60,6 @@ export default function CustomizationPanel({ customization, onChange, voiceEnabl
     })
   }
   
-  const updateContentType = (type: 'text' | 'emoji' | 'icon') => {
-    onChange({
-      ...customization,
-      content: {
-        ...customization.content,
-        type
-      }
-    })
-  }
-  
   const updateGradient = (key: 'start' | 'end' | 'direction', value: string | number) => {
     onChange({
       ...customization,
@@ -60,6 +71,13 @@ export default function CustomizationPanel({ customization, onChange, voiceEnabl
         }
       }
     })
+  }
+  
+  const togglePanel = (panelId: string) => {
+    expandedPanels.value = {
+      ...expandedPanels.value,
+      [panelId]: !expandedPanels.value[panelId]
+    }
   }
   
   // Succulent-inspired color palette
@@ -78,130 +96,257 @@ export default function CustomizationPanel({ customization, onChange, voiceEnabl
     '#ff9a8b'   // Warm coral
   ]
   
-  // Surprise Me! Random combinations - FULLY WORKING
+  // FIXED Surprise Me! - Actually randomizes the button
   const surpriseMe = () => {
-    console.log('🎲 Surprise Me clicked!')
-    
     const randomTexts = ['Boop me!', 'Zap!', 'Press here', 'Voice magic', 'Tap me', 'Hello!', 'Record me', 'Speak now', 'Pop!', 'Click!', 'Touch me', 'Go!']
     const randomText = randomTexts[Math.floor(Math.random() * randomTexts.length)]
     
-    // Random everything with timeout to see changes
-    setTimeout(() => {
-      updateContent(randomText)
-    }, 100)
+    // Create complete new customization object
+    const newCustomization = {
+      ...customization,
+      content: {
+        ...customization.content,
+        value: randomText
+      },
+      appearance: {
+        ...customization.appearance,
+        fillType: Math.random() > 0.5 ? 'gradient' : 'solid' as 'gradient' | 'solid',
+        solidColor: succulentColors[Math.floor(Math.random() * succulentColors.length)],
+        shape: ['circle', 'rounded', 'square'][Math.floor(Math.random() * 3)] as 'circle' | 'rounded' | 'square',
+        scale: 0.7 + Math.random() * 0.8,
+        roundness: Math.random() * 30,
+        glowIntensity: Math.random() * 15,
+        shadowType: Math.random() > 0.5 ? 'brutalist' : 'diffused' as 'brutalist' | 'diffused',
+        borderStyle: ['solid', 'dashed', 'dotted', 'double'][Math.floor(Math.random() * 4)] as 'solid' | 'dashed' | 'dotted' | 'double',
+        gradient: {
+          ...customization.appearance.gradient,
+          start: succulentColors[Math.floor(Math.random() * succulentColors.length)],
+          end: succulentColors[Math.floor(Math.random() * succulentColors.length)]
+        }
+      },
+      interactions: {
+        hoverEffect: ['none', 'lift', 'glow', 'pulse', 'rotate'][Math.floor(Math.random() * 5)] as any,
+        clickAnimation: ['none', 'bounce', 'shrink', 'spin', 'flash'][Math.floor(Math.random() * 5)] as any,
+        textTransform: ['none', 'uppercase', 'lowercase', 'capitalize'][Math.floor(Math.random() * 4)] as any,
+        fontWeight: ['normal', 'bold', 'light'][Math.floor(Math.random() * 3)] as any
+      },
+      effects: {
+        breathing: Math.random() > 0.5,
+        bounce: Math.random() > 0.7,
+        glow: Math.random() > 0.6,
+        wiggle: Math.random() > 0.8
+      }
+    }
     
-    setTimeout(() => {
-      updateAppearance('fillType', Math.random() > 0.5 ? 'gradient' : 'solid')
-    }, 200)
-    
-    setTimeout(() => {
-      updateAppearance('solidColor', succulentColors[Math.floor(Math.random() * succulentColors.length)])
-    }, 300)
-    
-    setTimeout(() => {
-      updateGradient('start', succulentColors[Math.floor(Math.random() * succulentColors.length)])
-    }, 400)
-    
-    setTimeout(() => {
-      updateGradient('end', succulentColors[Math.floor(Math.random() * succulentColors.length)])
-    }, 500)
-    
-    setTimeout(() => {
-      updateAppearance('shape', ['circle', 'rounded', 'square'][Math.floor(Math.random() * 3)] as any)
-    }, 600)
-    
-    setTimeout(() => {
-      updateAppearance('scale', 0.7 + Math.random() * 0.8)
-    }, 700)
-    
-    setTimeout(() => {
-      updateAppearance('roundness', Math.random() * 30)
-    }, 800)
-    
-    setTimeout(() => {
-      updateAppearance('glowIntensity', Math.random() * 15)
-    }, 900)
-    
-    setTimeout(() => {
-      updateAppearance('shadowType', Math.random() > 0.5 ? 'brutalist' : 'diffused')
-    }, 1000)
-    
-    // Random effects
-    setTimeout(() => {
-      updateEffect('breathing', Math.random() > 0.5)
-      updateEffect('bounce', Math.random() > 0.7)
-      updateEffect('glow', Math.random() > 0.6)
-      updateEffect('wiggle', Math.random() > 0.8)
-    }, 1100)
+    // Apply all changes at once
+    onChange(newCustomization)
   }
   
-  return (
-    <div class="space-y-8">
-      
-      {/* CONTENT SECTION */}
-      <div class="bg-white rounded-3xl p-8 shadow-lg border-4 border-black">
-        <h3 class="text-2xl font-black text-black mb-6">
-          Content
-        </h3>
-        
-        <div class="space-y-6">
-          {/* Content Type Selector */}
-          <div class="flex gap-3">
-            {[
-              { type: 'text', label: 'Text' },
-              { type: 'emoji', label: 'Emoji' },
-              { type: 'icon', label: 'Icon' }
-            ].map(({ type, label }) => (
-              <button
-                key={type}
-                onClick={() => updateContentType(type as any)}
-                class={`flex-1 px-4 py-3 rounded-xl border-3 border-black font-black transition-all duration-200 ${
-                  customization.content.type === type
-                    ? 'bg-pink-300 text-black shadow-md scale-105'
-                    : 'bg-white text-black hover:bg-pink-50'
-                }`}
-              >
-                {label}
-              </button>
-            ))}
+  // Generate button code
+  const generateCode = () => {
+    const config = customization
+    return `<button class="button-custom" style="{
+  background: ${config.appearance.fillType === 'solid' 
+    ? config.appearance.solidColor 
+    : `linear-gradient(${config.appearance.gradient.direction}deg, ${config.appearance.gradient.start}, ${config.appearance.gradient.end})`};
+  border: 4px ${config.appearance.borderStyle} #000000;
+  border-radius: ${config.appearance.shape === 'circle' ? '50%' : config.appearance.roundness + 'px'};
+  transform: scale(${config.appearance.scale});
+  box-shadow: ${config.appearance.shadowType === 'brutalist' ? '8px 8px 0px #000000' : '0 8px 25px rgba(0,0,0,0.15)'};
+  font-weight: ${config.interactions.fontWeight};
+  text-transform: ${config.interactions.textTransform};
+  padding: 20px 32px;
+  color: #000000;
+  cursor: pointer;
+  transition: all 0.12s ease;
+}">${config.content.value}</button>`
+  }
+  
+  // Listen for surprise me event from dice button
+  if (typeof document !== 'undefined') {
+    document.addEventListener('surpriseMe', surpriseMe)
+  }
+  
+  // Collapsible Panel Component
+  const CollapsiblePanel = ({ id, title, children, color = 'light' }: { id: string, title: string, children: any, color?: string }) => {
+    const isExpanded = expandedPanels.value[id]
+    
+    // Get the proper background color for each panel
+    const getBackgroundColor = (colorKey: string) => {
+      switch (colorKey) {
+        case 'lightest': return 'bg-rose-100 hover:bg-rose-200'
+        case 'light': return 'bg-pink-200 hover:bg-pink-300'
+        case 'medium': return 'bg-rose-200 hover:bg-rose-300'
+        case 'warm': return 'bg-orange-200 hover:bg-orange-300'
+        case 'deep': return 'bg-pink-300 hover:bg-pink-400'
+        default: return 'bg-pink-200 hover:bg-pink-300'
+      }
+    }
+    
+    return (
+      <div class="bg-white rounded-3xl shadow-lg border-4 border-black overflow-hidden">
+        <button
+          onClick={() => togglePanel(id)}
+          class={`w-full px-8 py-6 text-left font-black text-black transition-all duration-200 ${getBackgroundColor(color)} shadow-sm hover:shadow-md active:shadow-sm`}
+        >
+          <div class="flex items-center justify-between">
+            <span class="text-xl">{title}</span>
+            <span class={`text-2xl transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}>
+              ▼
+            </span>
           </div>
-          
-          {/* Content Input */}
+        </button>
+        {isExpanded && (
+          <div class="p-8 border-t-4 border-black">
+            {children}
+          </div>
+        )}
+      </div>
+    )
+  }
+  
+  if (mode === 'master') {
+    // MASTER PANEL - Essential controls below button
+    return (
+      <div class="space-y-6">
+        
+        {/* Content Input + Voice Toggle - CHONKY */}
+        <div class="bg-white rounded-3xl p-8 shadow-lg border-4 border-black">
           <div class="flex items-center gap-6">
             <input
               type="text"
               value={customization.content.value}
               onInput={(e) => updateContent((e.target as HTMLInputElement).value)}
-              placeholder="Boop me!"
-              class="flex-1 px-6 py-4 text-2xl font-bold bg-white border-3 border-black rounded-2xl focus:bg-yellow-50 focus:outline-none transition-all text-center"
+              placeholder="Button text..."
+              class="flex-1 px-6 py-4 text-xl font-bold bg-white border-3 border-black rounded-2xl focus:bg-yellow-50 focus:outline-none transition-all text-center"
             />
-            
-            {/* Voice Toggle */}
             <button
               onClick={() => onVoiceToggle?.(!voiceEnabled)}
-              class={`w-16 h-10 rounded-full border-3 border-black transition-all duration-200 flex items-center shadow-lg ${
-                voiceEnabled 
-                  ? 'bg-pink-300' 
-                  : 'bg-white'
+              title="Toggle voice transcription"
+              class={`w-16 h-10 rounded-full border-3 border-black transition-all duration-200 flex items-center shadow-md ${
+                voiceEnabled ? 'bg-pink-300' : 'bg-white'
               }`}
             >
-              <div 
-                class={`w-7 h-7 bg-white rounded-full shadow-sm transition-all duration-200 border-2 border-black ${
-                  voiceEnabled ? 'translate-x-7' : 'translate-x-1'
-                }`}
-              />
+              <div class={`w-7 h-7 bg-white rounded-full border-2 border-black transition-all duration-200 ${
+                voiceEnabled ? 'translate-x-7' : 'translate-x-1'
+              }`} />
             </button>
           </div>
         </div>
-      </div>
-      
-      {/* SHAPE & STYLE SECTION */}
-      <div class="bg-white rounded-3xl p-8 shadow-lg border-4 border-black">
-        <h3 class="text-2xl font-black text-black mb-6">
-          Shape & Style
-        </h3>
         
-        <div class="space-y-6">
+        {/* The Big 3 Sliders - MORE BREATHING ROOM */}
+        <div class="bg-white rounded-3xl p-8 shadow-lg border-4 border-black">
+          <div class="space-y-8">
+            {sliderConfig.map((slider) => {
+              const value = customization.appearance[slider.id]
+              const percentage = ((value - slider.min) / (slider.max - slider.min)) * 100
+              
+              return (
+                <div key={slider.id} class="flex items-center gap-4">
+                  <div class="w-10 h-10 flex items-center justify-center text-lg bg-white rounded-xl border-2 border-black font-black">
+                    {slider.label.charAt(0)}
+                  </div>
+                  <div class="flex-1 relative">
+                    <input
+                      type="range"
+                      min={slider.min}
+                      max={slider.max}
+                      step={slider.step || 1}
+                      value={value}
+                      onInput={(e) => updateAppearance(slider.id, parseFloat((e.target as HTMLInputElement).value))}
+                      title={`${slider.label}: ${value}${slider.unit}`}
+                      class="w-full h-3 bg-white border-2 border-black rounded-full appearance-none cursor-grab hover:cursor-grabbing"
+                      style={{
+                        background: `linear-gradient(to right, #ff9eb5 0%, #ff9eb5 ${percentage}%, #ffffff ${percentage}%, #ffffff 100%)`,
+                        border: '2px solid #000000'
+                      }}
+                    />
+                    <style jsx>{`
+                      input[type="range"]::-webkit-slider-thumb {
+                        appearance: none;
+                        height: 24px;
+                        width: 24px;
+                        border-radius: 12px;
+                        background: #ff9eb5;
+                        border: 2px solid #000000;
+                        cursor: grab;
+                        box-shadow: 0 2px 8px rgba(255, 158, 181, 0.4);
+                      }
+                      input[type="range"]::-webkit-slider-thumb:hover {
+                        transform: scale(1.1);
+                        cursor: grabbing;
+                      }
+                    `}</style>
+                  </div>
+                  <div class="w-12 text-center text-sm font-black bg-white border-2 border-black px-2 py-1 rounded-lg">
+                    {value}{slider.unit}
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+        
+        {/* Solid/Gradient + Colors - CHONKY */}
+        <div class="bg-white rounded-3xl p-8 shadow-lg border-4 border-black">
+          <div class="space-y-6">
+            {/* Fill Type Toggle */}
+            <div class="flex gap-3">
+              <button
+                onClick={() => updateAppearance('fillType', 'solid')}
+                class={`flex-1 px-4 py-3 rounded-xl border-2 border-black font-black transition-all h-12 ${
+                  customization.appearance.fillType === 'solid'
+                    ? 'bg-yellow-200 text-black'
+                    : 'bg-white text-black hover:bg-yellow-50'
+                }`}
+              >
+                Solid
+              </button>
+              <button
+                onClick={() => updateAppearance('fillType', 'gradient')}
+                class={`flex-1 px-4 py-3 rounded-xl border-2 border-black font-black transition-all h-12 ${
+                  customization.appearance.fillType === 'gradient'
+                    ? 'bg-yellow-200 text-black'
+                    : 'bg-white text-black hover:bg-yellow-50'
+                }`}
+              >
+                Gradient
+              </button>
+            </div>
+            
+            {/* Succulent Color Swatches */}
+            <div class="grid grid-cols-6 gap-2">
+              {succulentColors.map((color, index) => (
+                <button
+                  key={index}
+                  onClick={() => {
+                    if (customization.appearance.fillType === 'solid') {
+                      updateAppearance('solidColor', color)
+                    } else {
+                      updateGradient('start', color)
+                    }
+                  }}
+                  class="h-8 rounded-lg border-2 border-black hover:scale-110 transition-all duration-200"
+                  style={{ background: color }}
+                  title={color}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+        
+        
+      </div>
+    )
+  }
+  
+  // ADVANCED PANEL - Collapsible sections
+  return (
+    <div class="space-y-4">
+      
+      {/* Shape & Style */}
+      <CollapsiblePanel id="shape" title="Shape & Style" color="lightest">
+        <div class="space-y-4">
           {/* Shape Selector */}
           <div class="flex gap-3">
             {[
@@ -212,174 +357,56 @@ export default function CustomizationPanel({ customization, onChange, voiceEnabl
               <button
                 key={shape}
                 onClick={() => updateAppearance('shape', shape)}
-                class={`flex-1 px-4 py-3 rounded-xl border-3 border-black font-black transition-all duration-200 ${
+                class={`flex-1 px-4 py-3 rounded-xl border-3 border-black font-black transition-all h-12 shadow-sm hover:shadow-md active:scale-95 ${
                   customization.appearance.shape === shape
-                    ? 'bg-green-200 text-black shadow-md scale-105'
-                    : 'bg-white text-black hover:bg-green-50'
+                    ? 'bg-rose-200 text-black shadow-md scale-105'
+                    : 'bg-white text-black hover:bg-rose-50'
                 }`}
+                style={{
+                  boxShadow: customization.appearance.shape === shape 
+                    ? '3px 3px 0px #000000' 
+                    : '2px 2px 0px #000000'
+                }}
               >
                 {label}
               </button>
             ))}
           </div>
           
-          {/* The Big 3 Sliders */}
-          <div class="space-y-6">
-            {sliderConfig.map((slider) => {
-              const value = customization.appearance[slider.id]
-              const percentage = ((value - slider.min) / (slider.max - slider.min)) * 100
-              
-              return (
-                <div key={slider.id} class="flex items-center gap-6">
-                  <div class="w-12 h-12 flex items-center justify-center text-xl bg-white rounded-2xl border-3 border-black shadow-md font-black">
-                    {slider.label.charAt(0)}
-                  </div>
-                  
-                  <div class="flex-1 relative">
-                    <input
-                      type="range"
-                      min={slider.min}
-                      max={slider.max}
-                      step={slider.step || 1}
-                      value={value}
-                      onInput={(e) => updateAppearance(slider.id, parseFloat((e.target as HTMLInputElement).value))}
-                      class="w-full h-4 bg-white border-2 border-black rounded-full appearance-none cursor-pointer"
-                      style={{
-                        background: `linear-gradient(to right, #ff9eb5 0%, #ff9eb5 ${percentage}%, #ffffff ${percentage}%, #ffffff 100%)`,
-                        border: '2px solid #000000'
-                      }}
-                    />
-                    <style jsx>{`
-                      input[type="range"]::-webkit-slider-thumb {
-                        appearance: none;
-                        height: 28px;
-                        width: 28px;
-                        border-radius: 14px;
-                        background: #ff9eb5;
-                        border: 3px solid #000000;
-                        cursor: grab;
-                        box-shadow: 0 4px 12px rgba(255, 158, 181, 0.4);
-                        transition: all 0.2s ease;
-                      }
-                      
-                      input[type="range"]::-webkit-slider-thumb:hover {
-                        background: #ff8fab;
-                        transform: scale(1.2);
-                        box-shadow: 0 6px 20px rgba(255, 158, 181, 0.6);
-                        cursor: grabbing;
-                      }
-                    `}</style>
-                  </div>
-                  
-                  <div class="w-16 text-right text-sm font-black text-black bg-white border-2 border-black px-3 py-2 rounded-lg shadow-sm">
-                    {value}{slider.unit}
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-        </div>
-      </div>
-      
-      {/* COLOR SECTION */}
-      <div class="bg-white rounded-3xl p-8 shadow-lg border-4 border-black">
-        <h3 class="text-2xl font-black text-black mb-6">
-          Colors
-        </h3>
-        
-        <div class="space-y-6">
-          {/* Fill Type Toggle */}
-          <div class="flex gap-3">
-            <button
-              onClick={() => updateAppearance('fillType', 'solid')}
-              class={`flex-1 px-4 py-3 rounded-xl border-3 border-black font-black transition-all duration-200 ${
-                customization.appearance.fillType === 'solid'
-                  ? 'bg-yellow-200 text-black shadow-md scale-105'
-                  : 'bg-white text-black hover:bg-yellow-50'
-              }`}
-            >
-              Solid
-            </button>
-            <button
-              onClick={() => updateAppearance('fillType', 'gradient')}
-              class={`flex-1 px-4 py-3 rounded-xl border-3 border-black font-black transition-all duration-200 ${
-                customization.appearance.fillType === 'gradient'
-                  ? 'bg-yellow-200 text-black shadow-md scale-105'
-                  : 'bg-white text-black hover:bg-yellow-50'
-              }`}
-            >
-              Gradient
-            </button>
-          </div>
-          
-          {/* Succulent Color Swatches */}
-          <div class="grid grid-cols-6 gap-3 mb-6">
-            {succulentColors.map((color, index) => (
+          {/* Border Style */}
+          <div class="grid grid-cols-2 gap-3">
+            {[
+              { value: 'solid', label: 'Solid' },
+              { value: 'dashed', label: 'Dashed' },
+              { value: 'dotted', label: 'Dotted' },
+              { value: 'double', label: 'Double' }
+            ].map(({ value, label }) => (
               <button
-                key={index}
-                onClick={() => {
-                  if (customization.appearance.fillType === 'solid') {
-                    updateAppearance('solidColor', color)
-                  } else {
-                    updateGradient('start', color)
-                  }
+                key={value}
+                onClick={() => updateAppearance('borderStyle', value)}
+                class={`px-4 py-3 rounded-xl border-3 border-black font-black transition-all h-12 shadow-sm hover:shadow-md active:scale-95 ${
+                  customization.appearance.borderStyle === value
+                    ? 'bg-rose-200 text-black shadow-md scale-105'
+                    : 'bg-white text-black hover:bg-rose-50'
+                }`}
+                style={{
+                  boxShadow: customization.appearance.borderStyle === value 
+                    ? '3px 3px 0px #000000' 
+                    : '2px 2px 0px #000000'
                 }}
-                class="h-12 rounded-xl border-3 border-black hover:scale-110 transition-all duration-200 shadow-md"
-                style={{ background: color }}
-              />
+              >
+                {label}
+              </button>
             ))}
           </div>
-          
-          {/* Color Controls */}
-          {customization.appearance.fillType === 'solid' ? (
-            <div class="flex items-center gap-4">
-              <input
-                type="color"
-                value={customization.appearance.solidColor}
-                onInput={(e) => updateAppearance('solidColor', (e.target as HTMLInputElement).value)}
-                class="w-16 h-16 rounded-2xl border-3 border-black cursor-pointer"
-              />
-              <div class="flex-1 px-4 py-3 bg-gray-50 rounded-xl border-2 border-black font-mono text-black">
-                {customization.appearance.solidColor}
-              </div>
-            </div>
-          ) : (
-            <div class="space-y-4">
-              <div class="flex items-center gap-4">
-                <input
-                  type="color"
-                  value={customization.appearance.gradient.start}
-                  onInput={(e) => updateGradient('start', (e.target as HTMLInputElement).value)}
-                  class="w-12 h-12 rounded-xl border-3 border-black cursor-pointer"
-                />
-                <div class="flex-1 px-3 py-2 bg-gray-50 rounded-lg border-2 border-black font-mono text-sm text-black">
-                  {customization.appearance.gradient.start}
-                </div>
-                <span class="text-black font-black">→</span>
-                <input
-                  type="color"
-                  value={customization.appearance.gradient.end}
-                  onInput={(e) => updateGradient('end', (e.target as HTMLInputElement).value)}
-                  class="w-12 h-12 rounded-xl border-3 border-black cursor-pointer"
-                />
-                <div class="flex-1 px-3 py-2 bg-gray-50 rounded-lg border-2 border-black font-mono text-sm text-black">
-                  {customization.appearance.gradient.end}
-                </div>
-              </div>
-            </div>
-          )}
         </div>
-      </div>
+      </CollapsiblePanel>
       
-      {/* EFFECTS SECTION */}
-      <div class="bg-white rounded-3xl p-8 shadow-lg border-4 border-black">
-        <h3 class="text-2xl font-black text-black mb-6">
-          Effects
-        </h3>
-        
-        <div class="space-y-6">
+      {/* Effects & Animations */}
+      <CollapsiblePanel id="effects" title="Effects & Animations" color="light">
+        <div class="space-y-4">
           {/* Animation Effects */}
-          <div class="grid grid-cols-2 gap-4">
+          <div class="grid grid-cols-2 gap-3">
             {[
               { key: 'breathing', label: 'Breathe' },
               { key: 'bounce', label: 'Bounce' },
@@ -389,11 +416,16 @@ export default function CustomizationPanel({ customization, onChange, voiceEnabl
               <button
                 key={key}
                 onClick={() => updateEffect(key as keyof ButtonCustomization['effects'], !customization.effects[key as keyof ButtonCustomization['effects']])}
-                class={`p-4 rounded-2xl border-3 border-black transition-all duration-200 font-black text-lg ${
+                class={`p-4 rounded-xl border-3 border-black transition-all font-black h-12 flex items-center justify-center shadow-sm hover:shadow-md active:scale-95 ${
                   customization.effects[key as keyof ButtonCustomization['effects']]
-                    ? 'bg-purple-200 shadow-md scale-105' 
-                    : 'bg-white hover:bg-purple-50 shadow-sm'
+                    ? 'bg-pink-200 text-black shadow-md scale-105' 
+                    : 'bg-white text-black hover:bg-pink-50'
                 }`}
+                style={{
+                  boxShadow: customization.effects[key as keyof ButtonCustomization['effects']] 
+                    ? '3px 3px 0px #000000' 
+                    : '2px 2px 0px #000000'
+                }}
               >
                 {label}
               </button>
@@ -404,53 +436,153 @@ export default function CustomizationPanel({ customization, onChange, voiceEnabl
           <div class="flex gap-3">
             <button
               onClick={() => updateAppearance('shadowType', 'brutalist')}
-              class={`flex-1 px-4 py-3 rounded-xl border-3 border-black font-black transition-all duration-200 ${
+              class={`flex-1 px-4 py-3 rounded-xl border-3 border-black font-black transition-all h-12 shadow-sm hover:shadow-md active:scale-95 ${
                 customization.appearance.shadowType === 'brutalist'
-                  ? 'bg-orange-200 text-black shadow-md scale-105'
-                  : 'bg-white text-black hover:bg-orange-50'
+                  ? 'bg-pink-200 text-black shadow-md scale-105'
+                  : 'bg-white text-black hover:bg-pink-50'
               }`}
+              style={{
+                boxShadow: customization.appearance.shadowType === 'brutalist' 
+                  ? '3px 3px 0px #000000' 
+                  : '2px 2px 0px #000000'
+              }}
             >
               Hard Shadow
             </button>
             <button
               onClick={() => updateAppearance('shadowType', 'diffused')}
-              class={`flex-1 px-4 py-3 rounded-xl border-3 border-black font-black transition-all duration-200 ${
+              class={`flex-1 px-4 py-3 rounded-xl border-3 border-black font-black transition-all h-12 shadow-sm hover:shadow-md active:scale-95 ${
                 customization.appearance.shadowType === 'diffused'
-                  ? 'bg-orange-200 text-black shadow-md scale-105'
-                  : 'bg-white text-black hover:bg-orange-50'
+                  ? 'bg-pink-200 text-black shadow-md scale-105'
+                  : 'bg-white text-black hover:bg-pink-50'
               }`}
+              style={{
+                boxShadow: customization.appearance.shadowType === 'diffused' 
+                  ? '3px 3px 0px #000000' 
+                  : '2px 2px 0px #000000'
+              }}
             >
               Soft Shadow
             </button>
           </div>
         </div>
-      </div>
+      </CollapsiblePanel>
       
-      {/* SURPRISE ME SECTION */}
-      <div class="bg-white rounded-3xl p-8 shadow-lg border-4 border-black">
-        <button
-          onClick={surpriseMe}
-          class="w-full bg-gradient-to-r from-yellow-300 to-orange-400 border-4 border-black rounded-2xl px-6 py-4 text-lg font-black hover:from-yellow-400 hover:to-orange-500 active:scale-95 transition-all duration-150 shadow-lg hover:shadow-xl"
-          style={{ 
-            boxShadow: '6px 6px 0px #000000',
-            transform: 'translateY(-2px)'
-          }}
-          onMouseDown={(e) => {
-            e.currentTarget.style.transform = 'translateY(2px)'
-            e.currentTarget.style.boxShadow = '2px 2px 0px #000000'
-          }}
-          onMouseUp={(e) => {
-            e.currentTarget.style.transform = 'translateY(-2px)'
-            e.currentTarget.style.boxShadow = '6px 6px 0px #000000'
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = 'translateY(-2px)'
-            e.currentTarget.style.boxShadow = '6px 6px 0px #000000'
-          }}
-        >
-          Surprise Me!
-        </button>
-      </div>
+      {/* Interactions */}
+      <CollapsiblePanel id="interactions" title="Interactions" color="medium">
+        <div class="space-y-4">
+          {/* Hover Effects */}
+          <div class="grid grid-cols-2 gap-3">
+            {[
+              { value: 'none', label: 'None' },
+              { value: 'lift', label: 'Lift' },
+              { value: 'glow', label: 'Glow' },
+              { value: 'pulse', label: 'Pulse' }
+            ].map(({ value, label }) => (
+              <button
+                key={value}
+                onClick={() => updateInteraction('hoverEffect', value)}
+                class={`px-4 py-3 rounded-xl border-3 border-black font-black transition-all h-12 shadow-sm hover:shadow-md active:scale-95 ${
+                  customization.interactions.hoverEffect === value
+                    ? 'bg-rose-200 text-black shadow-md scale-105'
+                    : 'bg-white text-black hover:bg-rose-50'
+                }`}
+                style={{
+                  boxShadow: customization.interactions.hoverEffect === value 
+                    ? '3px 3px 0px #000000' 
+                    : '2px 2px 0px #000000'
+                }}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+          
+          {/* Text Style */}
+          <div class="grid grid-cols-2 gap-3">
+            {[
+              { value: 'normal', label: 'Normal', type: 'weight' },
+              { value: 'bold', label: 'Bold', type: 'weight' },
+              { value: 'uppercase', label: 'CAPS', type: 'transform' },
+              { value: 'lowercase', label: 'lower', type: 'transform' }
+            ].map(({ value, label, type }) => (
+              <button
+                key={value}
+                onClick={() => {
+                  if (type === 'weight') {
+                    updateInteraction('fontWeight', value)
+                  } else {
+                    updateInteraction('textTransform', value)
+                  }
+                }}
+                class={`px-4 py-3 rounded-xl border-3 border-black font-black transition-all h-12 shadow-sm hover:shadow-md active:scale-95 ${
+                  (customization.interactions.fontWeight === value || customization.interactions.textTransform === value)
+                    ? 'bg-rose-200 text-black shadow-md scale-105'
+                    : 'bg-white text-black hover:bg-rose-50'
+                }`}
+                style={{
+                  boxShadow: (customization.interactions.fontWeight === value || customization.interactions.textTransform === value) 
+                    ? '3px 3px 0px #000000' 
+                    : '2px 2px 0px #000000'
+                }}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </CollapsiblePanel>
+      
+      {/* API Configuration */}
+      <CollapsiblePanel id="api" title="API Configuration" color="warm">
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-black text-black mb-2">API Key</label>
+            <input
+              type="password"
+              placeholder="Enter your Gemini API key..."
+              class="w-full px-4 py-3 bg-white border-3 border-black rounded-xl focus:bg-yellow-50 focus:outline-none transition-all font-mono text-sm shadow-sm focus:shadow-md"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-black text-black mb-2">Custom Prompt</label>
+            <textarea
+              placeholder="Custom instructions (e.g., 'Translate to Spanish', 'Format as bullets')"
+              class="w-full px-4 py-3 bg-white border-3 border-black rounded-xl focus:bg-yellow-50 focus:outline-none transition-all h-20 resize-none text-sm shadow-sm focus:shadow-md"
+            />
+          </div>
+          <div class="text-xs text-gray-600">
+            💡 Get your free key at <a href="https://aistudio.google.com/apikey" target="_blank" class="text-blue-600 underline">aistudio.google.com/apikey</a>
+          </div>
+        </div>
+      </CollapsiblePanel>
+      
+      {/* Code Export */}
+      <CollapsiblePanel id="export" title="Export Code" color="deep">
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-black text-black mb-2">Button HTML & CSS</label>
+            <textarea
+              value={generateCode()}
+              readonly
+              class="w-full px-4 py-3 bg-gray-50 border-2 border-black rounded-xl font-mono text-xs h-32 resize-none"
+              onClick={(e) => (e.target as HTMLTextAreaElement).select()}
+            />
+          </div>
+          <button
+            onClick={() => {
+              navigator.clipboard.writeText(generateCode())
+              // Could add a toast notification here
+            }}
+            class="w-full bg-white border-3 border-black rounded-xl px-4 py-3 font-black hover:bg-rose-50 transition-all h-12 shadow-sm hover:shadow-md active:scale-95"
+            style={{
+              boxShadow: '2px 2px 0px #000000'
+            }}
+          >
+            📋 Copy Code
+          </button>
+        </div>
+      </CollapsiblePanel>
       
     </div>
   )

@@ -88,36 +88,89 @@ export default function ButtonStudio() {
         </div>
       </header>
       
-      {/* Main Button Area - Breathing Room */}
+      {/* Main Content - Reorganized Layout */}
       <section class="px-6 pb-16">
-        <div class="max-w-4xl mx-auto">
-          <div class="bg-white rounded-3xl p-16 md:p-20 shadow-lg border-4 border-black">
-            <div class="flex justify-center items-center">
-              <VoiceButton 
+        <div class="max-w-7xl mx-auto">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            
+            {/* Left Column - Button + Master Controls */}
+            <div class="space-y-6">
+              
+              {/* Button Preview */}
+              <div class="bg-white rounded-3xl p-12 shadow-lg border-4 border-black relative">
+                <div class="flex justify-center items-center h-[240px]">
+                  <VoiceButton 
+                    customization={customization.value}
+                    onCustomizationChange={handleCustomizationChange}
+                    voiceEnabled={voiceEnabled.value}
+                    showWaveform={false}
+                    onComplete={(result) => {
+                      transcriptResult.value = result.text
+                      showTranscriptModal.value = true
+                    }}
+                  />
+                </div>
+                
+                {/* Dice Shuffle Icon */}
+                <button
+                  onClick={() => {
+                    // We'll call the surprise function from the master panel
+                    const event = new CustomEvent('surpriseMe')
+                    document.dispatchEvent(event)
+                  }}
+                  class="absolute top-4 right-4 w-12 h-12 bg-white border-3 border-black rounded-xl hover:bg-yellow-50 active:scale-95 transition-all duration-150 flex items-center justify-center shadow-md hover:shadow-lg"
+                  title="Surprise me! 🎲"
+                  style={{
+                    boxShadow: '3px 3px 0px #000000'
+                  }}
+                  onMouseDown={(e) => {
+                    e.currentTarget.style.transform = 'scale(0.9) translate(1px, 1px)'
+                    e.currentTarget.style.boxShadow = '1px 1px 0px #000000'
+                  }}
+                  onMouseUp={(e) => {
+                    e.currentTarget.style.transform = 'scale(1)'
+                    e.currentTarget.style.boxShadow = '3px 3px 0px #000000'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'scale(1)'
+                    e.currentTarget.style.boxShadow = '3px 3px 0px #000000'
+                  }}
+                >
+                  <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M5 3h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm6 0h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm-6 8h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2zm6 0h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2z"/>
+                    <circle cx="7" cy="7" r="1"/>
+                    <circle cx="13" cy="7" r="1"/>
+                    <circle cx="13" cy="13" r="1"/>
+                    <circle cx="17" cy="13" r="1"/>
+                    <circle cx="7" cy="17" r="1"/>
+                    <circle cx="13" cy="17" r="1"/>
+                  </svg>
+                </button>
+              </div>
+              
+              {/* Master Controls */}
+              <CustomizationPanel 
                 customization={customization.value}
-                onCustomizationChange={handleCustomizationChange}
+                onChange={handleCustomizationChange}
                 voiceEnabled={voiceEnabled.value}
-                showWaveform={false}  // No visualizer in button area
-                onComplete={(result) => {
-                  transcriptResult.value = result.text
-                  showTranscriptModal.value = true
-                }}
+                onVoiceToggle={handleVoiceToggle}
+                mode="master"
+              />
+              
+            </div>
+            
+            {/* Right Column - Advanced Controls */}
+            <div>
+              <CustomizationPanel 
+                customization={customization.value}
+                onChange={handleCustomizationChange}
+                voiceEnabled={voiceEnabled.value}
+                onVoiceToggle={handleVoiceToggle}
+                mode="advanced"
               />
             </div>
+            
           </div>
-        </div>
-      </section>
-
-      
-      {/* Controls - More Space */}
-      <section class="px-6 pb-16">
-        <div class="max-w-3xl mx-auto">
-          <CustomizationPanel 
-            customization={customization.value}
-            onChange={handleCustomizationChange}
-            voiceEnabled={voiceEnabled.value}
-            onVoiceToggle={handleVoiceToggle}
-          />
         </div>
       </section>
       

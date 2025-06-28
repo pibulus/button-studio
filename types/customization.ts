@@ -14,11 +14,20 @@ export interface ButtonCustomization {
     roundness: number     // 0-50px border radius
     glowIntensity: number // 0-20px outer glow
     shadowType: 'brutalist' | 'diffused'  // Shadow style
+    borderStyle: 'solid' | 'dashed' | 'dotted' | 'double'  // Border style
     gradient: {
       start: string       // Hex color for gradient start
       end: string         // Hex color for gradient end
       direction: number   // 0-360 degrees
     }
+  }
+  
+  // Interaction Effects
+  interactions: {
+    hoverEffect: 'none' | 'lift' | 'glow' | 'pulse' | 'rotate'
+    clickAnimation: 'none' | 'bounce' | 'shrink' | 'spin' | 'flash'
+    textTransform: 'none' | 'uppercase' | 'lowercase' | 'capitalize'
+    fontWeight: 'normal' | 'bold' | 'light'
   }
   
   // Content Properties  
@@ -44,6 +53,15 @@ export interface ButtonCustomization {
     autoTranscribe: boolean
     clipboardCopy: boolean
     showWaveform: boolean
+  }
+  
+  // API Configuration
+  api?: {
+    provider: 'gemini' | 'openai' | 'custom'
+    apiKey: string
+    model: string
+    customPrompt: string
+    temperature: number  // 0-1 for creativity
   }
 }
 
@@ -97,11 +115,18 @@ export const defaultCustomization: ButtonCustomization = {
     roundness: 16,
     glowIntensity: 0,
     shadowType: 'brutalist',
+    borderStyle: 'solid',
     gradient: {
       start: '#ff60e0',  // RiffRap peach start
       end: '#ffcf40',    // RiffRap peach end
       direction: 135     // Diagonal
     }
+  },
+  interactions: {
+    hoverEffect: 'lift',
+    clickAnimation: 'bounce',
+    textTransform: 'none',
+    fontWeight: 'bold'
   },
   content: {
     type: 'text',

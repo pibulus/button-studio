@@ -434,6 +434,11 @@ export default function VoiceButton({
     const shadowType = config.appearance.shadowType
     const glowIntensity = config.appearance.glowIntensity
     const shape = config.appearance.shape
+    const borderStyle = config.appearance.borderStyle
+    const hoverEffect = config.interactions.hoverEffect
+    const clickAnimation = config.interactions.clickAnimation
+    const textTransform = config.interactions.textTransform
+    const fontWeight = config.interactions.fontWeight
     
     // Calculate shadow and glow based on type
     const baseShadow = shadowType === 'brutalist' 
@@ -474,8 +479,27 @@ export default function VoiceButton({
       }
     }
     
+    // Dynamic hover effects
+    let hoverClasses = ''
+    switch (hoverEffect) {
+      case 'lift':
+        hoverClasses = 'hover:scale-[1.05] hover:-translate-y-1'
+        break
+      case 'glow':
+        hoverClasses = 'hover:shadow-[0_0_20px_rgba(255,158,181,0.6)]'
+        break
+      case 'pulse':
+        hoverClasses = 'hover:animate-pulse'
+        break
+      case 'rotate':
+        hoverClasses = 'hover:rotate-3'
+        break
+      default:
+        hoverClasses = 'hover:scale-[1.02] hover:brightness-110'
+    }
+    
     return {
-      className: `${stateClasses} ${stateAnimations} ${contentSize} relative cursor-pointer select-none transition-all duration-150 ease-out hover:scale-[1.02] hover:brightness-110 active:scale-[0.95] border-4 border-black font-black`,
+      className: `${stateClasses} ${stateAnimations} ${contentSize} relative cursor-pointer select-none transition-all duration-150 ease-out ${hoverClasses} active:scale-[0.95] border-4 border-black`,
       style: {
         background: backgroundStyle,
         boxShadow: isPressed 
@@ -483,12 +507,14 @@ export default function VoiceButton({
           : shadowStyle,
         transform: `scale(${isPressed ? dynamicScale * 0.95 : dynamicScale})`,
         borderRadius: getBorderRadius(),
+        borderStyle: borderStyle,
+        textTransform: textTransform as any,
+        fontWeight: fontWeight === 'bold' ? 'bold' : fontWeight === 'light' ? '300' : 'normal',
         transition: 'all 0.12s cubic-bezier(0.34, 1.56, 0.64, 1)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         color: '#000000',
-        textShadow: '1px 1px 2px rgba(255,255,255,0.5)',
         willChange: 'transform, box-shadow, filter',
         ...getShapeDimensions()
       }
