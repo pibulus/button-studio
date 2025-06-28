@@ -379,9 +379,11 @@ export default function VoiceButton({
   
   // Get button's main color for glow effect
   const getButtonColor = () => {
-    return customization.appearance.fillType === 'solid' 
+    const color = customization.appearance.fillType === 'solid' 
       ? customization.appearance.solidColor
       : customization.appearance.gradient.start
+    // console.log('🎨 Button color:', color, 'Fill type:', customization.appearance.fillType)
+    return color
   }
   
   // Convert hex to rgba
@@ -390,7 +392,9 @@ export default function VoiceButton({
     const r = parseInt(cleanHex.substr(0, 2), 16)
     const g = parseInt(cleanHex.substr(2, 2), 16)
     const b = parseInt(cleanHex.substr(4, 2), 16)
-    return `rgba(${r}, ${g}, ${b}, ${alpha})`
+    const result = `rgba(${r}, ${g}, ${b}, ${alpha})`
+    // console.log('🔧 hexToRgba:', hex, '→', result)
+    return result
   }
   
   // Enhanced button styling with customization system
@@ -415,8 +419,8 @@ export default function VoiceButton({
       effectClasses.push('effect-wiggle')
     }
     
-    // Non-transform effects (these can work together)
-    if (config.effects.glow) effectClasses.push('effect-glow')
+    // Non-transform effects (these can work together) 
+    // NOTE: glow effect handled via inline styles now, not CSS class
     if (config.effects.pulse) effectClasses.push('effect-pulse')
     
     const effectAnimations = effectClasses.join(' ')
@@ -468,7 +472,7 @@ export default function VoiceButton({
     const dynamicScale = config.appearance.scale
     const dynamicRoundness = config.appearance.roundness
     const shadowType = config.appearance.shadowType
-    const glowIntensity = config.appearance.glowIntensity
+    const borderWidth = config.appearance.borderWidth
     const shape = config.appearance.shape
     const borderStyle = config.appearance.borderStyle
     const hoverEffect = config.interactions.hoverEffect
@@ -481,17 +485,8 @@ export default function VoiceButton({
       ? '8px 8px 0px #000000'  // Hard brutalist shadow
       : '0 8px 25px rgba(0,0,0,0.15), 0 4px 10px rgba(0,0,0,0.1)'  // Soft diffused shadow
     
-    // SMART GLOW SYSTEM - effect glow overrides slider glow
-    let glowEffect = ''
-    if (config.effects.glow) {
-      // Effect glow - use button's actual color!
-      glowEffect = `, 0 0 20px ${hexToRgba(getButtonColor(), 0.6)}, 0 0 40px ${hexToRgba(getButtonColor(), 0.3)}`
-    } else if (glowIntensity > 0) {
-      // Slider glow - use button's actual color too!
-      glowEffect = `, 0 0 ${glowIntensity}px ${hexToRgba(getButtonColor(), 0.6)}, 0 0 ${glowIntensity * 2}px ${hexToRgba(getButtonColor(), 0.3)}`
-    }
-    
-    const shadowStyle = baseShadow + glowEffect
+    // SIMPLE GLOW SYSTEM - just the base shadow for now
+    const shadowStyle = baseShadow
     
     // Shape-specific border radius
     const getBorderRadius = () => {
@@ -540,15 +535,13 @@ export default function VoiceButton({
     }
     
     return {
-      className: `${stateClasses} ${stateAnimations} ${contentSize} relative cursor-pointer select-none transition-all duration-150 ease-out ${hoverClasses} active:scale-[0.95] border-4 border-black`,
+      className: `${stateClasses} ${stateAnimations} ${contentSize} relative cursor-pointer select-none transition-all duration-150 ease-out ${hoverClasses} active:scale-[0.95] border-black`,
       style: {
         background: backgroundStyle,
-        boxShadow: isPressed 
-          ? (shadowType === 'brutalist' ? '2px 2px 0px #000000' + glowEffect : '0 2px 4px rgba(0,0,0,0.2)' + glowEffect)
-          : shadowStyle,
         transform: `scale(${isPressed ? dynamicScale * 0.95 : dynamicScale})`,
         borderRadius: getBorderRadius(),
         borderStyle: borderStyle,
+        borderWidth: `${borderWidth}px`,
         textTransform: textTransform as any,
         fontWeight: fontWeight === 'bold' ? 'bold' : fontWeight === 'light' ? '300' : 'normal',
         transition: 'all 0.12s cubic-bezier(0.34, 1.56, 0.64, 1)',
@@ -557,11 +550,14 @@ export default function VoiceButton({
         justifyContent: 'center',
         color: '#000000',
         willChange: 'transform, box-shadow, filter',
-        // CSS custom properties for glow color
-        '--glow-color': getButtonColor(),
-        '--glow-color-40': hexToRgba(getButtonColor(), 0.4),
-        '--glow-color-66': hexToRgba(getButtonColor(), 0.66),
-        '--glow-color-80': hexToRgba(getButtonColor(), 0.8),
+        // FORCE glow effect via direct style override
+        boxShadow: config.effects.glow
+          ? (isPressed 
+              ? `2px 2px 0px #000000, 0 0 15px ${hexToRgba(getButtonColor(), 0.6)}`
+              : `8px 8px 0px #000000, 0 0 25px ${hexToRgba(getButtonColor(), 0.6)}, 0 0 50px ${hexToRgba(getButtonColor(), 0.3)}`)
+          : (isPressed 
+              ? (shadowType === 'brutalist' ? '2px 2px 0px #000000' : '0 2px 4px rgba(0,0,0,0.2)')
+              : shadowStyle),
         ...getShapeDimensions()
       } as any
     }
@@ -599,16 +595,7 @@ export default function VoiceButton({
         }
         
         .effect-glow {
-          animation: glow-pulse 2s ease-in-out infinite;
-        }
-        
-        @keyframes glow-pulse {
-          0%, 100% { 
-            filter: brightness(1);
-          }
-          50% { 
-            filter: brightness(1.1);
-          }
+          /* Glow effect handled via inline styles now */
         }
         
         .effect-bounce {

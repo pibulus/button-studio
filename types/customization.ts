@@ -12,7 +12,7 @@ export interface ButtonCustomization {
     shape: 'circle' | 'rounded' | 'square'
     scale: number         // 0.5-2.0x multiplier (Size)
     roundness: number     // 0-50px border radius
-    glowIntensity: number // 0-20px outer glow
+    borderWidth: number   // 0-10px border thickness  
     shadowType: 'brutalist' | 'diffused'  // Shadow style
     borderStyle: 'solid' | 'dashed' | 'dotted' | 'double'  // Border style
     gradient: {
@@ -117,7 +117,7 @@ export const defaultCustomization: ButtonCustomization = {
     shape: 'rounded',
     scale: 1.0, 
     roundness: 16,
-    glowIntensity: 0,
+    borderWidth: 4,
     shadowType: 'brutalist',
     borderStyle: 'solid',
     gradient: {
@@ -226,14 +226,14 @@ export const sliderConfig: SliderDefinition[] = [
     preview: (value) => `rounded-[${value}px]`
   },
   {
-    id: 'glowIntensity',
-    label: 'Glow',
-    icon: '✨',
+    id: 'borderWidth',
+    label: 'Thickness',
+    icon: '🖼️',
     min: 0,
-    max: 20,
+    max: 10,
     unit: 'px',
-    property: '--button-glow',
-    preview: (value) => `drop-shadow-[0_0_${value}px_currentColor]`
+    property: '--button-border',
+    preview: (value) => `border-[${value}px]`
   }
 ]
 

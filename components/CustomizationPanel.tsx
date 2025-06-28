@@ -652,7 +652,7 @@ export default function CustomizationPanel({ customization, onChange, voiceEnabl
                 { key: 'breathing', label: 'Breathe', demoClass: 'effect-breathe' },
                 { key: 'bounce', label: 'Bounce', demoClass: 'effect-bounce' },
                 { key: 'wiggle', label: 'Wiggle', demoClass: 'effect-wiggle' },
-                { key: 'glow', label: 'Glow', demoClass: 'effect-glow' },
+                { key: 'glow', label: 'Glow', demoClass: '' },  // No demo class - handled via inline styles
                 { key: 'pulse', label: 'Pulse', demoClass: 'effect-pulse' }
               ].map(({ key, label, demoClass }) => {
                 const isActive = customization.effects[key as keyof ButtonCustomization['effects']]
@@ -663,7 +663,7 @@ export default function CustomizationPanel({ customization, onChange, voiceEnabl
                     class={`px-6 py-4 rounded-2xl border-3 border-black font-black transition-all duration-300 ease-out shadow-lg hover:shadow-xl active:scale-95 transform hover:scale-105 hover:-translate-y-1 flex items-center justify-center ${
                       isActive
                         ? 'bg-green-200 text-black shadow-xl scale-105 -translate-y-1'
-                        : `bg-white text-black hover:bg-green-50 ${demoClass}`
+                        : `bg-white text-black hover:bg-green-50 ${key === 'glow' ? 'hover:shadow-2xl' : demoClass}`
                     }`}
                     style={{
                       boxShadow: isActive 
@@ -677,7 +677,7 @@ export default function CustomizationPanel({ customization, onChange, voiceEnabl
                 )
               })}
               
-              {/* Rainbow Border - 9th effect */}
+              {/* Rainbow Border - 6th effect */}
               {customization.effects.rainbowGlow ? (
                 <button
                   onClick={() => updateEffect('rainbowGlow', false)}
