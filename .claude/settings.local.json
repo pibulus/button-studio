@@ -4,7 +4,8 @@
       "Bash(deno task:*)",
       "Bash(ls:*)",
       "Bash(rm:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(rg:*)"
     ],
     "deny": []
   }

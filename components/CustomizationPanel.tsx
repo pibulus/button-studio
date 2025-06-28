@@ -171,16 +171,45 @@ export default function CustomizationPanel({ customization, onChange, voiceEnabl
   const CollapsiblePanel = ({ id, title, children, color = 'light' }: { id: string, title: string, children: any, color?: string }) => {
     const isExpanded = expandedPanels.value[id]
     
-    // Get the proper background color for each panel
+    // 🌈 LUSH PASTEL GRADIENT - Each panel gets distinct warm color (VISIBLE!)
     const getBackgroundColor = (colorKey: string) => {
-      switch (colorKey) {
-        case 'lightest': return 'bg-rose-100 hover:bg-rose-200'
-        case 'light': return 'bg-pink-200 hover:bg-pink-300'
-        case 'medium': return 'bg-rose-200 hover:bg-rose-300'
-        case 'warm': return 'bg-orange-200 hover:bg-orange-300'
-        case 'deep': return 'bg-pink-300 hover:bg-pink-400'
-        default: return 'bg-pink-200 hover:bg-pink-300'
+      const colors = {
+        lightest: 'bg-red-200 hover:bg-red-300',        // Visible pink
+        light: 'bg-orange-200 hover:bg-orange-300',     // Visible peach  
+        medium: 'bg-pink-200 hover:bg-pink-300',        // Visible coral
+        warm: 'bg-yellow-200 hover:bg-yellow-300',      // Visible golden
+        deep: 'bg-purple-200 hover:bg-purple-300',      // Visible lavender
+        effects: 'bg-green-200 hover:bg-green-300'      // Special green for effects
       }
+      return colors[colorKey as keyof typeof colors] || colors.light
+    }
+    
+    // 🎨 THEME BUTTON COLORS - Each panel's buttons match its theme
+    const getButtonColors = (colorKey: string, isSelected: boolean) => {
+      const themes = {
+        lightest: {
+          selected: 'bg-rose-200 hover:bg-rose-300 border-rose-400',
+          unselected: 'bg-white hover:bg-rose-50 border-rose-200'
+        },
+        light: {
+          selected: 'bg-orange-200 hover:bg-orange-300 border-orange-400', 
+          unselected: 'bg-white hover:bg-orange-50 border-orange-200'
+        },
+        medium: {
+          selected: 'bg-pink-200 hover:bg-pink-300 border-pink-400',
+          unselected: 'bg-white hover:bg-pink-50 border-pink-200'  
+        },
+        warm: {
+          selected: 'bg-amber-200 hover:bg-amber-300 border-amber-400',
+          unselected: 'bg-white hover:bg-amber-50 border-amber-200'
+        },
+        deep: {
+          selected: 'bg-purple-200 hover:bg-purple-300 border-purple-400',
+          unselected: 'bg-white hover:bg-purple-50 border-purple-200'
+        }
+      }
+      const theme = themes[colorKey as keyof typeof themes] || themes.light
+      return isSelected ? theme.selected : theme.unselected
     }
     
     return (
@@ -234,52 +263,142 @@ export default function CustomizationPanel({ customization, onChange, voiceEnabl
           </div>
         </div>
         
-        {/* The Big 3 Sliders - MORE BREATHING ROOM */}
+        {/* 🎨 Colors & Fill Style */}
         <div class="bg-white rounded-3xl p-8 shadow-lg border-4 border-black">
-          <div class="space-y-8">
+          <div class="space-y-6">
+            {/* Fill Type Toggle - Redesigned */}
+            <div>
+              <h3 class="text-lg font-black text-gray-900 mb-4">Fill Style</h3>
+              <div class="flex gap-4">
+                <button
+                  onClick={() => updateAppearance('fillType', 'solid')}
+                  class={`flex-1 px-6 py-4 rounded-2xl border-3 border-black font-black transition-all h-14 shadow-sm hover:shadow-md active:scale-95 ${
+                    customization.appearance.fillType === 'solid'
+                      ? 'bg-orange-200 hover:bg-orange-300 text-black shadow-md scale-105'
+                      : 'bg-white hover:bg-orange-50 text-black'
+                  }`}
+                  style={{
+                    boxShadow: customization.appearance.fillType === 'solid' 
+                      ? '3px 3px 0px #000000' 
+                      : '2px 2px 0px #000000'
+                  }}
+                >
+                  Solid Color
+                </button>
+                <button
+                  onClick={() => updateAppearance('fillType', 'gradient')}
+                  class={`flex-1 px-6 py-4 rounded-2xl border-3 border-black font-black transition-all h-14 shadow-sm hover:shadow-md active:scale-95 ${
+                    customization.appearance.fillType === 'gradient'
+                      ? 'bg-orange-200 hover:bg-orange-300 text-black shadow-md scale-105'
+                      : 'bg-white hover:bg-orange-50 text-black'
+                  }`}
+                  style={{
+                    boxShadow: customization.appearance.fillType === 'gradient' 
+                      ? '3px 3px 0px #000000' 
+                      : '2px 2px 0px #000000'
+                  }}
+                >
+                  Gradient
+                </button>
+              </div>
+            </div>
+            
+            {/* Color Palette - Redesigned */}
+            <div>
+              <h3 class="text-lg font-black text-gray-900 mb-4">Color Palette</h3>
+              <div class="grid grid-cols-6 gap-3">
+                {succulentColors.map((color, index) => (
+                  <button
+                    key={index}
+                    onClick={() => {
+                      if (customization.appearance.fillType === 'solid') {
+                        updateAppearance('solidColor', color)
+                      } else {
+                        updateGradient('start', color)
+                      }
+                    }}
+                    class="h-12 w-12 rounded-2xl border-3 border-black hover:scale-110 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95"
+                    style={{ 
+                      background: color,
+                      boxShadow: '2px 2px 0px #000000'
+                    }}
+                    title={color}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* 💪 The Big 3 Sliders - CHONKY & FRIENDLY */}
+        <div class="bg-white rounded-3xl p-8 shadow-lg border-4 border-black">
+          <div class="space-y-10">
             {sliderConfig.map((slider) => {
-              const value = customization.appearance[slider.id]
-              const percentage = ((value - slider.min) / (slider.max - slider.min)) * 100
+              const rawValue = customization.appearance[slider.id]
+              
+              // 🧠 CLEAN VALUE FORMATTING (no more ugly decimals!)
+              const formatValue = (val: number, unit: string) => {
+                if (unit === 'x') return `${Math.round(val * 10) / 10}${unit}`
+                return `${Math.round(val)}${unit}`
+              }
+              
+              const cleanValue = formatValue(rawValue, slider.unit)
+              const percentage = ((rawValue - slider.min) / (slider.max - slider.min)) * 100
               
               return (
-                <div key={slider.id} class="flex items-center gap-4">
-                  <div class="w-10 h-10 flex items-center justify-center text-lg bg-white rounded-xl border-2 border-black font-black">
-                    {slider.label.charAt(0)}
+                <div key={slider.id} class="space-y-4">
+                  {/* Header with icon and label */}
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <h3 class="text-xl font-black text-gray-900">{slider.label}</h3>
+                      <p class="text-sm text-gray-600 font-bold">Drag to adjust</p>
+                    </div>
+                    
+                    {/* 🌟 BIG CHONKY VALUE DISPLAY */}
+                    <div class="bg-gradient-to-r from-rose-100 to-orange-100 border-4 border-black px-6 py-3 rounded-2xl shadow-lg">
+                      <span class="text-2xl font-black text-gray-900 font-mono">{cleanValue}</span>
+                    </div>
                   </div>
-                  <div class="flex-1 relative">
+                  
+                  {/* 🎯 MEGA CHONKY SLIDER */}
+                  <div class="relative px-2">
                     <input
                       type="range"
                       min={slider.min}
                       max={slider.max}
                       step={slider.step || 1}
-                      value={value}
+                      value={rawValue}
                       onInput={(e) => updateAppearance(slider.id, parseFloat((e.target as HTMLInputElement).value))}
-                      title={`${slider.label}: ${value}${slider.unit}`}
-                      class="w-full h-3 bg-white border-2 border-black rounded-full appearance-none cursor-grab hover:cursor-grabbing"
+                      title={`${slider.label}: ${cleanValue}`}
+                      class="w-full h-8 bg-white border-4 border-black rounded-full appearance-none cursor-grab hover:cursor-grabbing transition-all shadow-md hover:shadow-lg"
                       style={{
-                        background: `linear-gradient(to right, #ff9eb5 0%, #ff9eb5 ${percentage}%, #ffffff ${percentage}%, #ffffff 100%)`,
-                        border: '2px solid #000000'
+                        background: `linear-gradient(to right, #ff9eb5 0%, #ff9eb5 ${percentage}%, #f8f9fa ${percentage}%, #f8f9fa 100%)`,
+                        border: '4px solid #000000'
                       }}
                     />
                     <style jsx>{`
                       input[type="range"]::-webkit-slider-thumb {
                         appearance: none;
-                        height: 24px;
-                        width: 24px;
-                        border-radius: 12px;
-                        background: #ff9eb5;
-                        border: 2px solid #000000;
+                        height: 40px;
+                        width: 40px;
+                        border-radius: 20px;
+                        background: linear-gradient(135deg, #ff9eb5 0%, #ff6b9d 100%);
+                        border: 4px solid #000000;
                         cursor: grab;
-                        box-shadow: 0 2px 8px rgba(255, 158, 181, 0.4);
+                        box-shadow: 0 6px 20px rgba(255, 158, 181, 0.6), 0 2px 8px rgba(0, 0, 0, 0.2);
+                        transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
                       }
                       input[type="range"]::-webkit-slider-thumb:hover {
-                        transform: scale(1.1);
+                        transform: scale(1.2) translateY(-2px);
                         cursor: grabbing;
+                        box-shadow: 0 8px 25px rgba(255, 158, 181, 0.8), 0 4px 12px rgba(0, 0, 0, 0.3);
+                        background: linear-gradient(135deg, #ff6b9d 0%, #ff3d71 100%);
+                      }
+                      input[type="range"]::-webkit-slider-thumb:active {
+                        transform: scale(1.1) translateY(0px);
+                        box-shadow: 0 4px 15px rgba(255, 158, 181, 0.9), 0 2px 6px rgba(0, 0, 0, 0.4);
                       }
                     `}</style>
-                  </div>
-                  <div class="w-12 text-center text-sm font-black bg-white border-2 border-black px-2 py-1 rounded-lg">
-                    {value}{slider.unit}
                   </div>
                 </div>
               )
@@ -287,53 +406,6 @@ export default function CustomizationPanel({ customization, onChange, voiceEnabl
           </div>
         </div>
         
-        {/* Solid/Gradient + Colors - CHONKY */}
-        <div class="bg-white rounded-3xl p-8 shadow-lg border-4 border-black">
-          <div class="space-y-6">
-            {/* Fill Type Toggle */}
-            <div class="flex gap-3">
-              <button
-                onClick={() => updateAppearance('fillType', 'solid')}
-                class={`flex-1 px-4 py-3 rounded-xl border-2 border-black font-black transition-all h-12 ${
-                  customization.appearance.fillType === 'solid'
-                    ? 'bg-yellow-200 text-black'
-                    : 'bg-white text-black hover:bg-yellow-50'
-                }`}
-              >
-                Solid
-              </button>
-              <button
-                onClick={() => updateAppearance('fillType', 'gradient')}
-                class={`flex-1 px-4 py-3 rounded-xl border-2 border-black font-black transition-all h-12 ${
-                  customization.appearance.fillType === 'gradient'
-                    ? 'bg-yellow-200 text-black'
-                    : 'bg-white text-black hover:bg-yellow-50'
-                }`}
-              >
-                Gradient
-              </button>
-            </div>
-            
-            {/* Succulent Color Swatches */}
-            <div class="grid grid-cols-6 gap-2">
-              {succulentColors.map((color, index) => (
-                <button
-                  key={index}
-                  onClick={() => {
-                    if (customization.appearance.fillType === 'solid') {
-                      updateAppearance('solidColor', color)
-                    } else {
-                      updateGradient('start', color)
-                    }
-                  }}
-                  class="h-8 rounded-lg border-2 border-black hover:scale-110 transition-all duration-200"
-                  style={{ background: color }}
-                  title={color}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
         
         
       </div>
@@ -359,8 +431,8 @@ export default function CustomizationPanel({ customization, onChange, voiceEnabl
                 onClick={() => updateAppearance('shape', shape)}
                 class={`flex-1 px-4 py-3 rounded-xl border-3 border-black font-black transition-all h-12 shadow-sm hover:shadow-md active:scale-95 ${
                   customization.appearance.shape === shape
-                    ? 'bg-rose-200 text-black shadow-md scale-105'
-                    : 'bg-white text-black hover:bg-rose-50'
+                    ? 'bg-rose-200 hover:bg-rose-300 text-black shadow-md scale-105'
+                    : 'bg-white hover:bg-rose-50 text-black'
                 }`}
                 style={{
                   boxShadow: customization.appearance.shape === shape 
@@ -403,7 +475,7 @@ export default function CustomizationPanel({ customization, onChange, voiceEnabl
       </CollapsiblePanel>
       
       {/* Effects & Animations */}
-      <CollapsiblePanel id="effects" title="Effects & Animations" color="light">
+      <CollapsiblePanel id="effects" title="Effects & Animations" color="effects">
         <div class="space-y-4">
           {/* Animation Effects */}
           <div class="grid grid-cols-2 gap-3">
@@ -418,8 +490,8 @@ export default function CustomizationPanel({ customization, onChange, voiceEnabl
                 onClick={() => updateEffect(key as keyof ButtonCustomization['effects'], !customization.effects[key as keyof ButtonCustomization['effects']])}
                 class={`p-4 rounded-xl border-3 border-black transition-all font-black h-12 flex items-center justify-center shadow-sm hover:shadow-md active:scale-95 ${
                   customization.effects[key as keyof ButtonCustomization['effects']]
-                    ? 'bg-pink-200 text-black shadow-md scale-105' 
-                    : 'bg-white text-black hover:bg-pink-50'
+                    ? 'bg-orange-200 hover:bg-orange-300 text-black shadow-md scale-105' 
+                    : 'bg-white hover:bg-orange-50 text-black'
                 }`}
                 style={{
                   boxShadow: customization.effects[key as keyof ButtonCustomization['effects']] 
@@ -438,8 +510,8 @@ export default function CustomizationPanel({ customization, onChange, voiceEnabl
               onClick={() => updateAppearance('shadowType', 'brutalist')}
               class={`flex-1 px-4 py-3 rounded-xl border-3 border-black font-black transition-all h-12 shadow-sm hover:shadow-md active:scale-95 ${
                 customization.appearance.shadowType === 'brutalist'
-                  ? 'bg-pink-200 text-black shadow-md scale-105'
-                  : 'bg-white text-black hover:bg-pink-50'
+                  ? 'bg-orange-200 hover:bg-orange-300 text-black shadow-md scale-105'
+                  : 'bg-white hover:bg-orange-50 text-black'
               }`}
               style={{
                 boxShadow: customization.appearance.shadowType === 'brutalist' 
@@ -453,8 +525,8 @@ export default function CustomizationPanel({ customization, onChange, voiceEnabl
               onClick={() => updateAppearance('shadowType', 'diffused')}
               class={`flex-1 px-4 py-3 rounded-xl border-3 border-black font-black transition-all h-12 shadow-sm hover:shadow-md active:scale-95 ${
                 customization.appearance.shadowType === 'diffused'
-                  ? 'bg-pink-200 text-black shadow-md scale-105'
-                  : 'bg-white text-black hover:bg-pink-50'
+                  ? 'bg-orange-200 hover:bg-orange-300 text-black shadow-md scale-105'
+                  : 'bg-white hover:bg-orange-50 text-black'
               }`}
               style={{
                 boxShadow: customization.appearance.shadowType === 'diffused' 
@@ -484,8 +556,8 @@ export default function CustomizationPanel({ customization, onChange, voiceEnabl
                 onClick={() => updateInteraction('hoverEffect', value)}
                 class={`px-4 py-3 rounded-xl border-3 border-black font-black transition-all h-12 shadow-sm hover:shadow-md active:scale-95 ${
                   customization.interactions.hoverEffect === value
-                    ? 'bg-rose-200 text-black shadow-md scale-105'
-                    : 'bg-white text-black hover:bg-rose-50'
+                    ? 'bg-pink-200 hover:bg-pink-300 text-black shadow-md scale-105'
+                    : 'bg-white hover:bg-pink-50 text-black'
                 }`}
                 style={{
                   boxShadow: customization.interactions.hoverEffect === value 
@@ -517,8 +589,8 @@ export default function CustomizationPanel({ customization, onChange, voiceEnabl
                 }}
                 class={`px-4 py-3 rounded-xl border-3 border-black font-black transition-all h-12 shadow-sm hover:shadow-md active:scale-95 ${
                   (customization.interactions.fontWeight === value || customization.interactions.textTransform === value)
-                    ? 'bg-rose-200 text-black shadow-md scale-105'
-                    : 'bg-white text-black hover:bg-rose-50'
+                    ? 'bg-pink-200 hover:bg-pink-300 text-black shadow-md scale-105'
+                    : 'bg-white hover:bg-pink-50 text-black'
                 }`}
                 style={{
                   boxShadow: (customization.interactions.fontWeight === value || customization.interactions.textTransform === value) 
@@ -533,8 +605,8 @@ export default function CustomizationPanel({ customization, onChange, voiceEnabl
         </div>
       </CollapsiblePanel>
       
-      {/* API Configuration */}
-      <CollapsiblePanel id="api" title="API Configuration" color="warm">
+      {/* Voice Magic */}
+      <CollapsiblePanel id="api" title="Voice Magic" color="warm">
         <div class="space-y-4">
           <div>
             <label class="block text-sm font-black text-black mb-2">API Key</label>
@@ -551,13 +623,59 @@ export default function CustomizationPanel({ customization, onChange, voiceEnabl
               class="w-full px-4 py-3 bg-white border-3 border-black rounded-xl focus:bg-yellow-50 focus:outline-none transition-all h-20 resize-none text-sm shadow-sm focus:shadow-md"
             />
           </div>
+          
+          {/* ✨ SURPRISE PROMPT EXAMPLES */}
+          <div>
+            <label class="block text-sm font-black text-black mb-3">✨ Quick Prompts</label>
+            <div class="grid grid-cols-2 gap-2">
+              {[
+                { emoji: '🌐', text: 'Translate', prompt: 'Translate to Spanish' },
+                { emoji: '🔥', text: 'Spice Up', prompt: 'Make this sound more exciting and energetic' },
+                { emoji: '📝', text: 'Bullets', prompt: 'Format as bullet points' },
+                { emoji: '🎭', text: 'Dramatic', prompt: 'Rewrite in a dramatic, theatrical style' },
+                { emoji: '🤖', text: 'Tech', prompt: 'Convert to technical documentation' },
+                { emoji: '✨', text: 'Surprise!', prompt: 'surprise' }
+              ].map(({ emoji, text, prompt }) => (
+                <button
+                  key={text}
+                  onClick={() => {
+                    const textarea = document.querySelector('textarea') as HTMLTextAreaElement
+                    if (textarea) {
+                      if (prompt === 'surprise') {
+                        const surprisePrompts = [
+                          'Turn this into a pirate shanty',
+                          'Explain like I\'m a golden retriever',
+                          'Write as a noir detective story',
+                          'Convert to emoji-only communication',
+                          'Make it sound like a cooking recipe',
+                          'Transform into a haiku'
+                        ]
+                        textarea.value = surprisePrompts[Math.floor(Math.random() * surprisePrompts.length)]
+                      } else {
+                        textarea.value = prompt
+                      }
+                      textarea.focus()
+                    }
+                  }}
+                  class="flex items-center gap-2 px-3 py-2 bg-white border-2 border-black rounded-lg hover:bg-amber-50 transition-all text-xs font-black shadow-sm hover:shadow-md active:scale-95"
+                  style={{
+                    boxShadow: '1px 1px 0px #000000'
+                  }}
+                >
+                  <span>{emoji}</span>
+                  <span>{text}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+          
           <div class="text-xs text-gray-600">
             💡 Get your free key at <a href="https://aistudio.google.com/apikey" target="_blank" class="text-blue-600 underline">aistudio.google.com/apikey</a>
           </div>
         </div>
       </CollapsiblePanel>
       
-      {/* Code Export */}
+      {/* Export Code */}
       <CollapsiblePanel id="export" title="Export Code" color="deep">
         <div class="space-y-4">
           <div>
@@ -574,7 +692,7 @@ export default function CustomizationPanel({ customization, onChange, voiceEnabl
               navigator.clipboard.writeText(generateCode())
               // Could add a toast notification here
             }}
-            class="w-full bg-white border-3 border-black rounded-xl px-4 py-3 font-black hover:bg-rose-50 transition-all h-12 shadow-sm hover:shadow-md active:scale-95"
+            class="w-full bg-white border-3 border-black rounded-xl px-4 py-3 font-black hover:bg-purple-50 transition-all h-12 shadow-sm hover:shadow-md active:scale-95"
             style={{
               boxShadow: '2px 2px 0px #000000'
             }}

@@ -136,14 +136,9 @@ export default function ButtonStudio() {
                     e.currentTarget.style.boxShadow = '3px 3px 0px #000000'
                   }}
                 >
+                  {/* 🎲 Proper Dice Icon */}
                   <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M5 3h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm6 0h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm-6 8h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2zm6 0h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2z"/>
-                    <circle cx="7" cy="7" r="1"/>
-                    <circle cx="13" cy="7" r="1"/>
-                    <circle cx="13" cy="13" r="1"/>
-                    <circle cx="17" cy="13" r="1"/>
-                    <circle cx="7" cy="17" r="1"/>
-                    <circle cx="13" cy="17" r="1"/>
+                    <path d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zM7.5 6a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm9 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zM12 10.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zM7.5 15a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm9 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z"/>
                   </svg>
                 </button>
               </div>
