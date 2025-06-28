@@ -14,11 +14,15 @@ export class GeminiTranscriptionPlugin implements TranscriptionPlugin {
   private geminiModel: any
 
   async configure(config: GeminiConfig): Promise<void> {
-    // Hardcode Pablo's API key for now
-    this.apiKey = 'AIzaSyA2PKYfE6wa9x5reTh_3iZiFHZAyMnCZAE'
+    // Use environment variable for security
+    this.apiKey = Deno.env.get('GEMINI_API_KEY') || config.apiKey
     this.model = config.model || 'gemini-2.0-flash'
     
-    console.log('✅ Gemini plugin configured with hardcoded key')
+    if (!this.apiKey) {
+      throw new Error('GEMINI_API_KEY environment variable not set')
+    }
+    
+    console.log('✅ Gemini plugin configured with environment key')
   }
 
   validateConfig(config: unknown): config is GeminiConfig {
