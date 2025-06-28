@@ -1,0 +1,34 @@
+// Copyright 2018-2025 the Deno authors. MIT license.
+// This module is browser compatible.
+
+import { isWindows } from "./_os.ts";
+import { resolve as posixResolve } from "./posix/resolve.ts";
+import { resolve as windowsResolve } from "./windows/resolve.ts";
+
+/**
+ * Resolves path segments into a path.
+ *
+ * @example Usage
+ * ```ts
+ * import { resolve } from "@std/path/resolve";
+ * import { assertEquals } from "@std/assert";
+ *
+ * if (Deno.build.os === "windows") {
+ *   assertEquals(resolve("C:\\foo", "bar", "baz"), "C:\\foo\\bar\\baz");
+ *   assertEquals(resolve("C:\\foo", "C:\\bar", "baz"), "C:\\bar\\baz");
+ * } else {
+ *   assertEquals(resolve("/foo", "bar", "baz"), "/foo/bar/baz");
+ *   assertEquals(resolve("/foo", "/bar", "baz"), "/bar/baz");
+ * }
+ * ```
+ *
+ * @param pathSegments Path segments to process to path.
+ * @returns The resolved path.
+ */
+export function resolve(...pathSegments: string[]): string {
+  return isWindows
+    ? windowsResolve(...pathSegments)
+    : posixResolve(...pathSegments);
+}
+
+// denoCacheMetadata={"headers":{"x-goog-stored-content-length":"1021","content-length":"1021","age":"0","content-security-policy":"default-src 'none'; script-src 'none'; style-src 'none'; img-src 'none'; font-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; frame-ancestors 'none'; sandbox; form-action 'none';","accept-ranges":"bytes","x-jsr-cache-status":"revalidated","cross-origin-resource-policy":"cross-origin","x-content-type-options":"nosniff","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000","x-jsr-cache-id":"MEL","content-type":"text/typescript","x-robots-tag":"noindex","x-goog-metageneration":"1","expires":"Fri, 26 Jun 2026 12:57:34 GMT","via":"1.1 google","x-goog-generation":"1748331038069678","access-control-expose-headers":"*","x-goog-hash":"crc32c=VKxCaA==,md5=chThbqZEFRJ7L5HOFoigrw==","cache-control":"public, max-age=31536000, immutable","access-control-allow-origin":"*","x-guploader-uploadid":"ABgVH8-TImBlStD1pvovesyzq6fYx2NhzpB8c19h9xqQZRsq_0u_bFnxPkZMW8XbU25GjNCZvD5ebBM","x-goog-stored-content-encoding":"identity","x-goog-storage-class":"STANDARD","date":"Thu, 26 Jun 2025 12:57:34 GMT","server":"UploadServer","last-modified":"Tue, 27 May 2025 07:30:38 GMT","etag":"\"7214e16ea64415127b2f91ce1688a0af\""},"url":"https://jsr.io/@std/path/1.1.0/resolve.ts","time":1750942654}

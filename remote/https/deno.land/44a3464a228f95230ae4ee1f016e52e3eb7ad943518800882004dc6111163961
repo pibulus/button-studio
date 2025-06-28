@@ -1,0 +1,42 @@
+// Copyright 2018-2024 the Deno authors. All rights reserved. MIT license.
+import { AssertionError } from "./assertion_error.ts";
+
+/**
+ * Make an assertion that `actual` and `expected` are almost equal numbers
+ * through a given tolerance. It can be used to take into account IEEE-754
+ * double-precision floating-point representation limitations. If the values
+ * are not almost equal then throw.
+ *
+ * @example
+ * ```ts
+ * import { assertAlmostEquals } from "https://deno.land/std@$STD_VERSION/assert/mod.ts";
+ *
+ * assertAlmostEquals(0.01, 0.02, 0.1); // Doesn't throw
+ * assertAlmostEquals(0.01, 0.02); // Throws
+ * assertAlmostEquals(0.1 + 0.2, 0.3, 1e-16); // Doesn't throw
+ * assertAlmostEquals(0.1 + 0.2, 0.3, 1e-17); // Throws
+ * ```
+ */
+export function assertAlmostEquals(
+  actual: number,
+  expected: number,
+  tolerance = 1e-7,
+  msg?: string,
+) {
+  if (Object.is(actual, expected)) {
+    return;
+  }
+  const delta = Math.abs(expected - actual);
+  if (delta <= tolerance) {
+    return;
+  }
+
+  const msgSuffix = msg ? `: ${msg}` : ".";
+  const f = (n: number) => Number.isInteger(n) ? n : n.toExponential();
+  throw new AssertionError(
+    `Expected actual: "${f(actual)}" to be close to "${f(expected)}": \
+delta "${f(delta)}" is greater than "${f(tolerance)}"${msgSuffix}`,
+  );
+}
+
+// denoCacheMetadata={"headers":{"server-timing":"fetchSource;dur=70","x-frame-options":"DENY","via":"http/2 edgeproxy-h","x-amz-cf-id":"fF_xGLhGQzErrT6P12aaUrUvdvpdpYp6OX7Du-cMr59asB6HiT-N-g==","x-amz-server-side-encryption":"AES256","content-type":"application/typescript; charset=utf-8","accept-ranges":"bytes","date":"Mon, 10 Mar 2025 13:11:02 GMT","x-cache":"Hit from cloudfront","x-content-type-options":"nosniff","x-amz-replication-status":"COMPLETED","x-amz-cf-pop":"SIN52-P1","access-control-allow-origin":"*","cross-origin-opener-policy":"same-origin","content-security-policy":"default-src 'none'; style-src 'unsafe-inline'; sandbox","last-modified":"Thu, 15 Feb 2024 05:02:27 GMT","cache-control":"public, max-age=31536000, immutable","referrer-policy":"strict-origin-when-cross-origin","x-amz-version-id":"kp3ZZ.EqD2Rz4TGsXvEfBU9sLAS0eYPh","age":"9330388","vary":"Accept-Encoding, Origin","cross-origin-resource-policy":"same-origin","etag":"\"4ba21c1438f278c7353a935aa408f31d\"","strict-transport-security":"max-age=63072000; includeSubDomains; preload","content-length":"1295","cross-origin-embedder-policy":"same-origin","server":"deno/gcp-asia-southeast1"},"url":"https://deno.land/std@0.216.0/assert/assert_almost_equals.ts","time":1750942649}

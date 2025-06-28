@@ -1,0 +1,32 @@
+// Copyright 2018-2025 the Deno authors. MIT license.
+// This module is browser compatible.
+
+import { isWindows } from "./_os.ts";
+import { dirname as posixDirname } from "./posix/dirname.ts";
+import { dirname as windowsDirname } from "./windows/dirname.ts";
+
+/**
+ * Return the directory path of a path.
+ *
+ * @example Usage
+ * ```ts
+ * import { dirname } from "@std/path/dirname";
+ * import { assertEquals } from "@std/assert";
+ *
+ * if (Deno.build.os === "windows") {
+ *   assertEquals(dirname("C:\\home\\user\\Documents\\image.png"), "C:\\home\\user\\Documents");
+ *   assertEquals(dirname(new URL("file:///C:/home/user/Documents/image.png")), "C:\\home\\user\\Documents");
+ * } else {
+ *   assertEquals(dirname("/home/user/Documents/image.png"), "/home/user/Documents");
+ *   assertEquals(dirname(new URL("file:///home/user/Documents/image.png")), "/home/user/Documents");
+ * }
+ * ```
+ *
+ * @param path Path to extract the directory from.
+ * @returns The directory path.
+ */
+export function dirname(path: string | URL): string {
+  return isWindows ? windowsDirname(path) : posixDirname(path);
+}
+
+// denoCacheMetadata={"headers":{"date":"Thu, 26 Jun 2025 12:57:34 GMT","etag":"\"a0a0b897b62ff66e60a667a4d8876ca0\"","x-goog-stored-content-encoding":"identity","x-robots-tag":"noindex","access-control-expose-headers":"*","x-goog-stored-content-length":"1099","via":"1.1 google","cross-origin-resource-policy":"cross-origin","expires":"Fri, 26 Jun 2026 12:57:34 GMT","access-control-allow-origin":"*","x-jsr-cache-status":"revalidated","age":"0","server":"UploadServer","x-goog-metageneration":"1","content-type":"text/typescript","x-goog-generation":"1748331038030221","x-goog-hash":"crc32c=jL46vQ==,md5=oKC4l7Yv9m5gpmek2IdsoA==","x-goog-storage-class":"STANDARD","cache-control":"public, max-age=31536000, immutable","content-length":"1099","x-content-type-options":"nosniff","content-security-policy":"default-src 'none'; script-src 'none'; style-src 'none'; img-src 'none'; font-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; frame-ancestors 'none'; sandbox; form-action 'none';","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000","x-guploader-uploadid":"ABgVH8_mjUn3r1npNcz8oKJ_eTScm2fjIm0T-s7Xt74TV4aYiSMnD47BxgHkElv85RcNLEKv7liRIaA","accept-ranges":"bytes","last-modified":"Tue, 27 May 2025 07:30:38 GMT","x-jsr-cache-id":"MEL"},"url":"https://jsr.io/@std/path/1.1.0/dirname.ts","time":1750942654}

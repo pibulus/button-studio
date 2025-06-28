@@ -3,6 +3,7 @@ import { useEffect, useRef } from 'preact/hooks'
 import { AudioRecorder, AudioAnalyzer, copyToClipboard, triggerHapticFeedback, HapticPatterns } from '../utils/audio.ts'
 import { ButtonState, VoiceButtonError, ThemeId, ButtonSize } from '../types/core.ts'
 import { TranscriptionPlugin, OutputPlugin } from '../types/plugins.ts'
+import { ButtonCustomization, generateButtonStyles, generateButtonClasses, defaultCustomization } from '../types/customization.ts'
 import { toast } from './Toast.tsx'
 
 // Signals for global state management (like Pablo's reactive Svelte stores)
@@ -13,11 +14,18 @@ const isClipboardSuccess = signal<boolean>(false)
 const recordingDuration = signal<number>(0)
 
 interface VoiceButtonProps {
+  // New customization system (primary)
+  customization?: ButtonCustomization
+  
+  // Voice activation toggle
+  voiceEnabled?: boolean
+  onVoiceToggle?: (enabled: boolean) => void
+  
   // Core functionality
   transcriptionPlugin?: TranscriptionPlugin
   outputPlugin?: OutputPlugin
   
-  // Appearance
+  // Appearance (legacy support)
   theme?: ThemeId
   size?: ButtonSize
   customCSS?: string
@@ -30,7 +38,7 @@ interface VoiceButtonProps {
   customText?: string
   buttonShape?: 'circle' | 'square' | 'rectangle'
   
-  // New comprehensive config
+  // Legacy comprehensive config (preserved for compatibility)
   buttonConfig?: {
     content: { text: string, autoScale: boolean }
     size: { width: number, height: number, maintainRatio?: boolean }
@@ -69,9 +77,13 @@ interface VoiceButtonProps {
   onComplete?: (result: { text: string, confidence: number }) => void
   onError?: (error: VoiceButtonError) => void
   onStateChange?: (state: ButtonState) => void
+  onCustomizationChange?: (customization: ButtonCustomization) => void
 }
 
 export default function VoiceButton({
+  customization = defaultCustomization,
+  voiceEnabled = false,
+  onVoiceToggle,
   theme = 'amber',
   size = 'large',
   customSize,
@@ -87,6 +99,7 @@ export default function VoiceButton({
   onComplete,
   onError,
   onStateChange,
+  onCustomizationChange,
   ...props
 }: VoiceButtonProps) {
   
@@ -261,7 +274,62 @@ export default function VoiceButton({
     }
   }
 
+  // Simple click sound effect
+  function playClickSound() {
+    try {
+      // Create a simple beep using Web Audio API
+      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)()
+      const oscillator = audioContext.createOscillator()
+      const gainNode = audioContext.createGain()
+      
+      oscillator.connect(gainNode)
+      gainNode.connect(audioContext.destination)
+      
+      oscillator.frequency.setValueAtTime(800, audioContext.currentTime)
+      gainNode.gain.setValueAtTime(0.1, audioContext.currentTime)
+      gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.1)
+      
+      oscillator.start(audioContext.currentTime)
+      oscillator.stop(audioContext.currentTime + 0.1)
+    } catch (error) {
+      // Silently fail if audio context not available
+      console.log('Audio context not available')
+    }
+  }
+
   function toggleRecording() {
+    playClickSound()
+    
+    // ULTIMATE satisfying feedback (research-based)
+    const button = document.querySelector('.voice-button') as HTMLElement
+    if (button) {
+      // Stage 1: Immediate deep press (50ms)
+      button.style.transform = 'translate(8px, 8px) scale(0.96)'
+      button.style.boxShadow = '1px 1px 0px #000000'
+      button.style.filter = 'brightness(0.9)'
+      
+      // Stage 2: Slight bounce out (100ms)
+      setTimeout(() => {
+        button.style.transform = 'translate(-2px, -2px) scale(1.02)'
+        button.style.boxShadow = '10px 10px 0px #000000'
+        button.style.filter = 'brightness(1.1)'
+      }, 50)
+      
+      // Stage 3: Settle back to normal (150ms)
+      setTimeout(() => {
+        button.style.transform = ''
+        button.style.boxShadow = ''
+        button.style.filter = ''
+      }, 150)
+    }
+    
+    // Check if voice is enabled before doing API calls
+    if (!voiceEnabled) {
+      // Just satisfying button press without API calls
+      console.log('🎨 Design mode - Voice API disabled')
+      return
+    }
+    
     if (buttonState.value === 'recording') {
       stopRecording()
     } else if (buttonState.value === 'idle' || buttonState.value === 'error') {
@@ -306,100 +374,169 @@ export default function VoiceButton({
     return `${minutes}:${sec}`
   }
 
-  // Enhanced Theme Classes with comprehensive customization!
-  const getThemeClasses = () => {
-    const baseClasses = 'relative overflow-hidden transition-all duration-300 ease-out focus:outline-none font-chunky tracking-chunky'
-    
-    // Use new config if available, otherwise fall back to legacy props
-    const config = buttonConfig || {
-      content: { text: customText || '🎤', autoScale: true },
-      size: { width: customSize ? parseInt(customSize) : 120, height: customSize ? parseInt(customSize) : 120 },
-      shape: { type: buttonShape, borderRadius: parseInt(squishiness || '12') },
-      appearance: {
-        fill: { type: 'solid' as const, solid: '#FF8FA3', gradient: { type: 'linear' as const, colors: ['#FF8FA3', '#FFB8CC'], direction: 45 }},
-        border: { width: parseInt(chonkiness || '4'), color: '#4A4A4A', style: 'solid' as const },
-        shadow: { type: 'glow' as const, color: '#FF6B9D', blur: 20, spread: 0, x: 0, y: 0 }
+  // Enhanced button styling with customization system
+  const getButtonStyles = () => {
+    // Use buttonConfig if provided (studio mode), otherwise use customization system
+    if (buttonConfig) {
+      // Studio mode - use buttonConfig for live preview
+      const config = buttonConfig
+      
+      // Add voice state-specific animations and styling
+      let stateClasses = ''
+      let stateAnimations = ''
+      
+      switch (buttonState.value) {
+        case 'idle':
+          stateAnimations = 'animate-[breathe_3s_ease-in-out_infinite]'
+          break
+        case 'requesting':
+          stateClasses = 'ring-4 ring-orange-300'
+          stateAnimations = 'animate-pulse'
+          break
+        case 'recording':
+          stateClasses = 'ring-4 ring-red-300'
+          stateAnimations = 'animate-[recording-pulse_1s_ease-in-out_infinite]'
+          break
+        case 'processing':
+          stateClasses = 'ring-4 ring-blue-300'
+          stateAnimations = 'animate-pulse'
+          break
+        case 'success':
+          stateClasses = 'ring-4 ring-green-300'
+          stateAnimations = 'animate-[success-pop_0.6s_ease-out]'
+          break
+        case 'error':
+          stateClasses = 'ring-4 ring-red-300'
+          stateAnimations = 'animate-[error-shake_0.5s_ease-in-out]'
+          break
       }
-    }
-    
-    // Dynamic sizing with auto-scaling text
-    const sizeStyle = `width: ${config.size.width}px; height: ${config.size.height}px;`
-    
-    // Calculate font size based on button size (auto-scaling)
-    const fontSize = config.content.autoScale ? Math.max(12, Math.min(48, config.size.width * 0.25)) : 20
-    const fontSizeStyle = `font-size: ${fontSize}px;`
-    
-    // Shape and border radius
-    let borderRadiusStyle = ''
-    if (config.shape.type === 'circle') {
-      borderRadiusStyle = 'border-radius: 50%;'
-    } else {
-      borderRadiusStyle = `border-radius: ${config.shape.borderRadius}px;`
-    }
-    
-    // Background fill (solid or gradient)
-    let backgroundStyle = ''
-    if (config.appearance.fill.type === 'gradient') {
-      const grad = config.appearance.fill.gradient
-      if (grad.type === 'linear') {
-        backgroundStyle = `background: linear-gradient(${grad.direction}deg, ${grad.colors[0]}, ${grad.colors[1]});`
+      
+      // Content size
+      const contentSize = 'text-2xl'
+      
+      // Generate dynamic styles from buttonConfig
+      const isPressed = buttonState.value === 'recording' || buttonState.value === 'processing'
+      
+      // Apply gradients or solid fills
+      let backgroundStyle = ''
+      if (config.appearance.fill.type === 'gradient') {
+        const { colors, direction, type } = config.appearance.fill.gradient
+        if (type === 'linear') {
+          backgroundStyle = `linear-gradient(${direction}deg, ${colors[0]}, ${colors[1]})`
+        } else {
+          backgroundStyle = `radial-gradient(circle, ${colors[0]}, ${colors[1]})`
+        }
       } else {
-        backgroundStyle = `background: radial-gradient(circle, ${grad.colors[0]}, ${grad.colors[1]});`
+        backgroundStyle = config.appearance.fill.solid
+      }
+      
+      // Calculate shadow - blend buttonConfig shadow with state-based effects
+      let shadowStyle = ''
+      if (config.appearance.shadow.type !== 'none') {
+        const shadow = config.appearance.shadow
+        const baseX = isPressed ? shadow.x + 6 : shadow.x
+        const baseY = isPressed ? shadow.y + 6 : shadow.y
+        const baseBlur = isPressed ? Math.max(2, shadow.blur - 6) : shadow.blur
+        
+        if (shadow.type === 'glow') {
+          shadowStyle = `${baseX}px ${baseY}px ${baseBlur}px ${shadow.spread}px ${shadow.color}`
+        } else {
+          shadowStyle = `${baseX}px ${baseY}px ${baseBlur}px ${shadow.spread}px ${shadow.color}`
+        }
+      }
+      
+      return {
+        className: `${stateClasses} ${stateAnimations} ${contentSize} relative cursor-pointer select-none transition-all duration-150 ease-out hover:scale-[1.02] hover:brightness-110 active:scale-[0.98]`,
+        style: {
+          width: `${config.size.width}px`,
+          height: `${config.size.height}px`,
+          borderRadius: config.shape.type === 'circle' ? '50%' : `${config.shape.borderRadius}px`,
+          background: backgroundStyle,
+          border: `${config.appearance.border.width}px ${config.appearance.border.style} ${config.appearance.border.color}`,
+          boxShadow: shadowStyle,
+          transform: isPressed ? 'scale(0.96)' : 'scale(1)',
+          transition: 'all 0.12s cubic-bezier(0.34, 1.56, 0.64, 1)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: config.size.width > 150 ? '2rem' : '1.5rem',
+          fontWeight: 'bold',
+          color: '#ffffff',
+          textShadow: '1px 1px 2px rgba(0,0,0,0.5)',
+          willChange: 'transform, box-shadow, filter'
+        }
       }
     } else {
-      backgroundStyle = `background: ${config.appearance.fill.solid};`
-    }
-    
-    // Border styling
-    const borderStyle = `border: ${config.appearance.border.width}px ${config.appearance.border.style} ${config.appearance.border.color};`
-    
-    // Shadow/glow effects
-    let shadowStyle = ''
-    const shadow = config.appearance.shadow
-    if (shadow.type !== 'none') {
-      if (shadow.type === 'glow') {
-        shadowStyle = `box-shadow: 0 0 ${shadow.blur}px ${shadow.spread}px ${shadow.color};`
-      } else if (shadow.type === 'soft') {
-        shadowStyle = `box-shadow: ${shadow.x}px ${shadow.y}px ${shadow.blur}px ${shadow.spread}px ${shadow.color};`
-      } else if (shadow.type === 'hard') {
-        shadowStyle = `box-shadow: ${shadow.x}px ${shadow.y}px 0px ${shadow.spread}px ${shadow.color};`
+      // Default mode - use customization system
+      const customProperties = generateButtonStyles(customization)
+      const baseClasses = generateButtonClasses(customization)
+      
+      // Add voice state-specific animations and styling
+      let stateClasses = ''
+      let stateAnimations = ''
+      
+      switch (buttonState.value) {
+        case 'idle':
+          stateAnimations = 'animate-[breathe_3s_ease-in-out_infinite]'
+          break
+        case 'requesting':
+          stateClasses = 'ring-4 ring-orange-300'
+          stateAnimations = 'animate-pulse'
+          break
+        case 'recording':
+          stateClasses = 'ring-4 ring-red-300'
+          stateAnimations = 'animate-[recording-pulse_1s_ease-in-out_infinite]'
+          break
+        case 'processing':
+          stateClasses = 'ring-4 ring-blue-300'
+          stateAnimations = 'animate-pulse'
+          break
+        case 'success':
+          stateClasses = 'ring-4 ring-green-300'
+          stateAnimations = 'animate-[success-pop_0.6s_ease-out]'
+          break
+        case 'error':
+          stateClasses = 'ring-4 ring-red-300'
+          stateAnimations = 'animate-[error-shake_0.5s_ease-in-out]'
+          break
       }
-    }
-    
-    // State-based animations (keep existing logic)
-    const stateClasses = {
-      idle: 'animate-sunset-pulse',
-      requesting: 'animate-pulse scale-95',
-      recording: 'animate-flamingo-glow scale-110',
-      processing: 'animate-pulse opacity-75 scale-95',
-      success: 'animate-success-pop scale-110',
-      error: 'animate-error-shake'
-    }
-
-    const combinedStyle = `${sizeStyle} ${fontSizeStyle} ${borderRadiusStyle} ${backgroundStyle} ${borderStyle} ${shadowStyle}`
-
-    return {
-      className: `${baseClasses} ${stateClasses[buttonState.value]}`,
-      style: combinedStyle,
-      config: config
+      
+      // Dynamic sizing based on content
+      const contentSize = customization.content.type === 'emoji' ? 'text-5xl' : 'text-2xl'
+      
+      // Research-based SATISFYING button feedback
+      const isPressed = buttonState.value === 'recording' || buttonState.value === 'processing'
+      
+      // 3D Push effect with proper physics
+      const pushTransform = isPressed ? 'translate(6px, 6px)' : 'translate(0px, 0px)'
+      const shadowDepth = isPressed ? '2px 2px 0px #000000' : '8px 8px 0px #000000'
+      
+      // Rainbow border (only when idle for modularity)
+      const rainbowClasses = buttonState.value === 'idle' 
+        ? 'before:content-[""] before:absolute before:inset-[-4px] before:bg-gradient-to-r before:from-red-400 before:via-yellow-400 before:via-green-400 before:via-blue-400 before:via-purple-400 before:to-red-400 before:rounded-[calc(var(--button-radius)+4px)] before:-z-10 before:animate-[rainbow-flow_3s_linear_infinite] before:bg-[length:400%_400%]'
+        : ''
+      
+      return {
+        className: `${baseClasses} ${stateClasses} ${stateAnimations} ${contentSize} ${rainbowClasses} relative min-w-[260px] max-w-[340px] h-[90px] px-10 py-6 cursor-pointer select-none transition-all duration-150 ease-out hover:scale-[1.03] hover:brightness-110 active:scale-[0.97]`,
+        style: {
+          ...customProperties,
+          // Enhanced 3D button physics
+          transform: pushTransform,
+          boxShadow: shadowDepth,
+          // Buttery smooth transitions
+          transition: 'all 0.12s cubic-bezier(0.34, 1.56, 0.64, 1)',
+          filter: 'none',
+          // Extra satisfying details
+          willChange: 'transform, box-shadow, filter'
+        }
+      }
     }
   }
 
   return (
-    <div class="flex flex-col items-center space-y-4 w-full max-w-sm mx-auto">
+    <div class="flex flex-col items-center">
       
-      {/* Waveform Visualizer (when recording) - Brutalist Enhanced */}
-      {showWaveform && buttonState.value === 'recording' && (
-        <div class={`w-full p-6 shadow-md ${
-          theme === 'flamingo-brutalist' 
-            ? 'flamingo-card border-3 border-flamingo-primary' 
-            : 'rounded-2xl bg-white/30 backdrop-blur-voice'
-        }`}>
-          <WaveformVisualizer analyzer={analyzerRef.current} theme={theme} />
-        </div>
-      )}
-
-      {/* Main Voice Button with Progress Ring */}
+      {/* Just the Button - Clean */}
       <div class="relative inline-block">
         {/* Progress Ring for Recording */}
         {buttonState.value === 'recording' && (
@@ -422,114 +559,61 @@ export default function VoiceButton({
         )}
         
         <button
-          class={getThemeClasses().className}
-          style={getThemeClasses().style}
+          class={`${getButtonStyles().className} voice-button`}
+          style={getButtonStyles().style}
           onClick={toggleRecording}
           disabled={buttonState.value === 'processing' || buttonState.value === 'requesting'}
           aria-label={`Voice recording button - ${getButtonText()}`}
           title={getButtonText()}
         >
-        {/* Show custom text, timer, or icon with auto-scaling */}
+        {/* Show custom content, timer, or icon */}
         {buttonState.value === 'recording' && showTimer ? (
-          <div class="flex items-center justify-center">
-            <span class="font-mono font-bold">
-              {formatTimer(recordingDuration.value)}
-            </span>
-          </div>
-        ) : getThemeClasses().config.content.text ? (
-          <div class="flex items-center justify-center w-full h-full">
-            <span class="font-bold leading-none">
-              {getThemeClasses().config.content.text}
-            </span>
-          </div>
+          <span class="font-mono font-bold">
+            {formatTimer(recordingDuration.value)}
+          </span>
+        ) : buttonConfig ? (
+          <span class="font-bold leading-none">
+            {buttonConfig.content.text}
+          </span>
+        ) : customization.content.value ? (
+          <span class="font-bold leading-none">
+            {customization.content.value}
+          </span>
         ) : (
-          <ButtonIcon state={buttonState.value} theme={theme} />
+          <ButtonIcon state={buttonState.value} theme={customization.appearance.theme} />
         )}
         </button>
       </div>
 
-      {/* Button Label - Chunky Typography */}
-      <div class="text-center">
-        <p class={`text-xl font-chunky tracking-wide ${
-          theme === 'flamingo-brutalist' 
-            ? 'text-flamingo-charcoal' 
-            : 'text-gray-800'
-        }`}>
-          {getButtonText()}
-        </p>
-        
-        {showTimer && buttonState.value === 'recording' && (
-          <p class={`text-base font-medium mt-2 ${
-            theme === 'flamingo-brutalist' 
-              ? 'text-flamingo-purple' 
-              : 'text-gray-600'
-          }`}>
-            {formatTimer(recordingDuration.value)}
-          </p>
-        )}
-      </div>
-
-      {/* Processing Spinner - Theme Aware */}
+      {/* Processing Spinner Only When Needed */}
       {buttonState.value === 'processing' && (
-        <div class="flex justify-center">
-          <div class={`w-10 h-10 border-4 ${
-            theme === 'flamingo-brutalist' 
-              ? 'border-flamingo-primary border-t-transparent' 
-              : 'border-voice-primary border-t-transparent'
-          } rounded-full animate-spin`} />
+        <div class="flex justify-center mt-4">
+          <div class="w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin" />
         </div>
       )}
-
-      {/* Error Message - Brutalist Style */}
+      
+      {/* Error Message Only When Needed */}
       {errorMessage.value && (
-        <div class={`w-full text-center p-6 ${
-          theme === 'flamingo-brutalist' 
-            ? 'flamingo-card' 
-            : 'bg-red-50 rounded-lg border border-red-200'
-        }`}>
-          <p class={`font-medium mb-4 ${
-            theme === 'flamingo-brutalist' 
-              ? 'text-flamingo-coral text-lg' 
-              : 'text-red-500'
-          }`}>
+        <div class="mt-4 text-center p-4 bg-red-50 rounded-2xl border border-red-200 max-w-sm">
+          <p class="text-red-800 font-medium mb-2">
             {errorMessage.value}
           </p>
           <button
-            class={`font-medium underline transition-colors ${
-              theme === 'flamingo-brutalist' 
-                ? 'text-flamingo-purple hover:text-flamingo-charcoal' 
-                : 'text-red-600 hover:text-red-700'
-            }`}
+            class="text-red-600 hover:text-red-700 font-medium underline"
             onClick={resetToIdle}
           >
             Dismiss
           </button>
         </div>
       )}
-
-      {/* Transcript Display - Brutalist Enhanced */}
-      {transcript.value && (
-        <div class="w-full space-y-6">
-          <div class={`w-full whitespace-pre-line p-8 font-mono text-base leading-relaxed shadow-lg ${
-            theme === 'flamingo-brutalist' 
-              ? 'flamingo-card text-flamingo-charcoal border-3 border-flamingo-purple' 
-              : 'rounded-3xl border border-gray-100 bg-white text-gray-800'
-          }`}>
-            {transcript.value}
-          </div>
-          
-        </div>
-      )}
     </div>
   )
 }
 
-// Button Icon Component (chunky and theme-aware)
+// Button Icon Component (theme-aware and sophisticated)
 function ButtonIcon({ state, theme }: { state: ButtonState, theme?: string }) {
-  // Bigger icons for brutalist theme
-  const iconClasses = theme === 'flamingo-brutalist' 
-    ? "w-12 h-12 mx-auto" 
-    : "w-8 h-8 mx-auto"
+  // Professional icon sizing
+  const iconClasses = "w-8 h-8 mx-auto"
   
   switch (state) {
     case 'idle':

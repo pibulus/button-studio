@@ -1,0 +1,11 @@
+// Copyright 2018-2023 the Deno authors. All rights reserved. MIT license.
+import { AssertionError } from "./assertion_error.ts";
+
+/** Make an assertion, error will be thrown if `expr` does not have truthy value. */
+export function assert(expr: unknown, msg = ""): asserts expr {
+  if (!expr) {
+    throw new AssertionError(msg);
+  }
+}
+
+// denoCacheMetadata={"headers":{"accept-ranges":"bytes","server":"deno/gcp-asia-southeast1","content-type":"application/typescript; charset=utf-8","server-timing":"fetchSource;dur=16","vary":"Accept-Encoding, Origin","cross-origin-opener-policy":"same-origin","via":"http/2 edgeproxy-h","x-amz-replication-status":"COMPLETED","content-security-policy":"default-src 'none'; style-src 'unsafe-inline'; sandbox","x-amz-cf-pop":"SIN52-P1","cache-control":"public, max-age=31536000, immutable","cross-origin-embedder-policy":"same-origin","etag":"\"9ada8012c0223af6af64e9fd7ae90060\"","cross-origin-resource-policy":"same-origin","last-modified":"Fri, 24 Nov 2023 02:50:08 GMT","content-length":"336","age":"11471344","x-amz-server-side-encryption":"AES256","x-frame-options":"DENY","access-control-allow-origin":"*","strict-transport-security":"max-age=63072000; includeSubDomains; preload","x-cache":"Hit from cloudfront","date":"Thu, 13 Feb 2025 18:28:28 GMT","referrer-policy":"strict-origin-when-cross-origin","x-content-type-options":"nosniff","x-amz-version-id":"I52ujeTJ2X6gNZTqdFyf8dBISQkZNSnZ","x-amz-cf-id":"m5Iho4ekD_P0UcNyKMTgu6J_P5i7NMsvRB2izbs9L2NSoJexj2LQeQ=="},"url":"https://deno.land/std@0.208.0/assert/assert.ts","time":1750942652}

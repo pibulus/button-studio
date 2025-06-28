@@ -1,0 +1,32 @@
+// Copyright 2018-2023 the Deno authors. All rights reserved. MIT license.
+// This module is browser compatible.
+
+import { assertArg } from "../_common/from_file_url.ts";
+
+/**
+ * Converts a file URL to a path string.
+ *
+ * ```ts
+ * import { fromFileUrl } from "https://deno.land/std@$STD_VERSION/path/win32.ts";
+ *
+ * fromFileUrl("file:///home/foo"); // "\\home\\foo"
+ * fromFileUrl("file:///C:/Users/foo"); // "C:\\Users\\foo"
+ * fromFileUrl("file://localhost/home/foo"); // "\\\\localhost\\home\\foo"
+ * ```
+ * @param url of a file URL
+ */
+export function fromFileUrl(url: URL | string): string {
+  url = assertArg(url);
+  let path = decodeURIComponent(
+    url.pathname.replace(/\//g, "\\").replace(/%(?![0-9A-Fa-f]{2})/g, "%25"),
+  ).replace(/^\\*([A-Za-z]:)(\\|$)/, "$1\\");
+  if (url.hostname !== "") {
+    // Note: The `URL` implementation guarantees that the drive letter and
+    // hostname are mutually exclusive. Otherwise it would not have been valid
+    // to append the hostname and path like this.
+    path = `\\\\${url.hostname}${path}`;
+  }
+  return path;
+}
+
+// denoCacheMetadata={"headers":{"server":"deno/gcp-asia-southeast1","x-cache":"Hit from cloudfront","cross-origin-embedder-policy":"same-origin","access-control-allow-origin":"*","etag":"\"a95d344e5131c41d4547b37d3de64635\"","content-length":"1075","server-timing":"fetchSource;dur=18","cache-control":"public, max-age=31536000, immutable","x-frame-options":"DENY","content-type":"application/typescript; charset=utf-8","x-amz-version-id":"mzyknu9iSya.j8LaPrMrF1mgukqgpL73","cross-origin-opener-policy":"same-origin","via":"http/2 edgeproxy-h","strict-transport-security":"max-age=63072000; includeSubDomains; preload","x-amz-replication-status":"COMPLETED","x-amz-cf-pop":"SIN52-P1","accept-ranges":"bytes","x-amz-server-side-encryption":"AES256","x-content-type-options":"nosniff","vary":"Accept-Encoding, Origin","content-security-policy":"default-src 'none'; style-src 'unsafe-inline'; sandbox","cross-origin-resource-policy":"same-origin","age":"8374109","last-modified":"Fri, 24 Nov 2023 02:50:10 GMT","date":"Fri, 21 Mar 2025 14:49:04 GMT","x-amz-cf-id":"JDI4Li06wBrn0L6WZ3eAUGimEDJUE3PUspDeFt_dZfdNnwjAGLHkxQ==","referrer-policy":"strict-origin-when-cross-origin"},"url":"https://deno.land/std@0.208.0/path/windows/from_file_url.ts","time":1750942652}

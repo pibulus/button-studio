@@ -1,0 +1,4 @@
+import { dev } from "./src/dev/dev_command.ts";
+export default dev;
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImh0dHBzOi8vZGVuby5sYW5kL3gvZnJlc2hAMS43LjMvZGV2LnRzIl0sInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IGRldiB9IGZyb20gXCIuL3NyYy9kZXYvZGV2X2NvbW1hbmQudHNcIjtcbmV4cG9ydCBkZWZhdWx0IGRldjtcbiJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQSxTQUFTLEdBQUcsUUFBUSwyQkFBMkI7QUFDL0MsZUFBZSxJQUFJIn0=
+// denoCacheMetadata=10556290715642343504,15068836824504161328

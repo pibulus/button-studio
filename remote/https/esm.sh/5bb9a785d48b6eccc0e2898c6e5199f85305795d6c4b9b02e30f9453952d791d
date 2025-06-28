@@ -1,0 +1,4 @@
+/* esm.sh - preact@10.22.0/devtools */
+import{options as o,Fragment as _,Component as a}from"/preact@10.22.0/denonext/preact.mjs";function r(n,t){return o.__a&&o.__a(t),n}typeof globalThis<"u"&&globalThis.__PREACT_DEVTOOLS__&&globalThis.__PREACT_DEVTOOLS__.attachPreact("10.22.0",o,{Fragment:_,Component:a});export{r as addHookName};
+//# sourceMappingURL=devtools.mjs.map
+// denoCacheMetadata={"headers":{"content-type":"application/javascript; charset=utf-8","date":"Thu, 26 Jun 2025 12:57:33 GMT","last-modified":"Sat, 18 Jan 2025 16:41:16 GMT","alt-svc":"h3=\":443\"; ma=86400","cf-ray":"955cdf00e9e57c19-MEL","vary":"accept-encoding","cf-cache-status":"HIT","access-control-allow-origin":"*","cache-control":"public, max-age=31536000, immutable","server":"cloudflare"},"url":"https://esm.sh/preact@10.22.0/denonext/devtools.mjs","time":1750942653}

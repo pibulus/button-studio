@@ -1,0 +1,20 @@
+// Copyright 2018-2024 the Deno authors. All rights reserved. MIT license.
+import type { ReleaseType, SemVer } from "./types.ts";
+import { compareIdentifier } from "./_shared.ts";
+
+/**
+ * Returns difference between two versions by the release type, or `undefined` if the versions are the same.
+ */
+export function difference(s0: SemVer, s1: SemVer): ReleaseType | undefined {
+  const hasPrerelease = s0.prerelease?.length || s1.prerelease?.length;
+
+  if (s0.major !== s1.major) return hasPrerelease ? "premajor" : "major";
+  if (s0.minor !== s1.minor) return hasPrerelease ? "preminor" : "minor";
+  if (s0.patch !== s1.patch) return hasPrerelease ? "prepatch" : "patch";
+
+  if (compareIdentifier(s0.prerelease, s1.prerelease) !== 0) {
+    return "prerelease";
+  }
+}
+
+// denoCacheMetadata={"headers":{"access-control-allow-origin":"*","date":"Mon, 10 Mar 2025 13:11:02 GMT","vary":"Accept-Encoding, Origin","x-amz-cf-id":"nKaE8klNbVsU_Y3j2U9GPe2wID0y27sGh_pGYwCZVulOLh_h1Tv-MA==","x-amz-cf-pop":"SIN52-P1","cross-origin-resource-policy":"same-origin","x-amz-server-side-encryption":"AES256","content-length":"766","cache-control":"public, max-age=31536000, immutable","etag":"\"7edbb26ab52766787cecffbc3d84f2e5\"","via":"http/2 edgeproxy-h","x-content-type-options":"nosniff","server-timing":"fetchSource;dur=26","x-cache":"Hit from cloudfront","accept-ranges":"bytes","content-type":"application/typescript; charset=utf-8","content-security-policy":"default-src 'none'; style-src 'unsafe-inline'; sandbox","cross-origin-embedder-policy":"same-origin","server":"deno/gcp-asia-southeast1","x-amz-replication-status":"COMPLETED","x-amz-version-id":".dhkgXPVBpweqWC9aKSRZ.vV76iMevRm","x-frame-options":"DENY","strict-transport-security":"max-age=63072000; includeSubDomains; preload","age":"9330388","cross-origin-opener-policy":"same-origin","last-modified":"Thu, 15 Feb 2024 05:02:29 GMT","referrer-policy":"strict-origin-when-cross-origin"},"url":"https://deno.land/std@0.216.0/semver/difference.ts","time":1750942649}

@@ -1,0 +1,85 @@
+import { type ComponentChildren, type VNode } from "preact";
+import { Island } from "../types.ts";
+import { ContentSecurityPolicy } from "../../runtime/csp.ts";
+import { PARTIAL_SEARCH_PARAM } from "../../constants.ts";
+
+export interface RenderStateRouteOptions {
+  url: URL;
+  route: string;
+  // deno-lint-ignore no-explicit-any
+  data?: any;
+  // deno-lint-ignore no-explicit-any
+  state?: any;
+  error?: unknown;
+  params: Record<string, string | string[]>;
+  basePath: string;
+}
+
+export class RenderState {
+  readonly renderUuid: string;
+  // deno-lint-ignore no-explicit-any
+  componentStack: any[];
+  renderingUserTemplate = false;
+  encounteredIslands = new Set<Island>();
+  islandProps: unknown[] = [];
+  slots = new Map<string, ComponentChildren>();
+  headChildren = false;
+  renderedHtmlTag = false;
+  // deno-lint-ignore no-explicit-any
+  docTitle: VNode<any> | null = null;
+  docHtml: Record<string, unknown> | null = null;
+  docHead: Record<string, unknown> | null = null;
+  docBody: Record<string, unknown> | null = null;
+  docHeadNodes: { type: string; props: Record<string, unknown> }[] = [];
+  headVNodes: ComponentChildren[] = [];
+  // Route options
+  routeOptions: RenderStateRouteOptions;
+  csp: ContentSecurityPolicy | undefined;
+  // Preact state
+  ownerStack: VNode[] = [];
+  owners = new Map<VNode, VNode>();
+  #nonce = "";
+  error: Error | null = null;
+  isPartial: boolean;
+  encounteredPartials = new Set<string>();
+  partialCount = 0;
+  partialDepth = 0;
+  islandDepth = 0;
+  url: URL;
+  basePath: string;
+
+  constructor(
+    renderUuid: string,
+    routeOptions: RenderStateRouteOptions,
+    // deno-lint-ignore no-explicit-any
+    componentStack: any[],
+    csp?: ContentSecurityPolicy,
+    error?: unknown,
+  ) {
+    this.renderUuid = renderUuid;
+    this.routeOptions = routeOptions;
+    this.csp = csp;
+    this.componentStack = componentStack;
+    this.url = routeOptions.url;
+    this.isPartial = routeOptions.url.searchParams.has(PARTIAL_SEARCH_PARAM);
+    this.basePath = routeOptions.basePath;
+
+    if (error) this.routeOptions.error = error;
+  }
+
+  getNonce(): string {
+    if (this.#nonce === "") {
+      this.#nonce = crypto.randomUUID().replace(/-/g, "");
+    }
+    return this.#nonce;
+  }
+
+  clearTmpState() {
+    this.renderingUserTemplate = false;
+    this.ownerStack = [];
+    this.owners.clear();
+    this.encounteredPartials.clear();
+  }
+}
+
+// denoCacheMetadata={"headers":{"etag":"\"6f6972522e038d976f77e999bc154fec\"","referrer-policy":"strict-origin-when-cross-origin","x-amz-server-side-encryption":"AES256","x-amz-version-id":"0iyd_.rrbRGho3bT1A4UaP.pSWk7VEqg","cross-origin-opener-policy":"same-origin","strict-transport-security":"max-age=63072000; includeSubDomains; preload","age":"21768218","server":"deno/gcp-asia-southeast1","date":"Thu, 17 Oct 2024 14:13:52 GMT","via":"http/2 edgeproxy-h","cache-control":"public, max-age=31536000, immutable","content-length":"2389","cross-origin-resource-policy":"same-origin","x-frame-options":"DENY","last-modified":"Mon, 14 Oct 2024 12:51:13 GMT","vary":"Accept-Encoding, Origin","content-security-policy":"default-src 'none'; style-src 'unsafe-inline'; sandbox","x-amz-cf-id":"y8ISgZu_3i4X7p7jYSXjlOWL2v7IxGfQZ5TkpE45_jYenuLdGzGd9w==","x-content-type-options":"nosniff","server-timing":"fetchSource;dur=50","content-type":"application/typescript; charset=utf-8","x-amz-cf-pop":"SIN52-P1","x-cache":"Hit from cloudfront","x-amz-replication-status":"COMPLETED","cross-origin-embedder-policy":"same-origin","access-control-allow-origin":"*","accept-ranges":"bytes"},"url":"https://deno.land/x/fresh@1.7.3/src/server/rendering/state.ts","time":1750942649}

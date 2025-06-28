@@ -1,0 +1,4 @@
+/* esm.sh - style-vendorizer@2.2.3 */
+export * from "/style-vendorizer@2.2.3/denonext/style-vendorizer.mjs";
+
+// denoCacheMetadata={"headers":{"alt-svc":"h3=\":443\"; ma=86400","x-typescript-types":"https://esm.sh/style-vendorizer@2.2.3/dist/cjs/bundle.min.d.ts","cf-ray":"955cdee9fd8f7c19-MEL","access-control-expose-headers":"X-ESM-Path, X-TypeScript-Types","date":"Thu, 26 Jun 2025 12:57:29 GMT","access-control-allow-origin":"*","x-esm-path":"/style-vendorizer@2.2.3/denonext/style-vendorizer.mjs","cache-control":"public, max-age=31536000, immutable","age":"554923","vary":"accept-encoding","content-type":"application/javascript; charset=utf-8","last-modified":"Fri, 06 Jun 2025 02:43:53 GMT","server":"cloudflare","cf-cache-status":"HIT"},"url":"https://esm.sh/style-vendorizer@2.2.3?target=denonext","time":1750942649}

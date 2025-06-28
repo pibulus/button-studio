@@ -1,0 +1,39 @@
+// Copyright 2018-2024 the Deno authors. All rights reserved. MIT license.
+// This module is browser compatible.
+
+import {
+  assertArgs,
+  lastPathSegment,
+  stripSuffix,
+} from "../_common/basename.ts";
+import { CHAR_COLON } from "../_common/constants.ts";
+import { stripTrailingSeparators } from "../_common/strip_trailing_separators.ts";
+import { isPathSeparator, isWindowsDeviceRoot } from "./_util.ts";
+
+/**
+ * Return the last portion of a `path`.
+ * Trailing directory separators are ignored, and optional suffix is removed.
+ *
+ * @param path - path to extract the name from.
+ * @param [suffix] - suffix to remove from extracted name.
+ */
+export function basename(path: string, suffix = ""): string {
+  assertArgs(path, suffix);
+
+  // Check for a drive letter prefix so as not to mistake the following
+  // path separator as an extra separator at the end of the path that can be
+  // disregarded
+  let start = 0;
+  if (path.length >= 2) {
+    const drive = path.charCodeAt(0);
+    if (isWindowsDeviceRoot(drive)) {
+      if (path.charCodeAt(1) === CHAR_COLON) start = 2;
+    }
+  }
+
+  const lastSegment = lastPathSegment(path, isPathSeparator, start);
+  const strippedSegment = stripTrailingSeparators(lastSegment, isPathSeparator);
+  return suffix ? stripSuffix(strippedSegment, suffix) : strippedSegment;
+}
+
+// denoCacheMetadata={"headers":{"x-amz-version-id":"Mv5ZdHLulA2CjUS0j8L4cn3b757JTcYS","x-content-type-options":"nosniff","accept-ranges":"bytes","cross-origin-opener-policy":"same-origin","server-timing":"fetchSource;dur=10","vary":"Accept-Encoding, Origin","content-length":"1314","age":"11412388","date":"Fri, 14 Feb 2025 10:51:02 GMT","x-frame-options":"DENY","x-amz-cf-id":"frHioF2UPLgCU6pwbg0_QfDZYEunfp3Llnov7Q8Rn9n4p3yYITAG0w==","cache-control":"public, max-age=31536000, immutable","x-amz-server-side-encryption":"AES256","content-type":"application/typescript; charset=utf-8","cross-origin-embedder-policy":"same-origin","server":"deno/gcp-asia-southeast1","x-cache":"Hit from cloudfront","last-modified":"Thu, 15 Feb 2024 05:02:29 GMT","referrer-policy":"strict-origin-when-cross-origin","x-amz-cf-pop":"SIN52-P1","x-amz-replication-status":"COMPLETED","access-control-allow-origin":"*","content-security-policy":"default-src 'none'; style-src 'unsafe-inline'; sandbox","via":"http/2 edgeproxy-h","strict-transport-security":"max-age=63072000; includeSubDomains; preload","etag":"\"38bf3ffe2645a662abac6065e01402d1\"","cross-origin-resource-policy":"same-origin"},"url":"https://deno.land/std@0.216.0/path/windows/basename.ts","time":1750942650}

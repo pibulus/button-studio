@@ -40,6 +40,10 @@ export default {
       animation: {
         'pulse-glow': 'pulse-glow 2s ease-in-out infinite',
         'breathe': 'breathe 3s ease-in-out infinite',
+        'button-glow': 'button-glow 2s ease-in-out infinite',
+        'rainbow-flow': 'rainbow-flow 3s linear infinite',
+        'squish': 'squish 0.15s ease-out',
+        'pop': 'pop 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
         'recording-pulse': 'recording-pulse 1s ease-in-out infinite',
         'success-pop': 'success-pop 0.6s ease-out',
         'error-shake': 'error-shake 0.5s ease-in-out',
@@ -57,8 +61,37 @@ export default {
           '50%': { opacity: '0.8', transform: 'scale(1.02)' },
         },
         'breathe': {
-          '0%, 100%': { transform: 'scale(1)' },
-          '50%': { transform: 'scale(1.05)' },
+          '0%, 100%': { 
+            transform: 'scale(1)',
+            filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.25)) drop-shadow(0 0 20px rgba(255,149,0,0.2))'
+          },
+          '50%': { 
+            transform: 'scale(1.02)',
+            filter: 'drop-shadow(0 12px 24px rgba(0,0,0,0.3)) drop-shadow(0 0 30px rgba(255,149,0,0.4))'
+          },
+        },
+        'button-glow': {
+          '0%, 100%': { 
+            filter: 'drop-shadow(0 0 20px rgba(255,149,0,0.2))'
+          },
+          '50%': { 
+            filter: 'drop-shadow(0 0 40px rgba(255,149,0,0.5))'
+          },
+        },
+        'rainbow-flow': {
+          '0%': { 'background-position': '0% 50%' },
+          '50%': { 'background-position': '100% 50%' },
+          '100%': { 'background-position': '0% 50%' }
+        },
+        'squish': {
+          '0%': { transform: 'scale(1)' },
+          '50%': { transform: 'scale(0.95) scaleY(0.9)' },
+          '100%': { transform: 'scale(1)' }
+        },
+        'pop': {
+          '0%': { transform: 'scale(1)' },
+          '50%': { transform: 'scale(1.1)' },
+          '100%': { transform: 'scale(1)' }
         },
         'recording-pulse': {
           '0%': { opacity: '1', transform: 'scale(1)' },
@@ -106,6 +139,46 @@ export default {
       },
       
       colors: {
+        // Professional Warm System (Research-Backed 2024)
+        neutral: {
+          50: '#faf9f7',   // cream whisper
+          100: '#f5f2ec',  // warm white
+          200: '#ede7db',  // soft beige
+          300: '#e1d6c7',  // wheatfield beige
+          400: '#d1c0a8',  // warm sand
+          500: '#b8a082',  // mocha mousse
+          600: '#9b8067',  // rich earth
+          700: '#7d6551',  // deep earth
+          800: '#5f4d3e',  // dark earth
+          900: '#433a2f'   // charcoal earth
+        },
+        
+        warm: {
+          50: '#fef7f0',   // peach whisper
+          100: '#fde9d9',  // soft peach
+          200: '#fbd0b5',  // warm coral
+          300: '#f8b088',  // gentle coral
+          400: '#f48c5c',  // sunset coral
+          500: '#ef6c35',  // burnt orange (sparingly)
+          600: '#d4541f',  // deep orange
+          700: '#b3421a',  // rich rust
+          800: '#923317',  // deep rust
+          900: '#7a2817'   // burgundy rust
+        },
+        
+        serene: {
+          50: '#f0f9ff',   // sky whisper
+          100: '#e0f2fe',  // soft sky
+          200: '#bae6fd',  // gentle blue
+          300: '#7dd3fc',  // soft blue
+          400: '#38bdf8',  // serene blue
+          500: '#0ea5e9',  // professional blue
+          600: '#0284c7',  // deep blue
+          700: '#0369a1',  // navy blue
+          800: '#075985',  // dark navy
+          900: '#0c4a6e'   // midnight blue
+        },
+        
         // NEW: Soft Stack Theme 🧁 (Warm, Chonky, Friendly)
         soft: {
           // Backgrounds

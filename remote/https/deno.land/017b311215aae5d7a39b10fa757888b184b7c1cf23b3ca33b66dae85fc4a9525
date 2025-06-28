@@ -1,0 +1,41 @@
+// Copyright 2018-2024 the Deno authors. All rights reserved. MIT license.
+import { ANY } from "./constants.ts";
+import type { SemVer } from "./types.ts";
+
+function formatNumber(value: number) {
+  if (value === Number.POSITIVE_INFINITY) {
+    return "∞";
+  } else if (value === Number.NEGATIVE_INFINITY) {
+    return "⧞";
+  } else {
+    return value.toFixed(0);
+  }
+}
+
+/**
+ * Format a SemVer object into a string.
+ *
+ * If any number is NaN then NaN will be printed.
+ *
+ * If any number is positive or negative infinity then '∞' or '⧞' will be printed instead.
+ *
+ * @param semver The semantic version to format
+ * @returns The string representation of a semantic version.
+ */
+export function format(semver: SemVer): string {
+  if (semver === ANY) {
+    return "*";
+  }
+
+  const major = formatNumber(semver.major);
+  const minor = formatNumber(semver.minor);
+  const patch = formatNumber(semver.patch);
+  const pre = semver.prerelease?.join(".") ?? "";
+  const build = semver.build?.join(".") ?? "";
+
+  const primary = `${major}.${minor}.${patch}`;
+  const release = [primary, pre].filter((v) => v).join("-");
+  return [release, build].filter((v) => v).join("+");
+}
+
+// denoCacheMetadata={"headers":{"server":"deno/gcp-asia-southeast1","via":"http/2 edgeproxy-h","x-amz-cf-id":"2Ytf6DbZW_8Bv8XvhHjLi8sFhDSK6Jegg7S-vieKVltV6dMTvuuX0w==","x-amz-server-side-encryption":"AES256","cache-control":"public, max-age=31536000, immutable","date":"Fri, 21 Mar 2025 15:50:53 GMT","referrer-policy":"strict-origin-when-cross-origin","etag":"\"22baaf4b9b1a31b7be098d07596fc45b\"","x-amz-cf-pop":"SIN52-P1","x-cache":"Hit from cloudfront","content-type":"application/typescript; charset=utf-8","x-frame-options":"DENY","cross-origin-resource-policy":"same-origin","content-security-policy":"default-src 'none'; style-src 'unsafe-inline'; sandbox","x-amz-replication-status":"COMPLETED","strict-transport-security":"max-age=63072000; includeSubDomains; preload","vary":"Accept-Encoding, Origin","last-modified":"Thu, 15 Feb 2024 05:02:29 GMT","accept-ranges":"bytes","x-content-type-options":"nosniff","x-amz-version-id":"JLP.sdpK7.RPX4PdNIRrCuSiN_zgLT3r","age":"8370397","cross-origin-embedder-policy":"same-origin","server-timing":"fetchSource;dur=64","access-control-allow-origin":"*","content-length":"1174","cross-origin-opener-policy":"same-origin"},"url":"https://deno.land/std@0.216.0/semver/format.ts","time":1750942649}

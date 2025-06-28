@@ -1,0 +1,17 @@
+// This utility is based on https://github.com/zertosh/htmlescape
+// License: https://github.com/zertosh/htmlescape/blob/0527ca7156a524d256101bb310a9f970f63078ad/LICENSE
+
+const ESCAPE_LOOKUP: { [match: string]: string } = {
+  ">": "\\u003e",
+  "<": "\\u003c",
+  "\u2028": "\\u2028",
+  "\u2029": "\\u2029",
+};
+
+const ESCAPE_REGEX = /[><\u2028\u2029]/g;
+
+export function htmlEscapeJsonString(str: string): string {
+  return str.replace(ESCAPE_REGEX, (match) => ESCAPE_LOOKUP[match]);
+}
+
+// denoCacheMetadata={"headers":{"x-cache":"Hit from cloudfront","cache-control":"public, max-age=31536000, immutable","x-amz-version-id":"uZpC8e7dx54SDblXcujJJWbXwv_vAEVW","server-timing":"fetchSource;dur=58","content-type":"application/typescript; charset=utf-8","age":"21768218","cross-origin-resource-policy":"same-origin","x-amz-server-side-encryption":"AES256","access-control-allow-origin":"*","content-length":"484","content-security-policy":"default-src 'none'; style-src 'unsafe-inline'; sandbox","cross-origin-opener-policy":"same-origin","server":"deno/gcp-asia-southeast1","cross-origin-embedder-policy":"same-origin","strict-transport-security":"max-age=63072000; includeSubDomains; preload","date":"Thu, 17 Oct 2024 14:13:53 GMT","vary":"Accept-Encoding, Origin","last-modified":"Mon, 14 Oct 2024 12:51:13 GMT","x-amz-cf-id":"8HcRQPTzQ30cehe6M-G37y8xrlc0IL9b_jtdnMw01PLbdHwFxS_wkA==","via":"http/2 edgeproxy-h","x-amz-replication-status":"COMPLETED","referrer-policy":"strict-origin-when-cross-origin","x-amz-cf-pop":"SIN52-P1","accept-ranges":"bytes","x-content-type-options":"nosniff","x-frame-options":"DENY","etag":"\"162c6336f95c12d48897c9ca1189db82\""},"url":"https://deno.land/x/fresh@1.7.3/src/server/htmlescape.ts","time":1750942650}

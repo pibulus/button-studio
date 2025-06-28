@@ -1,0 +1,30 @@
+// Copyright 2018-2024 the Deno authors. All rights reserved. MIT license.
+// This module is browser compatible.
+
+import { globToRegExp as _globToRegExp } from "./glob_to_regexp.ts";
+import { GlobOptions } from "../_common/glob_to_reg_exp.ts";
+import { normalize } from "./normalize.ts";
+import { SEPARATOR_PATTERN } from "./constants.ts";
+
+export type { GlobOptions };
+
+/** Like normalize(), but doesn't collapse "**\/.." when `globstar` is true. */
+export function normalizeGlob(
+  glob: string,
+  { globstar = false }: GlobOptions = {},
+): string {
+  if (glob.match(/\0/g)) {
+    throw new Error(`Glob contains invalid characters: "${glob}"`);
+  }
+  if (!globstar) {
+    return normalize(glob);
+  }
+  const s = SEPARATOR_PATTERN.source;
+  const badParentPattern = new RegExp(
+    `(?<=(${s}|^)\\*\\*${s})\\.\\.(?=${s}|$)`,
+    "g",
+  );
+  return normalize(glob.replace(badParentPattern, "\0")).replace(/\0/g, "..");
+}
+
+// denoCacheMetadata={"headers":{"content-security-policy":"default-src 'none'; style-src 'unsafe-inline'; sandbox","referrer-policy":"strict-origin-when-cross-origin","etag":"\"61129a53109aa25011fa4322d248314d\"","server":"deno/gcp-asia-southeast1","last-modified":"Thu, 15 Feb 2024 05:02:29 GMT","vary":"Accept-Encoding, Origin","via":"http/2 edgeproxy-h","accept-ranges":"bytes","x-amz-cf-id":"JV-FS_dekuhl1c8OKdmoixIsGspJeN8awipMtyugKwmQD5eDsaVRmw==","cross-origin-opener-policy":"same-origin","access-control-allow-origin":"*","strict-transport-security":"max-age=63072000; includeSubDomains; preload","x-amz-replication-status":"COMPLETED","x-amz-cf-pop":"SIN52-P1","date":"Sun, 23 Feb 2025 14:26:52 GMT","cache-control":"public, max-age=31536000, immutable","cross-origin-resource-policy":"same-origin","cross-origin-embedder-policy":"same-origin","server-timing":"fetchSource;dur=18","content-length":"921","x-amz-server-side-encryption":"AES256","x-amz-version-id":"lrO3BQ5P2vMwfEM_t9_5wi7jXvHL6SPs","x-cache":"Hit from cloudfront","x-content-type-options":"nosniff","x-frame-options":"DENY","content-type":"application/typescript; charset=utf-8","age":"10621838"},"url":"https://deno.land/std@0.216.0/path/windows/normalize_glob.ts","time":1750942650}

@@ -1,0 +1,37 @@
+// Copyright 2018-2025 the Deno authors. MIT license.
+// This module is browser compatible.
+
+import { common as _common } from "./_common/common.ts";
+import { SEPARATOR } from "./constants.ts";
+
+/**
+ * Determines the common path from a set of paths for the given OS.
+ *
+ * @param paths Paths to search for common path.
+ * @returns The common path.
+ *
+ * @example Usage
+ * ```ts
+ * import { common } from "@std/path/common";
+ * import { assertEquals } from "@std/assert";
+ *
+ * if (Deno.build.os === "windows") {
+ *   const path = common([
+ *     "C:\\deno\\std\\path\\mod.ts",
+ *     "C:\\deno\\std\\fs\\mod.ts"
+ *   ]);
+ *   assertEquals(path, "C:\\deno\\std\\");
+ * } else {
+ *   const path = common([
+ *     "./deno/std/path/mod.ts",
+ *     "./deno/std/fs/mod.ts"
+ *   ]);
+ *   assertEquals(path, "./deno/std/");
+ * }
+ * ```
+ */
+export function common(paths: string[]): string {
+  return _common(paths, SEPARATOR);
+}
+
+// denoCacheMetadata={"headers":{"age":"0","x-robots-tag":"noindex","date":"Thu, 26 Jun 2025 12:57:34 GMT","x-goog-stored-content-length":"920","access-control-allow-origin":"*","access-control-expose-headers":"*","x-goog-hash":"crc32c=Nf7uhg==,md5=MJPIklBqRcHmsZUbnpFBDg==","x-goog-stored-content-encoding":"identity","last-modified":"Tue, 27 May 2025 07:30:37 GMT","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000","x-jsr-cache-status":"revalidated","x-content-type-options":"nosniff","content-security-policy":"default-src 'none'; script-src 'none'; style-src 'none'; img-src 'none'; font-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; frame-ancestors 'none'; sandbox; form-action 'none';","x-jsr-cache-id":"MEL","cross-origin-resource-policy":"cross-origin","server":"UploadServer","expires":"Fri, 26 Jun 2026 12:57:34 GMT","x-goog-metageneration":"1","x-goog-generation":"1748331037923589","x-goog-storage-class":"STANDARD","cache-control":"public, max-age=31536000, immutable","accept-ranges":"bytes","content-length":"920","via":"1.1 google","content-type":"text/typescript","x-guploader-uploadid":"ABgVH8-s2BtNlHGjJm76Ms968hyIbs5QSgdwP9RPqEhX7VntUYPLyP_gKSk48_9NejdkRwk7","etag":"\"3093c892506a45c1e6b1951b9e91410e\""},"url":"https://jsr.io/@std/path/1.1.0/common.ts","time":1750942654}

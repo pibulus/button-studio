@@ -1,0 +1,30 @@
+// Copyright 2018-2025 the Deno authors. MIT license.
+// Copyright the Browserify authors. MIT License.
+// Ported from https://github.com/browserify/path-browserify/
+// This module is browser compatible.
+
+import {
+  CHAR_BACKWARD_SLASH,
+  CHAR_FORWARD_SLASH,
+  CHAR_LOWERCASE_A,
+  CHAR_LOWERCASE_Z,
+  CHAR_UPPERCASE_A,
+  CHAR_UPPERCASE_Z,
+} from "../_common/constants.ts";
+
+export function isPosixPathSeparator(code: number): boolean {
+  return code === CHAR_FORWARD_SLASH;
+}
+
+export function isPathSeparator(code: number): boolean {
+  return code === CHAR_FORWARD_SLASH || code === CHAR_BACKWARD_SLASH;
+}
+
+export function isWindowsDeviceRoot(code: number): boolean {
+  return (
+    (code >= CHAR_LOWERCASE_A && code <= CHAR_LOWERCASE_Z) ||
+    (code >= CHAR_UPPERCASE_A && code <= CHAR_UPPERCASE_Z)
+  );
+}
+
+// denoCacheMetadata={"headers":{"server":"UploadServer","via":"1.1 google","x-goog-hash":"crc32c=OPG2uA==,md5=p0btXuS0FXwstBt7hC4VbQ==","x-goog-stored-content-length":"807","x-goog-storage-class":"STANDARD","expires":"Fri, 26 Jun 2026 12:57:34 GMT","content-type":"text/typescript","age":"0","x-robots-tag":"noindex","x-goog-metageneration":"1","x-goog-generation":"1748331037923786","content-length":"807","last-modified":"Tue, 27 May 2025 07:30:37 GMT","x-guploader-uploadid":"ABgVH89txFvxdoIOuIlUB584YL7ZGo1yrkT1SxgHkNFyP4i3IM-MHGzR6ytksLe7ILOSFi-2-OnkOKQ","etag":"\"a746ed5ee4b4157c2cb41b7b842e156d\"","x-content-type-options":"nosniff","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000","x-jsr-cache-status":"revalidated","date":"Thu, 26 Jun 2025 12:57:34 GMT","x-goog-stored-content-encoding":"identity","content-security-policy":"default-src 'none'; script-src 'none'; style-src 'none'; img-src 'none'; font-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; frame-ancestors 'none'; sandbox; form-action 'none';","cache-control":"public, max-age=31536000, immutable","accept-ranges":"bytes","access-control-expose-headers":"*","cross-origin-resource-policy":"cross-origin","x-jsr-cache-id":"MEL","access-control-allow-origin":"*"},"url":"https://jsr.io/@std/path/1.1.0/windows/_util.ts","time":1750942654}

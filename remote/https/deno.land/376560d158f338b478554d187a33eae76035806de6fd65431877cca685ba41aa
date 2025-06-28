@@ -1,0 +1,30 @@
+// Copyright 2018-2024 the Deno authors. All rights reserved. MIT license.
+// Copyright the Browserify authors. MIT License.
+// Ported from https://github.com/browserify/path-browserify/
+// This module is browser compatible.
+
+import {
+  CHAR_BACKWARD_SLASH,
+  CHAR_FORWARD_SLASH,
+  CHAR_LOWERCASE_A,
+  CHAR_LOWERCASE_Z,
+  CHAR_UPPERCASE_A,
+  CHAR_UPPERCASE_Z,
+} from "../_common/constants.ts";
+
+export function isPosixPathSeparator(code: number): boolean {
+  return code === CHAR_FORWARD_SLASH;
+}
+
+export function isPathSeparator(code: number): boolean {
+  return code === CHAR_FORWARD_SLASH || code === CHAR_BACKWARD_SLASH;
+}
+
+export function isWindowsDeviceRoot(code: number): boolean {
+  return (
+    (code >= CHAR_LOWERCASE_A && code <= CHAR_LOWERCASE_Z) ||
+    (code >= CHAR_UPPERCASE_A && code <= CHAR_UPPERCASE_Z)
+  );
+}
+
+// denoCacheMetadata={"headers":{"content-security-policy":"default-src 'none'; style-src 'unsafe-inline'; sandbox","x-content-type-options":"nosniff","x-amz-cf-id":"htc4WEPC2VBybiD0X8DIPDNO-TvS7ZDH_JzbRhF8WNJ38gJTMCk_Og==","x-amz-version-id":"_Xy_3yE0uoRRGI4njuwRkct5esb9wKG2","referrer-policy":"strict-origin-when-cross-origin","strict-transport-security":"max-age=63072000; includeSubDomains; preload","accept-ranges":"bytes","cross-origin-embedder-policy":"same-origin","cross-origin-resource-policy":"same-origin","server":"deno/gcp-asia-southeast1","via":"http/2 edgeproxy-h","content-type":"application/typescript; charset=utf-8","cross-origin-opener-policy":"same-origin","x-amz-replication-status":"COMPLETED","vary":"Accept-Encoding, Origin","x-amz-server-side-encryption":"AES256","x-amz-cf-pop":"SIN52-P1","age":"11412387","date":"Fri, 14 Feb 2025 10:51:03 GMT","last-modified":"Thu, 15 Feb 2024 05:02:29 GMT","x-cache":"Hit from cloudfront","cache-control":"public, max-age=31536000, immutable","access-control-allow-origin":"*","x-frame-options":"DENY","server-timing":"fetchSource;dur=36","content-length":"828","etag":"\"77e408e05b02b82b6c91e057d35ac7f4\""},"url":"https://deno.land/std@0.216.0/path/windows/_util.ts","time":1750942651}

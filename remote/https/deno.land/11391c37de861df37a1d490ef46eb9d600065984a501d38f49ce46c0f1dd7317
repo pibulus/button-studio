@@ -1,0 +1,37 @@
+// Copyright 2018-2023 the Deno authors. All rights reserved. MIT license.
+// This module is browser compatible.
+
+/** Test whether the given string is a glob */
+export function isGlob(str: string): boolean {
+  const chars: Record<string, string> = { "{": "}", "(": ")", "[": "]" };
+  const regex =
+    /\\(.)|(^!|\*|\?|[\].+)]\?|\[[^\\\]]+\]|\{[^\\}]+\}|\(\?[:!=][^\\)]+\)|\([^|]+\|[^\\)]+\))/;
+
+  if (str === "") {
+    return false;
+  }
+
+  let match: RegExpExecArray | null;
+
+  while ((match = regex.exec(str))) {
+    if (match[2]) return true;
+    let idx = match.index + match[0].length;
+
+    // if an open bracket/brace/paren is escaped,
+    // set the index to the next closing character
+    const open = match[1];
+    const close = open ? chars[open] : null;
+    if (open && close) {
+      const n = str.indexOf(close, idx);
+      if (n !== -1) {
+        idx = n + 1;
+      }
+    }
+
+    str = str.slice(idx);
+  }
+
+  return false;
+}
+
+// denoCacheMetadata={"headers":{"etag":"\"582810886947edf2a6ade962d5ceaca2\"","strict-transport-security":"max-age=63072000; includeSubDomains; preload","via":"http/2 edgeproxy-h","last-modified":"Fri, 24 Nov 2023 02:50:10 GMT","x-amz-replication-status":"COMPLETED","cross-origin-resource-policy":"same-origin","x-amz-cf-id":"CMmgdJRvVeLRKcMMoJfWx-rpPS2KowSY0u2ug54jqsVFMDaSf5Y5aQ==","x-amz-server-side-encryption":"AES256","content-security-policy":"default-src 'none'; style-src 'unsafe-inline'; sandbox","x-frame-options":"DENY","x-amz-version-id":"be3D_ByHxDutEormpx7vvsoy6Cj.AjpM","server-timing":"fetchSource;dur=12","x-content-type-options":"nosniff","content-length":"938","accept-ranges":"bytes","access-control-allow-origin":"*","date":"Fri, 21 Mar 2025 15:54:45 GMT","x-amz-cf-pop":"SIN52-P1","content-type":"application/typescript; charset=utf-8","server":"deno/gcp-asia-southeast1","cross-origin-embedder-policy":"same-origin","vary":"Accept-Encoding, Origin","referrer-policy":"strict-origin-when-cross-origin","age":"8370168","cross-origin-opener-policy":"same-origin","x-cache":"Hit from cloudfront","cache-control":"public, max-age=31536000, immutable"},"url":"https://deno.land/std@0.208.0/path/is_glob.ts","time":1750942652}

@@ -1,0 +1,37 @@
+// Copyright 2018-2024 the Deno authors. All rights reserved. MIT license.
+// This module is browser compatible.
+
+/** Test whether the given string is a glob */
+export function isGlob(str: string): boolean {
+  const chars: Record<string, string> = { "{": "}", "(": ")", "[": "]" };
+  const regex =
+    /\\(.)|(^!|\*|\?|[\].+)]\?|\[[^\\\]]+\]|\{[^\\}]+\}|\(\?[:!=][^\\)]+\)|\([^|]+\|[^\\)]+\))/;
+
+  if (str === "") {
+    return false;
+  }
+
+  let match: RegExpExecArray | null;
+
+  while ((match = regex.exec(str))) {
+    if (match[2]) return true;
+    let idx = match.index + match[0].length;
+
+    // if an open bracket/brace/paren is escaped,
+    // set the index to the next closing character
+    const open = match[1];
+    const close = open ? chars[open] : null;
+    if (open && close) {
+      const n = str.indexOf(close, idx);
+      if (n !== -1) {
+        idx = n + 1;
+      }
+    }
+
+    str = str.slice(idx);
+  }
+
+  return false;
+}
+
+// denoCacheMetadata={"headers":{"server-timing":"fetchSource;dur=28","age":"11412388","content-type":"application/typescript; charset=utf-8","x-frame-options":"DENY","date":"Fri, 14 Feb 2025 10:51:01 GMT","accept-ranges":"bytes","content-security-policy":"default-src 'none'; style-src 'unsafe-inline'; sandbox","last-modified":"Thu, 15 Feb 2024 05:02:29 GMT","strict-transport-security":"max-age=63072000; includeSubDomains; preload","via":"http/2 edgeproxy-h","x-amz-cf-pop":"SIN52-P1","x-amz-replication-status":"COMPLETED","server":"deno/gcp-asia-southeast1","x-amz-version-id":"M.1miKJzilqi_u0Vn7WlAbQEbtCrNwCW","x-cache":"Hit from cloudfront","x-amz-server-side-encryption":"AES256","x-amz-cf-id":"olFE5KJYobPcvgz6v4rE56vDRzlPt--Hsy-7j4oWcIeaK0RQ4I5VRA==","content-length":"938","x-content-type-options":"nosniff","cross-origin-embedder-policy":"same-origin","cross-origin-resource-policy":"same-origin","etag":"\"aadbc2e32508ade85b7cadc05fb2b5d3\"","referrer-policy":"strict-origin-when-cross-origin","access-control-allow-origin":"*","cache-control":"public, max-age=31536000, immutable","vary":"Accept-Encoding, Origin","cross-origin-opener-policy":"same-origin"},"url":"https://deno.land/std@0.216.0/path/is_glob.ts","time":1750942649}

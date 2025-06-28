@@ -1,0 +1,7 @@
+#!/usr/bin/env -S deno run -A --watch=static/,routes/
+import dev from "$fresh/dev.ts";
+import config from "./fresh.config.ts";
+import "$std/dotenv/load.ts";
+await dev(import.meta.url, "./main.ts", config);
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImZpbGU6Ly8vVXNlcnMvcGFibG9hbHZhcmFkby9EZXNrdG9wL0J1dHRvblN0dWRpby9kZXYudHMiXSwic291cmNlc0NvbnRlbnQiOlsiIyEvdXNyL2Jpbi9lbnYgLVMgZGVubyBydW4gLUEgLS13YXRjaD1zdGF0aWMvLHJvdXRlcy9cblxuaW1wb3J0IGRldiBmcm9tIFwiJGZyZXNoL2Rldi50c1wiO1xuaW1wb3J0IGNvbmZpZyBmcm9tIFwiLi9mcmVzaC5jb25maWcudHNcIjtcblxuaW1wb3J0IFwiJHN0ZC9kb3RlbnYvbG9hZC50c1wiO1xuXG5hd2FpdCBkZXYoaW1wb3J0Lm1ldGEudXJsLCBcIi4vbWFpbi50c1wiLCBjb25maWcpO1xuIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7QUFFQSxPQUFPLFNBQVMsZ0JBQWdCO0FBQ2hDLE9BQU8sWUFBWSxvQkFBb0I7QUFFdkMsT0FBTyxzQkFBc0I7QUFFN0IsTUFBTSxJQUFJLFlBQVksR0FBRyxFQUFFLGFBQWEifQ==
+// denoCacheMetadata=13664911248814158597,2500215774200063952

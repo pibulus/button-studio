@@ -1,0 +1,7 @@
+// Copyright 2018-2023 the Deno authors. All rights reserved. MIT license.
+// This module is browser compatible.
+
+export const SEP = "/";
+export const SEP_PATTERN = /\/+/;
+
+// denoCacheMetadata={"headers":{"last-modified":"Fri, 24 Nov 2023 02:50:10 GMT","x-amz-cf-id":"0n3ZNgvvk3-MRdVqdJRvIad39Nfxi-3ISzS_AHoa9cypKAR_4e6ywg==","server":"deno/gcp-asia-southeast1","referrer-policy":"strict-origin-when-cross-origin","via":"http/2 edgeproxy-h","cross-origin-opener-policy":"same-origin","x-amz-replication-status":"COMPLETED","x-amz-server-side-encryption":"AES256","x-amz-version-id":"n.QxRMETB7GWQGFABPwqby5vcpWGLS5s","x-content-type-options":"nosniff","access-control-allow-origin":"*","server-timing":"fetchSource;dur=18","x-amz-cf-pop":"SIN52-P1","content-type":"application/typescript; charset=utf-8","etag":"\"bfd1001bb42470949cfa6a8790850b08\"","strict-transport-security":"max-age=63072000; includeSubDomains; preload","age":"8574719","content-length":"172","content-security-policy":"default-src 'none'; style-src 'unsafe-inline'; sandbox","cross-origin-resource-policy":"same-origin","date":"Wed, 19 Mar 2025 07:05:34 GMT","vary":"Accept-Encoding, Origin","cross-origin-embedder-policy":"same-origin","accept-ranges":"bytes","x-cache":"Hit from cloudfront","cache-control":"public, max-age=31536000, immutable","x-frame-options":"DENY"},"url":"https://deno.land/std@0.208.0/path/posix/separator.ts","time":1750942652}

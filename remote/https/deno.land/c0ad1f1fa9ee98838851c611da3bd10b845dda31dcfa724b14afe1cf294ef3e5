@@ -1,0 +1,50 @@
+import { ComponentChildren } from "preact";
+import { AsyncLayout, AsyncRoute, FreshConfig, RouteContext } from "./types.ts";
+import { checkAsyncComponent } from "./render.ts";
+
+export function defineConfig(config: FreshConfig): FreshConfig {
+  return config;
+}
+
+// Route creation helpers
+export function defineRoute<
+  T,
+>(
+  fn: (
+    req: Request,
+    ctx: RouteContext<void, T>,
+  ) => ComponentChildren | Response | Promise<ComponentChildren | Response>,
+): AsyncRoute<void, T> {
+  // deno-lint-ignore no-explicit-any
+  if (checkAsyncComponent(fn)) return fn as any;
+  // deno-lint-ignore require-await
+  return async (req, ctx) => fn(req, ctx);
+}
+
+// Layout creation helper
+export function defineLayout<T>(
+  fn: (
+    req: Request,
+    ctx: RouteContext<void, T>,
+  ) => ComponentChildren | Response | Promise<ComponentChildren | Response>,
+): AsyncLayout<void, T> {
+  // deno-lint-ignore no-explicit-any
+  if (checkAsyncComponent(fn)) return fn as any;
+  // deno-lint-ignore require-await
+  return async (req, ctx) => fn(req, ctx);
+}
+
+// App creation helper
+export function defineApp<T>(
+  fn: (
+    req: Request,
+    ctx: RouteContext<void, T>,
+  ) => ComponentChildren | Response | Promise<ComponentChildren | Response>,
+): AsyncLayout<void, T> {
+  // deno-lint-ignore no-explicit-any
+  if (checkAsyncComponent(fn)) return fn as any;
+  // deno-lint-ignore require-await
+  return async (req, ctx) => fn(req, ctx);
+}
+
+// denoCacheMetadata={"headers":{"server-timing":"fetchSource;dur=22","date":"Thu, 17 Oct 2024 14:13:50 GMT","x-amz-cf-pop":"SIN52-P1","x-amz-replication-status":"COMPLETED","x-amz-version-id":"lIYm9TfEC3HUiWIWowhXT3riDdOfj2a5","x-cache":"Hit from cloudfront","x-amz-cf-id":"HKRVQbeRkFYgZYumHdgGifz_wMz48ADwWx3FxBj_a1EXtJJuSSYk6g==","x-frame-options":"DENY","strict-transport-security":"max-age=63072000; includeSubDomains; preload","x-content-type-options":"nosniff","content-length":"1425","accept-ranges":"bytes","cross-origin-resource-policy":"same-origin","x-amz-server-side-encryption":"AES256","referrer-policy":"strict-origin-when-cross-origin","age":"21768218","server":"deno/gcp-asia-southeast1","access-control-allow-origin":"*","content-type":"application/typescript; charset=utf-8","cross-origin-opener-policy":"same-origin","etag":"\"7e421832756590bfdb1c0032bc016a12\"","cache-control":"public, max-age=31536000, immutable","content-security-policy":"default-src 'none'; style-src 'unsafe-inline'; sandbox","cross-origin-embedder-policy":"same-origin","last-modified":"Mon, 14 Oct 2024 12:51:13 GMT","vary":"Accept-Encoding, Origin","via":"http/2 edgeproxy-h"},"url":"https://deno.land/x/fresh@1.7.3/src/server/defines.ts","time":1750942649}

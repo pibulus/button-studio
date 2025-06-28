@@ -1,0 +1,26 @@
+// Copyright 2018-2024 the Deno authors. All rights reserved. MIT license.
+// This module is browser compatible.
+
+import { _common } from "./_common/common.ts";
+import { SEPARATOR } from "./constants.ts";
+
+/** Determines the common path from a set of paths, using an optional separator,
+ * which defaults to the OS default separator.
+ *
+ * ```ts
+ *       import { common } from "https://deno.land/std@$STD_VERSION/path/mod.ts";
+ *       const p = common([
+ *         "./deno/std/path/mod.ts",
+ *         "./deno/std/fs/mod.ts",
+ *       ]);
+ *       console.log(p); // "./deno/std/"
+ * ```
+ */
+export function common(
+  paths: string[],
+  sep: string = SEPARATOR,
+): string {
+  return _common(paths, sep);
+}
+
+// denoCacheMetadata={"headers":{"server":"deno/gcp-asia-southeast1","strict-transport-security":"max-age=63072000; includeSubDomains; preload","age":"11412388","x-frame-options":"DENY","cross-origin-embedder-policy":"same-origin","access-control-allow-origin":"*","content-security-policy":"default-src 'none'; style-src 'unsafe-inline'; sandbox","date":"Fri, 14 Feb 2025 10:51:01 GMT","content-length":"708","etag":"\"477755bfa7907568dadb2cef59ed25d2\"","vary":"Accept-Encoding, Origin","x-amz-replication-status":"COMPLETED","x-content-type-options":"nosniff","accept-ranges":"bytes","via":"http/2 edgeproxy-h","cross-origin-resource-policy":"same-origin","last-modified":"Thu, 15 Feb 2024 05:02:29 GMT","cross-origin-opener-policy":"same-origin","server-timing":"fetchSource;dur=38","cache-control":"public, max-age=31536000, immutable","x-amz-server-side-encryption":"AES256","content-type":"application/typescript; charset=utf-8","x-amz-cf-id":"9zyO7BabnxPDLdNLRmI3a9LvrV1PJ2egwYakiof6xryfqpJnCY6b0A==","x-cache":"Hit from cloudfront","referrer-policy":"strict-origin-when-cross-origin","x-amz-version-id":"0hzVPs4o0rgPROBh8kKWczwIwD3OUVCM","x-amz-cf-pop":"SIN52-P1"},"url":"https://deno.land/std@0.216.0/path/common.ts","time":1750942649}

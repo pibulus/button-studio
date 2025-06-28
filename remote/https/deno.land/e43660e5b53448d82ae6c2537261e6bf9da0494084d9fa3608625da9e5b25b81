@@ -1,0 +1,68 @@
+// Copyright 2018-2024 the Deno authors. All rights reserved. MIT license.
+
+/** End-of-line character for POSIX platforms such as macOS and Linux. */
+export const LF = "\n" as const;
+
+/** End-of-line character for Windows platforms. */
+export const CRLF = "\r\n" as const;
+
+/**
+ * End-of-line character evaluated for the current platform.
+ *
+ * @example
+ * ```ts
+ * import { EOL } from "https://deno.land/std@$STD_VERSION/fs/eol.ts";
+ *
+ * EOL; // Returns "\n" on POSIX platforms or "\r\n" on Windows
+ * ```
+ */
+export const EOL: "\n" | "\r\n" = Deno?.build.os === "windows" ? CRLF : LF;
+
+const regDetect = /(?:\r?\n)/g;
+
+/**
+ * Detect the EOL character for string input.
+ * returns null if no newline.
+ *
+ * @example
+ * ```ts
+ * import { detect, EOL } from "https://deno.land/std@$STD_VERSION/fs/mod.ts";
+ *
+ * const CRLFinput = "deno\r\nis not\r\nnode";
+ * const Mixedinput = "deno\nis not\r\nnode";
+ * const LFinput = "deno\nis not\nnode";
+ * const NoNLinput = "deno is not node";
+ *
+ * detect(LFinput); // output EOL.LF
+ * detect(CRLFinput); // output EOL.CRLF
+ * detect(Mixedinput); // output EOL.CRLF
+ * detect(NoNLinput); // output null
+ * ```
+ */
+export function detect(content: string): typeof EOL | null {
+  const d = content.match(regDetect);
+  if (!d || d.length === 0) {
+    return null;
+  }
+  const hasCRLF = d.some((x: string): boolean => x === CRLF);
+
+  return hasCRLF ? CRLF : LF;
+}
+
+/**
+ * Format the file to the targeted EOL.
+ *
+ * @example
+ * ```ts
+ * import { LF, format } from "https://deno.land/std@$STD_VERSION/fs/mod.ts";
+ *
+ * const CRLFinput = "deno\r\nis not\r\nnode";
+ *
+ * format(CRLFinput, LF); // output "deno\nis not\nnode"
+ * ```
+ */
+export function format(content: string, eol: typeof EOL): string {
+  return content.replace(regDetect, eol);
+}
+
+// denoCacheMetadata={"headers":{"x-cache":"Hit from cloudfront","x-content-type-options":"nosniff","via":"http/2 edgeproxy-h","cross-origin-resource-policy":"same-origin","access-control-allow-origin":"*","age":"8374707","cache-control":"public, max-age=31536000, immutable","server":"deno/gcp-asia-southeast1","x-amz-cf-pop":"SIN52-P1","cross-origin-embedder-policy":"same-origin","x-amz-replication-status":"COMPLETED","x-amz-server-side-encryption":"AES256","x-amz-version-id":"NLXMOyXcYcT2iKQSvTrLpMFwWcDBsreZ","content-type":"application/typescript; charset=utf-8","x-frame-options":"DENY","etag":"\"927b17ba69e102befb1ab53f86bcfd6e\"","content-length":"1779","referrer-policy":"strict-origin-when-cross-origin","content-security-policy":"default-src 'none'; style-src 'unsafe-inline'; sandbox","cross-origin-opener-policy":"same-origin","date":"Fri, 21 Mar 2025 14:39:03 GMT","last-modified":"Thu, 15 Feb 2024 05:02:28 GMT","accept-ranges":"bytes","server-timing":"fetchSource;dur=44","strict-transport-security":"max-age=63072000; includeSubDomains; preload","x-amz-cf-id":"hvJu2WJbV1OcW_yCABJSEaY8pC_LKSKfbAMDGfUPrYpN9HZGNo2K8w==","vary":"Accept-Encoding, Origin"},"url":"https://deno.land/std@0.216.0/fs/eol.ts","time":1750942649}

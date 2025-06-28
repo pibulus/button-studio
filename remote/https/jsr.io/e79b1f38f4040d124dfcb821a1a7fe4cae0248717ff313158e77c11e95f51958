@@ -1,0 +1,34 @@
+// Copyright 2018-2025 the Deno authors. MIT license.
+// This module is browser compatible.
+
+import { encodeWhitespace } from "../_common/to_file_url.ts";
+import { isAbsolute } from "./is_absolute.ts";
+
+/**
+ * Converts a path string to a file URL.
+ *
+ * @example Usage
+ * ```ts
+ * import { toFileUrl } from "@std/path/posix/to-file-url";
+ * import { assertEquals } from "@std/assert";
+ *
+ * assertEquals(toFileUrl("/home/foo"), new URL("file:///home/foo"));
+ * assertEquals(toFileUrl("/home/foo bar"), new URL("file:///home/foo%20bar"));
+ * ```
+ *
+ * @param path The path to convert.
+ * @returns The file URL.
+ */
+export function toFileUrl(path: string): URL {
+  if (!isAbsolute(path)) {
+    throw new TypeError(`Path must be absolute: received "${path}"`);
+  }
+
+  const url = new URL("file:///");
+  url.pathname = encodeWhitespace(
+    path.replace(/%/g, "%25").replace(/\\/g, "%5C"),
+  );
+  return url;
+}
+
+// denoCacheMetadata={"headers":{"x-guploader-uploadid":"ABgVH89dQiy9JXU-Kpb1xqvhVbV23JhJJpPiReEgokU41XlDN16pblmaWrnR8lLoGLWftgrxD_I8k8w","x-jsr-cache-status":"revalidated","x-goog-storage-class":"STANDARD","content-length":"907","etag":"\"c92335157ddb01de1ce40ef1bcddbde5\"","x-goog-stored-content-length":"907","content-type":"text/typescript","age":"0","expires":"Fri, 26 Jun 2026 12:57:34 GMT","content-security-policy":"default-src 'none'; script-src 'none'; style-src 'none'; img-src 'none'; font-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; frame-ancestors 'none'; sandbox; form-action 'none';","x-goog-hash":"crc32c=fqhlqw==,md5=ySM1FX3bAd4c5A7xvN295Q==","cache-control":"public, max-age=31536000, immutable","last-modified":"Tue, 27 May 2025 07:30:37 GMT","x-robots-tag":"noindex","access-control-allow-origin":"*","via":"1.1 google","access-control-expose-headers":"*","x-content-type-options":"nosniff","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000","server":"UploadServer","x-jsr-cache-id":"MEL","x-goog-stored-content-encoding":"identity","accept-ranges":"bytes","date":"Thu, 26 Jun 2025 12:57:34 GMT","cross-origin-resource-policy":"cross-origin","x-goog-generation":"1748331037925737","x-goog-metageneration":"1"},"url":"https://jsr.io/@std/path/1.1.0/posix/to_file_url.ts","time":1750942654}

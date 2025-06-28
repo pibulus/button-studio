@@ -1,0 +1,23 @@
+// Copyright 2018-2024 the Deno authors. All rights reserved. MIT license.
+// This module is browser compatible.
+
+import { isWindows } from "./_os.ts";
+import { relative as posixRelative } from "./posix/relative.ts";
+import { relative as windowsRelative } from "./windows/relative.ts";
+
+/**
+ * Return the relative path from `from` to `to` based on current working directory.
+ *
+ * An example in windws, for instance:
+ *  from = 'C:\\orandea\\test\\aaa'
+ *  to = 'C:\\orandea\\impl\\bbb'
+ * The output of the function should be: '..\\..\\impl\\bbb'
+ *
+ * @param from path in current working directory
+ * @param to path in current working directory
+ */
+export function relative(from: string, to: string): string {
+  return isWindows ? windowsRelative(from, to) : posixRelative(from, to);
+}
+
+// denoCacheMetadata={"headers":{"x-frame-options":"DENY","x-content-type-options":"nosniff","last-modified":"Thu, 15 Feb 2024 05:02:29 GMT","strict-transport-security":"max-age=63072000; includeSubDomains; preload","date":"Fri, 14 Feb 2025 10:51:01 GMT","cross-origin-embedder-policy":"same-origin","x-amz-cf-pop":"SIN52-P1","cache-control":"public, max-age=31536000, immutable","content-type":"application/typescript; charset=utf-8","cross-origin-resource-policy":"same-origin","server-timing":"fetchSource;dur=46","x-amz-cf-id":"O0hHAjqvScuLzgBGMFYGDEsYtkQgIxAew-Nf9lbRvUIB-Mvcprbi8A==","x-amz-server-side-encryption":"AES256","x-amz-version-id":"mApSBdvjo4YSkT3.raszXp1_ZdXYR3q1","accept-ranges":"bytes","x-cache":"Hit from cloudfront","content-length":"788","x-amz-replication-status":"COMPLETED","referrer-policy":"strict-origin-when-cross-origin","age":"11412388","vary":"Accept-Encoding, Origin","server":"deno/gcp-asia-southeast1","content-security-policy":"default-src 'none'; style-src 'unsafe-inline'; sandbox","cross-origin-opener-policy":"same-origin","etag":"\"0735763219b351c3520264c14dcdb50e\"","via":"http/2 edgeproxy-h","access-control-allow-origin":"*"},"url":"https://deno.land/std@0.216.0/path/relative.ts","time":1750942649}

@@ -1,0 +1,12 @@
+// Copyright 2018-2023 the Deno authors. All rights reserved. MIT license.
+// This module is browser compatible.
+
+import { assertPath } from "./assert_path.ts";
+
+export function assertArgs(from: string, to: string) {
+  assertPath(from);
+  assertPath(to);
+  if (from === to) return "";
+}
+
+// denoCacheMetadata={"headers":{"x-amz-cf-id":"BR0Y83G_KIZWQE-sPmqp9Yt4Ek2bafR42l-KAANU_gGl9ZmC6cXd_g==","cross-origin-opener-policy":"same-origin","content-security-policy":"default-src 'none'; style-src 'unsafe-inline'; sandbox","referrer-policy":"strict-origin-when-cross-origin","x-amz-cf-pop":"SIN52-P1","age":"18585280","vary":"Accept-Encoding, Origin","cross-origin-resource-policy":"same-origin","x-cache":"Hit from cloudfront","accept-ranges":"bytes","server-timing":"fetchSource;dur=6","cross-origin-embedder-policy":"same-origin","content-type":"application/typescript; charset=utf-8","etag":"\"5a0772f7b44468345e942a41084d20ff\"","via":"http/2 edgeproxy-h","x-amz-replication-status":"COMPLETED","x-amz-server-side-encryption":"AES256","date":"Sat, 23 Nov 2024 10:22:53 GMT","strict-transport-security":"max-age=63072000; includeSubDomains; preload","cache-control":"public, max-age=31536000, immutable","content-length":"287","x-content-type-options":"nosniff","server":"deno/gcp-asia-southeast1","access-control-allow-origin":"*","last-modified":"Fri, 24 Nov 2023 02:50:10 GMT","x-frame-options":"DENY","x-amz-version-id":"r7I8SyJxlaBtxhcqQ2qKLwhxfCraLyTK"},"url":"https://deno.land/std@0.208.0/path/_common/relative.ts","time":1750942652}

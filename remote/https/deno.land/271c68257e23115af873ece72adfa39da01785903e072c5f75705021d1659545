@@ -1,0 +1,48 @@
+import { VNode } from "preact";
+import { DATA_ANCESTOR, DATA_CURRENT } from "../constants.ts";
+
+export const enum UrlMatchKind {
+  None,
+  Ancestor,
+  Current,
+}
+
+export function matchesUrl(current: string, needle: string): UrlMatchKind {
+  let href = new URL(needle, "http://localhost").pathname;
+  if (href !== "/" && href.endsWith("/")) {
+    href = href.slice(0, -1);
+  }
+
+  if (current !== "/" && current.endsWith("/")) {
+    current = current.slice(0, -1);
+  }
+
+  if (current === href) {
+    return UrlMatchKind.Current;
+  } else if (current.startsWith(href + "/") || href === "/") {
+    return UrlMatchKind.Ancestor;
+  }
+
+  return UrlMatchKind.None;
+}
+
+/**
+ * Mark active or ancestor link
+ * Note: This function is used both on the server and the client
+ */
+export function setActiveUrl(vnode: VNode, pathname: string): void {
+  const props = vnode.props as Record<string, unknown>;
+  const hrefProp = props.href;
+  if (typeof hrefProp === "string" && hrefProp.startsWith("/")) {
+    const match = matchesUrl(pathname, hrefProp);
+    if (match === UrlMatchKind.Current) {
+      props[DATA_CURRENT] = "true";
+      props["aria-current"] = "page";
+    } else if (match === UrlMatchKind.Ancestor) {
+      props[DATA_ANCESTOR] = "true";
+      props["aria-current"] = "true";
+    }
+  }
+}
+
+// denoCacheMetadata={"headers":{"age":"21768218","cache-control":"public, max-age=31536000, immutable","content-length":"1290","cross-origin-embedder-policy":"same-origin","access-control-allow-origin":"*","server-timing":"fetchSource;dur=44","referrer-policy":"strict-origin-when-cross-origin","strict-transport-security":"max-age=63072000; includeSubDomains; preload","content-security-policy":"default-src 'none'; style-src 'unsafe-inline'; sandbox","etag":"\"8c5875609ecffdbf761741a83dc583e1\"","last-modified":"Mon, 14 Oct 2024 12:51:13 GMT","vary":"Accept-Encoding, Origin","x-amz-cf-id":"2p7vsWj-CbJsRsy0kJvmP6MsGIRSBJ3EA6X7b4oD3bTayIwO1hKF6A==","x-amz-version-id":"bCeDe42tzpOuT0S55FAi8BM0AT0N6ji7","cross-origin-opener-policy":"same-origin","x-amz-server-side-encryption":"AES256","content-type":"application/typescript; charset=utf-8","x-cache":"Hit from cloudfront","x-frame-options":"DENY","date":"Thu, 17 Oct 2024 14:13:52 GMT","server":"deno/gcp-asia-southeast1","x-amz-cf-pop":"SIN52-P1","cross-origin-resource-policy":"same-origin","x-amz-replication-status":"COMPLETED","via":"http/2 edgeproxy-h","accept-ranges":"bytes","x-content-type-options":"nosniff"},"url":"https://deno.land/x/fresh@1.7.3/src/runtime/active_url.ts","time":1750942649}

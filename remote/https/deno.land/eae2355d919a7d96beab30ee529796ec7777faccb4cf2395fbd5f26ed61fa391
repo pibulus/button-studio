@@ -1,0 +1,22 @@
+import { ComponentChildren, VNode } from "preact";
+
+export interface PartialProps {
+  children?: ComponentChildren;
+  /**
+   * The name of the partial. This value must be unique across partials.
+   */
+  name: string;
+  /**
+   * Define how the new HTML should be applied.
+   * @default {"replace"}
+   */
+  mode?: "replace" | "prepend" | "append";
+}
+
+export function Partial(props: PartialProps): VNode {
+  // deno-lint-ignore no-explicit-any
+  return props.children as any;
+}
+Partial.displayName = "Partial";
+
+// denoCacheMetadata={"headers":{"access-control-allow-origin":"*","date":"Thu, 17 Oct 2024 14:13:52 GMT","last-modified":"Mon, 14 Oct 2024 12:51:13 GMT","content-type":"application/typescript; charset=utf-8","server-timing":"fetchSource;dur=72","strict-transport-security":"max-age=63072000; includeSubDomains; preload","vary":"Accept-Encoding, Origin","x-amz-version-id":"CQMCl57XW8ONXMMZwA6NgLHhqUPadIZp","etag":"\"3721122172060a9305ec10cb33de1a59\"","x-amz-replication-status":"COMPLETED","accept-ranges":"bytes","content-security-policy":"default-src 'none'; style-src 'unsafe-inline'; sandbox","server":"deno/gcp-asia-southeast1","content-length":"508","cross-origin-embedder-policy":"same-origin","via":"http/2 edgeproxy-h","x-amz-cf-pop":"SIN52-P1","cross-origin-resource-policy":"same-origin","x-amz-server-side-encryption":"AES256","x-cache":"Hit from cloudfront","referrer-policy":"strict-origin-when-cross-origin","age":"21768218","cache-control":"public, max-age=31536000, immutable","x-amz-cf-id":"uPHUuG8JwTNppw94ZGm05ydEV9Z9yGqvBQiu76qHHAmUbikd4qo0MA==","x-frame-options":"DENY","x-content-type-options":"nosniff","cross-origin-opener-policy":"same-origin"},"url":"https://deno.land/x/fresh@1.7.3/src/runtime/Partial.tsx","time":1750942649}

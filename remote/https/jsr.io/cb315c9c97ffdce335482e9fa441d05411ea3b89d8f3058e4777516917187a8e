@@ -1,0 +1,37 @@
+// Copyright 2018-2025 the Deno authors. MIT license.
+// This module is browser compatible.
+
+/**
+ * Helper functions for working with
+ * {@linkcode https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array | Uint8Array}
+ * byte slices.
+ *
+ * ```ts
+ * import { concat, indexOfNeedle, endsWith } from "@std/bytes";
+ * import { assertEquals } from "@std/assert";
+ *
+ * const a = new Uint8Array([0, 1, 2]);
+ * const b = new Uint8Array([3, 4, 5]);
+ *
+ * const c = concat([a, b]);
+ *
+ * assertEquals(c, new Uint8Array([0, 1, 2, 3, 4, 5]));
+ *
+ * assertEquals(indexOfNeedle(c, new Uint8Array([2, 3])), 2);
+ *
+ * assertEquals(endsWith(c, b), true);
+ * ```
+ *
+ * @module
+ */
+export * from "./concat.ts";
+export * from "./copy.ts";
+export * from "./ends_with.ts";
+export * from "./equals.ts";
+export * from "./includes_needle.ts";
+export * from "./index_of_needle.ts";
+export * from "./last_index_of_needle.ts";
+export * from "./repeat.ts";
+export * from "./starts_with.ts";
+
+// denoCacheMetadata={"headers":{"content-type":"text/typescript","cache-control":"public, max-age=31536000, immutable","accept-ranges":"bytes","access-control-allow-origin":"*","x-goog-generation":"1747121135068281","server":"UploadServer","x-goog-storage-class":"STANDARD","via":"1.1 google","x-goog-metageneration":"1","x-jsr-cache-status":"miss","date":"Thu, 26 Jun 2025 12:57:34 GMT","expires":"Fri, 26 Jun 2026 12:57:34 GMT","etag":"\"716ab5a4d36af1ce9423584fadbcd6c6\"","content-length":"999","x-jsr-cache-id":"MEL","x-guploader-uploadid":"ABgVH88t1t7pnYeoK3DjcYVIvyp2iQFpfUBBAoO0-2V83x5IFXOHbazggIzggnRuXd1ENmBTtbUOiU4","x-goog-hash":"crc32c=e4yPaQ==,md5=cWq1pNNq8c6UI1hPrbzWxg==","access-control-expose-headers":"*","x-content-type-options":"nosniff","x-robots-tag":"noindex","last-modified":"Tue, 13 May 2025 07:25:35 GMT","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000","x-goog-stored-content-encoding":"identity","content-security-policy":"default-src 'none'; script-src 'none'; style-src 'none'; img-src 'none'; font-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; frame-ancestors 'none'; sandbox; form-action 'none';","x-goog-stored-content-length":"999","cross-origin-resource-policy":"cross-origin"},"url":"https://jsr.io/@std/bytes/1.0.6/mod.ts","time":1750942654}

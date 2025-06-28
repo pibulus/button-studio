@@ -1,0 +1,17 @@
+// Copyright 2018-2023 the Deno authors. All rights reserved. MIT license.
+// This module is browser compatible.
+
+import { isWindows } from "./_os.ts";
+import { normalize as posixNormalize } from "./posix/normalize.ts";
+import { normalize as windowsNormalize } from "./windows/normalize.ts";
+/**
+ * Normalize the `path`, resolving `'..'` and `'.'` segments.
+ * Note that resolving these segments does not necessarily mean that all will be eliminated.
+ * A `'..'` at the top-level will be preserved, and an empty path is canonically `'.'`.
+ * @param path to be normalized
+ */
+export function normalize(path: string): string {
+  return isWindows ? windowsNormalize(path) : posixNormalize(path);
+}
+
+// denoCacheMetadata={"headers":{"date":"Thu, 13 Feb 2025 22:48:23 GMT","via":"http/2 edgeproxy-h","x-amz-replication-status":"COMPLETED","x-content-type-options":"nosniff","etag":"\"d519716c579969d0d5f81d2364c30e5a\"","server":"deno/gcp-asia-southeast1","strict-transport-security":"max-age=63072000; includeSubDomains; preload","x-amz-cf-pop":"SIN52-P1","cross-origin-opener-policy":"same-origin","referrer-policy":"strict-origin-when-cross-origin","last-modified":"Fri, 24 Nov 2023 02:50:10 GMT","cross-origin-embedder-policy":"same-origin","x-frame-options":"DENY","accept-ranges":"bytes","vary":"Accept-Encoding, Origin","cache-control":"public, max-age=31536000, immutable","access-control-allow-origin":"*","x-amz-server-side-encryption":"AES256","x-amz-version-id":"UqbZjx2X5oGaGKcTEyY.uIdB6XR_oEpJ","cross-origin-resource-policy":"same-origin","x-cache":"Hit from cloudfront","content-type":"application/typescript; charset=utf-8","content-security-policy":"default-src 'none'; style-src 'unsafe-inline'; sandbox","server-timing":"fetchSource;dur=10","x-amz-cf-id":"AWQWOVGWyLuWJymaspwZsg1wFxlvT0Wgv09We6twSP5jzpRKwwD0rg==","age":"11455750","content-length":"695"},"url":"https://deno.land/std@0.208.0/path/normalize.ts","time":1750942652}

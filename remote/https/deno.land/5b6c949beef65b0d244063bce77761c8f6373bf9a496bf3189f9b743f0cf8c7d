@@ -1,0 +1,28 @@
+// Copyright 2018-2023 the Deno authors. All rights reserved. MIT license.
+// This module is browser compatible.
+
+import { isWindows } from "./_os.ts";
+import { toFileUrl as posixToFileUrl } from "./posix/to_file_url.ts";
+import { toFileUrl as windowsToFileUrl } from "./windows/to_file_url.ts";
+
+/**
+ * Converts a path string to a file URL.
+ *
+ * ```ts
+ * import { toFileUrl } from "https://deno.land/std@$STD_VERSION/path/to_file_url.ts";
+ *
+ * // posix
+ * toFileUrl("/home/foo"); // new URL("file:///home/foo")
+ *
+ * // win32
+ * toFileUrl("\\home\\foo"); // new URL("file:///home/foo")
+ * toFileUrl("C:\\Users\\foo"); // new URL("file:///C:/Users/foo")
+ * toFileUrl("\\\\127.0.0.1\\home\\foo"); // new URL("file://127.0.0.1/home/foo")
+ * ```
+ * @param path to convert to file URL
+ */
+export function toFileUrl(path: string): URL {
+  return isWindows ? windowsToFileUrl(path) : posixToFileUrl(path);
+}
+
+// denoCacheMetadata={"headers":{"etag":"\"abae241aca6886985add061c038d870e\"","x-amz-replication-status":"COMPLETED","accept-ranges":"bytes","cross-origin-embedder-policy":"same-origin","content-type":"application/typescript; charset=utf-8","age":"8374706","server-timing":"fetchSource;dur=10","date":"Fri, 21 Mar 2025 14:39:06 GMT","content-length":"904","x-amz-cf-id":"2WKhtiJsjuqhhMXDvola3typxaSxrf9iy2y-wixFXrRv4E6n4L_org==","referrer-policy":"strict-origin-when-cross-origin","x-amz-cf-pop":"SIN52-P1","x-amz-version-id":"EbMX1OQKZR5o8hw8r_9aS2M2R9doj4d_","server":"deno/gcp-asia-southeast1","via":"http/2 edgeproxy-h","x-amz-server-side-encryption":"AES256","strict-transport-security":"max-age=63072000; includeSubDomains; preload","x-frame-options":"DENY","vary":"Accept-Encoding, Origin","x-content-type-options":"nosniff","cache-control":"public, max-age=31536000, immutable","cross-origin-opener-policy":"same-origin","access-control-allow-origin":"*","cross-origin-resource-policy":"same-origin","x-cache":"Hit from cloudfront","last-modified":"Fri, 24 Nov 2023 02:50:10 GMT","content-security-policy":"default-src 'none'; style-src 'unsafe-inline'; sandbox"},"url":"https://deno.land/std@0.208.0/path/to_file_url.ts","time":1750942652}

@@ -1,0 +1,20 @@
+// Copyright 2018-2024 the Deno authors. All rights reserved. MIT license.
+import type { Range } from "./types.ts";
+import { isComparator } from "./_is_comparator.ts";
+
+/**
+ * Does a deep check on the object to determine if its a valid range.
+ *
+ * Objects with extra fields are still considered valid if they have at
+ * least the correct fields.
+ *
+ * Adds a type assertion if true.
+ * @param value The value to check if its a valid Range
+ * @returns True if its a valid Range otherwise false.
+ */
+export function isRange(value: unknown): value is Range {
+  return Array.isArray(value) &&
+    value.every((r) => Array.isArray(r) && r.every((c) => isComparator(c)));
+}
+
+// denoCacheMetadata={"headers":{"strict-transport-security":"max-age=63072000; includeSubDomains; preload","etag":"\"10a82d27c894e604d454e62c6a808306\"","cross-origin-opener-policy":"same-origin","x-amz-cf-id":"AiyGMyeiVTRGjbus6Xldw4gMbHttN5rkcbOM1fUMWdnQPo7L4ICDkQ==","x-amz-replication-status":"COMPLETED","referrer-policy":"strict-origin-when-cross-origin","content-type":"application/typescript; charset=utf-8","via":"http/2 edgeproxy-h","vary":"Accept-Encoding, Origin","cache-control":"public, max-age=31536000, immutable","x-cache":"Hit from cloudfront","accept-ranges":"bytes","x-frame-options":"DENY","content-length":"669","cross-origin-embedder-policy":"same-origin","x-content-type-options":"nosniff","x-amz-server-side-encryption":"AES256","last-modified":"Thu, 15 Feb 2024 05:02:29 GMT","date":"Fri, 21 Mar 2025 14:39:03 GMT","server":"deno/gcp-asia-southeast1","x-amz-version-id":"T98NAEun.2FOMS9DRw0Y8zSEGFyxSPvt","server-timing":"fetchSource;dur=44","content-security-policy":"default-src 'none'; style-src 'unsafe-inline'; sandbox","x-amz-cf-pop":"SIN52-P1","age":"8374707","access-control-allow-origin":"*","cross-origin-resource-policy":"same-origin"},"url":"https://deno.land/std@0.216.0/semver/is_range.ts","time":1750942649}

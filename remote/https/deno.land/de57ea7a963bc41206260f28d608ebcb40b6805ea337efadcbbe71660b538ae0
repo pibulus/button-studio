@@ -1,0 +1,13 @@
+export default function DefaultErrorPage() {
+  return (
+    <div class="frsh-error-page">
+      <div style="max-width: 48rem; padding: 2rem 1rem; margin: 0 auto; font-family: sans-serif">
+        <h1>
+          An error occurred during route handling or page rendering.
+        </h1>
+      </div>
+    </div>
+  );
+}
+
+// denoCacheMetadata={"headers":{"cross-origin-resource-policy":"same-origin","date":"Thu, 17 Oct 2024 14:13:52 GMT","last-modified":"Mon, 14 Oct 2024 12:51:13 GMT","access-control-allow-origin":"*","referrer-policy":"strict-origin-when-cross-origin","x-amz-cf-id":"ZkbG_dxlaP2ph9GUsBrEG9bTga7G1q7O_Bvdap85HvZogT28koqlTA==","x-amz-replication-status":"COMPLETED","content-length":"315","x-amz-server-side-encryption":"AES256","server-timing":"fetchSource;dur=28","content-type":"application/typescript; charset=utf-8","accept-ranges":"bytes","x-cache":"Hit from cloudfront","x-content-type-options":"nosniff","age":"21768218","x-amz-version-id":"TKwChRmYaEoGaUpAskpAP7Jv_._4H2X2","cross-origin-opener-policy":"same-origin","cache-control":"public, max-age=31536000, immutable","content-security-policy":"default-src 'none'; style-src 'unsafe-inline'; sandbox","server":"deno/gcp-asia-southeast1","cross-origin-embedder-policy":"same-origin","strict-transport-security":"max-age=63072000; includeSubDomains; preload","vary":"Accept-Encoding, Origin","x-amz-cf-pop":"SIN52-P1","etag":"\"9224b4f35d16dcfdc3e030adc5406a38\"","via":"http/2 edgeproxy-h","x-frame-options":"DENY"},"url":"https://deno.land/x/fresh@1.7.3/src/server/default_error_page.tsx","time":1750942649}

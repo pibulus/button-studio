@@ -1,0 +1,11 @@
+import { jsx as _jsx } from "preact/jsx-runtime";
+import { IS_BROWSER } from "$fresh/runtime.ts";
+export function Button(props) {
+  return /*#__PURE__*/ _jsx("button", {
+    ...props,
+    disabled: !IS_BROWSER || props.disabled,
+    class: "px-2 py-1 border-gray-500 border-2 rounded bg-white hover:bg-gray-200 transition-colors"
+  });
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImZpbGU6Ly8vVXNlcnMvcGFibG9hbHZhcmFkby9EZXNrdG9wL0J1dHRvblN0dWRpby9jb21wb25lbnRzL0J1dHRvbi50c3giXSwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgSlNYIH0gZnJvbSBcInByZWFjdFwiO1xuaW1wb3J0IHsgSVNfQlJPV1NFUiB9IGZyb20gXCIkZnJlc2gvcnVudGltZS50c1wiO1xuXG5leHBvcnQgZnVuY3Rpb24gQnV0dG9uKHByb3BzOiBKU1guSFRNTEF0dHJpYnV0ZXM8SFRNTEJ1dHRvbkVsZW1lbnQ+KSB7XG4gIHJldHVybiAoXG4gICAgPGJ1dHRvblxuICAgICAgey4uLnByb3BzfVxuICAgICAgZGlzYWJsZWQ9eyFJU19CUk9XU0VSIHx8IHByb3BzLmRpc2FibGVkfVxuICAgICAgY2xhc3M9XCJweC0yIHB5LTEgYm9yZGVyLWdyYXktNTAwIGJvcmRlci0yIHJvdW5kZWQgYmctd2hpdGUgaG92ZXI6YmctZ3JheS0yMDAgdHJhbnNpdGlvbi1jb2xvcnNcIlxuICAgIC8+XG4gICk7XG59XG4iXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IjtBQUNBLFNBQVMsVUFBVSxRQUFRLG9CQUFvQjtBQUUvQyxPQUFPLFNBQVMsT0FBTyxLQUE0QztFQUNqRSxxQkFDRSxLQUFDO0lBQ0UsR0FBRyxLQUFLO0lBQ1QsVUFBVSxDQUFDLGNBQWMsTUFBTSxRQUFRO0lBQ3ZDLE9BQU07O0FBR1oifQ==
+// denoCacheMetadata=7757222641029435183,11504698418923364304

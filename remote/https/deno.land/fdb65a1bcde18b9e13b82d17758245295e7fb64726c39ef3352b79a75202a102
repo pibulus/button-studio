@@ -1,0 +1,28 @@
+// Copyright 2018-2024 the Deno authors. All rights reserved. MIT license.
+// This module is browser compatible.
+
+// This file been copied to `std/expect`.
+
+/**
+ * Converts the input into a string. Objects, Sets and Maps are sorted so as to
+ * make tests less flaky
+ * @param v Value to be formatted
+ */
+export function format(v: unknown): string {
+  // deno-lint-ignore no-explicit-any
+  const { Deno } = globalThis as any;
+  return typeof Deno?.inspect === "function"
+    ? Deno.inspect(v, {
+      depth: Infinity,
+      sorted: true,
+      trailingComma: true,
+      compact: false,
+      iterableLimit: Infinity,
+      // getters should be true in assertEquals.
+      getters: true,
+      strAbbreviateSize: Infinity,
+    })
+    : `"${String(v).replace(/(?=["\\])/g, "\\")}"`;
+}
+
+// denoCacheMetadata={"headers":{"content-type":"application/typescript; charset=utf-8","cross-origin-resource-policy":"same-origin","content-length":"783","cross-origin-opener-policy":"same-origin","x-amz-cf-id":"33TC5LXBpU6Y8tM4-bmDlnl5sp8A28HM5gZ065FXQzNGH8vZdDvLjQ==","last-modified":"Thu, 15 Feb 2024 05:02:27 GMT","x-content-type-options":"nosniff","content-security-policy":"default-src 'none'; style-src 'unsafe-inline'; sandbox","strict-transport-security":"max-age=63072000; includeSubDomains; preload","vary":"Accept-Encoding, Origin","x-amz-replication-status":"COMPLETED","accept-ranges":"bytes","age":"11412386","date":"Fri, 14 Feb 2025 10:51:03 GMT","via":"http/2 edgeproxy-h","x-frame-options":"DENY","referrer-policy":"strict-origin-when-cross-origin","x-amz-cf-pop":"SIN52-P1","x-amz-server-side-encryption":"AES256","access-control-allow-origin":"*","server-timing":"fetchSource;dur=32","server":"deno/gcp-asia-southeast1","cache-control":"public, max-age=31536000, immutable","cross-origin-embedder-policy":"same-origin","etag":"\"c89908852b454739eb35916e6d376661\"","x-amz-version-id":"Fn5hQQhAmOShnK4dkxSge5AWmUoMkKGB","x-cache":"Hit from cloudfront"},"url":"https://deno.land/std@0.216.0/assert/_format.ts","time":1750942650}

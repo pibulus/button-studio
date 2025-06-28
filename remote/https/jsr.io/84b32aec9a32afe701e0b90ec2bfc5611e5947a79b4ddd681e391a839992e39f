@@ -1,0 +1,32 @@
+// Copyright 2018-2025 the Deno authors. MIT license.
+// This module is browser compatible.
+
+import { isWindows } from "./_os.ts";
+import { toFileUrl as posixToFileUrl } from "./posix/to_file_url.ts";
+import { toFileUrl as windowsToFileUrl } from "./windows/to_file_url.ts";
+
+/**
+ * Converts a path string to a file URL.
+ *
+ * @example Usage
+ * ```ts
+ * import { toFileUrl } from "@std/path/to-file-url";
+ * import { assertEquals } from "@std/assert";
+ *
+ * if (Deno.build.os === "windows") {
+ *   assertEquals(toFileUrl("\\home\\foo"), new URL("file:///home/foo"));
+ *   assertEquals(toFileUrl("C:\\Users\\foo"), new URL("file:///C:/Users/foo"));
+ *   assertEquals(toFileUrl("\\\\127.0.0.1\\home\\foo"), new URL("file://127.0.0.1/home/foo"));
+ * } else {
+ *   assertEquals(toFileUrl("/home/foo"), new URL("file:///home/foo"));
+ * }
+ * ```
+ *
+ * @param path Path to convert to file URL.
+ * @returns The file URL equivalent to the path.
+ */
+export function toFileUrl(path: string): URL {
+  return isWindows ? windowsToFileUrl(path) : posixToFileUrl(path);
+}
+
+// denoCacheMetadata={"headers":{"accept-ranges":"bytes","content-length":"1057","x-robots-tag":"noindex","expires":"Fri, 26 Jun 2026 12:57:34 GMT","x-jsr-cache-status":"revalidated","access-control-allow-origin":"*","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000","content-type":"text/typescript","x-goog-metageneration":"1","cache-control":"public, max-age=31536000, immutable","via":"1.1 google","last-modified":"Tue, 27 May 2025 07:30:38 GMT","age":"0","x-goog-stored-content-encoding":"identity","x-goog-hash":"crc32c=UmBrMw==,md5=vd3Yt07m5K5xpcxIneh7/A==","etag":"\"bdddd8b74ee6e4ae71a5cc489de87bfc\"","x-goog-stored-content-length":"1057","date":"Thu, 26 Jun 2025 12:57:34 GMT","x-guploader-uploadid":"ABgVH8_lP0k9-i7kdrPevaC-8SkYbL71CDD9DRcs43wNhQnt_sS521smQCB2OfdljzUbYbvP","x-jsr-cache-id":"MEL","x-goog-generation":"1748331038064846","server":"UploadServer","access-control-expose-headers":"*","cross-origin-resource-policy":"cross-origin","x-content-type-options":"nosniff","content-security-policy":"default-src 'none'; script-src 'none'; style-src 'none'; img-src 'none'; font-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; frame-ancestors 'none'; sandbox; form-action 'none';","x-goog-storage-class":"STANDARD"},"url":"https://jsr.io/@std/path/1.1.0/to_file_url.ts","time":1750942654}

@@ -1,0 +1,5 @@
+/* esm.sh - preact@10.22.0/hooks */
+import "/preact@10.22.0/denonext/preact.mjs";
+export * from "/preact@10.22.0/denonext/hooks.mjs";
+
+// denoCacheMetadata={"headers":{"cf-cache-status":"DYNAMIC","cache-control":"public, max-age=31536000, immutable","date":"Thu, 26 Jun 2025 12:57:29 GMT","x-esm-path":"/preact@10.22.0/denonext/hooks.mjs","alt-svc":"h3=\":443\"; ma=86400","cf-ray":"955cdee7c9917c19-MEL","vary":"User-Agent","content-type":"application/javascript; charset=utf-8","server":"cloudflare","x-typescript-types":"https://esm.sh/preact@10.22.0/hooks/src/index.d.ts","access-control-allow-origin":"*","access-control-expose-headers":"X-ESM-Path, X-TypeScript-Types"},"url":"https://esm.sh/preact@10.22.0/hooks","time":1750942649}

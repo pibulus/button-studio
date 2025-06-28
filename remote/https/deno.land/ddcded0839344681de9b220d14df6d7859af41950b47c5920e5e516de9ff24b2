@@ -1,0 +1,28 @@
+// Copyright 2018-2024 the Deno authors. All rights reserved. MIT license.
+import { AssertionError } from "./assertion_error.ts";
+
+/**
+ * Make an assertion that `actual` match RegExp `expected`. If not
+ * then throw.
+ *
+ * @example
+ * ```ts
+ * import { assertMatch } from "https://deno.land/std@$STD_VERSION/assert/assert_match.ts";
+ *
+ * assertMatch("Raptor", RegExp(/Raptor/)); // Doesn't throw
+ * assertMatch("Denosaurus", RegExp(/Raptor/)); // Throws
+ * ```
+ */
+export function assertMatch(
+  actual: string,
+  expected: RegExp,
+  msg?: string,
+) {
+  if (!expected.test(actual)) {
+    const msgSuffix = msg ? `: ${msg}` : ".";
+    msg = `Expected actual: "${actual}" to match: "${expected}"${msgSuffix}`;
+    throw new AssertionError(msg);
+  }
+}
+
+// denoCacheMetadata={"headers":{"date":"Sun, 09 Mar 2025 19:15:03 GMT","server-timing":"fetchSource;dur=30","x-amz-version-id":"Qbr9Nua7LmoFhNSb9CyJw7Q5iVpXNEPN","accept-ranges":"bytes","x-amz-replication-status":"COMPLETED","x-amz-server-side-encryption":"AES256","x-cache":"Hit from cloudfront","cache-control":"public, max-age=31536000, immutable","cross-origin-embedder-policy":"same-origin","via":"http/2 edgeproxy-h","x-amz-cf-id":"IqJU0Kuu8mKjoLkNIBxVJOgzDWreK1-XalMsrM7Y4LG87p9HV3CaKg==","content-type":"application/typescript; charset=utf-8","x-frame-options":"DENY","age":"9394947","cross-origin-opener-policy":"same-origin","last-modified":"Thu, 15 Feb 2024 05:02:27 GMT","strict-transport-security":"max-age=63072000; includeSubDomains; preload","vary":"Accept-Encoding, Origin","cross-origin-resource-policy":"same-origin","x-content-type-options":"nosniff","content-length":"750","etag":"\"5faee6c862be5d9618331274930edd4e\"","referrer-policy":"strict-origin-when-cross-origin","content-security-policy":"default-src 'none'; style-src 'unsafe-inline'; sandbox","server":"deno/gcp-asia-southeast1","x-amz-cf-pop":"SIN52-P1","access-control-allow-origin":"*"},"url":"https://deno.land/std@0.216.0/assert/assert_match.ts","time":1750942649}

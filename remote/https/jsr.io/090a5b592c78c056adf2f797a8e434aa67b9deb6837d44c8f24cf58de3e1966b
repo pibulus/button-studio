@@ -1,0 +1,45 @@
+// Copyright 2018-2025 the Deno authors. MIT license.
+// This module is browser compatible.
+
+import type { GlobOptions } from "../_common/glob_to_reg_exp.ts";
+import { normalize } from "./normalize.ts";
+import { SEPARATOR_PATTERN } from "./constants.ts";
+
+export type { GlobOptions };
+
+/**
+ * Like normalize(), but doesn't collapse "**\/.." when `globstar` is true.
+ *
+ * @example Usage
+ * ```ts
+ * import { normalizeGlob } from "@std/path/posix/normalize-glob";
+ * import { assertEquals } from "@std/assert";
+ *
+ * const path = normalizeGlob("foo/bar/../*", { globstar: true });
+ * assertEquals(path, "foo/*");
+ * ```
+ *
+ * @param glob The glob to normalize.
+ * @param options The options to use.
+ * @returns The normalized path.
+ */
+export function normalizeGlob(
+  glob: string,
+  options: Pick<GlobOptions, "globstar"> = {},
+): string {
+  const { globstar = false }: GlobOptions = options;
+  if (glob.match(/\0/g)) {
+    throw new Error(`Glob contains invalid characters: "${glob}"`);
+  }
+  if (!globstar) {
+    return normalize(glob);
+  }
+  const s = SEPARATOR_PATTERN.source;
+  const badParentPattern = new RegExp(
+    `(?<=(${s}|^)\\*\\*${s})\\.\\.(?=${s}|$)`,
+    "g",
+  );
+  return normalize(glob.replace(badParentPattern, "\0")).replace(/\0/g, "..");
+}
+
+// denoCacheMetadata={"headers":{"cross-origin-resource-policy":"cross-origin","x-goog-generation":"1748331038108106","x-goog-hash":"crc32c=/1wW4Q==,md5=JeqsjrmtNwRou9OkhUqnPw==","cache-control":"public, max-age=31536000, immutable","content-type":"text/typescript","x-goog-stored-content-encoding":"identity","date":"Thu, 26 Jun 2025 12:57:34 GMT","age":"0","via":"1.1 google","access-control-expose-headers":"*","x-guploader-uploadid":"ABgVH89CIGuXamSTJHLrw4ut7QzOx1DflM6AUTpLc9L-pZK53QSsAIZ-DmooHyNL9llRdsM8Eo-9GB4","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000","x-goog-metageneration":"1","etag":"\"25eaac8eb9ad370468bbd3a4854aa73f\"","server":"UploadServer","x-robots-tag":"noindex","x-goog-storage-class":"STANDARD","expires":"Fri, 26 Jun 2026 12:57:34 GMT","content-security-policy":"default-src 'none'; script-src 'none'; style-src 'none'; img-src 'none'; font-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'; frame-ancestors 'none'; sandbox; form-action 'none';","x-content-type-options":"nosniff","content-length":"1263","x-jsr-cache-status":"revalidated","x-goog-stored-content-length":"1263","last-modified":"Tue, 27 May 2025 07:30:38 GMT","accept-ranges":"bytes","x-jsr-cache-id":"MEL","access-control-allow-origin":"*"},"url":"https://jsr.io/@std/path/1.1.0/posix/normalize_glob.ts","time":1750942654}

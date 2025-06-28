@@ -1,0 +1,12 @@
+// Copyright 2018-2024 the Deno authors. All rights reserved. MIT license.
+// Copyright the Browserify authors. MIT License.
+// Ported from https://github.com/browserify/path-browserify/
+// This module is browser compatible.
+
+import { CHAR_FORWARD_SLASH } from "../_common/constants.ts";
+
+export function isPosixPathSeparator(code: number): boolean {
+  return code === CHAR_FORWARD_SLASH;
+}
+
+// denoCacheMetadata={"headers":{"x-amz-cf-id":"kvh_soYXgJv9VepBqRa_P3b4kKcrpPITn_ATYlnKam-0k0r-bhoaFg==","cross-origin-opener-policy":"same-origin","referrer-policy":"strict-origin-when-cross-origin","last-modified":"Thu, 15 Feb 2024 05:02:29 GMT","via":"http/2 edgeproxy-h","content-security-policy":"default-src 'none'; style-src 'unsafe-inline'; sandbox","x-amz-replication-status":"COMPLETED","etag":"\"645f33cec02ec7bfe4abcef50d55052e\"","x-cache":"Hit from cloudfront","x-content-type-options":"nosniff","x-amz-server-side-encryption":"AES256","x-frame-options":"DENY","x-amz-cf-pop":"SIN52-P1","vary":"Accept-Encoding, Origin","age":"11412388","cache-control":"public, max-age=31536000, immutable","cross-origin-resource-policy":"same-origin","server":"deno/gcp-asia-southeast1","date":"Fri, 14 Feb 2025 10:51:02 GMT","strict-transport-security":"max-age=63072000; includeSubDomains; preload","x-amz-version-id":"kxObSuz78jhrmYTs_Kyqhvwkduq7cdhE","content-length":"391","access-control-allow-origin":"*","accept-ranges":"bytes","content-type":"application/typescript; charset=utf-8","cross-origin-embedder-policy":"same-origin","server-timing":"fetchSource;dur=18"},"url":"https://deno.land/std@0.216.0/path/posix/_util.ts","time":1750942650}

@@ -1,0 +1,52 @@
+/* esm.sh - preact@10.22.0/debug */
+import{Fragment as F,options as a,Component as x}from"/preact@10.22.0/denonext/preact.mjs";import"./devtools.mjs";var Y={};function Z(){Y={}}function y(o){return o.type===F?"Fragment":typeof o.type=="function"?o.type.displayName||o.type.name:typeof o.type=="string"?o.type:"#text"}var I=[],T=[];function L(){return I.length>0?I[I.length-1]:null}var z=!0;function U(o){return typeof o.type=="function"&&o.type!=F}function c(o){for(var s=[o],l=o;l.__o!=null;)s.push(l.__o),l=l.__o;return s.reduce(function(v,h){v+="  in "+y(h);var f=h.__source;return f?v+=" (at "+f.fileName+":"+f.lineNumber+")":z&&console.warn("Add @babel/plugin-transform-react-jsx-source to get a more detailed component stack. Note that you should not add it to production builds of your App for bundle size reasons."),z=!1,v+`
+`},"")}var q=typeof WeakMap=="function";function P(o){var s=[];return o.__k&&o.__k.forEach(function(l){l&&typeof l.type=="function"?s.push.apply(s,P(l)):l&&typeof l.type=="string"&&s.push(l.type)}),s}function R(o){return o?typeof o.type=="function"?o.__===null?o.__e!==null&&o.__e.parentNode!==null?o.__e.parentNode.localName:"":R(o.__):o.type:""}var B=x.prototype.setState;function A(o){return o==="table"||o==="tfoot"||o==="tbody"||o==="thead"||o==="td"||o==="tr"||o==="th"}x.prototype.setState=function(o,s){return this.__v==null&&this.state==null&&console.warn(`Calling "this.setState" inside the constructor of a component is a no-op and might be a bug in your application. Instead, set "this.state = {}" directly.
+
+`+c(L())),B.call(this,o,s)};var G=/^(address|article|aside|blockquote|details|div|dl|fieldset|figcaption|figure|footer|form|h1|h2|h3|h4|h5|h6|header|hgroup|hr|main|menu|nav|ol|p|pre|search|section|table|ul)$/,K=x.prototype.forceUpdate;function d(o){var s=o.props,l=y(o),v="";for(var h in s)if(s.hasOwnProperty(h)&&h!=="children"){var f=s[h];typeof f=="function"&&(f="function "+(f.displayName||f.name)+"() {}"),f=Object(f)!==f||f.toString?f+"":Object.prototype.toString.call(f),v+=" "+h+"="+JSON.stringify(f)}var O=s.children;return"<"+l+v+(O&&O.length?">..</"+l+">":" />")}x.prototype.forceUpdate=function(o){return this.__v==null?console.warn(`Calling "this.forceUpdate" inside the constructor of a component is a no-op and might be a bug in your application.
+
+`+c(L())):this.__P==null&&console.warn(`Can't call "this.forceUpdate" on an unmounted component. This is a no-op, but it indicates a memory leak in your application. To fix, cancel all subscriptions and asynchronous tasks in the componentWillUnmount method.
+
+`+c(this.__v)),K.call(this,o)},function(){(function(){var t=a.__b,e=a.diffed,n=a.__,p=a.vnode,i=a.__r;a.diffed=function(r){U(r)&&T.pop(),I.pop(),e&&e(r)},a.__b=function(r){U(r)&&I.push(r),t&&t(r)},a.__=function(r,u){T=[],n&&n(r,u)},a.vnode=function(r){r.__o=T.length>0?T[T.length-1]:null,p&&p(r)},a.__r=function(r){U(r)&&T.push(r),i&&i(r)}})();var o=!1,s=a.__b,l=a.diffed,v=a.vnode,h=a.__r,f=a.__e,O=a.__,W=a.__h,C=q?{useEffect:new WeakMap,useLayoutEffect:new WeakMap,lazyPropTypes:new WeakMap}:null,w=[];a.__e=function(t,e,n,p){if(e&&e.__c&&typeof t.then=="function"){var i=t;t=new Error("Missing Suspense. The throwing component was: "+y(e));for(var r=e;r;r=r.__)if(r.__c&&r.__c.__c){t=i;break}if(t instanceof Error)throw t}try{(p=p||{}).componentStack=c(e),f(t,e,n,p),typeof t.then!="function"&&setTimeout(function(){throw t})}catch(u){throw u}},a.__=function(t,e){if(!e)throw new Error(`Undefined parent passed to render(), this is the second argument.
+Check if the element is available in the DOM/has the correct id.`);var n;switch(e.nodeType){case 1:case 11:case 9:n=!0;break;default:n=!1}if(!n){var p=y(t);throw new Error("Expected a valid HTML node as a second argument to render.	Received "+e+" instead: render(<"+p+" />, "+e+");")}O&&O(t,e)},a.__b=function(t){var e=t.type;if(o=!0,e===void 0)throw new Error(`Undefined component passed to createElement()
+
+You likely forgot to export your component or might have mixed up default and named imports`+d(t)+`
+
+`+c(t));if(e!=null&&typeof e=="object")throw e.__k!==void 0&&e.__e!==void 0?new Error("Invalid type passed to createElement(): "+e+`
+
+Did you accidentally pass a JSX literal as JSX twice?
+
+  let My`+y(t)+" = "+d(e)+`;
+  let vnode = <My`+y(t)+` />;
+
+This usually happens when you export a JSX literal and not the component.
+
+`+c(t)):new Error("Invalid type passed to createElement(): "+(Array.isArray(e)?"array":e));if(t.ref!==void 0&&typeof t.ref!="function"&&typeof t.ref!="object"&&!("$$typeof"in t))throw new Error(`Component's "ref" property should be a function, or an object created by createRef(), but got [`+typeof t.ref+`] instead
+`+d(t)+`
+
+`+c(t));if(typeof t.type=="string"){for(var n in t.props)if(n[0]==="o"&&n[1]==="n"&&typeof t.props[n]!="function"&&t.props[n]!=null)throw new Error(`Component's "`+n+'" property should be a function, but got ['+typeof t.props[n]+`] instead
+`+d(t)+`
+
+`+c(t))}if(typeof t.type=="function"&&t.type.propTypes){if(t.type.displayName==="Lazy"&&C&&!C.lazyPropTypes.has(t.type)){var p="PropTypes are not supported on lazy(). Use propTypes on the wrapped component itself. ";try{var i=t.type();C.lazyPropTypes.set(t.type,!0),console.warn(p+"Component wrapped in lazy() is "+y(i))}catch{console.warn(p+"We will log the wrapped component's name once it is loaded.")}}var r=t.props;t.type.__f&&delete(r=function(u,m){for(var b in m)u[b]=m[b];return u}({},r)).ref,function(u,m,b,N,k){Object.keys(u).forEach(function(g){var _;try{_=u[g](m,g,N,"prop",null,"SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED")}catch(j){_=j}_&&!(_.message in Y)&&(Y[_.message]=!0,console.error("Failed prop type: "+_.message+(k&&`
+`+k()||"")))})}(t.type.propTypes,r,0,y(t),function(){return c(t)})}s&&s(t)};var H,S=0;a.__r=function(t){h&&h(t),o=!0;var e=t.__c;if(e===H?S++:S=1,S>=25)throw new Error("Too many re-renders. This is limited to prevent an infinite loop which may lock up your browser. The component causing this is: "+y(t));H=e},a.__h=function(t,e,n){if(!t||!o)throw new Error("Hook can only be invoked from render methods.");W&&W(t,e,n)};var M=function(t,e){return{get:function(){var n="get"+t+e;w&&w.indexOf(n)<0&&(w.push(n),console.warn("getting vnode."+t+" is deprecated, "+e))},set:function(){var n="set"+t+e;w&&w.indexOf(n)<0&&(w.push(n),console.warn("setting vnode."+t+" is not allowed, "+e))}}},D={nodeName:M("nodeName","use vnode.type"),attributes:M("attributes","use vnode.props"),children:M("children","use vnode.props.children")},J=Object.create({},D);a.vnode=function(t){var e=t.props;if(t.type!==null&&e!=null&&("__source"in e||"__self"in e)){var n=t.props={};for(var p in e){var i=e[p];p==="__source"?t.__source=i:p==="__self"?t.__self=i:n[p]=i}}t.__proto__=J,v&&v(t)},a.diffed=function(t){var e,n=t.type,p=t.__;if(t.__k&&t.__k.forEach(function(E){if(typeof E=="object"&&E&&E.type===void 0){var $=Object.keys(E).join(",");throw new Error("Objects are not valid as a child. Encountered an object with the keys {"+$+`}.
+
+`+c(t))}}),t.__c===H&&(S=0),typeof n=="string"&&(A(n)||n==="p"||n==="a"||n==="button")){var i=R(p);if(i!=="")n==="table"&&i!=="td"&&A(i)?(console.log(i,p.__e),console.error("Improper nesting of table. Your <table> should not have a table-node parent."+d(t)+`
+
+`+c(t))):n!=="thead"&&n!=="tfoot"&&n!=="tbody"||i==="table"?n==="tr"&&i!=="thead"&&i!=="tfoot"&&i!=="tbody"?console.error("Improper nesting of table. Your <tr> should have a <thead/tbody/tfoot> parent."+d(t)+`
+
+`+c(t)):n==="td"&&i!=="tr"?console.error("Improper nesting of table. Your <td> should have a <tr> parent."+d(t)+`
+
+`+c(t)):n==="th"&&i!=="tr"&&console.error("Improper nesting of table. Your <th> should have a <tr>."+d(t)+`
+
+`+c(t)):console.error("Improper nesting of table. Your <thead/tbody/tfoot> should have a <table> parent."+d(t)+`
+
+`+c(t));else if(n==="p"){var r=P(t).filter(function(E){return G.test(E)});r.length&&console.error("Improper nesting of paragraph. Your <p> should not have "+r.join(", ")+"as child-elements."+d(t)+`
+
+`+c(t))}else n!=="a"&&n!=="button"||P(t).indexOf(n)!==-1&&console.error("Improper nesting of interactive content. Your <"+n+"> should not have other "+(n==="a"?"anchor":"button")+" tags as child-elements."+d(t)+`
+
+`+c(t))}if(o=!1,l&&l(t),t.__k!=null)for(var u=[],m=0;m<t.__k.length;m++){var b=t.__k[m];if(b&&b.key!=null){var N=b.key;if(u.indexOf(N)!==-1){console.error('Following component has two or more children with the same key attribute: "'+N+`". This may cause glitches and misbehavior in rendering process. Component: 
+
+`+d(t)+`
+
+`+c(t));break}u.push(N)}}if(t.__c!=null&&t.__c.__H!=null){var k=t.__c.__H.__;if(k)for(var g=0;g<k.length;g+=1){var _=k[g];if(_.__H){for(var j=0;j<_.__H.length;j++)if((e=_.__H[j])!=e){var X=y(t);throw new Error("Invalid argument passed to hook. Hooks should not be called with NaN in the dependency array. Hook index "+g+" in component "+X+" was called with NaN.")}}}}}}();export{Z as resetPropWarnings};
+//# sourceMappingURL=debug.mjs.map
+// denoCacheMetadata={"headers":{"last-modified":"Wed, 15 Jan 2025 08:21:20 GMT","alt-svc":"h3=\":443\"; ma=86400","server":"cloudflare","date":"Thu, 26 Jun 2025 12:57:33 GMT","cf-cache-status":"HIT","cf-ray":"955cdf00e9e67c19-MEL","vary":"accept-encoding","cache-control":"public, max-age=31536000, immutable","content-type":"application/javascript; charset=utf-8","access-control-allow-origin":"*"},"url":"https://esm.sh/preact@10.22.0/denonext/debug.mjs","time":1750942653}

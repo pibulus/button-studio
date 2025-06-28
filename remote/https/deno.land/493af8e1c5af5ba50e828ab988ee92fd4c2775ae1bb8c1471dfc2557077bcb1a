@@ -1,0 +1,32 @@
+// Copyright 2018-2024 the Deno authors. All rights reserved. MIT license.
+// This module is browser compatible.
+
+import { assertArg } from "../_common/from_file_url.ts";
+
+/**
+ * Converts a file URL to a path string.
+ *
+ * ```ts
+ * import { fromFileUrl } from "https://deno.land/std@$STD_VERSION/path/windows/from_file_url.ts";
+ *
+ * fromFileUrl("file:///home/foo"); // "\\home\\foo"
+ * fromFileUrl("file:///C:/Users/foo"); // "C:\\Users\\foo"
+ * fromFileUrl("file://localhost/home/foo"); // "\\\\localhost\\home\\foo"
+ * ```
+ * @param url of a file URL
+ */
+export function fromFileUrl(url: URL | string): string {
+  url = assertArg(url);
+  let path = decodeURIComponent(
+    url.pathname.replace(/\//g, "\\").replace(/%(?![0-9A-Fa-f]{2})/g, "%25"),
+  ).replace(/^\\*([A-Za-z]:)(\\|$)/, "$1\\");
+  if (url.hostname !== "") {
+    // Note: The `URL` implementation guarantees that the drive letter and
+    // hostname are mutually exclusive. Otherwise it would not have been valid
+    // to append the hostname and path like this.
+    path = `\\\\${url.hostname}${path}`;
+  }
+  return path;
+}
+
+// denoCacheMetadata={"headers":{"x-amz-replication-status":"COMPLETED","x-amz-server-side-encryption":"AES256","accept-ranges":"bytes","cache-control":"public, max-age=31536000, immutable","x-amz-version-id":"qmrZNyN2gMz3saUuR0B9JsIruwHGoaz8","etag":"\"05e9c097e0196a989f8235356b0bea3c\"","x-cache":"Hit from cloudfront","vary":"Accept-Encoding, Origin","x-frame-options":"DENY","cross-origin-resource-policy":"same-origin","age":"11412388","last-modified":"Thu, 15 Feb 2024 05:02:29 GMT","date":"Fri, 14 Feb 2025 10:51:02 GMT","x-amz-cf-pop":"SIN52-P1","cross-origin-embedder-policy":"same-origin","server-timing":"fetchSource;dur=10","strict-transport-security":"max-age=63072000; includeSubDomains; preload","referrer-policy":"strict-origin-when-cross-origin","x-amz-cf-id":"gLeYsj81NULRPkZzjzTOoU4RVyRHbPxdRt5ZIdS2WiOOigAPFNTL5g==","x-content-type-options":"nosniff","server":"deno/gcp-asia-southeast1","content-length":"1091","via":"http/2 edgeproxy-h","content-type":"application/typescript; charset=utf-8","cross-origin-opener-policy":"same-origin","access-control-allow-origin":"*","content-security-policy":"default-src 'none'; style-src 'unsafe-inline'; sandbox"},"url":"https://deno.land/std@0.216.0/path/windows/from_file_url.ts","time":1750942650}
