@@ -203,7 +203,8 @@ export default function CustomizationPanel({ customization, onChange, voiceEnabl
         medium: 'bg-pink-200 hover:bg-pink-300',        // Visible coral
         warm: 'bg-yellow-200 hover:bg-yellow-300',      // Visible golden
         deep: 'bg-purple-200 hover:bg-purple-300',      // Visible lavender
-        effects: 'bg-green-200 hover:bg-green-300'      // Special green for effects
+        effects: 'bg-green-200 hover:bg-green-300',     // Special green for effects
+        recording: 'bg-blue-200 hover:bg-blue-300'      // Special blue for recording
       }
       return colors[colorKey as keyof typeof colors] || colors.light
     }
@@ -898,7 +899,7 @@ export default function CustomizationPanel({ customization, onChange, voiceEnabl
       </CollapsiblePanel>
       
       {/* Recording Behavior - NEW! */}
-      <CollapsiblePanel id="recording" title="Recording Behavior" color="deep">
+      <CollapsiblePanel id="recording" title="Recording Behavior" color="recording">
         <div class="space-y-6">
           
           {/* Visual Feedback Style */}

@@ -498,26 +498,32 @@ export default function VoiceButton({
       }
     }
     
-    // Shape-specific dimensions with recording consistency
+    // Shape-specific dimensions - ALWAYS CONSISTENT
     const getShapeDimensions = () => {
-      const baseSize = {
-        width: shape === 'circle' ? '120px' : 'auto',
-        height: shape === 'circle' ? '120px' : 'auto',
-        minWidth: shape === 'circle' ? '120px' : '140px',
-        minHeight: shape === 'circle' ? '120px' : '60px',
-        padding: shape === 'circle' ? '0' : '20px 32px'
-      }
-      
-      // Ensure consistent size during recording if keepSize is enabled
-      if (config.recording.keepSize && buttonState.value === 'recording') {
+      if (shape === 'circle') {
         return {
-          ...baseSize,
-          width: baseSize.minWidth,
-          height: baseSize.minHeight
+          width: '120px',
+          height: '120px',
+          minWidth: '120px',
+          minHeight: '120px',
+          maxWidth: '120px',
+          maxHeight: '120px',
+          padding: '0',
+          boxSizing: 'border-box' as const
         }
       }
       
-      return baseSize
+      // Rectangle/square buttons - FIXED SIZE
+      return {
+        width: '160px',
+        height: '80px', 
+        minWidth: '160px',
+        minHeight: '80px',
+        maxWidth: '160px',
+        maxHeight: '80px',
+        padding: '0',
+        boxSizing: 'border-box' as const
+      }
     }
     
     // Dynamic hover effects
@@ -824,21 +830,19 @@ function RecordingContent({ recordingConfig, duration, originalContent, buttonSt
     return `${minutes}:${sec}`
   }
   
-  // Maintain consistent size if keepSize is enabled
-  const wrapperClass = recordingConfig.keepSize 
-    ? 'min-w-[120px] min-h-[40px] flex items-center justify-center'
-    : 'flex items-center justify-center'
+  // ALWAYS maintain consistent size - no layout shift allowed!
+  const wrapperClass = 'w-full h-full flex items-center justify-center font-bold leading-none'
   
   switch (recordingConfig.visualFeedback) {
     case 'timer':
       return (
         <div class={wrapperClass}>
           {recordingConfig.showTimer ? (
-            <span class="font-mono font-bold text-center">
+            <span class="font-mono text-center" style={{ fontSize: 'inherit' }}>
               {formatTimer(duration)}
             </span>
           ) : (
-            <span class="font-bold leading-none">
+            <span style={{ fontSize: 'inherit' }}>
               {originalContent || 'Recording...'}
             </span>
           )}
@@ -848,15 +852,16 @@ function RecordingContent({ recordingConfig, duration, originalContent, buttonSt
     case 'pulse':
       return (
         <div class={wrapperClass}>
-          <div 
-            class="font-bold leading-none transition-all duration-500"
+          <span 
+            class="transition-all duration-1000 ease-in-out"
             style={{
-              transform: `scale(${1 + (recordingConfig.pulseIntensity / 100) * 0.2})`,
-              opacity: 0.7 + (recordingConfig.pulseIntensity / 100) * 0.3
+              fontSize: 'inherit',
+              opacity: `${0.6 + (Math.sin(Date.now() / 500) + 1) * 0.2}`,
+              filter: `brightness(${1 + (recordingConfig.pulseIntensity / 100) * 0.5})`
             }}
           >
             {originalContent || '🎤'}
-          </div>
+          </span>
         </div>
       )
       
@@ -864,10 +869,12 @@ function RecordingContent({ recordingConfig, duration, originalContent, buttonSt
       return (
         <div class={wrapperClass}>
           <span 
-            class="font-bold leading-none"
+            class="animate-pulse"
             style={{
-              textShadow: `0 0 10px ${recordingConfig.ringColor}80, 0 0 20px ${recordingConfig.ringColor}60`,
-              filter: 'brightness(1.2)'
+              fontSize: 'inherit',
+              textShadow: `0 0 15px ${recordingConfig.ringColor}, 0 0 30px ${recordingConfig.ringColor}80`,
+              filter: 'brightness(1.3)',
+              color: recordingConfig.ringColor
             }}
           >
             {originalContent || '🎤'}
@@ -879,12 +886,13 @@ function RecordingContent({ recordingConfig, duration, originalContent, buttonSt
       return (
         <div class={`${wrapperClass} relative`}>
           <div 
-            class="absolute inset-0 rounded-full border-4 animate-ping"
+            class="absolute inset-2 rounded-full border-2 animate-pulse"
             style={{
-              borderColor: recordingConfig.ringColor
+              borderColor: recordingConfig.ringColor,
+              boxShadow: `0 0 10px ${recordingConfig.ringColor}60`
             }}
           />
-          <span class="font-bold leading-none relative z-10">
+          <span class="relative z-10" style={{ fontSize: 'inherit' }}>
             {originalContent || '🎤'}
           </span>
         </div>
@@ -893,7 +901,7 @@ function RecordingContent({ recordingConfig, duration, originalContent, buttonSt
     default:
       return (
         <div class={wrapperClass}>
-          <span class="font-bold leading-none">
+          <span style={{ fontSize: 'inherit' }}>
             {originalContent || 'Recording...'}
           </span>
         </div>
