@@ -95,13 +95,17 @@ export interface EffectToggles {
   glow: boolean 
   breathing: boolean
   wiggle: boolean
+  rainbowGlow: boolean
+  pulse: boolean
 }
 
 export const defaultEffects: EffectToggles = {
   bounce: false,
   glow: false,
   breathing: true, // starts with breathing
-  wiggle: false
+  wiggle: false,
+  rainbowGlow: false,
+  pulse: false
 }
 
 // Default customization (Satisfying rectangular button)

@@ -41,12 +41,25 @@ export default function CustomizationPanel({ customization, onChange, voiceEnabl
   }
   
   const updateEffect = (key: keyof ButtonCustomization['effects'], value: boolean) => {
+    let newEffects = { ...customization.effects }
+    
+    if (value && (key === 'breathing' || key === 'bounce' || key === 'wiggle')) {
+      // Movement effects - turn off the others when enabling one
+      newEffects.breathing = key === 'breathing'
+      newEffects.bounce = key === 'bounce'
+      newEffects.wiggle = key === 'wiggle'
+    } else if (value && (key === 'glow' || key === 'rainbowGlow')) {
+      // Visual border effects - turn off the other when enabling one
+      newEffects.glow = key === 'glow'
+      newEffects.rainbowGlow = key === 'rainbowGlow'
+    } else {
+      // Non-conflicting effects (pulse can work with anything)
+      newEffects[key] = value
+    }
+    
     onChange({
       ...customization,
-      effects: {
-        ...customization.effects,
-        [key]: value
-      }
+      effects: newEffects
     })
   }
   
@@ -239,6 +252,80 @@ export default function CustomizationPanel({ customization, onChange, voiceEnabl
     return (
       <div class="space-y-6">
         
+        {/* 🍊 LUSH JUICE ANIMATIONS + EFFECTS */}
+        <style jsx>{`
+          @keyframes breathe {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+          }
+          
+          @keyframes bounce-demo {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-6px); }
+          }
+          
+          @keyframes glow-demo {
+            0%, 100% { 
+              box-shadow: 2px 2px 0px #000000, 0 0 8px rgba(34, 197, 94, 0.3);
+            }
+            50% { 
+              box-shadow: 2px 2px 0px #000000, 0 0 20px rgba(34, 197, 94, 0.8), 0 0 30px rgba(34, 197, 94, 0.4);
+            }
+          }
+          
+          @keyframes wiggle-demo {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-2deg); }
+            75% { transform: rotate(2deg); }
+          }
+          
+          @keyframes rainbow-rotate {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+          }
+          
+          .effect-breathe {
+            animation: breathe 3s ease-in-out infinite;
+          }
+          
+          .effect-bounce {
+            animation: bounce-demo 1.5s ease-in-out infinite;
+          }
+          
+          .effect-glow {
+            animation: glow-demo 2s ease-in-out infinite;
+          }
+          
+          .effect-wiggle {
+            animation: wiggle-demo 2s ease-in-out infinite;
+          }
+          
+          .rainbow-border {
+            background: linear-gradient(
+              90deg,
+              #ff6b9d,
+              #a855f7,
+              #3b82f6,
+              #10b981,
+              #ff6b9d,
+              #a855f7,
+              #3b82f6,
+              #10b981
+            );
+            background-size: 200% 100%;
+            animation: rainbow-rotate 3s linear infinite;
+            padding: 3px;
+            border-radius: 1rem;
+          }
+          
+          .rainbow-content {
+            background: white;
+            border-radius: calc(1rem - 3px);
+            width: 100%;
+            height: 100%;
+          }
+        `}</style>
+        
         {/* Content Input + Voice Toggle - CHONKY */}
         <div class="bg-white rounded-3xl p-8 shadow-lg border-4 border-black">
           <div class="flex items-center gap-6">
@@ -419,124 +506,248 @@ export default function CustomizationPanel({ customization, onChange, voiceEnabl
       {/* Shape & Style */}
       <CollapsiblePanel id="shape" title="Shape & Style" color="lightest">
         <div class="space-y-4">
-          {/* Shape Selector */}
-          <div class="flex gap-3">
-            {[
-              { shape: 'circle', label: 'Circle' },
-              { shape: 'rounded', label: 'Rounded' },
-              { shape: 'square', label: 'Square' }
-            ].map(({ shape, label }) => (
-              <button
-                key={shape}
-                onClick={() => updateAppearance('shape', shape)}
-                class={`flex-1 px-4 py-3 rounded-xl border-3 border-black font-black transition-all h-12 shadow-sm hover:shadow-md active:scale-95 ${
-                  customization.appearance.shape === shape
-                    ? 'bg-rose-200 hover:bg-rose-300 text-black shadow-md scale-105'
-                    : 'bg-white hover:bg-rose-50 text-black'
-                }`}
-                style={{
-                  boxShadow: customization.appearance.shape === shape 
-                    ? '3px 3px 0px #000000' 
-                    : '2px 2px 0px #000000'
-                }}
-              >
-                {label}
-              </button>
-            ))}
+          {/* 🔴 Button Shape - Clean Icons */}
+          <div>
+            <h4 class="text-lg font-black text-gray-900 mb-4 flex items-center gap-2">
+              <span class="w-6 h-6 bg-red-200 rounded-full border-2 border-black"></span>
+              Button Shape
+            </h4>
+            <div class="grid grid-cols-3 gap-4">
+              {[
+                { 
+                  shape: 'circle', 
+                  label: 'Circle',
+                  icon: (
+                    <svg class="w-8 h-8" viewBox="0 0 32 32" fill="none">
+                      <circle cx="16" cy="16" r="12" fill="#fbbf24" stroke="#000" stroke-width="2"/>
+                      <circle cx="16" cy="16" r="6" fill="#f59e0b" stroke="#000" stroke-width="1.5"/>
+                    </svg>
+                  )
+                },
+                { 
+                  shape: 'rounded', 
+                  label: 'Rounded',
+                  icon: (
+                    <svg class="w-8 h-8" viewBox="0 0 32 32" fill="none">
+                      <rect x="8" y="8" width="16" height="16" rx="6" fill="#fbbf24" stroke="#000" stroke-width="2"/>
+                      <rect x="12" y="12" width="8" height="8" rx="2" fill="#f59e0b" stroke="#000" stroke-width="1.5"/>
+                    </svg>
+                  )
+                },
+                { 
+                  shape: 'square', 
+                  label: 'Square',
+                  icon: (
+                    <svg class="w-8 h-8" viewBox="0 0 32 32" fill="none">
+                      <rect x="8" y="8" width="16" height="16" fill="#fbbf24" stroke="#000" stroke-width="2"/>
+                      <rect x="12" y="12" width="8" height="8" fill="#f59e0b" stroke="#000" stroke-width="1.5"/>
+                    </svg>
+                  )
+                }
+              ].map(({ shape, label, icon }) => (
+                <button
+                  key={shape}
+                  onClick={() => updateAppearance('shape', shape)}
+                  class={`px-6 py-6 rounded-2xl border-3 border-black font-black transition-all duration-300 ease-out shadow-lg hover:shadow-xl active:scale-95 transform hover:scale-105 hover:-translate-y-1 flex flex-col items-center justify-center gap-2 ${
+                    customization.appearance.shape === shape
+                      ? 'bg-red-200 text-black shadow-xl scale-105 -translate-y-1'
+                      : 'bg-white text-black hover:bg-red-50'
+                  }`}
+                  style={{
+                    boxShadow: customization.appearance.shape === shape 
+                      ? '4px 6px 0px #000000, 0 8px 25px rgba(239, 68, 68, 0.2)' 
+                      : '2px 3px 0px #000000',
+                    transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)'
+                  }}
+                >
+                  <div class="group-hover:scale-110 transition-transform duration-200">{icon}</div>
+                  <span class="text-sm">{label}</span>
+                </button>
+              ))}
+            </div>
           </div>
           
-          {/* Border Style */}
-          <div class="grid grid-cols-2 gap-3">
-            {[
-              { value: 'solid', label: 'Solid' },
-              { value: 'dashed', label: 'Dashed' },
-              { value: 'dotted', label: 'Dotted' },
-              { value: 'double', label: 'Double' }
-            ].map(({ value, label }) => (
-              <button
-                key={value}
-                onClick={() => updateAppearance('borderStyle', value)}
-                class={`px-4 py-3 rounded-xl border-3 border-black font-black transition-all h-12 shadow-sm hover:shadow-md active:scale-95 ${
-                  customization.appearance.borderStyle === value
-                    ? 'bg-rose-200 text-black shadow-md scale-105'
-                    : 'bg-white text-black hover:bg-rose-50'
-                }`}
-                style={{
-                  boxShadow: customization.appearance.borderStyle === value 
-                    ? '3px 3px 0px #000000' 
-                    : '2px 2px 0px #000000'
-                }}
-              >
-                {label}
-              </button>
-            ))}
+          {/* 🎨 Border Style - Clean Minimal Icons */}
+          <div>
+            <h4 class="text-lg font-black text-gray-900 mb-4 flex items-center gap-2">
+              <span class="w-6 h-6 bg-red-200 rounded-full border-2 border-black"></span>
+              Border Style
+            </h4>
+            <div class="grid grid-cols-2 gap-4">
+              {[
+                { 
+                  value: 'solid', 
+                  label: 'Solid',
+                  preview: (
+                    <svg class="w-10 h-4" viewBox="0 0 40 16" fill="none">
+                      <line x1="6" y1="8" x2="34" y2="8" stroke="#374151" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                  )
+                },
+                { 
+                  value: 'dashed', 
+                  label: 'Dashed',
+                  preview: (
+                    <svg class="w-10 h-4" viewBox="0 0 40 16" fill="none">
+                      <line x1="6" y1="8" x2="34" y2="8" stroke="#374151" stroke-width="2" stroke-linecap="round" stroke-dasharray="4 2"/>
+                    </svg>
+                  )
+                },
+                { 
+                  value: 'dotted', 
+                  label: 'Dotted',
+                  preview: (
+                    <svg class="w-10 h-4" viewBox="0 0 40 16" fill="none">
+                      <line x1="6" y1="8" x2="34" y2="8" stroke="#374151" stroke-width="2" stroke-linecap="round" stroke-dasharray="1 3"/>
+                    </svg>
+                  )
+                },
+                { 
+                  value: 'double', 
+                  label: 'Double',
+                  preview: (
+                    <svg class="w-10 h-4" viewBox="0 0 40 16" fill="none">
+                      <line x1="6" y1="6" x2="34" y2="6" stroke="#374151" stroke-width="1.5" stroke-linecap="round"/>
+                      <line x1="6" y1="10" x2="34" y2="10" stroke="#374151" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                  )
+                }
+              ].map(({ value, label, preview }) => (
+                <button
+                  key={value}
+                  onClick={() => updateAppearance('borderStyle', value)}
+                  class={`px-6 py-4 rounded-2xl border-3 border-black font-black transition-all duration-300 ease-out shadow-lg hover:shadow-xl active:scale-95 transform hover:scale-105 hover:-translate-y-1 flex flex-col items-center justify-center gap-3 ${
+                    customization.appearance.borderStyle === value
+                      ? 'bg-red-200 text-black shadow-xl scale-105 -translate-y-1'
+                      : 'bg-white text-black hover:bg-red-50'
+                  }`}
+                  style={{
+                    boxShadow: customization.appearance.borderStyle === value 
+                      ? '4px 6px 0px #000000, 0 8px 25px rgba(239, 68, 68, 0.2)' 
+                      : '2px 3px 0px #000000',
+                    transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)'
+                  }}
+                >
+                  <div class="group-hover:scale-110 transition-transform duration-200">{preview}</div>
+                  <span class="text-sm">{label}</span>
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </CollapsiblePanel>
       
-      {/* Effects & Animations */}
-      <CollapsiblePanel id="effects" title="Effects & Animations" color="effects">
-        <div class="space-y-4">
-          {/* Animation Effects */}
-          <div class="grid grid-cols-2 gap-3">
-            {[
-              { key: 'breathing', label: 'Breathe' },
-              { key: 'bounce', label: 'Bounce' },
-              { key: 'glow', label: 'Glow' },
-              { key: 'wiggle', label: 'Wiggle' }
-            ].map(({ key, label }) => (
-              <button
-                key={key}
-                onClick={() => updateEffect(key as keyof ButtonCustomization['effects'], !customization.effects[key as keyof ButtonCustomization['effects']])}
-                class={`p-4 rounded-xl border-3 border-black transition-all font-black h-12 flex items-center justify-center shadow-sm hover:shadow-md active:scale-95 ${
-                  customization.effects[key as keyof ButtonCustomization['effects']]
-                    ? 'bg-orange-200 hover:bg-orange-300 text-black shadow-md scale-105' 
-                    : 'bg-white hover:bg-orange-50 text-black'
-                }`}
-                style={{
-                  boxShadow: customization.effects[key as keyof ButtonCustomization['effects']] 
-                    ? '3px 3px 0px #000000' 
-                    : '2px 2px 0px #000000'
-                }}
-              >
-                {label}
-              </button>
-            ))}
+      {/* Effects & Animations - SELF-DEMONSTRATING! ✨ */}
+      <CollapsiblePanel id="effects" title="Effects" color="effects">
+        <div class="space-y-6">
+          
+          {/* Effects - Clean grid */}
+          <div>
+            <h4 class="text-lg font-black text-gray-900 mb-4 flex items-center gap-2">
+              <span class="w-6 h-6 bg-green-200 rounded-full border-2 border-black"></span>
+              Effects
+            </h4>
+            <div class="grid grid-cols-3 gap-4">
+              {[
+                { key: 'breathing', label: 'Breathe', demoClass: 'effect-breathe' },
+                { key: 'bounce', label: 'Bounce', demoClass: 'effect-bounce' },
+                { key: 'wiggle', label: 'Wiggle', demoClass: 'effect-wiggle' },
+                { key: 'glow', label: 'Glow', demoClass: 'effect-glow' },
+                { key: 'pulse', label: 'Pulse', demoClass: 'effect-pulse' }
+              ].map(({ key, label, demoClass }) => {
+                const isActive = customization.effects[key as keyof ButtonCustomization['effects']]
+                return (
+                  <button
+                    key={key}
+                    onClick={() => updateEffect(key as keyof ButtonCustomization['effects'], !isActive)}
+                    class={`px-6 py-4 rounded-2xl border-3 border-black font-black transition-all duration-300 ease-out shadow-lg hover:shadow-xl active:scale-95 transform hover:scale-105 hover:-translate-y-1 flex items-center justify-center ${
+                      isActive
+                        ? 'bg-green-200 text-black shadow-xl scale-105 -translate-y-1'
+                        : `bg-white text-black hover:bg-green-50 ${demoClass}`
+                    }`}
+                    style={{
+                      boxShadow: isActive 
+                        ? '4px 6px 0px #000000, 0 8px 25px rgba(34, 197, 94, 0.2)' 
+                        : '2px 3px 0px #000000',
+                      transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)'
+                    }}
+                  >
+                    <span class="text-sm">{label}</span>
+                  </button>
+                )
+              })}
+              
+              {/* Rainbow Border - 9th effect */}
+              {customization.effects.rainbowGlow ? (
+                <button
+                  onClick={() => updateEffect('rainbowGlow', false)}
+                  class="px-6 py-4 rounded-2xl border-3 border-black font-black transition-all duration-300 ease-out shadow-xl scale-105 -translate-y-1 bg-gradient-to-r from-pink-200 via-purple-200 to-blue-200 hover:from-pink-300 hover:via-purple-300 hover:to-blue-300 text-black flex items-center justify-center"
+                  style={{
+                    boxShadow: '4px 6px 0px #000000, 0 8px 25px rgba(168, 85, 247, 0.2)',
+                    transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)'
+                  }}
+                >
+                  <span class="text-sm">Rainbow</span>
+                </button>
+              ) : (
+                <div class="rainbow-border">
+                  <button
+                    onClick={() => updateEffect('rainbowGlow', true)}
+                    class="rainbow-content px-6 py-4 border-3 border-black font-black transition-all duration-300 ease-out shadow-lg hover:shadow-xl active:scale-95 transform hover:scale-105 hover:-translate-y-1 bg-white text-black hover:bg-green-50 flex items-center justify-center w-full h-full"
+                    style={{
+                      boxShadow: '2px 3px 0px #000000',
+                      transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)'
+                    }}
+                  >
+                    <span class="text-sm">Rainbow</span>
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
           
-          {/* Shadow Type */}
-          <div class="flex gap-3">
-            <button
-              onClick={() => updateAppearance('shadowType', 'brutalist')}
-              class={`flex-1 px-4 py-3 rounded-xl border-3 border-black font-black transition-all h-12 shadow-sm hover:shadow-md active:scale-95 ${
-                customization.appearance.shadowType === 'brutalist'
-                  ? 'bg-orange-200 hover:bg-orange-300 text-black shadow-md scale-105'
-                  : 'bg-white hover:bg-orange-50 text-black'
-              }`}
-              style={{
-                boxShadow: customization.appearance.shadowType === 'brutalist' 
-                  ? '3px 3px 0px #000000' 
-                  : '2px 2px 0px #000000'
-              }}
-            >
-              Hard Shadow
-            </button>
-            <button
-              onClick={() => updateAppearance('shadowType', 'diffused')}
-              class={`flex-1 px-4 py-3 rounded-xl border-3 border-black font-black transition-all h-12 shadow-sm hover:shadow-md active:scale-95 ${
-                customization.appearance.shadowType === 'diffused'
-                  ? 'bg-orange-200 hover:bg-orange-300 text-black shadow-md scale-105'
-                  : 'bg-white hover:bg-orange-50 text-black'
-              }`}
-              style={{
-                boxShadow: customization.appearance.shadowType === 'diffused' 
-                  ? '3px 3px 0px #000000' 
-                  : '2px 2px 0px #000000'
-              }}
-            >
-              Soft Shadow
-            </button>
+          {/* 🎭 Shadow Type */}
+          <div>
+            <h4 class="text-lg font-black text-gray-900 mb-4 flex items-center gap-2">
+              <span class="w-6 h-6 bg-green-200 rounded-full border-2 border-black"></span>
+              Shadow Style
+            </h4>
+            <div class="flex gap-4">
+              <button
+                onClick={() => updateAppearance('shadowType', 'brutalist')}
+                class={`flex-1 px-6 py-4 rounded-2xl border-3 border-black font-black transition-all duration-300 ease-out shadow-lg hover:shadow-xl active:scale-95 transform hover:scale-105 hover:-translate-y-1 ${
+                  customization.appearance.shadowType === 'brutalist'
+                    ? 'bg-green-200 text-black shadow-xl scale-105 -translate-y-1'
+                    : 'bg-white text-black hover:bg-green-50'
+                }`}
+                style={{
+                  boxShadow: customization.appearance.shadowType === 'brutalist' 
+                    ? '4px 6px 0px #000000, 0 8px 25px rgba(34, 197, 94, 0.2)' 
+                    : '2px 3px 0px #000000',
+                  transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)'
+                }}
+              >
+                Hard Shadow
+              </button>
+              <button
+                onClick={() => updateAppearance('shadowType', 'diffused')}
+                class={`flex-1 px-6 py-4 rounded-2xl border-3 border-black font-black transition-all duration-300 ease-out shadow-lg hover:shadow-xl active:scale-95 transform hover:scale-105 hover:-translate-y-1 ${
+                  customization.appearance.shadowType === 'diffused'
+                    ? 'bg-green-200 text-black shadow-xl scale-105 -translate-y-1'
+                    : 'bg-white text-black hover:bg-green-50'
+                }`}
+                style={{
+                  boxShadow: customization.appearance.shadowType === 'diffused' 
+                    ? '4px 6px 0px #000000, 0 8px 25px rgba(34, 197, 94, 0.2)' 
+                    : '2px 3px 0px #000000',
+                  transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)'
+                }}
+              >
+                Soft Shadow
+              </button>
+            </div>
           </div>
+          
         </div>
       </CollapsiblePanel>
       

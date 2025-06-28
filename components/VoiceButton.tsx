@@ -374,6 +374,25 @@ export default function VoiceButton({
     return `${minutes}:${sec}`
   }
 
+  // Check for rainbow effect
+  const hasRainbowEffect = customization.effects.rainbowGlow
+  
+  // Get button's main color for glow effect
+  const getButtonColor = () => {
+    return customization.appearance.fillType === 'solid' 
+      ? customization.appearance.solidColor
+      : customization.appearance.gradient.start
+  }
+  
+  // Convert hex to rgba
+  const hexToRgba = (hex: string, alpha: number) => {
+    const cleanHex = hex.replace('#', '')
+    const r = parseInt(cleanHex.substr(0, 2), 16)
+    const g = parseInt(cleanHex.substr(2, 2), 16)
+    const b = parseInt(cleanHex.substr(4, 2), 16)
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`
+  }
+  
   // Enhanced button styling with customization system
   const getButtonStyles = () => {
     // Use customization system for live slider updates
@@ -383,17 +402,34 @@ export default function VoiceButton({
     let stateClasses = ''
     let stateAnimations = ''
     
-    // Effect-based animations (MODULAR!)
-    let effectAnimations = []
-    if (config.effects.breathing) effectAnimations.push('animate-[breathe_3s_ease-in-out_infinite]')
-    if (config.effects.bounce) effectAnimations.push('animate-[bounce_1s_ease-in-out_infinite]')
-    if (config.effects.wiggle) effectAnimations.push('animate-[wiggle_2s_ease-in-out_infinite]')
-    if (config.effects.glow) stateClasses += ' animate-[glow_2s_ease-in-out_infinite]'
+    // Effect-based animations (MODULAR!) - Using CSS classes instead of Tailwind animate syntax
+    let effectClasses = []
+    let hasRainbow = config.effects.rainbowGlow
+    
+    // Transform effects (these conflict with each other - only apply the first one)
+    if (config.effects.breathing && !config.effects.bounce && !config.effects.wiggle) {
+      effectClasses.push('effect-breathe')
+    } else if (config.effects.bounce && !config.effects.wiggle) {
+      effectClasses.push('effect-bounce')
+    } else if (config.effects.wiggle) {
+      effectClasses.push('effect-wiggle')
+    }
+    
+    // Non-transform effects (these can work together)
+    if (config.effects.glow) effectClasses.push('effect-glow')
+    if (config.effects.pulse) effectClasses.push('effect-pulse')
+    
+    const effectAnimations = effectClasses.join(' ')
+    
+    // Debug log for effects
+    if (effectClasses.length > 0 || hasRainbow) {
+      console.log('🎨 Active effects:', effectClasses, 'Rainbow:', hasRainbow, 'Button state:', buttonState.value)
+    }
     
     switch (buttonState.value) {
       case 'idle':
         // Use effect animations when idle
-        stateAnimations = effectAnimations.join(' ')
+        stateAnimations = effectAnimations
         break
       case 'requesting':
         stateClasses = 'ring-4 ring-orange-300'
@@ -445,10 +481,15 @@ export default function VoiceButton({
       ? '8px 8px 0px #000000'  // Hard brutalist shadow
       : '0 8px 25px rgba(0,0,0,0.15), 0 4px 10px rgba(0,0,0,0.1)'  // Soft diffused shadow
     
-    // Add glow if intensity > 0 - succulent pink glow
-    const glowEffect = glowIntensity > 0 
-      ? `, 0 0 ${glowIntensity}px rgba(255, 158, 181, 0.6), 0 0 ${glowIntensity * 2}px rgba(255, 158, 181, 0.3)`
-      : ''
+    // SMART GLOW SYSTEM - effect glow overrides slider glow
+    let glowEffect = ''
+    if (config.effects.glow) {
+      // Effect glow - use button's actual color!
+      glowEffect = `, 0 0 20px ${hexToRgba(getButtonColor(), 0.6)}, 0 0 40px ${hexToRgba(getButtonColor(), 0.3)}`
+    } else if (glowIntensity > 0) {
+      // Slider glow - use button's actual color too!
+      glowEffect = `, 0 0 ${glowIntensity}px ${hexToRgba(getButtonColor(), 0.6)}, 0 0 ${glowIntensity * 2}px ${hexToRgba(getButtonColor(), 0.3)}`
+    }
     
     const shadowStyle = baseShadow + glowEffect
     
@@ -516,8 +557,13 @@ export default function VoiceButton({
         justifyContent: 'center',
         color: '#000000',
         willChange: 'transform, box-shadow, filter',
+        // CSS custom properties for glow color
+        '--glow-color': getButtonColor(),
+        '--glow-color-40': hexToRgba(getButtonColor(), 0.4),
+        '--glow-color-66': hexToRgba(getButtonColor(), 0.66),
+        '--glow-color-80': hexToRgba(getButtonColor(), 0.8),
         ...getShapeDimensions()
-      }
+      } as any
     }
   }
   
@@ -529,19 +575,55 @@ export default function VoiceButton({
       <style jsx>{`
         @keyframes breathe {
           0%, 100% { transform: scale(1); }
-          50% { transform: scale(1.03); }
+          50% { transform: scale(1.05); }
         }
         
         @keyframes wiggle {
           0%, 100% { transform: rotate(0deg); }
-          25% { transform: rotate(1deg); }
-          75% { transform: rotate(-1deg); }
+          25% { transform: rotate(-2deg); }
+          75% { transform: rotate(2deg); }
         }
         
-        @keyframes glow {
-          0%, 100% { box-shadow: 0 0 20px rgba(244, 114, 182, 0.3); }
-          50% { box-shadow: 0 0 30px rgba(244, 114, 182, 0.6); }
+        
+        @keyframes bounce-effect {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-8px); }
         }
+        
+        .effect-breathe {
+          animation: breathe 3s ease-in-out infinite;
+        }
+        
+        .effect-wiggle {
+          animation: wiggle 2s ease-in-out infinite;
+        }
+        
+        .effect-glow {
+          animation: glow-pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes glow-pulse {
+          0%, 100% { 
+            filter: brightness(1);
+          }
+          50% { 
+            filter: brightness(1.1);
+          }
+        }
+        
+        .effect-bounce {
+          animation: bounce-effect 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes pulse-effect {
+          0%, 100% { opacity: 1; filter: brightness(1); }
+          50% { opacity: 0.8; filter: brightness(1.1); }
+        }
+        
+        .effect-pulse {
+          animation: pulse-effect 2s ease-in-out infinite;
+        }
+        
         
         @keyframes recording-pulse {
           0%, 100% { transform: scale(1); }
@@ -558,6 +640,30 @@ export default function VoiceButton({
           0%, 100% { transform: translateX(0); }
           25% { transform: translateX(-5px); }
           75% { transform: translateX(5px); }
+        }
+        
+        @keyframes rainbow-rotate {
+          0% { background-position: 0% 50%; }
+          100% { background-position: 200% 50%; }
+        }
+        
+        .rainbow-wrapper {
+          background: linear-gradient(
+            90deg,
+            #ff6b9d,
+            #a855f7,
+            #3b82f6,
+            #10b981,
+            #ff6b9d,
+            #a855f7,
+            #3b82f6,
+            #10b981
+          );
+          background-size: 200% 100%;
+          animation: rainbow-rotate 3s linear infinite;
+          padding: 4px;
+          border-radius: 20px;
+          display: inline-block;
         }
       `}</style>
       
@@ -583,27 +689,53 @@ export default function VoiceButton({
           </svg>
         )}
         
-        <button
-          class={`${getButtonStyles().className} voice-button`}
-          style={getButtonStyles().style}
-          onClick={toggleRecording}
-          disabled={buttonState.value === 'processing' || buttonState.value === 'requesting'}
-          aria-label={`Voice recording button - ${getButtonText()}`}
-          title={getButtonText()}
-        >
-        {/* Show custom content, timer, or icon */}
-        {buttonState.value === 'recording' && showTimer ? (
-          <span class="font-mono font-bold">
-            {formatTimer(recordingDuration.value)}
-          </span>
-        ) : customization.content.value ? (
-          <span class="font-bold leading-none">
-            {customization.content.value}
-          </span>
+        {hasRainbowEffect ? (
+          <div class="rainbow-wrapper">
+            <button
+              class={`${getButtonStyles().className} voice-button`}
+              style={getButtonStyles().style}
+              onClick={toggleRecording}
+              disabled={buttonState.value === 'processing' || buttonState.value === 'requesting'}
+              aria-label={`Voice recording button - ${getButtonText()}`}
+              title={getButtonText()}
+            >
+            {/* Show custom content, timer, or icon */}
+            {buttonState.value === 'recording' && showTimer ? (
+              <span class="font-mono font-bold">
+                {formatTimer(recordingDuration.value)}
+              </span>
+            ) : customization.content.value ? (
+              <span class="font-bold leading-none">
+                {customization.content.value}
+              </span>
+            ) : (
+              <ButtonIcon state={buttonState.value} theme={customization.appearance.theme} />
+            )}
+            </button>
+          </div>
         ) : (
-          <ButtonIcon state={buttonState.value} theme={customization.appearance.theme} />
+          <button
+            class={`${getButtonStyles().className} voice-button`}
+            style={getButtonStyles().style}
+            onClick={toggleRecording}
+            disabled={buttonState.value === 'processing' || buttonState.value === 'requesting'}
+            aria-label={`Voice recording button - ${getButtonText()}`}
+            title={getButtonText()}
+          >
+          {/* Show custom content, timer, or icon */}
+          {buttonState.value === 'recording' && showTimer ? (
+            <span class="font-mono font-bold">
+              {formatTimer(recordingDuration.value)}
+            </span>
+          ) : customization.content.value ? (
+            <span class="font-bold leading-none">
+              {customization.content.value}
+            </span>
+          ) : (
+            <ButtonIcon state={buttonState.value} theme={customization.appearance.theme} />
+          )}
+          </button>
         )}
-        </button>
       </div>
 
       {/* Processing Spinner Only When Needed */}
