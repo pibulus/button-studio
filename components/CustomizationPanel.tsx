@@ -14,6 +14,7 @@ const expandedPanels = signal<Record<string, boolean>>({
   shape: true,
   effects: false,
   interactions: false,
+  recording: false,
   api: false,
   export: false
 })
@@ -82,6 +83,16 @@ export default function CustomizationPanel({ customization, onChange, voiceEnabl
           ...customization.appearance.gradient,
           [key]: value
         }
+      }
+    })
+  }
+  
+  const updateRecording = (key: keyof ButtonCustomization['recording'], value: string | number | boolean) => {
+    onChange({
+      ...customization,
+      recording: {
+        ...customization.recording,
+        [key]: value
       }
     })
   }
@@ -883,6 +894,97 @@ export default function CustomizationPanel({ customization, onChange, voiceEnabl
           <div class="text-xs text-gray-600">
             💡 Get your free key at <a href="https://aistudio.google.com/apikey" target="_blank" class="text-blue-600 underline">aistudio.google.com/apikey</a>
           </div>
+        </div>
+      </CollapsiblePanel>
+      
+      {/* Recording Behavior - NEW! */}
+      <CollapsiblePanel id="recording" title="Recording Behavior" color="deep">
+        <div class="space-y-6">
+          
+          {/* Visual Feedback Style */}
+          <div>
+            <h4 class="text-lg font-black text-gray-900 mb-4 flex items-center gap-2">
+              <span class="w-6 h-6 bg-purple-200 rounded-full border-2 border-black"></span>
+              Visual Feedback
+            </h4>
+            <div class="grid grid-cols-2 gap-3">
+              {[
+                { value: 'timer', label: 'Timer', icon: '⏱️' },
+                { value: 'pulse', label: 'Pulse', icon: '💓' },
+                { value: 'glow', label: 'Glow', icon: '✨' },
+                { value: 'ring', label: 'Ring', icon: '⭕' }
+              ].map(({ value, label, icon }) => (
+                <button
+                  key={value}
+                  onClick={() => updateRecording('visualFeedback', value)}
+                  class={`px-4 py-3 rounded-xl border-3 border-black font-black transition-all h-12 shadow-sm hover:shadow-md active:scale-95 flex items-center gap-2 ${
+                    customization.recording.visualFeedback === value
+                      ? 'bg-purple-200 hover:bg-purple-300 text-black shadow-md scale-105'
+                      : 'bg-white hover:bg-purple-50 text-black'
+                  }`}
+                  style={{
+                    boxShadow: customization.recording.visualFeedback === value 
+                      ? '3px 3px 0px #000000' 
+                      : '2px 2px 0px #000000'
+                  }}
+                >
+                  <span>{icon}</span>
+                  <span>{label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+          
+          {/* Keep Size Toggle */}
+          <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
+            <div>
+              <h4 class="font-black text-gray-900">Prevent Layout Shift</h4>
+              <p class="text-sm text-gray-600">Keep button size consistent during recording</p>
+            </div>
+            <button
+              onClick={() => updateRecording('keepSize', !customization.recording.keepSize)}
+              class={`w-14 h-8 rounded-full border-3 border-black transition-all ${
+                customization.recording.keepSize ? 'bg-green-400' : 'bg-gray-300'
+              }`}
+              style={{
+                boxShadow: '2px 2px 0px #000000'
+              }}
+            >
+              <div
+                class={`w-6 h-6 bg-white border-2 border-black rounded-full transition-transform ${
+                  customization.recording.keepSize ? 'translate-x-6' : 'translate-x-0'
+                }`}
+              />
+            </button>
+          </div>
+          
+          {/* Pulse Intensity (if pulse selected) */}
+          {customization.recording.visualFeedback === 'pulse' && (
+            <div>
+              <h4 class="text-lg font-black text-gray-900 mb-4">Pulse Intensity</h4>
+              <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                  <span class="text-sm font-bold text-gray-700">Intensity</span>
+                  <div class="bg-gradient-to-r from-purple-100 to-purple-200 border-3 border-black px-4 py-2 rounded-xl">
+                    <span class="text-lg font-black text-gray-900">{customization.recording.pulseIntensity}%</span>
+                  </div>
+                </div>
+                <input
+                  type="range"
+                  min={0}
+                  max={100}
+                  step={10}
+                  value={customization.recording.pulseIntensity}
+                  onInput={(e) => updateRecording('pulseIntensity', parseInt((e.target as HTMLInputElement).value))}
+                  class="w-full h-6 bg-white border-3 border-black rounded-full appearance-none cursor-grab hover:cursor-grabbing"
+                  style={{
+                    background: `linear-gradient(to right, #a855f7 0%, #a855f7 ${customization.recording.pulseIntensity}%, #f8f9fa ${customization.recording.pulseIntensity}%, #f8f9fa 100%)`
+                  }}
+                />
+              </div>
+            </div>
+          )}
+          
         </div>
       </CollapsiblePanel>
       

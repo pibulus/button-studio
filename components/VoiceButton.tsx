@@ -498,21 +498,26 @@ export default function VoiceButton({
       }
     }
     
-    // Shape-specific dimensions
+    // Shape-specific dimensions with recording consistency
     const getShapeDimensions = () => {
-      if (shape === 'circle') {
+      const baseSize = {
+        width: shape === 'circle' ? '120px' : 'auto',
+        height: shape === 'circle' ? '120px' : 'auto',
+        minWidth: shape === 'circle' ? '120px' : '140px',
+        minHeight: shape === 'circle' ? '120px' : '60px',
+        padding: shape === 'circle' ? '0' : '20px 32px'
+      }
+      
+      // Ensure consistent size during recording if keepSize is enabled
+      if (config.recording.keepSize && buttonState.value === 'recording') {
         return {
-          width: '120px',
-          height: '120px',
-          minWidth: '120px',
-          minHeight: '120px'
+          ...baseSize,
+          width: baseSize.minWidth,
+          height: baseSize.minHeight
         }
       }
-      return {
-        minWidth: '140px',
-        minHeight: '60px',
-        padding: '20px 32px'
-      }
+      
+      return baseSize
     }
     
     // Dynamic hover effects
@@ -667,7 +672,7 @@ export default function VoiceButton({
               cy="50"
               r="48"
               fill="none"
-              stroke="#FF6B9D"
+              stroke={customization.recording.ringColor}
               strokeWidth="2"
               strokeDasharray={`${(recordingDuration.value / maxDuration) * 301.6} 301.6`}
               strokeLinecap="round"
@@ -686,11 +691,15 @@ export default function VoiceButton({
               aria-label={`Voice recording button - ${getButtonText()}`}
               title={getButtonText()}
             >
-            {/* Show custom content, timer, or icon */}
-            {buttonState.value === 'recording' && showTimer ? (
-              <span class="font-mono font-bold">
-                {formatTimer(recordingDuration.value)}
-              </span>
+            {/* Show recording feedback or regular content */}
+            {buttonState.value === 'recording' ? (
+              <RecordingContent 
+                recordingConfig={customization.recording}
+                duration={recordingDuration.value}
+                originalContent={customization.content.value}
+                buttonState={buttonState.value}
+                theme={customization.appearance.theme}
+              />
             ) : customization.content.value ? (
               <span class="font-bold leading-none">
                 {customization.content.value}
@@ -709,11 +718,15 @@ export default function VoiceButton({
             aria-label={`Voice recording button - ${getButtonText()}`}
             title={getButtonText()}
           >
-          {/* Show custom content, timer, or icon */}
-          {buttonState.value === 'recording' && showTimer ? (
-            <span class="font-mono font-bold">
-              {formatTimer(recordingDuration.value)}
-            </span>
+          {/* Show recording feedback or regular content */}
+          {buttonState.value === 'recording' ? (
+            <RecordingContent 
+              recordingConfig={customization.recording}
+              duration={recordingDuration.value}
+              originalContent={customization.content.value}
+              buttonState={buttonState.value}
+              theme={customization.appearance.theme}
+            />
           ) : customization.content.value ? (
             <span class="font-bold leading-none">
               {customization.content.value}
@@ -792,6 +805,98 @@ function ButtonIcon({ state, theme }: { state: ButtonState, theme?: string }) {
         <svg class={iconClasses} fill="currentColor" viewBox="0 0 24 24">
           <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
         </svg>
+      )
+  }
+}
+
+// Recording Content Component - Handles different visual feedback types
+function RecordingContent({ recordingConfig, duration, originalContent, buttonState, theme }: {
+  recordingConfig: ButtonCustomization['recording']
+  duration: number
+  originalContent: string
+  buttonState: ButtonState
+  theme?: string
+}) {
+  const formatTimer = (seconds: number): string => {
+    const minutes = Math.floor(seconds / 60)
+    const remainingSeconds = seconds % 60
+    const sec = remainingSeconds < 10 ? `0${remainingSeconds}` : `${remainingSeconds}`
+    return `${minutes}:${sec}`
+  }
+  
+  // Maintain consistent size if keepSize is enabled
+  const wrapperClass = recordingConfig.keepSize 
+    ? 'min-w-[120px] min-h-[40px] flex items-center justify-center'
+    : 'flex items-center justify-center'
+  
+  switch (recordingConfig.visualFeedback) {
+    case 'timer':
+      return (
+        <div class={wrapperClass}>
+          {recordingConfig.showTimer ? (
+            <span class="font-mono font-bold text-center">
+              {formatTimer(duration)}
+            </span>
+          ) : (
+            <span class="font-bold leading-none">
+              {originalContent || 'Recording...'}
+            </span>
+          )}
+        </div>
+      )
+      
+    case 'pulse':
+      return (
+        <div class={wrapperClass}>
+          <div 
+            class="font-bold leading-none transition-all duration-500"
+            style={{
+              transform: `scale(${1 + (recordingConfig.pulseIntensity / 100) * 0.2})`,
+              opacity: 0.7 + (recordingConfig.pulseIntensity / 100) * 0.3
+            }}
+          >
+            {originalContent || '🎤'}
+          </div>
+        </div>
+      )
+      
+    case 'glow':
+      return (
+        <div class={wrapperClass}>
+          <span 
+            class="font-bold leading-none"
+            style={{
+              textShadow: `0 0 10px ${recordingConfig.ringColor}80, 0 0 20px ${recordingConfig.ringColor}60`,
+              filter: 'brightness(1.2)'
+            }}
+          >
+            {originalContent || '🎤'}
+          </span>
+        </div>
+      )
+      
+    case 'ring':
+      return (
+        <div class={`${wrapperClass} relative`}>
+          <div 
+            class="absolute inset-0 rounded-full border-4 animate-ping"
+            style={{
+              borderColor: recordingConfig.ringColor
+            }}
+          />
+          <span class="font-bold leading-none relative z-10">
+            {originalContent || '🎤'}
+          </span>
+        </div>
+      )
+      
+    default:
+      return (
+        <div class={wrapperClass}>
+          <span class="font-bold leading-none">
+            {originalContent || 'Recording...'}
+          </span>
+        </div>
       )
   }
 }

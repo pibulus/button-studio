@@ -55,6 +55,16 @@ export interface ButtonCustomization {
     showWaveform: boolean
   }
   
+  // Recording Behavior - NEW!
+  recording: {
+    visualFeedback: 'timer' | 'pulse' | 'glow' | 'ring' | 'none'
+    showTimer: boolean
+    pulseIntensity: number  // 0-100
+    ringColor: string
+    keepSize: boolean       // Prevent layout shift
+    showWaveform: boolean   // During recording
+  }
+  
   // API Configuration
   api?: {
     provider: 'gemini' | 'openai' | 'custom'
@@ -148,6 +158,14 @@ export const defaultCustomization: ButtonCustomization = {
     autoTranscribe: true,
     clipboardCopy: true,
     showWaveform: true
+  },
+  recording: {
+    visualFeedback: 'timer',
+    showTimer: true,
+    pulseIntensity: 80,
+    ringColor: '#ff6b9d',
+    keepSize: true,
+    showWaveform: false
   }
 }
 
