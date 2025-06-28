@@ -20,7 +20,10 @@ export default function ButtonStudio() {
   }
   
   return (
-    <div class="min-h-screen" style={{ backgroundColor: '#f5f1eb' }}>
+    <div class="min-h-screen" style={{ 
+      background: 'radial-gradient(circle at top right, #fefbf3, #faf6ed)',
+      backgroundImage: 'url("data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23f5ead6" fill-opacity="0.3"%3E%3Ccircle cx="7" cy="7" r="1.5"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")'
+    }}>
       
       {/* Transcript Modal */}
       {showTranscriptModal.value && (
@@ -80,7 +83,7 @@ export default function ButtonStudio() {
             </span>
           </h1>
           <p class="text-xl text-black font-bold">
-            Voice buttons that don't suck.
+            Beautiful, customizable button generator.
           </p>
         </div>
       </header>

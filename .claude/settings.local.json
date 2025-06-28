@@ -3,7 +3,8 @@
     "allow": [
       "Bash(deno task:*)",
       "Bash(ls:*)",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(find:*)"
     ],
     "deny": []
   }

@@ -376,165 +376,164 @@ export default function VoiceButton({
 
   // Enhanced button styling with customization system
   const getButtonStyles = () => {
-    // Use buttonConfig if provided (studio mode), otherwise use customization system
-    if (buttonConfig) {
-      // Studio mode - use buttonConfig for live preview
-      const config = buttonConfig
-      
-      // Add voice state-specific animations and styling
-      let stateClasses = ''
-      let stateAnimations = ''
-      
-      switch (buttonState.value) {
-        case 'idle':
-          stateAnimations = 'animate-[breathe_3s_ease-in-out_infinite]'
-          break
-        case 'requesting':
-          stateClasses = 'ring-4 ring-orange-300'
-          stateAnimations = 'animate-pulse'
-          break
-        case 'recording':
-          stateClasses = 'ring-4 ring-red-300'
-          stateAnimations = 'animate-[recording-pulse_1s_ease-in-out_infinite]'
-          break
-        case 'processing':
-          stateClasses = 'ring-4 ring-blue-300'
-          stateAnimations = 'animate-pulse'
-          break
-        case 'success':
-          stateClasses = 'ring-4 ring-green-300'
-          stateAnimations = 'animate-[success-pop_0.6s_ease-out]'
-          break
-        case 'error':
-          stateClasses = 'ring-4 ring-red-300'
-          stateAnimations = 'animate-[error-shake_0.5s_ease-in-out]'
-          break
+    // Use customization system for live slider updates
+    const config = customization
+    
+    // Add voice state-specific animations and styling
+    let stateClasses = ''
+    let stateAnimations = ''
+    
+    // Effect-based animations (MODULAR!)
+    let effectAnimations = []
+    if (config.effects.breathing) effectAnimations.push('animate-[breathe_3s_ease-in-out_infinite]')
+    if (config.effects.bounce) effectAnimations.push('animate-[bounce_1s_ease-in-out_infinite]')
+    if (config.effects.wiggle) effectAnimations.push('animate-[wiggle_2s_ease-in-out_infinite]')
+    if (config.effects.glow) stateClasses += ' animate-[glow_2s_ease-in-out_infinite]'
+    
+    switch (buttonState.value) {
+      case 'idle':
+        // Use effect animations when idle
+        stateAnimations = effectAnimations.join(' ')
+        break
+      case 'requesting':
+        stateClasses = 'ring-4 ring-orange-300'
+        stateAnimations = 'animate-pulse'
+        break
+      case 'recording':
+        stateClasses = 'ring-4 ring-red-300'
+        stateAnimations = 'animate-[recording-pulse_1s_ease-in-out_infinite]'
+        break
+      case 'processing':
+        stateClasses = 'ring-4 ring-blue-300'
+        stateAnimations = 'animate-pulse'
+        break
+      case 'success':
+        stateClasses = 'ring-4 ring-green-300'
+        stateAnimations = 'animate-[success-pop_0.6s_ease-out]'
+        break
+      case 'error':
+        stateClasses = 'ring-4 ring-red-300'
+        stateAnimations = 'animate-[error-shake_0.5s_ease-in-out]'
+        break
+    }
+    
+    // Dynamic content size
+    const contentSize = 'text-3xl'
+    
+    // Generate dynamic styles from customization
+    const isPressed = buttonState.value === 'recording' || buttonState.value === 'processing'
+    
+    // Apply background based on fill type
+    const backgroundStyle = config.appearance.fillType === 'solid' 
+      ? config.appearance.solidColor
+      : `linear-gradient(${config.appearance.gradient.direction}deg, ${config.appearance.gradient.start}, ${config.appearance.gradient.end})`
+    
+    // Calculate dynamic size and styling with sliders
+    const dynamicScale = config.appearance.scale
+    const dynamicRoundness = config.appearance.roundness
+    const shadowType = config.appearance.shadowType
+    const glowIntensity = config.appearance.glowIntensity
+    const shape = config.appearance.shape
+    
+    // Calculate shadow and glow based on type
+    const baseShadow = shadowType === 'brutalist' 
+      ? '8px 8px 0px #000000'  // Hard brutalist shadow
+      : '0 8px 25px rgba(0,0,0,0.15), 0 4px 10px rgba(0,0,0,0.1)'  // Soft diffused shadow
+    
+    // Add glow if intensity > 0 - succulent pink glow
+    const glowEffect = glowIntensity > 0 
+      ? `, 0 0 ${glowIntensity}px rgba(255, 158, 181, 0.6), 0 0 ${glowIntensity * 2}px rgba(255, 158, 181, 0.3)`
+      : ''
+    
+    const shadowStyle = baseShadow + glowEffect
+    
+    // Shape-specific border radius
+    const getBorderRadius = () => {
+      switch (shape) {
+        case 'circle': return '50%'
+        case 'square': return '8px'
+        case 'rounded': return `${dynamicRoundness}px`
+        default: return `${dynamicRoundness}px`
       }
-      
-      // Content size
-      const contentSize = 'text-2xl'
-      
-      // Generate dynamic styles from buttonConfig
-      const isPressed = buttonState.value === 'recording' || buttonState.value === 'processing'
-      
-      // Apply gradients or solid fills
-      let backgroundStyle = ''
-      if (config.appearance.fill.type === 'gradient') {
-        const { colors, direction, type } = config.appearance.fill.gradient
-        if (type === 'linear') {
-          backgroundStyle = `linear-gradient(${direction}deg, ${colors[0]}, ${colors[1]})`
-        } else {
-          backgroundStyle = `radial-gradient(circle, ${colors[0]}, ${colors[1]})`
+    }
+    
+    // Shape-specific dimensions
+    const getShapeDimensions = () => {
+      if (shape === 'circle') {
+        return {
+          width: '120px',
+          height: '120px',
+          minWidth: '120px',
+          minHeight: '120px'
         }
-      } else {
-        backgroundStyle = config.appearance.fill.solid
       }
-      
-      // Calculate shadow - blend buttonConfig shadow with state-based effects
-      let shadowStyle = ''
-      if (config.appearance.shadow.type !== 'none') {
-        const shadow = config.appearance.shadow
-        const baseX = isPressed ? shadow.x + 6 : shadow.x
-        const baseY = isPressed ? shadow.y + 6 : shadow.y
-        const baseBlur = isPressed ? Math.max(2, shadow.blur - 6) : shadow.blur
-        
-        if (shadow.type === 'glow') {
-          shadowStyle = `${baseX}px ${baseY}px ${baseBlur}px ${shadow.spread}px ${shadow.color}`
-        } else {
-          shadowStyle = `${baseX}px ${baseY}px ${baseBlur}px ${shadow.spread}px ${shadow.color}`
-        }
-      }
-      
       return {
-        className: `${stateClasses} ${stateAnimations} ${contentSize} relative cursor-pointer select-none transition-all duration-150 ease-out hover:scale-[1.02] hover:brightness-110 active:scale-[0.98]`,
-        style: {
-          width: `${config.size.width}px`,
-          height: `${config.size.height}px`,
-          borderRadius: config.shape.type === 'circle' ? '50%' : `${config.shape.borderRadius}px`,
-          background: backgroundStyle,
-          border: `${config.appearance.border.width}px ${config.appearance.border.style} ${config.appearance.border.color}`,
-          boxShadow: shadowStyle,
-          transform: isPressed ? 'scale(0.96)' : 'scale(1)',
-          transition: 'all 0.12s cubic-bezier(0.34, 1.56, 0.64, 1)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: config.size.width > 150 ? '2rem' : '1.5rem',
-          fontWeight: 'bold',
-          color: '#ffffff',
-          textShadow: '1px 1px 2px rgba(0,0,0,0.5)',
-          willChange: 'transform, box-shadow, filter'
-        }
+        minWidth: '140px',
+        minHeight: '60px',
+        padding: '20px 32px'
       }
-    } else {
-      // Default mode - use customization system
-      const customProperties = generateButtonStyles(customization)
-      const baseClasses = generateButtonClasses(customization)
-      
-      // Add voice state-specific animations and styling
-      let stateClasses = ''
-      let stateAnimations = ''
-      
-      switch (buttonState.value) {
-        case 'idle':
-          stateAnimations = 'animate-[breathe_3s_ease-in-out_infinite]'
-          break
-        case 'requesting':
-          stateClasses = 'ring-4 ring-orange-300'
-          stateAnimations = 'animate-pulse'
-          break
-        case 'recording':
-          stateClasses = 'ring-4 ring-red-300'
-          stateAnimations = 'animate-[recording-pulse_1s_ease-in-out_infinite]'
-          break
-        case 'processing':
-          stateClasses = 'ring-4 ring-blue-300'
-          stateAnimations = 'animate-pulse'
-          break
-        case 'success':
-          stateClasses = 'ring-4 ring-green-300'
-          stateAnimations = 'animate-[success-pop_0.6s_ease-out]'
-          break
-        case 'error':
-          stateClasses = 'ring-4 ring-red-300'
-          stateAnimations = 'animate-[error-shake_0.5s_ease-in-out]'
-          break
-      }
-      
-      // Dynamic sizing based on content
-      const contentSize = customization.content.type === 'emoji' ? 'text-5xl' : 'text-2xl'
-      
-      // Research-based SATISFYING button feedback
-      const isPressed = buttonState.value === 'recording' || buttonState.value === 'processing'
-      
-      // 3D Push effect with proper physics
-      const pushTransform = isPressed ? 'translate(6px, 6px)' : 'translate(0px, 0px)'
-      const shadowDepth = isPressed ? '2px 2px 0px #000000' : '8px 8px 0px #000000'
-      
-      // Rainbow border (only when idle for modularity)
-      const rainbowClasses = buttonState.value === 'idle' 
-        ? 'before:content-[""] before:absolute before:inset-[-4px] before:bg-gradient-to-r before:from-red-400 before:via-yellow-400 before:via-green-400 before:via-blue-400 before:via-purple-400 before:to-red-400 before:rounded-[calc(var(--button-radius)+4px)] before:-z-10 before:animate-[rainbow-flow_3s_linear_infinite] before:bg-[length:400%_400%]'
-        : ''
-      
-      return {
-        className: `${baseClasses} ${stateClasses} ${stateAnimations} ${contentSize} ${rainbowClasses} relative min-w-[260px] max-w-[340px] h-[90px] px-10 py-6 cursor-pointer select-none transition-all duration-150 ease-out hover:scale-[1.03] hover:brightness-110 active:scale-[0.97]`,
-        style: {
-          ...customProperties,
-          // Enhanced 3D button physics
-          transform: pushTransform,
-          boxShadow: shadowDepth,
-          // Buttery smooth transitions
-          transition: 'all 0.12s cubic-bezier(0.34, 1.56, 0.64, 1)',
-          filter: 'none',
-          // Extra satisfying details
-          willChange: 'transform, box-shadow, filter'
-        }
+    }
+    
+    return {
+      className: `${stateClasses} ${stateAnimations} ${contentSize} relative cursor-pointer select-none transition-all duration-150 ease-out hover:scale-[1.02] hover:brightness-110 active:scale-[0.95] border-4 border-black font-black`,
+      style: {
+        background: backgroundStyle,
+        boxShadow: isPressed 
+          ? (shadowType === 'brutalist' ? '2px 2px 0px #000000' + glowEffect : '0 2px 4px rgba(0,0,0,0.2)' + glowEffect)
+          : shadowStyle,
+        transform: `scale(${isPressed ? dynamicScale * 0.95 : dynamicScale})`,
+        borderRadius: getBorderRadius(),
+        transition: 'all 0.12s cubic-bezier(0.34, 1.56, 0.64, 1)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: '#000000',
+        textShadow: '1px 1px 2px rgba(255,255,255,0.5)',
+        willChange: 'transform, box-shadow, filter',
+        ...getShapeDimensions()
       }
     }
   }
+  
 
   return (
     <div class="flex flex-col items-center">
+      
+      {/* LUSH Animation Styles */}
+      <style jsx>{`
+        @keyframes breathe {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.03); }
+        }
+        
+        @keyframes wiggle {
+          0%, 100% { transform: rotate(0deg); }
+          25% { transform: rotate(1deg); }
+          75% { transform: rotate(-1deg); }
+        }
+        
+        @keyframes glow {
+          0%, 100% { box-shadow: 0 0 20px rgba(244, 114, 182, 0.3); }
+          50% { box-shadow: 0 0 30px rgba(244, 114, 182, 0.6); }
+        }
+        
+        @keyframes recording-pulse {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.05); }
+        }
+        
+        @keyframes success-pop {
+          0% { transform: scale(1); }
+          50% { transform: scale(1.2); }
+          100% { transform: scale(1); }
+        }
+        
+        @keyframes error-shake {
+          0%, 100% { transform: translateX(0); }
+          25% { transform: translateX(-5px); }
+          75% { transform: translateX(5px); }
+        }
+      `}</style>
       
       {/* Just the Button - Clean */}
       <div class="relative inline-block">
@@ -570,10 +569,6 @@ export default function VoiceButton({
         {buttonState.value === 'recording' && showTimer ? (
           <span class="font-mono font-bold">
             {formatTimer(recordingDuration.value)}
-          </span>
-        ) : buttonConfig ? (
-          <span class="font-bold leading-none">
-            {buttonConfig.content.text}
           </span>
         ) : customization.content.value ? (
           <span class="font-bold leading-none">

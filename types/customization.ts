@@ -7,10 +7,13 @@ export interface ButtonCustomization {
   // Visual Properties
   appearance: {
     theme: ButtonTheme
-    radius: number        // 0-50px (rounded-full = 9999)
-    scale: number         // 0.5-2.0x multiplier
-    elevation: number     // 0-32px shadow depth
-    saturation: number    // 0-100% color intensity
+    fillType: 'solid' | 'gradient'
+    solidColor: string    // Hex color for solid fills
+    shape: 'circle' | 'rounded' | 'square'
+    scale: number         // 0.5-2.0x multiplier (Size)
+    roundness: number     // 0-50px border radius
+    glowIntensity: number // 0-20px outer glow
+    shadowType: 'brutalist' | 'diffused'  // Shadow style
     gradient: {
       start: string       // Hex color for gradient start
       end: string         // Hex color for gradient end
@@ -24,6 +27,9 @@ export interface ButtonCustomization {
     value: string
     label?: string        // Optional descriptive label
   }
+  
+  // Effects - LUSH modular magic!
+  effects: EffectToggles
   
   // Interaction Properties
   feedback: {
@@ -65,25 +71,44 @@ export interface SliderDefinition {
   preview: (value: number) => string
 }
 
+// Effect toggles - simple but powerful
+export interface EffectToggles {
+  bounce: boolean
+  glow: boolean 
+  breathing: boolean
+  wiggle: boolean
+}
+
+export const defaultEffects: EffectToggles = {
+  bounce: false,
+  glow: false,
+  breathing: true, // starts with breathing
+  wiggle: false
+}
+
 // Default customization (Satisfying rectangular button)
 export const defaultCustomization: ButtonCustomization = {
   appearance: {
     theme: 'warm',
-    radius: 16,
+    fillType: 'gradient',
+    solidColor: '#ff60e0',
+    shape: 'rounded',
     scale: 1.0, 
-    elevation: 8,
-    saturation: 85,
+    roundness: 16,
+    glowIntensity: 0,
+    shadowType: 'brutalist',
     gradient: {
-      start: '#fbb6ce',  // Softer pink
-      end: '#f9ca9a',    // Softer peach
+      start: '#ff60e0',  // RiffRap peach start
+      end: '#ffcf40',    // RiffRap peach end
       direction: 135     // Diagonal
     }
   },
   content: {
     type: 'text',
-    value: 'Push Me',
+    value: 'Boop me!',
     label: 'Voice Button'
   },
+  effects: defaultEffects,
   feedback: {
     haptic: true,
     sound: true,
@@ -148,22 +173,12 @@ export const buttonThemes: Record<ButtonTheme, ThemeDefinition> = {
   }
 }
 
-// Slider configurations
+// Core slider configurations - The Big 3!
 export const sliderConfig: SliderDefinition[] = [
-  {
-    id: 'radius',
-    label: 'Roundness',
-    icon: '⬜',
-    min: 0,
-    max: 50,
-    unit: 'px',
-    property: '--button-radius',
-    preview: (value) => `rounded-[${value}px]`
-  },
   {
     id: 'scale', 
     label: 'Size',
-    icon: '🔍',
+    icon: '📏',
     min: 0.5,
     max: 2.0,
     step: 0.1,
@@ -172,24 +187,24 @@ export const sliderConfig: SliderDefinition[] = [
     preview: (value) => `scale-[${value}]`
   },
   {
-    id: 'elevation',
-    label: 'Shadow',
-    icon: '🏔️',
+    id: 'roundness',
+    label: 'Roundness',
+    icon: '⭕',
     min: 0,
-    max: 32,
+    max: 50,
     unit: 'px',
-    property: '--button-elevation',
-    preview: (value) => `shadow-[0_${value}px_${value*2}px_rgba(0,0,0,0.1)]`
+    property: '--button-roundness',
+    preview: (value) => `rounded-[${value}px]`
   },
   {
-    id: 'saturation',
-    label: 'Vibrancy', 
-    icon: '🎨',
+    id: 'glowIntensity',
+    label: 'Glow',
+    icon: '✨',
     min: 0,
-    max: 100,
-    unit: '%',
-    property: '--button-saturation',
-    preview: (value) => `saturate-[${value}%]`
+    max: 20,
+    unit: 'px',
+    property: '--button-glow',
+    preview: (value) => `drop-shadow-[0_0_${value}px_currentColor]`
   }
 ]
 
