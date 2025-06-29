@@ -232,7 +232,8 @@ export default function CustomizationPanel({ customization, onChange, voiceEnabl
         cool: 'bg-cyan-200 hover:bg-cyan-300',          // Cool cyan for juice controls
         deep: 'bg-purple-200 hover:bg-purple-300',      // Visible lavender
         effects: 'bg-green-200 hover:bg-green-300',     // Special green for effects
-        recording: 'bg-blue-200 hover:bg-blue-300'      // Special blue for recording
+        recording: 'bg-blue-200 hover:bg-blue-300',     // Special blue for recording
+        juice: 'bg-orange-200 hover:bg-orange-300'      // Orange for juice panel
       }
       return colors[colorKey as keyof typeof colors] || colors.light
     }
@@ -259,6 +260,10 @@ export default function CustomizationPanel({ customization, onChange, voiceEnabl
         deep: {
           selected: 'bg-purple-200 hover:bg-purple-300 border-purple-400',
           unselected: 'bg-white hover:bg-purple-50 border-purple-200'
+        },
+        juice: {
+          selected: 'bg-orange-200 hover:bg-orange-300 border-orange-400',
+          unselected: 'bg-white hover:bg-orange-50 border-orange-200'
         }
       }
       const theme = themes[colorKey as keyof typeof themes] || themes.light
@@ -693,7 +698,8 @@ export default function CustomizationPanel({ customization, onChange, voiceEnabl
                 { key: 'bounce', label: 'Bounce', demoClass: 'effect-bounce' },
                 { key: 'wiggle', label: 'Wiggle', demoClass: 'effect-wiggle' },
                 { key: 'glow', label: 'Glow', demoClass: '' },  // No demo class - handled via inline styles
-                { key: 'pulse', label: 'Pulse', demoClass: 'effect-pulse' }
+                { key: 'pulse', label: 'Pulse', demoClass: 'effect-pulse' },
+                { key: 'rainbowGlow', label: 'Rainbow', demoClass: '' }  // Rainbow border effect
               ].map(({ key, label, demoClass }) => {
                 const isActive = customization.effects[key as keyof ButtonCustomization['effects']]
                 return (
@@ -857,7 +863,7 @@ export default function CustomizationPanel({ customization, onChange, voiceEnabl
       </CollapsiblePanel>
       
       {/* 🎮 JUICE CONTROLS - Matching left-side design exactly */}
-      <CollapsiblePanel id="juice" title="Juice" color="light">
+      <CollapsiblePanel id="juice" title="Juice" color="juice">
         <div class="space-y-6">
           
           {/* Squish - EXACT left slider design */}

@@ -1,5 +1,5 @@
 import { signal } from '@preact/signals'
-import { useEffect, useRef } from 'preact/hooks'
+import { useEffect, useRef, useMemo } from 'preact/hooks'
 import { AudioRecorder, AudioAnalyzer, copyToClipboard, triggerHapticFeedback, HapticPatterns } from '../utils/audio.ts'
 import { ButtonState, VoiceButtonError, ThemeId, ButtonSize } from '../types/core.ts'
 import { TranscriptionPlugin, OutputPlugin } from '../types/plugins.ts'
@@ -352,29 +352,66 @@ export default function VoiceButton({
     return `${minutes}:${sec}`
   }
 
-  // Check for rainbow effect
-  const hasRainbowEffect = customization.effects.rainbowGlow
+  // Memoize expensive calculations for performance
+  const hasRainbowEffect = useMemo(() => customization.effects.rainbowGlow, [customization.effects.rainbowGlow])
   
-  // Get button's main color for glow effect
-  const getButtonColor = () => {
-    const color = customization.appearance.fillType === 'solid' 
+  // Memoize button color extraction to avoid recalculation
+  const buttonColor = useMemo(() => {
+    return customization.appearance.fillType === 'solid' 
       ? customization.appearance.solidColor
       : customization.appearance.gradient.start
-    // console.log('🎨 Button color:', color, 'Fill type:', customization.appearance.fillType)
-    return color
-  }
+  }, [customization.appearance.fillType, customization.appearance.solidColor, customization.appearance.gradient.start])
   
-  // Convert hex to rgba
-  const hexToRgba = (hex: string, alpha: number) => {
-    const cleanHex = hex.replace('#', '')
-    const r = parseInt(cleanHex.substr(0, 2), 16)
-    const g = parseInt(cleanHex.substr(2, 2), 16)
-    const b = parseInt(cleanHex.substr(4, 2), 16)
-    const result = `rgba(${r}, ${g}, ${b}, ${alpha})`
-    // console.log('🔧 hexToRgba:', hex, '→', result)
-    return result
-  }
+  // Memoize hex to rgba conversion for consistent colors
+  const hexToRgba = useMemo(() => {
+    return (hex: string, alpha: number) => {
+      const cleanHex = hex.replace('#', '')
+      const r = parseInt(cleanHex.substr(0, 2), 16)
+      const g = parseInt(cleanHex.substr(2, 2), 16)
+      const b = parseInt(cleanHex.substr(4, 2), 16)
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`
+    }
+  }, [])
   
+  // Memoize shape dimensions calculation for performance
+  const shapeDimensions = useMemo(() => {
+    const shape = customization.appearance.shape
+    if (shape === 'circle') {
+      return {
+        width: '120px',
+        height: '120px',
+        minWidth: '120px',
+        minHeight: '120px',
+        maxWidth: '120px',
+        maxHeight: '120px',
+        padding: '0',
+        boxSizing: 'border-box' as const
+      }
+    }
+    
+    // Rectangle/square buttons - FIXED SIZE
+    return {
+      width: '160px',
+      height: '80px', 
+      minWidth: '160px',
+      minHeight: '80px',
+      maxWidth: '160px',
+      maxHeight: '80px',
+      padding: '0',
+      boxSizing: 'border-box' as const
+    }
+  }, [customization.appearance.shape])
+  
+  // Memoize easing curve calculation
+  const easingCurve = useMemo(() => {
+    switch (customization.interactions.easingStyle) {
+      case 'bouncy': return 'cubic-bezier(0.68, -0.55, 0.265, 1.55)'
+      case 'smooth': return 'cubic-bezier(0.4, 0, 0.2, 1)'
+      case 'snappy': return 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+      default: return 'cubic-bezier(0.34, 1.56, 0.64, 1)'
+    }
+  }, [customization.interactions.easingStyle])
+
   // Enhanced button styling with customization system
   const getButtonStyles = () => {
     // Use customization system for live slider updates
@@ -476,33 +513,7 @@ export default function VoiceButton({
       }
     }
     
-    // Shape-specific dimensions - ALWAYS CONSISTENT
-    const getShapeDimensions = () => {
-      if (shape === 'circle') {
-        return {
-          width: '120px',
-          height: '120px',
-          minWidth: '120px',
-          minHeight: '120px',
-          maxWidth: '120px',
-          maxHeight: '120px',
-          padding: '0',
-          boxSizing: 'border-box' as const
-        }
-      }
-      
-      // Rectangle/square buttons - FIXED SIZE
-      return {
-        width: '160px',
-        height: '80px', 
-        minWidth: '160px',
-        minHeight: '80px',
-        maxWidth: '160px',
-        maxHeight: '80px',
-        padding: '0',
-        boxSizing: 'border-box' as const
-      }
-    }
+    // Shape dimensions now memoized above for performance
     
     // 🎮 JUICE CONTROLS - Dynamic interaction effects!
     const juiceSettings = config.interactions
@@ -511,15 +522,7 @@ export default function VoiceButton({
     const hoverLift = juiceSettings.hoverLift
     const animSpeed = juiceSettings.animationSpeed
     
-    // Easing curves based on style
-    const getEasing = () => {
-      switch (juiceSettings.easingStyle) {
-        case 'bouncy': return 'cubic-bezier(0.68, -0.55, 0.265, 1.55)'
-        case 'smooth': return 'cubic-bezier(0.4, 0, 0.2, 1)'
-        case 'snappy': return 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
-        default: return 'cubic-bezier(0.34, 1.56, 0.64, 1)'
-      }
-    }
+    // Use memoized easing curve for performance
     
     // Dynamic hover effects with juice controls
     let hoverClasses = ''
@@ -550,7 +553,7 @@ export default function VoiceButton({
         borderWidth: `${borderWidth}px`,
         textTransform: textTransform as any,
         fontWeight: fontWeight === 'bold' ? 'bold' : fontWeight === 'light' ? '300' : 'normal',
-        transition: `all ${150 / animSpeed}ms ${getEasing()}`,
+        transition: `all ${150 / animSpeed}ms ${easingCurve}`,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -559,12 +562,12 @@ export default function VoiceButton({
         // FORCE glow effect via direct style override
         boxShadow: config.effects.glow
           ? (isPressed 
-              ? `2px 2px 0px #000000, 0 0 15px ${hexToRgba(getButtonColor(), 0.6)}`
-              : `8px 8px 0px #000000, 0 0 25px ${hexToRgba(getButtonColor(), 0.6)}, 0 0 50px ${hexToRgba(getButtonColor(), 0.3)}`)
+              ? `2px 2px 0px #000000, 0 0 15px ${hexToRgba(buttonColor, 0.6)}`
+              : `8px 8px 0px #000000, 0 0 25px ${hexToRgba(buttonColor, 0.6)}, 0 0 50px ${hexToRgba(buttonColor, 0.3)}`)
           : (isPressed 
               ? (shadowType === 'brutalist' ? '2px 2px 0px #000000' : '0 2px 4px rgba(0,0,0,0.2)')
               : shadowStyle),
-        ...getShapeDimensions()
+        ...shapeDimensions
       } as any
     }
   }

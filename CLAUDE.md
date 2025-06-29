@@ -47,9 +47,10 @@ deno task update
 ### Key Components
 
 1. **VoiceButton** (`components/VoiceButton.tsx`): Main voice recording component with configurable appearance, recording states, and transcription
-2. **VoiceButtonStudio** (`islands/VoiceButtonStudio.tsx`): Design studio for customizing button appearance with live preview
-3. **EmojiPicker** (`components/EmojiPicker.tsx`): Custom emoji/text selection interface
-4. **Toast** (`components/Toast.tsx`): Notification system for user feedback
+2. **CustomizationPanel** (`components/CustomizationPanel.tsx`): Main design interface with collapsible sections and color-coded panels
+3. **ButtonStudio** (`islands/ButtonStudio.tsx`): Main island that orchestrates the entire button design experience
+4. **EmojiPicker** (`components/EmojiPicker.tsx`): Custom emoji/text selection interface  
+5. **Toast** (`components/Toast.tsx`): Notification system for user feedback
 
 ### State Management Pattern
 
@@ -107,6 +108,14 @@ Custom `VoiceButtonError` class with specific error codes for audio permission, 
 - Dynamic inline styles for user-customizable properties
 - State-based animations using CSS classes
 - Custom slider styling for design controls
+
+### CustomizationPanel Color System
+The `CustomizationPanel` uses a color-coded design system for visual organization:
+- **Panel Headers**: Each collapsible panel has a distinct color (red, orange, pink, yellow, cyan, purple, green, blue)
+- **Color Mapping**: Uses `getBackgroundColor()` function to map color keys to Tailwind classes
+- **Button Theming**: Panel buttons inherit colors from their parent panel via `getButtonColors()`
+- **Available Colors**: lightest, light, medium, warm, cool, deep, effects, recording, juice
+- **CSS Scoping**: Juice sliders use `.juice-slider` class with `!important` declarations for specificity
 
 ## Testing and Quality
 
