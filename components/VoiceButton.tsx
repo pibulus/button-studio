@@ -516,7 +516,7 @@ export default function VoiceButton({
     const getBorderRadius = () => {
       switch (shape) {
         case 'circle': return '50%'
-        case 'square': return '8px'
+        case 'square': return `${Math.min(dynamicRoundness, 20)}px` // Allow roundness on squares too, max 20px
         case 'rounded': return `${dynamicRoundness}px`
         default: return `${dynamicRoundness}px`
       }
@@ -533,14 +533,23 @@ export default function VoiceButton({
     
     // Use memoized easing curve for performance
     
-    // Dynamic hover effects with juice controls
+    // Dynamic hover effects with juice controls - Using CSS custom properties for dynamic values
     let hoverClasses = ''
+    let hoverStyles = {}
+    
     switch (hoverEffect) {
       case 'lift':
-        hoverClasses = `hover:scale-[${bounceScale}] hover:-translate-y-[${hoverLift}px]`
+        hoverClasses = 'hover-lift'
+        hoverStyles = {
+          '--hover-scale': bounceScale,
+          '--hover-lift': `${hoverLift}px`
+        }
         break
       case 'glow':
-        hoverClasses = 'hover:shadow-[0_0_20px_rgba(255,158,181,0.6)]'
+        hoverClasses = 'hover-glow'
+        hoverStyles = {
+          '--glow-color': hexToRgba(buttonColor, 0.6)
+        }
         break
       case 'pulse':
         hoverClasses = 'hover:animate-pulse'
@@ -549,7 +558,10 @@ export default function VoiceButton({
         hoverClasses = 'hover:rotate-3'
         break
       default:
-        hoverClasses = `hover:scale-[${1 + juiceSettings.bounceFactor/200}] hover:brightness-110`
+        hoverClasses = 'hover-default'
+        hoverStyles = {
+          '--hover-scale': 1 + juiceSettings.bounceFactor/200
+        }
     }
     
     return {
@@ -576,7 +588,8 @@ export default function VoiceButton({
           : (isPressed 
               ? (shadowType === 'brutalist' ? '2px 2px 0px #000000' : '0 2px 4px rgba(0,0,0,0.2)')
               : shadowStyle),
-        ...shapeDimensions
+        ...shapeDimensions,
+        ...hoverStyles
       } as any
     }
   }
@@ -585,8 +598,22 @@ export default function VoiceButton({
   return (
     <div class="flex flex-col items-center">
       
-      {/* LUSH Animation Styles */}
+      {/* LUSH Animation Styles + Hover Effects */}
       <style jsx>{`
+        /* Hover Effects - Custom CSS for dynamic values */
+        .hover-lift:hover {
+          transform: scale(var(--hover-scale)) translateY(calc(-1 * var(--hover-lift)));
+        }
+        
+        .hover-glow:hover {
+          box-shadow: 0 0 20px var(--glow-color), 0 0 40px var(--glow-color);
+        }
+        
+        .hover-default:hover {
+          transform: scale(var(--hover-scale));
+          filter: brightness(1.1);
+        }
+        
         @keyframes breathe {
           0%, 100% { transform: scale(1); }
           50% { transform: scale(1.05); }
