@@ -111,36 +111,95 @@ export default function ButtonStudio() {
                   />
                 </div>
                 
-                {/* Dice Shuffle Icon */}
+                {/* 🎲 JUICY Dice Shuffle Button - MAXIMUM JUICE! */}
                 <button
-                  onClick={() => {
-                    // We'll call the surprise function from the master panel
+                  onClick={(e) => {
+                    // MAXIMUM JUICE CLICK ANIMATION
+                    const btn = e.currentTarget
+                    
+                    // Stage 1: Deep squish (80ms)
+                    btn.style.transform = 'scale(0.85) rotate(-5deg) translate(2px, 2px)'
+                    btn.style.boxShadow = '1px 1px 0px #000000'
+                    btn.style.backgroundColor = '#fbbf24' // Yellow burst
+                    
+                    // Stage 2: Bounce back bigger (120ms)
+                    setTimeout(() => {
+                      btn.style.transform = 'scale(1.15) rotate(5deg) translate(-1px, -1px)'
+                      btn.style.boxShadow = '5px 5px 0px #000000'
+                      btn.style.backgroundColor = '#f59e0b'
+                    }, 80)
+                    
+                    // Stage 3: Wiggle shake (200ms)
+                    setTimeout(() => {
+                      btn.style.transform = 'scale(1.05) rotate(-2deg) translate(1px, 0px)'
+                      btn.style.boxShadow = '4px 4px 0px #000000'
+                      btn.style.backgroundColor = '#fbbf24'
+                    }, 200)
+                    
+                    // Stage 4: Final settle (150ms)
+                    setTimeout(() => {
+                      btn.style.transform = 'scale(1) rotate(0deg) translate(0px, 0px)'
+                      btn.style.boxShadow = '3px 3px 0px #000000'
+                      btn.style.backgroundColor = '#fef3c7'
+                    }, 350)
+                    
+                    // Trigger the surprise function
                     const event = new CustomEvent('surpriseMe')
                     document.dispatchEvent(event)
                   }}
-                  class="absolute top-4 right-4 w-12 h-12 bg-white border-3 border-black rounded-xl hover:bg-yellow-50 active:scale-95 transition-all duration-150 flex items-center justify-center shadow-md hover:shadow-lg"
-                  title="Surprise me! 🎲"
-                  style={{
-                    boxShadow: '3px 3px 0px #000000'
-                  }}
-                  onMouseDown={(e) => {
-                    e.currentTarget.style.transform = 'scale(0.9) translate(1px, 1px)'
-                    e.currentTarget.style.boxShadow = '1px 1px 0px #000000'
-                  }}
-                  onMouseUp={(e) => {
-                    e.currentTarget.style.transform = 'scale(1)'
-                    e.currentTarget.style.boxShadow = '3px 3px 0px #000000'
+                  onMouseEnter={(e) => {
+                    // Enhanced hover with sparkle
+                    e.currentTarget.style.transform = 'scale(1.05) rotate(2deg)'
+                    e.currentTarget.style.boxShadow = '4px 4px 0px #000000'
+                    e.currentTarget.style.backgroundColor = '#fef3c7'
+                    e.currentTarget.style.filter = 'brightness(1.1)'
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = 'scale(1)'
+                    // Smooth return to normal
+                    e.currentTarget.style.transform = 'scale(1) rotate(0deg)'
                     e.currentTarget.style.boxShadow = '3px 3px 0px #000000'
+                    e.currentTarget.style.backgroundColor = '#ffffff'
+                    e.currentTarget.style.filter = 'brightness(1)'
+                  }}
+                  class="absolute top-4 right-4 w-12 h-12 bg-white border-3 border-black rounded-xl flex items-center justify-center group transition-all duration-200 ease-out cursor-pointer"
+                  title="Surprise me! 🎲"
+                  style={{
+                    boxShadow: '3px 3px 0px #000000',
+                    willChange: 'transform, box-shadow, background-color, filter'
                   }}
                 >
-                  {/* 🎲 Proper Dice Icon */}
-                  <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                  {/* 🎲 Dice Icon with enhanced animations */}
+                  <svg class="w-7 h-7 text-amber-800 group-hover:text-amber-900 transition-all duration-300 group-hover:rotate-12 group-hover:scale-110" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zM7.5 6a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm9 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zM12 10.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zM7.5 15a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm9 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z"/>
                   </svg>
+                  
+                  {/* Enhanced sparkle effects */}
+                  <div class="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-opacity duration-300"></div>
+                  <div class="absolute -bottom-1 -left-1 w-2 h-2 bg-orange-400 rounded-full opacity-0 group-hover:opacity-80 group-hover:animate-pulse transition-opacity duration-500"></div>
+                  
+                  {/* Glow effect on hover */}
+                  <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-yellow-200 to-orange-200 opacity-0 group-hover:opacity-30 transition-opacity duration-300 -z-10"></div>
                 </button>
+                
+                {/* Add some CSS for the juice animations */}
+                <style jsx>{`
+                  @keyframes dice-roll {
+                    0% { transform: rotate(0deg); }
+                    25% { transform: rotate(-10deg) scale(1.1); }
+                    50% { transform: rotate(10deg) scale(0.95); }
+                    75% { transform: rotate(-5deg) scale(1.05); }
+                    100% { transform: rotate(0deg) scale(1); }
+                  }
+                  
+                  .dice-button:active {
+                    animation: dice-roll 0.5s ease-out;
+                  }
+                  
+                  @keyframes sparkle {
+                    0%, 100% { opacity: 0; transform: scale(0) rotate(0deg); }
+                    50% { opacity: 1; transform: scale(1) rotate(180deg); }
+                  }
+                `}</style>
               </div>
               
               {/* Master Controls */}

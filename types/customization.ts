@@ -28,6 +28,13 @@ export interface ButtonCustomization {
     clickAnimation: 'none' | 'bounce' | 'shrink' | 'spin' | 'flash'
     textTransform: 'none' | 'uppercase' | 'lowercase' | 'capitalize'
     fontWeight: 'normal' | 'bold' | 'light'
+    
+    // 🎮 JUICE CONTROLS - The secret sauce!
+    squishPower: number      // 0-20% - How much buttons compress when pressed
+    bounceFactor: number     // 0-15% - Overshoot amount on release
+    hoverLift: number        // 0-10px - How much buttons lift on hover
+    animationSpeed: number   // 0.5x-2x - Duration multiplier
+    easingStyle: 'bouncy' | 'smooth' | 'snappy'  // Preset easing curves
   }
   
   // Content Properties  
@@ -140,7 +147,14 @@ export const defaultCustomization: ButtonCustomization = {
     hoverEffect: 'lift',
     clickAnimation: 'bounce',
     textTransform: 'none',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    
+    // Default juice settings - medium juiciness
+    squishPower: 8,        // 8% squish
+    bounceFactor: 5,       // 5% bounce
+    hoverLift: 3,          // 3px lift
+    animationSpeed: 1.0,   // Normal speed
+    easingStyle: 'bouncy'  // Bouncy feel
   },
   content: {
     type: 'text',

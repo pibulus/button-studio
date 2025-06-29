@@ -526,11 +526,28 @@ export default function VoiceButton({
       }
     }
     
-    // Dynamic hover effects
+    // 🎮 JUICE CONTROLS - Dynamic interaction effects!
+    const juiceSettings = config.interactions
+    const squishScale = 1 - (juiceSettings.squishPower / 100)
+    const bounceScale = 1 + (juiceSettings.bounceFactor / 100)
+    const hoverLift = juiceSettings.hoverLift
+    const animSpeed = juiceSettings.animationSpeed
+    
+    // Easing curves based on style
+    const getEasing = () => {
+      switch (juiceSettings.easingStyle) {
+        case 'bouncy': return 'cubic-bezier(0.68, -0.55, 0.265, 1.55)'
+        case 'smooth': return 'cubic-bezier(0.4, 0, 0.2, 1)'
+        case 'snappy': return 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+        default: return 'cubic-bezier(0.34, 1.56, 0.64, 1)'
+      }
+    }
+    
+    // Dynamic hover effects with juice controls
     let hoverClasses = ''
     switch (hoverEffect) {
       case 'lift':
-        hoverClasses = 'hover:scale-[1.05] hover:-translate-y-1'
+        hoverClasses = `hover:scale-[${bounceScale}] hover:-translate-y-[${hoverLift}px]`
         break
       case 'glow':
         hoverClasses = 'hover:shadow-[0_0_20px_rgba(255,158,181,0.6)]'
@@ -542,20 +559,20 @@ export default function VoiceButton({
         hoverClasses = 'hover:rotate-3'
         break
       default:
-        hoverClasses = 'hover:scale-[1.02] hover:brightness-110'
+        hoverClasses = `hover:scale-[${1 + juiceSettings.bounceFactor/200}] hover:brightness-110`
     }
     
     return {
-      className: `${stateClasses} ${stateAnimations} ${contentSize} relative cursor-pointer select-none transition-all duration-150 ease-out ${hoverClasses} active:scale-[0.95] border-black`,
+      className: `${stateClasses} ${stateAnimations} ${contentSize} relative cursor-pointer select-none transition-all ease-out ${hoverClasses} border-black`,
       style: {
         background: backgroundStyle,
-        transform: `scale(${isPressed ? dynamicScale * 0.95 : dynamicScale})`,
+        transform: `scale(${isPressed ? dynamicScale * squishScale : dynamicScale})`,
         borderRadius: getBorderRadius(),
         borderStyle: borderStyle,
         borderWidth: `${borderWidth}px`,
         textTransform: textTransform as any,
         fontWeight: fontWeight === 'bold' ? 'bold' : fontWeight === 'light' ? '300' : 'normal',
-        transition: 'all 0.12s cubic-bezier(0.34, 1.56, 0.64, 1)',
+        transition: `all ${150 / animSpeed}ms ${getEasing()}`,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',

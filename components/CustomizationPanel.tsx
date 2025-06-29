@@ -1,5 +1,6 @@
 import { ButtonCustomization, sliderConfig, buttonThemes, ButtonTheme } from '../types/customization.ts'
 import { signal } from '@preact/signals'
+import { useEffect } from 'preact/hooks'
 
 interface CustomizationPanelProps {
   customization: ButtonCustomization
@@ -14,6 +15,7 @@ const expandedPanels = signal<Record<string, boolean>>({
   shape: true,
   effects: false,
   interactions: false,
+  juice: false,
   recording: false,
   api: false,
   export: false
@@ -31,7 +33,7 @@ export default function CustomizationPanel({ customization, onChange, voiceEnabl
     })
   }
   
-  const updateInteraction = (key: keyof ButtonCustomization['interactions'], value: string) => {
+  const updateInteraction = (key: keyof ButtonCustomization['interactions'], value: string | number) => {
     onChange({
       ...customization,
       interactions: {
@@ -125,6 +127,12 @@ export default function CustomizationPanel({ customization, onChange, voiceEnabl
     const randomTexts = ['Boop me!', 'Zap!', 'Press here', 'Voice magic', 'Tap me', 'Hello!', 'Record me', 'Speak now', 'Pop!', 'Click!', 'Touch me', 'Go!']
     const randomText = randomTexts[Math.floor(Math.random() * randomTexts.length)]
     
+    // Pick random shape first
+    const randomShape = ['circle', 'rounded', 'square'][Math.floor(Math.random() * 3)] as 'circle' | 'rounded' | 'square'
+    
+    // Smart effects - avoid rainbow glow on circles since it looks wack
+    const shouldUseRainbow = Math.random() > 0.9 && randomShape !== 'circle'
+    
     // Create complete new customization object
     const newCustomization = {
       ...customization,
@@ -136,10 +144,10 @@ export default function CustomizationPanel({ customization, onChange, voiceEnabl
         ...customization.appearance,
         fillType: Math.random() > 0.5 ? 'gradient' : 'solid' as 'gradient' | 'solid',
         solidColor: succulentColors[Math.floor(Math.random() * succulentColors.length)],
-        shape: ['circle', 'rounded', 'square'][Math.floor(Math.random() * 3)] as 'circle' | 'rounded' | 'square',
-        scale: 0.7 + Math.random() * 0.8,
+        shape: randomShape,
+        scale: 0.6 + Math.random() * 1.0, // Wider range for more dramatic size changes
         roundness: Math.random() * 30,
-        glowIntensity: Math.random() * 15,
+        borderWidth: Math.floor(Math.random() * 8) + 1,
         shadowType: Math.random() > 0.5 ? 'brutalist' : 'diffused' as 'brutalist' | 'diffused',
         borderStyle: ['solid', 'dashed', 'dotted', 'double'][Math.floor(Math.random() * 4)] as 'solid' | 'dashed' | 'dotted' | 'double',
         gradient: {
@@ -152,13 +160,22 @@ export default function CustomizationPanel({ customization, onChange, voiceEnabl
         hoverEffect: ['none', 'lift', 'glow', 'pulse', 'rotate'][Math.floor(Math.random() * 5)] as any,
         clickAnimation: ['none', 'bounce', 'shrink', 'spin', 'flash'][Math.floor(Math.random() * 5)] as any,
         textTransform: ['none', 'uppercase', 'lowercase', 'capitalize'][Math.floor(Math.random() * 4)] as any,
-        fontWeight: ['normal', 'bold', 'light'][Math.floor(Math.random() * 3)] as any
+        fontWeight: ['normal', 'bold', 'light'][Math.floor(Math.random() * 3)] as any,
+        
+        // Random juice settings for maximum fun
+        squishPower: Math.floor(Math.random() * 15) + 3,     // 3-18%
+        bounceFactor: Math.floor(Math.random() * 10) + 2,    // 2-12%
+        hoverLift: Math.floor(Math.random() * 8) + 1,        // 1-9px
+        animationSpeed: 0.5 + Math.random() * 1.0,           // 0.5x-1.5x
+        easingStyle: ['bouncy', 'smooth', 'snappy'][Math.floor(Math.random() * 3)] as any
       },
       effects: {
         breathing: Math.random() > 0.5,
         bounce: Math.random() > 0.7,
         glow: Math.random() > 0.6,
-        wiggle: Math.random() > 0.8
+        wiggle: Math.random() > 0.8,
+        rainbowGlow: shouldUseRainbow, // Smart rainbow logic
+        pulse: Math.random() > 0.7
       }
     }
     
@@ -186,10 +203,15 @@ export default function CustomizationPanel({ customization, onChange, voiceEnabl
 }">${config.content.value}</button>`
   }
   
-  // Listen for surprise me event from dice button
-  if (typeof document !== 'undefined') {
-    document.addEventListener('surpriseMe', surpriseMe)
-  }
+  // Listen for surprise me event from dice button (useEffect to avoid duplicate listeners)
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      document.addEventListener('surpriseMe', surpriseMe)
+      return () => {
+        document.removeEventListener('surpriseMe', surpriseMe)
+      }
+    }
+  }, [])
   
   // Collapsible Panel Component
   const CollapsiblePanel = ({ id, title, children, color = 'light' }: { id: string, title: string, children: any, color?: string }) => {
@@ -202,6 +224,7 @@ export default function CustomizationPanel({ customization, onChange, voiceEnabl
         light: 'bg-orange-200 hover:bg-orange-300',     // Visible peach  
         medium: 'bg-pink-200 hover:bg-pink-300',        // Visible coral
         warm: 'bg-yellow-200 hover:bg-yellow-300',      // Visible golden
+        cool: 'bg-cyan-200 hover:bg-cyan-300',          // Cool cyan for juice controls
         deep: 'bg-purple-200 hover:bg-purple-300',      // Visible lavender
         effects: 'bg-green-200 hover:bg-green-300',     // Special green for effects
         recording: 'bg-blue-200 hover:bg-blue-300'      // Special blue for recording
@@ -825,6 +848,118 @@ export default function CustomizationPanel({ customization, onChange, voiceEnabl
               </button>
             ))}
           </div>
+        </div>
+      </CollapsiblePanel>
+      
+      {/* 🎮 JUICE CONTROLS - The secret sauce! */}
+      <CollapsiblePanel id="juice" title="Button Juice" color="cool">
+        <div class="space-y-6">
+          
+          {/* Squish Power Slider */}
+          <div>
+            <label class="block text-sm font-black text-black mb-3 flex items-center gap-2">
+              <span class="text-lg">🫧</span>
+              Squish Power: {customization.interactions.squishPower}%
+            </label>
+            <input
+              type="range"
+              min="0"
+              max="20"
+              step="1"
+              value={customization.interactions.squishPower}
+              onChange={(e) => updateInteraction('squishPower', parseInt(e.currentTarget.value))}
+              class="w-full h-3 bg-blue-200 rounded-full appearance-none cursor-pointer slider-thumb-blue"
+            />
+            <div class="text-xs text-gray-600 mt-1">How much the button compresses when pressed</div>
+          </div>
+          
+          {/* Bounce Factor Slider */}
+          <div>
+            <label class="block text-sm font-black text-black mb-3 flex items-center gap-2">
+              <span class="text-lg">🏀</span>
+              Bounce Factor: {customization.interactions.bounceFactor}%
+            </label>
+            <input
+              type="range"
+              min="0"
+              max="15"
+              step="1"
+              value={customization.interactions.bounceFactor}
+              onChange={(e) => updateInteraction('bounceFactor', parseInt(e.currentTarget.value))}
+              class="w-full h-3 bg-blue-200 rounded-full appearance-none cursor-pointer slider-thumb-blue"
+            />
+            <div class="text-xs text-gray-600 mt-1">Overshoot amount when releasing the button</div>
+          </div>
+          
+          {/* Hover Lift Slider */}
+          <div>
+            <label class="block text-sm font-black text-black mb-3 flex items-center gap-2">
+              <span class="text-lg">🚁</span>
+              Hover Lift: {customization.interactions.hoverLift}px
+            </label>
+            <input
+              type="range"
+              min="0"
+              max="10"
+              step="1"
+              value={customization.interactions.hoverLift}
+              onChange={(e) => updateInteraction('hoverLift', parseInt(e.currentTarget.value))}
+              class="w-full h-3 bg-blue-200 rounded-full appearance-none cursor-pointer slider-thumb-blue"
+            />
+            <div class="text-xs text-gray-600 mt-1">How much the button lifts on hover</div>
+          </div>
+          
+          {/* Animation Speed Slider */}
+          <div>
+            <label class="block text-sm font-black text-black mb-3 flex items-center gap-2">
+              <span class="text-lg">⚡</span>
+              Animation Speed: {customization.interactions.animationSpeed.toFixed(1)}x
+            </label>
+            <input
+              type="range"
+              min="0.5"
+              max="2.0"
+              step="0.1"
+              value={customization.interactions.animationSpeed}
+              onChange={(e) => updateInteraction('animationSpeed', parseFloat(e.currentTarget.value))}
+              class="w-full h-3 bg-blue-200 rounded-full appearance-none cursor-pointer slider-thumb-blue"
+            />
+            <div class="text-xs text-gray-600 mt-1">Speed multiplier for all animations</div>
+          </div>
+          
+          {/* Easing Style Buttons */}
+          <div>
+            <label class="block text-sm font-black text-black mb-3 flex items-center gap-2">
+              <span class="text-lg">🎭</span>
+              Animation Feel
+            </label>
+            <div class="grid grid-cols-3 gap-2">
+              {[
+                { value: 'bouncy', label: 'Bouncy', preview: '🏀' },
+                { value: 'smooth', label: 'Smooth', preview: '🌊' },
+                { value: 'snappy', label: 'Snappy', preview: '⚡' }
+              ].map(({ value, label, preview }) => (
+                <button
+                  key={value}
+                  onClick={() => updateInteraction('easingStyle', value)}
+                  class={`px-3 py-3 rounded-xl border-3 border-black font-black transition-all shadow-sm hover:shadow-md active:scale-95 flex flex-col items-center gap-1 ${
+                    customization.interactions.easingStyle === value
+                      ? 'bg-blue-200 hover:bg-blue-300 text-black shadow-md scale-105'
+                      : 'bg-white hover:bg-blue-50 text-black'
+                  }`}
+                  style={{
+                    boxShadow: customization.interactions.easingStyle === value 
+                      ? '3px 3px 0px #000000'
+                      : '2px 2px 0px #000000'
+                  }}
+                >
+                  <span class="text-lg">{preview}</span>
+                  <span class="text-xs">{label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+          
         </div>
       </CollapsiblePanel>
       
