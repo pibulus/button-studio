@@ -373,32 +373,43 @@ export default function CustomizationPanel({ customization, onChange, voiceEnabl
           }
         `}</style>
         
-        {/* Content Input + Voice Toggle - CHONKY */}
-        <div class="bg-white rounded-3xl p-8 shadow-lg border-4 border-black">
-          <div class="flex items-center gap-6">
-            <input
-              type="text"
-              value={customization.content.value}
-              onInput={(e) => updateContent((e.target as HTMLInputElement).value)}
-              placeholder="Button text..."
-              class="flex-1 px-6 py-4 text-xl font-bold bg-white border-3 border-black rounded-2xl focus:bg-yellow-50 focus:outline-none transition-all text-center"
-            />
-            <button
-              onClick={() => onVoiceToggle?.(!voiceEnabled)}
-              title="Toggle voice transcription"
-              class={`w-16 h-10 rounded-full border-3 border-black transition-all duration-200 flex items-center shadow-md ${
-                voiceEnabled ? 'bg-pink-300' : 'bg-white'
-              }`}
-            >
-              <div class={`w-7 h-7 bg-white rounded-full border-2 border-black transition-all duration-200 ${
-                voiceEnabled ? 'translate-x-7' : 'translate-x-1'
-              }`} />
-            </button>
+        {/* Content Input + Voice Toggle - Enhanced UX */}
+        <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-lg border-4 border-black">
+          <div class="space-y-4">
+            <div class="flex items-center gap-6">
+              <div class="flex-1 relative">
+                <input
+                  type="text"
+                  value={customization.content.value}
+                  onInput={(e) => updateContent((e.target as HTMLInputElement).value)}
+                  placeholder="Button text..."
+                  maxLength={25}
+                  class="w-full px-6 py-4 text-xl font-bold bg-white border-3 border-black rounded-2xl focus:bg-orange-50 focus:shadow-lg hover:bg-pink-50 hover:shadow-md hover:-translate-y-0.5 focus:outline-none transition-all duration-300 text-center"
+                />
+                {/* Character counter when approaching limit */}
+                {customization.content.value.length > 18 && (
+                  <div class="absolute -bottom-6 right-2 text-xs font-bold text-gray-500">
+                    {customization.content.value.length}/25
+                  </div>
+                )}
+              </div>
+              <button
+                onClick={() => onVoiceToggle?.(!voiceEnabled)}
+                title="🎤 Enable voice transcription and AI processing - converts speech to text automatically"
+                class={`w-16 h-10 sm:w-18 sm:h-12 rounded-full border-3 border-black transition-all duration-300 flex items-center shadow-md hover:shadow-lg hover:scale-105 touch-manipulation ${
+                  voiceEnabled ? 'bg-pink-300 hover:bg-pink-400' : 'bg-orange-200 hover:bg-orange-300'
+                }`}
+              >
+                <div class={`w-7 h-7 bg-white rounded-full border-2 border-black transition-all duration-300 shadow-sm ${
+                  voiceEnabled ? 'translate-x-7' : 'translate-x-1'
+                }`} />
+              </button>
+            </div>
           </div>
         </div>
         
         {/* 🎨 Colors & Fill Style */}
-        <div class="bg-white rounded-3xl p-8 shadow-lg border-4 border-black">
+        <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-lg border-4 border-black">
           <div class="space-y-6">
             {/* Fill Type Toggle - Redesigned */}
             <div>
@@ -440,7 +451,7 @@ export default function CustomizationPanel({ customization, onChange, voiceEnabl
             {/* Color Palette - Redesigned */}
             <div>
               <h3 class="text-lg font-black text-gray-900 mb-4">Color Palette</h3>
-              <div class="grid grid-cols-6 gap-3">
+              <div class="grid grid-cols-4 sm:grid-cols-6 gap-3">
                 {succulentColors.map((color, index) => (
                   <button
                     key={index}

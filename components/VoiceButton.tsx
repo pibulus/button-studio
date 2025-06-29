@@ -373,34 +373,43 @@ export default function VoiceButton({
     }
   }, [])
   
-  // Memoize shape dimensions calculation for performance
+  // Memoize shape dimensions calculation for performance - NOW WITH SCALE!
   const shapeDimensions = useMemo(() => {
     const shape = customization.appearance.shape
+    const scale = customization.appearance.scale
+    
     if (shape === 'circle') {
+      const baseSize = 120
+      const scaledSize = `${baseSize * scale}px`
       return {
-        width: '120px',
-        height: '120px',
-        minWidth: '120px',
-        minHeight: '120px',
-        maxWidth: '120px',
-        maxHeight: '120px',
+        width: scaledSize,
+        height: scaledSize,
+        minWidth: scaledSize,
+        minHeight: scaledSize,
+        maxWidth: scaledSize,
+        maxHeight: scaledSize,
         padding: '0',
         boxSizing: 'border-box' as const
       }
     }
     
-    // Rectangle/square buttons - FIXED SIZE
+    // Rectangle/square buttons - SCALED SIZE
+    const baseWidth = 160
+    const baseHeight = 80
+    const scaledWidth = `${baseWidth * scale}px`
+    const scaledHeight = `${baseHeight * scale}px`
+    
     return {
-      width: '160px',
-      height: '80px', 
-      minWidth: '160px',
-      minHeight: '80px',
-      maxWidth: '160px',
-      maxHeight: '80px',
+      width: scaledWidth,
+      height: scaledHeight,
+      minWidth: scaledWidth,
+      minHeight: scaledHeight,
+      maxWidth: scaledWidth,
+      maxHeight: scaledHeight,
       padding: '0',
       boxSizing: 'border-box' as const
     }
-  }, [customization.appearance.shape])
+  }, [customization.appearance.shape, customization.appearance.scale])
   
   // Memoize easing curve calculation
   const easingCurve = useMemo(() => {
@@ -547,7 +556,7 @@ export default function VoiceButton({
       className: `${stateClasses} ${stateAnimations} ${contentSize} relative cursor-pointer select-none transition-all ease-out ${hoverClasses} border-black`,
       style: {
         background: backgroundStyle,
-        transform: `scale(${isPressed ? dynamicScale * squishScale : dynamicScale})`,
+        transform: `scale(${isPressed ? squishScale : 1})`,
         borderRadius: getBorderRadius(),
         borderStyle: borderStyle,
         borderWidth: `${borderWidth}px`,
@@ -705,11 +714,20 @@ export default function VoiceButton({
                 theme={customization.appearance.theme}
               />
             ) : customization.content.value ? (
-              <span class="font-bold leading-none">
+              <span 
+                class="font-bold leading-none text-center block"
+                style={{
+                  fontSize: `${Math.max(12, Math.min(32, customization.appearance.scale * 24))}px`,
+                  padding: `${customization.appearance.scale * 8}px`,
+                  maxWidth: '100%',
+                  wordBreak: 'break-word',
+                  hyphens: 'auto'
+                }}
+              >
                 {customization.content.value}
               </span>
             ) : (
-              <ButtonIcon state={buttonState.value} theme={customization.appearance.theme} />
+              <ButtonIcon state={buttonState.value} theme={customization.appearance.theme} scale={customization.appearance.scale} />
             )}
             </button>
           </div>
@@ -732,11 +750,20 @@ export default function VoiceButton({
               theme={customization.appearance.theme}
             />
           ) : customization.content.value ? (
-            <span class="font-bold leading-none">
+            <span 
+              class="font-bold leading-none text-center block"
+              style={{
+                fontSize: `${Math.max(12, Math.min(32, customization.appearance.scale * 24))}px`,
+                padding: `${customization.appearance.scale * 8}px`,
+                maxWidth: '100%',
+                wordBreak: 'break-word',
+                hyphens: 'auto'
+              }}
+            >
               {customization.content.value}
             </span>
           ) : (
-            <ButtonIcon state={buttonState.value} theme={customization.appearance.theme} />
+            <ButtonIcon state={buttonState.value} theme={customization.appearance.theme} scale={customization.appearance.scale} />
           )}
           </button>
         )}
@@ -768,45 +795,47 @@ export default function VoiceButton({
 }
 
 // Button Icon Component (theme-aware and sophisticated)
-function ButtonIcon({ state, theme }: { state: ButtonState, theme?: string }) {
-  // Professional icon sizing
-  const iconClasses = "w-8 h-8 mx-auto"
+function ButtonIcon({ state, theme, scale = 1 }: { state: ButtonState, theme?: string, scale?: number }) {
+  // Reactive icon sizing based on button scale
+  const iconSize = Math.max(16, Math.min(48, scale * 32))
+  const iconClasses = `mx-auto`
+  const iconStyle = { width: `${iconSize}px`, height: `${iconSize}px` }
   
   switch (state) {
     case 'idle':
       return (
-        <svg class={iconClasses} fill="currentColor" viewBox="0 0 24 24">
+        <svg class={iconClasses} style={iconStyle} fill="currentColor" viewBox="0 0 24 24">
           <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" strokeWidth="1.5"/>
           <path d="M19 10v2a7 7 0 0 1-14 0v-2H3v2a9 9 0 0 0 8 8.94V21H9v2h6v-2h-2v-.06A9 9 0 0 0 21 12v-2h-2z" strokeWidth="1.5"/>
         </svg>
       )
     case 'recording':
       return (
-        <svg class={iconClasses} fill="currentColor" viewBox="0 0 24 24">
+        <svg class={iconClasses} style={iconStyle} fill="currentColor" viewBox="0 0 24 24">
           <circle cx="12" cy="12" r="6" strokeWidth="2"/>
         </svg>
       )
     case 'processing':
       return (
-        <svg class={`${iconClasses} animate-spin`} fill="currentColor" viewBox="0 0 24 24">
+        <svg class={`${iconClasses} animate-spin`} style={iconStyle} fill="currentColor" viewBox="0 0 24 24">
           <path d="M12 2v2a8 8 0 0 1 8 8h2a10 10 0 0 0-10-10z" strokeWidth="2"/>
         </svg>
       )
     case 'success':
       return (
-        <svg class={iconClasses} fill="currentColor" viewBox="0 0 24 24">
+        <svg class={iconClasses} style={iconStyle} fill="currentColor" viewBox="0 0 24 24">
           <path d="M9 16.2l-4.2-4.2-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" strokeWidth="2"/>
         </svg>
       )
     case 'error':
       return (
-        <svg class={iconClasses} fill="currentColor" viewBox="0 0 24 24">
+        <svg class={iconClasses} style={iconStyle} fill="currentColor" viewBox="0 0 24 24">
           <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" strokeWidth="1.5"/>
         </svg>
       )
     default:
       return (
-        <svg class={iconClasses} fill="currentColor" viewBox="0 0 24 24">
+        <svg class={iconClasses} style={iconStyle} fill="currentColor" viewBox="0 0 24 24">
           <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
         </svg>
       )

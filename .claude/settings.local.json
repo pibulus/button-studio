@@ -11,7 +11,9 @@
       "Bash(git add:*)",
       "Bash(git remote add:*)",
       "Bash(git push:*)",
-      "Bash(deployctl deploy:*)"
+      "Bash(deployctl deploy:*)",
+      "Bash(deno check:*)",
+      "Bash(/opt/homebrew/bin/deno check components/CustomizationPanel.tsx)"
     ],
     "deny": []
   }

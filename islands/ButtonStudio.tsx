@@ -88,26 +88,26 @@ export default function ButtonStudio() {
         </div>
       </header>
       
-      {/* Main Content - Reorganized Layout */}
-      <section class="px-6 pb-16">
+      {/* Main Content - Mobile-First Responsive Layout */}
+      <section class="px-4 sm:px-6 pb-16">
         <div class="max-w-7xl mx-auto">
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
             
             {/* Left Column - Button + Master Controls */}
-            <div class="space-y-6">
+            <div class="space-y-4 sm:space-y-6">
               
               {/* Button Preview */}
-              <div class="bg-white rounded-3xl p-12 shadow-lg border-4 border-black relative">
+              <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-lg border-4 border-black relative">
                 
                 {/* Simple Test Mode Indicator */}
-                <div class="absolute top-6 left-6 flex items-center gap-2">
+                <div class="absolute top-4 left-4 flex items-center gap-2">
                   <div class={`w-2 h-2 rounded-full ${voiceEnabled.value ? 'bg-green-400' : 'bg-gray-300'}`}></div>
                   <span class="text-xs font-bold text-gray-600">
                     {voiceEnabled.value ? 'Live' : 'Test'}
                   </span>
                 </div>
                 
-                <div class="flex justify-center items-center h-[240px]">
+                <div class="flex justify-center items-center h-[180px]">
                   <VoiceButton 
                     customization={customization.value}
                     onCustomizationChange={handleCustomizationChange}
@@ -170,7 +170,7 @@ export default function ButtonStudio() {
                     e.currentTarget.style.backgroundColor = '#ffffff'
                     e.currentTarget.style.filter = 'brightness(1)'
                   }}
-                  class="absolute top-4 right-4 w-12 h-12 bg-white border-3 border-black rounded-xl flex items-center justify-center group transition-all duration-200 ease-out cursor-pointer"
+                  class="absolute top-4 right-4 w-12 h-12 sm:w-14 sm:h-14 bg-white border-3 border-black rounded-xl flex items-center justify-center group transition-all duration-200 ease-out cursor-pointer touch-manipulation"
                   title="Surprise me! 🎲"
                   style={{
                     boxShadow: '3px 3px 0px #000000',
@@ -178,7 +178,7 @@ export default function ButtonStudio() {
                   }}
                 >
                   {/* 🎲 Dice Icon with enhanced animations */}
-                  <svg class="w-7 h-7 text-amber-800 group-hover:text-amber-900 transition-all duration-300 group-hover:rotate-12 group-hover:scale-110" fill="currentColor" viewBox="0 0 24 24">
+                  <svg class="w-6 h-6 sm:w-7 sm:h-7 text-amber-800 group-hover:text-amber-900 transition-all duration-300 group-hover:rotate-12 group-hover:scale-110" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zM7.5 6a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm9 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zM12 10.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zM7.5 15a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm9 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z"/>
                   </svg>
                   

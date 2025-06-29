@@ -138,8 +138,8 @@ export const defaultCustomization: ButtonCustomization = {
     shadowType: 'brutalist',
     borderStyle: 'solid',
     gradient: {
-      start: '#ff60e0',  // RiffRap peach start
-      end: '#ffcf40',    // RiffRap peach end
+      start: '#f8c2cc',  // Softer pink start
+      end: '#f0d1a8',    // Softer peach end
       direction: 135     // Diagonal
     }
   },
