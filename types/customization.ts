@@ -149,12 +149,12 @@ export const defaultCustomization: ButtonCustomization = {
     textTransform: 'none',
     fontWeight: 'bold',
     
-    // Default juice settings - medium juiciness
-    squishPower: 8,        // 8% squish
-    bounceFactor: 5,       // 5% bounce
-    hoverLift: 3,          // 3px lift
+    // Default juice settings - tasteful and smooth
+    squishPower: 6,        // 6% squish (more subtle)
+    bounceFactor: 4,       // 4% bounce (more subtle)
+    hoverLift: 2,          // 2px lift (more subtle)
     animationSpeed: 1.0,   // Normal speed
-    easingStyle: 'bouncy'  // Bouncy feel
+    easingStyle: 'smooth'  // Smooth feel by default
   },
   content: {
     type: 'text',

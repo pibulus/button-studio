@@ -122,18 +122,22 @@ export default function CustomizationPanel({ customization, onChange, voiceEnabl
     '#ff9a8b'   // Warm coral
   ]
   
-  // FIXED Surprise Me! - Actually randomizes the button
+  // CURATED Surprise Me! - Only tasteful combinations
   const surpriseMe = () => {
-    const randomTexts = ['Boop me!', 'Zap!', 'Press here', 'Voice magic', 'Tap me', 'Hello!', 'Record me', 'Speak now', 'Pop!', 'Click!', 'Touch me', 'Go!']
-    const randomText = randomTexts[Math.floor(Math.random() * randomTexts.length)]
+    const funTexts = ['Boop me!', 'Press here', 'Tap me', 'Hello!', 'Pop!', 'Click!', 'Go!', 'Try me!']
+    const randomText = funTexts[Math.floor(Math.random() * funTexts.length)]
     
-    // Pick random shape first
-    const randomShape = ['circle', 'rounded', 'square'][Math.floor(Math.random() * 3)] as 'circle' | 'rounded' | 'square'
+    // Smart shape selection - prefer rounded for most cases
+    const shapes = ['rounded', 'rounded', 'square', 'circle'] // Weighted toward rounded
+    const randomShape = shapes[Math.floor(Math.random() * shapes.length)] as 'circle' | 'rounded' | 'square'
     
-    // Smart effects - avoid rainbow glow on circles since it looks wack
-    const shouldUseRainbow = Math.random() > 0.9 && randomShape !== 'circle'
+    // Tasteful effects - avoid rainbow on circles, limit to one movement effect
+    const movementEffects = ['breathing', 'bounce', 'wiggle']
+    const randomMovement = movementEffects[Math.floor(Math.random() * movementEffects.length)]
+    const shouldUseGlow = Math.random() > 0.7
+    const shouldUseRainbow = Math.random() > 0.85 && randomShape !== 'circle'
     
-    // Create complete new customization object
+    // Create tasteful customization
     const newCustomization = {
       ...customization,
       content: {
@@ -142,14 +146,14 @@ export default function CustomizationPanel({ customization, onChange, voiceEnabl
       },
       appearance: {
         ...customization.appearance,
-        fillType: Math.random() > 0.5 ? 'gradient' : 'solid' as 'gradient' | 'solid',
+        fillType: Math.random() > 0.3 ? 'gradient' : 'solid' as 'gradient' | 'solid', // Prefer gradients
         solidColor: succulentColors[Math.floor(Math.random() * succulentColors.length)],
         shape: randomShape,
-        scale: 0.6 + Math.random() * 1.0, // Wider range for more dramatic size changes
-        roundness: Math.random() * 30,
-        borderWidth: Math.floor(Math.random() * 8) + 1,
-        shadowType: Math.random() > 0.5 ? 'brutalist' : 'diffused' as 'brutalist' | 'diffused',
-        borderStyle: ['solid', 'dashed', 'dotted', 'double'][Math.floor(Math.random() * 4)] as 'solid' | 'dashed' | 'dotted' | 'double',
+        scale: 0.8 + Math.random() * 0.6, // Constrained size range (0.8-1.4x)
+        roundness: Math.random() * 25, // Less extreme roundness
+        borderWidth: Math.floor(Math.random() * 5) + 2, // 2-7px (avoid 0 and extreme)
+        shadowType: Math.random() > 0.4 ? 'brutalist' : 'diffused' as 'brutalist' | 'diffused', // Prefer brutalist
+        borderStyle: ['solid', 'solid', 'solid', 'dashed'][Math.floor(Math.random() * 4)] as any, // Mostly solid
         gradient: {
           ...customization.appearance.gradient,
           start: succulentColors[Math.floor(Math.random() * succulentColors.length)],
@@ -157,25 +161,26 @@ export default function CustomizationPanel({ customization, onChange, voiceEnabl
         }
       },
       interactions: {
-        hoverEffect: ['none', 'lift', 'glow', 'pulse', 'rotate'][Math.floor(Math.random() * 5)] as any,
-        clickAnimation: ['none', 'bounce', 'shrink', 'spin', 'flash'][Math.floor(Math.random() * 5)] as any,
-        textTransform: ['none', 'uppercase', 'lowercase', 'capitalize'][Math.floor(Math.random() * 4)] as any,
-        fontWeight: ['normal', 'bold', 'light'][Math.floor(Math.random() * 3)] as any,
+        hoverEffect: 'lift', // Always use lift - it's reliable
+        clickAnimation: 'bounce', // Always use bounce - it's satisfying
+        textTransform: ['none', 'none', 'uppercase'][Math.floor(Math.random() * 3)] as any, // Mostly none
+        fontWeight: ['bold', 'bold', 'normal'][Math.floor(Math.random() * 3)] as any, // Prefer bold
         
-        // Random juice settings for maximum fun
-        squishPower: Math.floor(Math.random() * 15) + 3,     // 3-18%
-        bounceFactor: Math.floor(Math.random() * 10) + 2,    // 2-12%
-        hoverLift: Math.floor(Math.random() * 8) + 1,        // 1-9px
-        animationSpeed: 0.5 + Math.random() * 1.0,           // 0.5x-1.5x
-        easingStyle: ['bouncy', 'smooth', 'snappy'][Math.floor(Math.random() * 3)] as any
+        // Tasteful juice settings
+        squishPower: Math.floor(Math.random() * 6) + 4,     // 4-10% (subtle)
+        bounceFactor: Math.floor(Math.random() * 4) + 3,    // 3-7% (subtle)
+        hoverLift: Math.floor(Math.random() * 3) + 1,       // 1-4px (subtle)
+        animationSpeed: 0.8 + Math.random() * 0.4,         // 0.8x-1.2x (constrained)
+        easingStyle: ['smooth', 'bouncy'][Math.floor(Math.random() * 2)] as any // No snappy
       },
       effects: {
-        breathing: Math.random() > 0.5,
-        bounce: Math.random() > 0.7,
-        glow: Math.random() > 0.6,
-        wiggle: Math.random() > 0.8,
-        rainbowGlow: shouldUseRainbow, // Smart rainbow logic
-        pulse: Math.random() > 0.7
+        [randomMovement]: true, // Only one movement effect
+        breathing: randomMovement === 'breathing',
+        bounce: randomMovement === 'bounce',
+        wiggle: randomMovement === 'wiggle',
+        glow: shouldUseGlow && !shouldUseRainbow, // Don't mix glow and rainbow
+        rainbowGlow: shouldUseRainbow,
+        pulse: Math.random() > 0.8 // Rare
       }
     }
     
@@ -851,101 +856,113 @@ export default function CustomizationPanel({ customization, onChange, voiceEnabl
         </div>
       </CollapsiblePanel>
       
-      {/* 🎮 JUICE CONTROLS - The secret sauce! */}
-      <CollapsiblePanel id="juice" title="Button Juice" color="cool">
+      {/* 🎮 JUICE CONTROLS - Matching left-side design exactly */}
+      <CollapsiblePanel id="juice" title="Juice" color="light">
         <div class="space-y-6">
           
-          {/* Squish Power Slider */}
-          <div>
-            <label class="block text-sm font-black text-black mb-3 flex items-center gap-2">
-              <span class="text-lg">🫧</span>
-              Squish Power: {customization.interactions.squishPower}%
-            </label>
-            <input
-              type="range"
-              min="0"
-              max="20"
-              step="1"
-              value={customization.interactions.squishPower}
-              onChange={(e) => updateInteraction('squishPower', parseInt(e.currentTarget.value))}
-              class="w-full h-3 bg-blue-200 rounded-full appearance-none cursor-pointer slider-thumb-blue"
-            />
-            <div class="text-xs text-gray-600 mt-1">How much the button compresses when pressed</div>
+          {/* Squish - EXACT left slider design */}
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="text-xl font-black text-gray-900">Squish</h3>
+                <p class="text-sm text-gray-600 font-bold">Drag to adjust</p>
+              </div>
+              <div class="bg-gradient-to-r from-orange-100 to-orange-200 border-4 border-black px-6 py-3 rounded-2xl shadow-lg">
+                <span class="text-2xl font-black text-gray-900 font-mono">{customization.interactions.squishPower}%</span>
+              </div>
+            </div>
+            <div class="relative px-2">
+              <input
+                type="range"
+                min="3"
+                max="15"
+                step="1"
+                value={customization.interactions.squishPower}
+                onInput={(e) => updateInteraction('squishPower', parseInt((e.target as HTMLInputElement).value))}
+                title={`Squish: ${customization.interactions.squishPower}%`}
+                class="juice-slider w-full h-8 bg-white border-4 border-black rounded-full appearance-none cursor-grab hover:cursor-grabbing transition-all shadow-md hover:shadow-lg"
+                style={{
+                  background: `linear-gradient(to right, #67e8f9 0%, #67e8f9 ${((customization.interactions.squishPower - 3) / (15 - 3)) * 100}%, #f8f9fa ${((customization.interactions.squishPower - 3) / (15 - 3)) * 100}%, #f8f9fa 100%)`,
+                  border: '4px solid #000000'
+                }}
+              />
+            </div>
           </div>
           
-          {/* Bounce Factor Slider */}
-          <div>
-            <label class="block text-sm font-black text-black mb-3 flex items-center gap-2">
-              <span class="text-lg">🏀</span>
-              Bounce Factor: {customization.interactions.bounceFactor}%
-            </label>
-            <input
-              type="range"
-              min="0"
-              max="15"
-              step="1"
-              value={customization.interactions.bounceFactor}
-              onChange={(e) => updateInteraction('bounceFactor', parseInt(e.currentTarget.value))}
-              class="w-full h-3 bg-blue-200 rounded-full appearance-none cursor-pointer slider-thumb-blue"
-            />
-            <div class="text-xs text-gray-600 mt-1">Overshoot amount when releasing the button</div>
+          {/* Bounce - EXACT left slider design */}
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="text-xl font-black text-gray-900">Bounce</h3>
+                <p class="text-sm text-gray-600 font-bold">Drag to adjust</p>
+              </div>
+              <div class="bg-gradient-to-r from-orange-100 to-orange-200 border-4 border-black px-6 py-3 rounded-2xl shadow-lg">
+                <span class="text-2xl font-black text-gray-900 font-mono">{customization.interactions.bounceFactor}%</span>
+              </div>
+            </div>
+            <div class="relative px-2">
+              <input
+                type="range"
+                min="2"
+                max="10"
+                step="1"
+                value={customization.interactions.bounceFactor}
+                onInput={(e) => updateInteraction('bounceFactor', parseInt((e.target as HTMLInputElement).value))}
+                title={`Bounce: ${customization.interactions.bounceFactor}%`}
+                class="juice-slider w-full h-8 bg-white border-4 border-black rounded-full appearance-none cursor-grab hover:cursor-grabbing transition-all shadow-md hover:shadow-lg"
+                style={{
+                  background: `linear-gradient(to right, #67e8f9 0%, #67e8f9 ${((customization.interactions.bounceFactor - 2) / (10 - 2)) * 100}%, #f8f9fa ${((customization.interactions.bounceFactor - 2) / (10 - 2)) * 100}%, #f8f9fa 100%)`,
+                  border: '4px solid #000000'
+                }}
+              />
+            </div>
           </div>
           
-          {/* Hover Lift Slider */}
-          <div>
-            <label class="block text-sm font-black text-black mb-3 flex items-center gap-2">
-              <span class="text-lg">🚁</span>
-              Hover Lift: {customization.interactions.hoverLift}px
-            </label>
-            <input
-              type="range"
-              min="0"
-              max="10"
-              step="1"
-              value={customization.interactions.hoverLift}
-              onChange={(e) => updateInteraction('hoverLift', parseInt(e.currentTarget.value))}
-              class="w-full h-3 bg-blue-200 rounded-full appearance-none cursor-pointer slider-thumb-blue"
-            />
-            <div class="text-xs text-gray-600 mt-1">How much the button lifts on hover</div>
+          {/* Speed - EXACT left slider design */}
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="text-xl font-black text-gray-900">Speed</h3>
+                <p class="text-sm text-gray-600 font-bold">Drag to adjust</p>
+              </div>
+              <div class="bg-gradient-to-r from-orange-100 to-orange-200 border-4 border-black px-6 py-3 rounded-2xl shadow-lg">
+                <span class="text-2xl font-black text-gray-900 font-mono">{customization.interactions.animationSpeed.toFixed(1)}x</span>
+              </div>
+            </div>
+            <div class="relative px-2">
+              <input
+                type="range"
+                min="0.7"
+                max="1.5"
+                step="0.1"
+                value={customization.interactions.animationSpeed}
+                onInput={(e) => updateInteraction('animationSpeed', parseFloat((e.target as HTMLInputElement).value))}
+                title={`Speed: ${customization.interactions.animationSpeed.toFixed(1)}x`}
+                class="juice-slider w-full h-8 bg-white border-4 border-black rounded-full appearance-none cursor-grab hover:cursor-grabbing transition-all shadow-md hover:shadow-lg"
+                style={{
+                  background: `linear-gradient(to right, #67e8f9 0%, #67e8f9 ${((customization.interactions.animationSpeed - 0.7) / (1.5 - 0.7)) * 100}%, #f8f9fa ${((customization.interactions.animationSpeed - 0.7) / (1.5 - 0.7)) * 100}%, #f8f9fa 100%)`,
+                  border: '4px solid #000000'
+                }}
+              />
+            </div>
           </div>
           
-          {/* Animation Speed Slider */}
+          {/* Feel - Match other panel buttons */}
           <div>
-            <label class="block text-sm font-black text-black mb-3 flex items-center gap-2">
-              <span class="text-lg">⚡</span>
-              Animation Speed: {customization.interactions.animationSpeed.toFixed(1)}x
-            </label>
-            <input
-              type="range"
-              min="0.5"
-              max="2.0"
-              step="0.1"
-              value={customization.interactions.animationSpeed}
-              onChange={(e) => updateInteraction('animationSpeed', parseFloat(e.currentTarget.value))}
-              class="w-full h-3 bg-blue-200 rounded-full appearance-none cursor-pointer slider-thumb-blue"
-            />
-            <div class="text-xs text-gray-600 mt-1">Speed multiplier for all animations</div>
-          </div>
-          
-          {/* Easing Style Buttons */}
-          <div>
-            <label class="block text-sm font-black text-black mb-3 flex items-center gap-2">
-              <span class="text-lg">🎭</span>
-              Animation Feel
-            </label>
-            <div class="grid grid-cols-3 gap-2">
+            <h3 class="text-xl font-black text-gray-900 mb-4">Feel</h3>
+            <div class="grid grid-cols-3 gap-3">
               {[
-                { value: 'bouncy', label: 'Bouncy', preview: '🏀' },
-                { value: 'smooth', label: 'Smooth', preview: '🌊' },
-                { value: 'snappy', label: 'Snappy', preview: '⚡' }
-              ].map(({ value, label, preview }) => (
+                { value: 'smooth', label: 'Smooth' },
+                { value: 'bouncy', label: 'Bouncy' },
+                { value: 'snappy', label: 'Snappy' }
+              ].map(({ value, label }) => (
                 <button
                   key={value}
                   onClick={() => updateInteraction('easingStyle', value)}
-                  class={`px-3 py-3 rounded-xl border-3 border-black font-black transition-all shadow-sm hover:shadow-md active:scale-95 flex flex-col items-center gap-1 ${
+                  class={`px-4 py-3 rounded-xl border-3 border-black font-black transition-all h-12 shadow-sm hover:shadow-md active:scale-95 ${
                     customization.interactions.easingStyle === value
-                      ? 'bg-blue-200 hover:bg-blue-300 text-black shadow-md scale-105'
-                      : 'bg-white hover:bg-blue-50 text-black'
+                      ? 'bg-orange-200 hover:bg-orange-300 text-black shadow-md scale-105'
+                      : 'bg-white hover:bg-orange-50 text-black'
                   }`}
                   style={{
                     boxShadow: customization.interactions.easingStyle === value 
@@ -953,14 +970,31 @@ export default function CustomizationPanel({ customization, onChange, voiceEnabl
                       : '2px 2px 0px #000000'
                   }}
                 >
-                  <span class="text-lg">{preview}</span>
-                  <span class="text-xs">{label}</span>
+                  {label}
                 </button>
               ))}
             </div>
           </div>
           
         </div>
+        
+        {/* SCOPED CSS - Only affects .juice-slider */}
+        <style jsx>{`
+          .juice-slider::-webkit-slider-thumb {
+            appearance: none;
+            height: 40px;
+            width: 40px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #67e8f9 0%, #22d3ee 100%);
+            border: 4px solid #000000;
+            cursor: grab;
+            box-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+          }
+          .juice-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+            cursor: grabbing;
+          }
+        `}</style>
       </CollapsiblePanel>
       
       {/* Voice Magic */}

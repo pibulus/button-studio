@@ -98,6 +98,15 @@ export default function ButtonStudio() {
               
               {/* Button Preview */}
               <div class="bg-white rounded-3xl p-12 shadow-lg border-4 border-black relative">
+                
+                {/* Simple Test Mode Indicator */}
+                <div class="absolute top-6 left-6 flex items-center gap-2">
+                  <div class={`w-2 h-2 rounded-full ${voiceEnabled.value ? 'bg-green-400' : 'bg-gray-300'}`}></div>
+                  <span class="text-xs font-bold text-gray-600">
+                    {voiceEnabled.value ? 'Live' : 'Test'}
+                  </span>
+                </div>
+                
                 <div class="flex justify-center items-center h-[240px]">
                   <VoiceButton 
                     customization={customization.value}

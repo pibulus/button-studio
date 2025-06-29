@@ -274,10 +274,11 @@ export default function VoiceButton({
     }
   }
 
-  // Simple click sound effect
+  // Subtle click sound - much softer
   function playClickSound() {
+    if (!voiceEnabled) return // No sound in design mode
+    
     try {
-      // Create a simple beep using Web Audio API
       const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)()
       const oscillator = audioContext.createOscillator()
       const gainNode = audioContext.createGain()
@@ -285,47 +286,24 @@ export default function VoiceButton({
       oscillator.connect(gainNode)
       gainNode.connect(audioContext.destination)
       
-      oscillator.frequency.setValueAtTime(800, audioContext.currentTime)
-      gainNode.gain.setValueAtTime(0.1, audioContext.currentTime)
-      gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.1)
+      // Softer, more pleasant tone
+      oscillator.frequency.setValueAtTime(440, audioContext.currentTime)
+      gainNode.gain.setValueAtTime(0.02, audioContext.currentTime) // Much quieter
+      gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.05)
       
       oscillator.start(audioContext.currentTime)
-      oscillator.stop(audioContext.currentTime + 0.1)
+      oscillator.stop(audioContext.currentTime + 0.05) // Shorter duration
     } catch (error) {
       // Silently fail if audio context not available
-      console.log('Audio context not available')
     }
   }
 
   function toggleRecording() {
     playClickSound()
     
-    // ULTIMATE satisfying feedback (research-based)
-    const button = document.querySelector('.voice-button') as HTMLElement
-    if (button) {
-      // Stage 1: Immediate deep press (50ms)
-      button.style.transform = 'translate(8px, 8px) scale(0.96)'
-      button.style.boxShadow = '1px 1px 0px #000000'
-      button.style.filter = 'brightness(0.9)'
-      
-      // Stage 2: Slight bounce out (100ms)
-      setTimeout(() => {
-        button.style.transform = 'translate(-2px, -2px) scale(1.02)'
-        button.style.boxShadow = '10px 10px 0px #000000'
-        button.style.filter = 'brightness(1.1)'
-      }, 50)
-      
-      // Stage 3: Settle back to normal (150ms)
-      setTimeout(() => {
-        button.style.transform = ''
-        button.style.boxShadow = ''
-        button.style.filter = ''
-      }, 150)
-    }
-    
     // Check if voice is enabled before doing API calls
     if (!voiceEnabled) {
-      // Just satisfying button press without API calls
+      // Design mode - no recording, just visual feedback
       console.log('🎨 Design mode - Voice API disabled')
       return
     }
