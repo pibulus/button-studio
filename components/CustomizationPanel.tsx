@@ -10,14 +10,12 @@ interface CustomizationPanelProps {
   mode: 'master' | 'advanced'
 }
 
-// Collapsible panel state
+// Collapsible panel state - Updated for consolidated panels (5 total)
 const expandedPanels = signal<Record<string, boolean>>({
   shape: true,
   effects: false,
-  interactions: false,
-  juice: false,
-  recording: false,
-  api: false,
+  buttonfeel: false,        // Merged: Interactions + Juice
+  'voice-recording': false, // Merged: Voice Magic + Recording Behavior  
   export: false
 })
 
@@ -225,15 +223,15 @@ export default function CustomizationPanel({ customization, onChange, voiceEnabl
     // 🌈 LUSH PASTEL GRADIENT - Each panel gets distinct warm color (VISIBLE!)
     const getBackgroundColor = (colorKey: string) => {
       const colors = {
-        lightest: 'bg-red-200 hover:bg-red-300',        // Visible pink
-        light: 'bg-orange-200 hover:bg-orange-300',     // Visible peach  
+        lightest: 'bg-red-200 hover:bg-red-300',        // Shape & Fill
+        light: 'bg-orange-200 hover:bg-orange-300',     // Not used
         medium: 'bg-pink-200 hover:bg-pink-300',        // Visible coral
-        warm: 'bg-yellow-200 hover:bg-yellow-300',      // Visible golden
-        cool: 'bg-cyan-200 hover:bg-cyan-300',          // Cool cyan for juice controls
-        deep: 'bg-purple-200 hover:bg-purple-300',      // Visible lavender
-        effects: 'bg-green-200 hover:bg-green-300',     // Special green for effects
-        recording: 'bg-blue-200 hover:bg-blue-300',     // Special blue for recording
-        juice: 'bg-orange-200 hover:bg-orange-300'      // Orange for juice panel
+        warm: 'bg-yellow-200 hover:bg-yellow-300',      // Voice & Recording (merged)
+        cool: 'bg-blue-200 hover:bg-blue-300',          // Button Feel (merged interactions + juice)
+        deep: 'bg-purple-200 hover:bg-purple-300',      // Export Code
+        effects: 'bg-green-200 hover:bg-green-300',     // Effects
+        recording: 'bg-blue-200 hover:bg-blue-300',     // Legacy - not used
+        juice: 'bg-orange-300 hover:bg-orange-400'      // Legacy - not used
       }
       return colors[colorKey as keyof typeof colors] || colors.light
     }
@@ -254,16 +252,20 @@ export default function CustomizationPanel({ customization, onChange, voiceEnabl
           unselected: 'bg-white hover:bg-pink-50 border-pink-200'  
         },
         warm: {
-          selected: 'bg-amber-200 hover:bg-amber-300 border-amber-400',
-          unselected: 'bg-white hover:bg-amber-50 border-amber-200'
+          selected: 'bg-yellow-200 hover:bg-yellow-300 border-yellow-400',
+          unselected: 'bg-white hover:bg-yellow-50 border-yellow-200'
+        },
+        cool: {
+          selected: 'bg-blue-200 hover:bg-blue-300 border-blue-400',
+          unselected: 'bg-white hover:bg-blue-50 border-blue-200'
+        },
+        effects: {
+          selected: 'bg-green-200 hover:bg-green-300 border-green-400',
+          unselected: 'bg-white hover:bg-green-50 border-green-200'
         },
         deep: {
           selected: 'bg-purple-200 hover:bg-purple-300 border-purple-400',
           unselected: 'bg-white hover:bg-purple-50 border-purple-200'
-        },
-        juice: {
-          selected: 'bg-orange-200 hover:bg-orange-300 border-orange-400',
-          unselected: 'bg-white hover:bg-orange-50 border-orange-200'
         }
       }
       const theme = themes[colorKey as keyof typeof themes] || themes.light
@@ -509,7 +511,7 @@ export default function CustomizationPanel({ customization, onChange, voiceEnabl
                       }}
                     />
                     <style jsx>{`
-                      input[type="range"]::-webkit-slider-thumb {
+                      input[type="range"]:not(.juice-slider)::-webkit-slider-thumb {
                         appearance: none;
                         height: 40px;
                         width: 40px;
@@ -520,13 +522,13 @@ export default function CustomizationPanel({ customization, onChange, voiceEnabl
                         box-shadow: 0 6px 20px rgba(255, 158, 181, 0.6), 0 2px 8px rgba(0, 0, 0, 0.2);
                         transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
                       }
-                      input[type="range"]::-webkit-slider-thumb:hover {
+                      input[type="range"]:not(.juice-slider)::-webkit-slider-thumb:hover {
                         transform: scale(1.2) translateY(-2px);
                         cursor: grabbing;
                         box-shadow: 0 8px 25px rgba(255, 158, 181, 0.8), 0 4px 12px rgba(0, 0, 0, 0.3);
                         background: linear-gradient(135deg, #ff6b9d 0%, #ff3d71 100%);
                       }
-                      input[type="range"]::-webkit-slider-thumb:active {
+                      input[type="range"]:not(.juice-slider)::-webkit-slider-thumb:active {
                         transform: scale(1.1) translateY(0px);
                         box-shadow: 0 4px 15px rgba(255, 158, 181, 0.9), 0 2px 6px rgba(0, 0, 0, 0.4);
                       }
@@ -698,8 +700,7 @@ export default function CustomizationPanel({ customization, onChange, voiceEnabl
                 { key: 'bounce', label: 'Bounce', demoClass: 'effect-bounce' },
                 { key: 'wiggle', label: 'Wiggle', demoClass: 'effect-wiggle' },
                 { key: 'glow', label: 'Glow', demoClass: '' },  // No demo class - handled via inline styles
-                { key: 'pulse', label: 'Pulse', demoClass: 'effect-pulse' },
-                { key: 'rainbowGlow', label: 'Rainbow', demoClass: '' }  // Rainbow border effect
+                { key: 'pulse', label: 'Pulse', demoClass: 'effect-pulse' }
               ].map(({ key, label, demoClass }) => {
                 const isActive = customization.effects[key as keyof ButtonCustomization['effects']]
                 return (
@@ -797,182 +798,34 @@ export default function CustomizationPanel({ customization, onChange, voiceEnabl
         </div>
       </CollapsiblePanel>
       
-      {/* Interactions */}
-      <CollapsiblePanel id="interactions" title="Interactions" color="medium">
-        <div class="space-y-4">
-          {/* Hover Effects */}
-          <div class="grid grid-cols-2 gap-3">
-            {[
-              { value: 'none', label: 'None' },
-              { value: 'lift', label: 'Lift' },
-              { value: 'glow', label: 'Glow' },
-              { value: 'pulse', label: 'Pulse' }
-            ].map(({ value, label }) => (
-              <button
-                key={value}
-                onClick={() => updateInteraction('hoverEffect', value)}
-                class={`px-4 py-3 rounded-xl border-3 border-black font-black transition-all h-12 shadow-sm hover:shadow-md active:scale-95 ${
-                  customization.interactions.hoverEffect === value
-                    ? 'bg-pink-200 hover:bg-pink-300 text-black shadow-md scale-105'
-                    : 'bg-white hover:bg-pink-50 text-black'
-                }`}
-                style={{
-                  boxShadow: customization.interactions.hoverEffect === value 
-                    ? '3px 3px 0px #000000' 
-                    : '2px 2px 0px #000000'
-                }}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-          
-          {/* Text Style */}
-          <div class="grid grid-cols-2 gap-3">
-            {[
-              { value: 'normal', label: 'Normal', type: 'weight' },
-              { value: 'bold', label: 'Bold', type: 'weight' },
-              { value: 'uppercase', label: 'CAPS', type: 'transform' },
-              { value: 'lowercase', label: 'lower', type: 'transform' }
-            ].map(({ value, label, type }) => (
-              <button
-                key={value}
-                onClick={() => {
-                  if (type === 'weight') {
-                    updateInteraction('fontWeight', value)
-                  } else {
-                    updateInteraction('textTransform', value)
-                  }
-                }}
-                class={`px-4 py-3 rounded-xl border-3 border-black font-black transition-all h-12 shadow-sm hover:shadow-md active:scale-95 ${
-                  (customization.interactions.fontWeight === value || customization.interactions.textTransform === value)
-                    ? 'bg-pink-200 hover:bg-pink-300 text-black shadow-md scale-105'
-                    : 'bg-white hover:bg-pink-50 text-black'
-                }`}
-                style={{
-                  boxShadow: (customization.interactions.fontWeight === value || customization.interactions.textTransform === value) 
-                    ? '3px 3px 0px #000000' 
-                    : '2px 2px 0px #000000'
-                }}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-        </div>
-      </CollapsiblePanel>
-      
-      {/* 🎮 JUICE CONTROLS - Matching left-side design exactly */}
-      <CollapsiblePanel id="juice" title="Juice" color="juice">
+      {/* Button Feel - Merged Interactions + Juice */}
+      <CollapsiblePanel id="buttonfeel" title="Button Feel" color="cool">
         <div class="space-y-6">
           
-          {/* Squish - EXACT left slider design */}
-          <div class="space-y-4">
-            <div class="flex items-center justify-between">
-              <div>
-                <h3 class="text-xl font-black text-gray-900">Squish</h3>
-                <p class="text-sm text-gray-600 font-bold">Drag to adjust</p>
-              </div>
-              <div class="bg-gradient-to-r from-orange-100 to-orange-200 border-4 border-black px-6 py-3 rounded-2xl shadow-lg">
-                <span class="text-2xl font-black text-gray-900 font-mono">{customization.interactions.squishPower}%</span>
-              </div>
-            </div>
-            <div class="relative px-2">
-              <input
-                type="range"
-                min="3"
-                max="15"
-                step="1"
-                value={customization.interactions.squishPower}
-                onInput={(e) => updateInteraction('squishPower', parseInt((e.target as HTMLInputElement).value))}
-                title={`Squish: ${customization.interactions.squishPower}%`}
-                class="juice-slider w-full h-8 bg-white border-4 border-black rounded-full appearance-none cursor-grab hover:cursor-grabbing transition-all shadow-md hover:shadow-lg"
-                style={{
-                  background: `linear-gradient(to right, #67e8f9 0%, #67e8f9 ${((customization.interactions.squishPower - 3) / (15 - 3)) * 100}%, #f8f9fa ${((customization.interactions.squishPower - 3) / (15 - 3)) * 100}%, #f8f9fa 100%)`,
-                  border: '4px solid #000000'
-                }}
-              />
-            </div>
-          </div>
-          
-          {/* Bounce - EXACT left slider design */}
-          <div class="space-y-4">
-            <div class="flex items-center justify-between">
-              <div>
-                <h3 class="text-xl font-black text-gray-900">Bounce</h3>
-                <p class="text-sm text-gray-600 font-bold">Drag to adjust</p>
-              </div>
-              <div class="bg-gradient-to-r from-orange-100 to-orange-200 border-4 border-black px-6 py-3 rounded-2xl shadow-lg">
-                <span class="text-2xl font-black text-gray-900 font-mono">{customization.interactions.bounceFactor}%</span>
-              </div>
-            </div>
-            <div class="relative px-2">
-              <input
-                type="range"
-                min="2"
-                max="10"
-                step="1"
-                value={customization.interactions.bounceFactor}
-                onInput={(e) => updateInteraction('bounceFactor', parseInt((e.target as HTMLInputElement).value))}
-                title={`Bounce: ${customization.interactions.bounceFactor}%`}
-                class="juice-slider w-full h-8 bg-white border-4 border-black rounded-full appearance-none cursor-grab hover:cursor-grabbing transition-all shadow-md hover:shadow-lg"
-                style={{
-                  background: `linear-gradient(to right, #67e8f9 0%, #67e8f9 ${((customization.interactions.bounceFactor - 2) / (10 - 2)) * 100}%, #f8f9fa ${((customization.interactions.bounceFactor - 2) / (10 - 2)) * 100}%, #f8f9fa 100%)`,
-                  border: '4px solid #000000'
-                }}
-              />
-            </div>
-          </div>
-          
-          {/* Speed - EXACT left slider design */}
-          <div class="space-y-4">
-            <div class="flex items-center justify-between">
-              <div>
-                <h3 class="text-xl font-black text-gray-900">Speed</h3>
-                <p class="text-sm text-gray-600 font-bold">Drag to adjust</p>
-              </div>
-              <div class="bg-gradient-to-r from-orange-100 to-orange-200 border-4 border-black px-6 py-3 rounded-2xl shadow-lg">
-                <span class="text-2xl font-black text-gray-900 font-mono">{customization.interactions.animationSpeed.toFixed(1)}x</span>
-              </div>
-            </div>
-            <div class="relative px-2">
-              <input
-                type="range"
-                min="0.7"
-                max="1.5"
-                step="0.1"
-                value={customization.interactions.animationSpeed}
-                onInput={(e) => updateInteraction('animationSpeed', parseFloat((e.target as HTMLInputElement).value))}
-                title={`Speed: ${customization.interactions.animationSpeed.toFixed(1)}x`}
-                class="juice-slider w-full h-8 bg-white border-4 border-black rounded-full appearance-none cursor-grab hover:cursor-grabbing transition-all shadow-md hover:shadow-lg"
-                style={{
-                  background: `linear-gradient(to right, #67e8f9 0%, #67e8f9 ${((customization.interactions.animationSpeed - 0.7) / (1.5 - 0.7)) * 100}%, #f8f9fa ${((customization.interactions.animationSpeed - 0.7) / (1.5 - 0.7)) * 100}%, #f8f9fa 100%)`,
-                  border: '4px solid #000000'
-                }}
-              />
-            </div>
-          </div>
-          
-          {/* Feel - Match other panel buttons */}
+          {/* Hover Effects */}
           <div>
-            <h3 class="text-xl font-black text-gray-900 mb-4">Feel</h3>
-            <div class="grid grid-cols-3 gap-3">
+            <h4 class="text-lg font-black text-gray-900 mb-4 flex items-center gap-2">
+              <span class="w-6 h-6 bg-blue-200 rounded-full border-2 border-black"></span>
+              Hover Effects
+            </h4>
+            <div class="grid grid-cols-2 gap-3">
               {[
-                { value: 'smooth', label: 'Smooth' },
-                { value: 'bouncy', label: 'Bouncy' },
-                { value: 'snappy', label: 'Snappy' }
+                { value: 'none', label: 'None' },
+                { value: 'lift', label: 'Lift' },
+                { value: 'glow', label: 'Glow' },
+                { value: 'pulse', label: 'Pulse' }
               ].map(({ value, label }) => (
                 <button
                   key={value}
-                  onClick={() => updateInteraction('easingStyle', value)}
+                  onClick={() => updateInteraction('hoverEffect', value)}
                   class={`px-4 py-3 rounded-xl border-3 border-black font-black transition-all h-12 shadow-sm hover:shadow-md active:scale-95 ${
-                    customization.interactions.easingStyle === value
-                      ? 'bg-orange-200 hover:bg-orange-300 text-black shadow-md scale-105'
-                      : 'bg-white hover:bg-orange-50 text-black'
+                    customization.interactions.hoverEffect === value
+                      ? 'bg-blue-200 hover:bg-blue-300 text-black shadow-md scale-105'
+                      : 'bg-white hover:bg-blue-50 text-black'
                   }`}
                   style={{
-                    boxShadow: customization.interactions.easingStyle === value 
-                      ? '3px 3px 0px #000000'
+                    boxShadow: customization.interactions.hoverEffect === value 
+                      ? '3px 3px 0px #000000' 
                       : '2px 2px 0px #000000'
                   }}
                 >
@@ -982,184 +835,364 @@ export default function CustomizationPanel({ customization, onChange, voiceEnabl
             </div>
           </div>
           
-        </div>
-        
-        {/* SCOPED CSS - Only affects .juice-slider */}
-        <style jsx>{`
-          .juice-slider::-webkit-slider-thumb {
-            appearance: none;
-            height: 40px;
-            width: 40px;
-            border-radius: 20px;
-            background: linear-gradient(135deg, #67e8f9 0%, #22d3ee 100%);
-            border: 4px solid #000000;
-            cursor: grab;
-            box-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-          }
-          .juice-slider::-webkit-slider-thumb:hover {
-            transform: scale(1.1);
-            cursor: grabbing;
-          }
-        `}</style>
-      </CollapsiblePanel>
-      
-      {/* Voice Magic */}
-      <CollapsiblePanel id="api" title="Voice Magic" color="warm">
-        <div class="space-y-4">
-          <div>
-            <label class="block text-sm font-black text-black mb-2">API Key</label>
-            <input
-              type="password"
-              placeholder="Enter your Gemini API key..."
-              class="w-full px-4 py-3 bg-white border-3 border-black rounded-xl focus:bg-yellow-50 focus:outline-none transition-all font-mono text-sm shadow-sm focus:shadow-md"
-            />
-          </div>
-          <div>
-            <label class="block text-sm font-black text-black mb-2">Custom Prompt</label>
-            <textarea
-              placeholder="Custom instructions (e.g., 'Translate to Spanish', 'Format as bullets')"
-              class="w-full px-4 py-3 bg-white border-3 border-black rounded-xl focus:bg-yellow-50 focus:outline-none transition-all h-20 resize-none text-sm shadow-sm focus:shadow-md"
-            />
-          </div>
-          
-          {/* ✨ SURPRISE PROMPT EXAMPLES */}
-          <div>
-            <label class="block text-sm font-black text-black mb-3">✨ Quick Prompts</label>
-            <div class="grid grid-cols-2 gap-2">
-              {[
-                { emoji: '🌐', text: 'Translate', prompt: 'Translate to Spanish' },
-                { emoji: '🔥', text: 'Spice Up', prompt: 'Make this sound more exciting and energetic' },
-                { emoji: '📝', text: 'Bullets', prompt: 'Format as bullet points' },
-                { emoji: '🎭', text: 'Dramatic', prompt: 'Rewrite in a dramatic, theatrical style' },
-                { emoji: '🤖', text: 'Tech', prompt: 'Convert to technical documentation' },
-                { emoji: '✨', text: 'Surprise!', prompt: 'surprise' }
-              ].map(({ emoji, text, prompt }) => (
-                <button
-                  key={text}
-                  onClick={() => {
-                    const textarea = document.querySelector('textarea') as HTMLTextAreaElement
-                    if (textarea) {
-                      if (prompt === 'surprise') {
-                        const surprisePrompts = [
-                          'Turn this into a pirate shanty',
-                          'Explain like I\'m a golden retriever',
-                          'Write as a noir detective story',
-                          'Convert to emoji-only communication',
-                          'Make it sound like a cooking recipe',
-                          'Transform into a haiku'
-                        ]
-                        textarea.value = surprisePrompts[Math.floor(Math.random() * surprisePrompts.length)]
-                      } else {
-                        textarea.value = prompt
-                      }
-                      textarea.focus()
-                    }
-                  }}
-                  class="flex items-center gap-2 px-3 py-2 bg-white border-2 border-black rounded-lg hover:bg-amber-50 transition-all text-xs font-black shadow-sm hover:shadow-md active:scale-95"
-                  style={{
-                    boxShadow: '1px 1px 0px #000000'
-                  }}
-                >
-                  <span>{emoji}</span>
-                  <span>{text}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-          
-          <div class="text-xs text-gray-600">
-            💡 Get your free key at <a href="https://aistudio.google.com/apikey" target="_blank" class="text-blue-600 underline">aistudio.google.com/apikey</a>
-          </div>
-        </div>
-      </CollapsiblePanel>
-      
-      {/* Recording Behavior - NEW! */}
-      <CollapsiblePanel id="recording" title="Recording Behavior" color="recording">
-        <div class="space-y-6">
-          
-          {/* Visual Feedback Style */}
+          {/* Text Style */}
           <div>
             <h4 class="text-lg font-black text-gray-900 mb-4 flex items-center gap-2">
-              <span class="w-6 h-6 bg-purple-200 rounded-full border-2 border-black"></span>
-              Visual Feedback
+              <span class="w-6 h-6 bg-blue-200 rounded-full border-2 border-black"></span>
+              Text Style
             </h4>
             <div class="grid grid-cols-2 gap-3">
               {[
-                { value: 'timer', label: 'Timer', icon: '⏱️' },
-                { value: 'pulse', label: 'Pulse', icon: '💓' },
-                { value: 'glow', label: 'Glow', icon: '✨' },
-                { value: 'ring', label: 'Ring', icon: '⭕' }
-              ].map(({ value, label, icon }) => (
+                { value: 'normal', label: 'Normal', type: 'weight' },
+                { value: 'bold', label: 'Bold', type: 'weight' },
+                { value: 'uppercase', label: 'CAPS', type: 'transform' },
+                { value: 'lowercase', label: 'lower', type: 'transform' }
+              ].map(({ value, label, type }) => (
                 <button
                   key={value}
-                  onClick={() => updateRecording('visualFeedback', value)}
-                  class={`px-4 py-3 rounded-xl border-3 border-black font-black transition-all h-12 shadow-sm hover:shadow-md active:scale-95 flex items-center gap-2 ${
-                    customization.recording.visualFeedback === value
-                      ? 'bg-purple-200 hover:bg-purple-300 text-black shadow-md scale-105'
-                      : 'bg-white hover:bg-purple-50 text-black'
+                  onClick={() => {
+                    if (type === 'weight') {
+                      updateInteraction('fontWeight', value)
+                    } else {
+                      updateInteraction('textTransform', value)
+                    }
+                  }}
+                  class={`px-4 py-3 rounded-xl border-3 border-black font-black transition-all h-12 shadow-sm hover:shadow-md active:scale-95 ${
+                    (customization.interactions.fontWeight === value || customization.interactions.textTransform === value)
+                      ? 'bg-blue-200 hover:bg-blue-300 text-black shadow-md scale-105'
+                      : 'bg-white hover:bg-blue-50 text-black'
                   }`}
                   style={{
-                    boxShadow: customization.recording.visualFeedback === value 
+                    boxShadow: (customization.interactions.fontWeight === value || customization.interactions.textTransform === value) 
                       ? '3px 3px 0px #000000' 
                       : '2px 2px 0px #000000'
                   }}
                 >
-                  <span>{icon}</span>
-                  <span>{label}</span>
+                  {label}
                 </button>
               ))}
             </div>
           </div>
           
-          {/* Keep Size Toggle */}
-          <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
-            <div>
-              <h4 class="font-black text-gray-900">Prevent Layout Shift</h4>
-              <p class="text-sm text-gray-600">Keep button size consistent during recording</p>
-            </div>
-            <button
-              onClick={() => updateRecording('keepSize', !customization.recording.keepSize)}
-              class={`w-14 h-8 rounded-full border-3 border-black transition-all ${
-                customization.recording.keepSize ? 'bg-green-400' : 'bg-gray-300'
-              }`}
-              style={{
-                boxShadow: '2px 2px 0px #000000'
-              }}
-            >
-              <div
-                class={`w-6 h-6 bg-white border-2 border-black rounded-full transition-transform ${
-                  customization.recording.keepSize ? 'translate-x-6' : 'translate-x-0'
-                }`}
-              />
-            </button>
-          </div>
-          
-          {/* Pulse Intensity (if pulse selected) */}
-          {customization.recording.visualFeedback === 'pulse' && (
-            <div>
-              <h4 class="text-lg font-black text-gray-900 mb-4">Pulse Intensity</h4>
-              <div class="space-y-4">
-                <div class="flex items-center justify-between">
-                  <span class="text-sm font-bold text-gray-700">Intensity</span>
-                  <div class="bg-gradient-to-r from-purple-100 to-purple-200 border-3 border-black px-4 py-2 rounded-xl">
-                    <span class="text-lg font-black text-gray-900">{customization.recording.pulseIntensity}%</span>
-                  </div>
+          {/* Animation Controls */}
+          <div>
+            <h4 class="text-lg font-black text-gray-900 mb-4 flex items-center gap-2">
+              <span class="w-6 h-6 bg-blue-200 rounded-full border-2 border-black"></span>
+              Animation Controls
+            </h4>
+            
+            {/* Squish */}
+            <div class="space-y-4 mb-6">
+              <div class="flex items-center justify-between">
+                <div>
+                  <h3 class="text-lg font-black text-gray-900">Squish</h3>
+                  <p class="text-xs text-gray-600 font-bold">Press compression</p>
                 </div>
+                <div class="bg-gradient-to-r from-blue-100 to-blue-200 border-3 border-black px-4 py-2 rounded-xl shadow-md">
+                  <span class="text-lg font-black text-gray-900 font-mono">{customization.interactions.squishPower}%</span>
+                </div>
+              </div>
+              <div class="relative px-2">
                 <input
                   type="range"
-                  min={0}
-                  max={100}
-                  step={10}
-                  value={customization.recording.pulseIntensity}
-                  onInput={(e) => updateRecording('pulseIntensity', parseInt((e.target as HTMLInputElement).value))}
-                  class="w-full h-6 bg-white border-3 border-black rounded-full appearance-none cursor-grab hover:cursor-grabbing"
+                  min="3"
+                  max="15"
+                  step="1"
+                  value={customization.interactions.squishPower}
+                  onInput={(e) => updateInteraction('squishPower', parseInt((e.target as HTMLInputElement).value))}
+                  title={`Squish: ${customization.interactions.squishPower}%`}
+                  class="juice-slider w-full h-6 bg-white border-3 border-black rounded-full appearance-none cursor-grab hover:cursor-grabbing transition-all shadow-sm hover:shadow-md"
                   style={{
-                    background: `linear-gradient(to right, #a855f7 0%, #a855f7 ${customization.recording.pulseIntensity}%, #f8f9fa ${customization.recording.pulseIntensity}%, #f8f9fa 100%)`
+                    background: `linear-gradient(to right, #67e8f9 0%, #67e8f9 ${((customization.interactions.squishPower - 3) / (15 - 3)) * 100}%, #f8f9fa ${((customization.interactions.squishPower - 3) / (15 - 3)) * 100}%, #f8f9fa 100%)`,
+                    border: '3px solid #000000'
                   }}
                 />
               </div>
             </div>
-          )}
+            
+            {/* Bounce */}
+            <div class="space-y-4 mb-6">
+              <div class="flex items-center justify-between">
+                <div>
+                  <h3 class="text-lg font-black text-gray-900">Bounce</h3>
+                  <p class="text-xs text-gray-600 font-bold">Release overshoot</p>
+                </div>
+                <div class="bg-gradient-to-r from-blue-100 to-blue-200 border-3 border-black px-4 py-2 rounded-xl shadow-md">
+                  <span class="text-lg font-black text-gray-900 font-mono">{customization.interactions.bounceFactor}%</span>
+                </div>
+              </div>
+              <div class="relative px-2">
+                <input
+                  type="range"
+                  min="2"
+                  max="10"
+                  step="1"
+                  value={customization.interactions.bounceFactor}
+                  onInput={(e) => updateInteraction('bounceFactor', parseInt((e.target as HTMLInputElement).value))}
+                  title={`Bounce: ${customization.interactions.bounceFactor}%`}
+                  class="juice-slider w-full h-6 bg-white border-3 border-black rounded-full appearance-none cursor-grab hover:cursor-grabbing transition-all shadow-sm hover:shadow-md"
+                  style={{
+                    background: `linear-gradient(to right, #67e8f9 0%, #67e8f9 ${((customization.interactions.bounceFactor - 2) / (10 - 2)) * 100}%, #f8f9fa ${((customization.interactions.bounceFactor - 2) / (10 - 2)) * 100}%, #f8f9fa 100%)`,
+                    border: '3px solid #000000'
+                  }}
+                />
+              </div>
+            </div>
+            
+            {/* Speed */}
+            <div class="space-y-4 mb-6">
+              <div class="flex items-center justify-between">
+                <div>
+                  <h3 class="text-lg font-black text-gray-900">Speed</h3>
+                  <p class="text-xs text-gray-600 font-bold">Animation timing</p>
+                </div>
+                <div class="bg-gradient-to-r from-blue-100 to-blue-200 border-3 border-black px-4 py-2 rounded-xl shadow-md">
+                  <span class="text-lg font-black text-gray-900 font-mono">{customization.interactions.animationSpeed.toFixed(1)}x</span>
+                </div>
+              </div>
+              <div class="relative px-2">
+                <input
+                  type="range"
+                  min="0.7"
+                  max="1.5"
+                  step="0.1"
+                  value={customization.interactions.animationSpeed}
+                  onInput={(e) => updateInteraction('animationSpeed', parseFloat((e.target as HTMLInputElement).value))}
+                  title={`Speed: ${customization.interactions.animationSpeed.toFixed(1)}x`}
+                  class="juice-slider w-full h-6 bg-white border-3 border-black rounded-full appearance-none cursor-grab hover:cursor-grabbing transition-all shadow-sm hover:shadow-md"
+                  style={{
+                    background: `linear-gradient(to right, #67e8f9 0%, #67e8f9 ${((customization.interactions.animationSpeed - 0.7) / (1.5 - 0.7)) * 100}%, #f8f9fa ${((customization.interactions.animationSpeed - 0.7) / (1.5 - 0.7)) * 100}%, #f8f9fa 100%)`,
+                    border: '3px solid #000000'
+                  }}
+                />
+              </div>
+            </div>
+            
+            {/* Feel */}
+            <div>
+              <h4 class="text-md font-black text-gray-900 mb-3">Easing Style</h4>
+              <div class="grid grid-cols-3 gap-3">
+                {[
+                  { value: 'smooth', label: 'Smooth' },
+                  { value: 'bouncy', label: 'Bouncy' },
+                  { value: 'snappy', label: 'Snappy' }
+                ].map(({ value, label }) => (
+                  <button
+                    key={value}
+                    onClick={() => updateInteraction('easingStyle', value)}
+                    class={`px-4 py-3 rounded-xl border-3 border-black font-black transition-all h-12 shadow-sm hover:shadow-md active:scale-95 ${
+                      customization.interactions.easingStyle === value
+                        ? 'bg-blue-200 hover:bg-blue-300 text-black shadow-md scale-105'
+                        : 'bg-white hover:bg-blue-50 text-black'
+                    }`}
+                    style={{
+                      boxShadow: customization.interactions.easingStyle === value 
+                        ? '3px 3px 0px #000000'
+                        : '2px 2px 0px #000000'
+                    }}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+          
+        </div>
+        
+        {/* Juice slider specific styling */}
+        <style jsx>{`
+          .juice-slider::-webkit-slider-thumb {
+            appearance: none;
+            height: 32px;
+            width: 32px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #67e8f9 0%, #22d3ee 100%);
+            border: 3px solid #000000;
+            cursor: grab;
+            box-shadow: 0 4px 12px rgba(103, 232, 249, 0.5), 0 2px 6px rgba(0, 0, 0, 0.2);
+            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+          }
+          .juice-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.15) translateY(-1px);
+            cursor: grabbing;
+            box-shadow: 0 6px 16px rgba(103, 232, 249, 0.7), 0 3px 8px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(135deg, #22d3ee 0%, #06b6d4 100%);
+          }
+          .juice-slider::-webkit-slider-thumb:active {
+            transform: scale(1.05) translateY(0px);
+            box-shadow: 0 3px 10px rgba(103, 232, 249, 0.8), 0 2px 5px rgba(0, 0, 0, 0.4);
+          }
+        `}</style>
+      </CollapsiblePanel>
+      
+      {/* Voice & Recording - Consolidated Panel */}
+      <CollapsiblePanel id="voice-recording" title="Voice & Recording" color="warm">
+        <div class="space-y-6">
+          
+          {/* API Configuration Section */}
+          <div>
+            <h4 class="text-lg font-black text-gray-900 mb-4 flex items-center gap-2">
+              <span class="w-6 h-6 bg-yellow-200 rounded-full border-2 border-black"></span>
+              Voice Magic Setup
+            </h4>
+            <div class="space-y-4">
+              <div>
+                <label class="block text-sm font-black text-black mb-2">API Key</label>
+                <input
+                  type="password"
+                  placeholder="Enter your Gemini API key..."
+                  class="w-full px-4 py-3 bg-white border-3 border-black rounded-xl focus:bg-yellow-50 focus:outline-none transition-all font-mono text-sm shadow-sm focus:shadow-md"
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-black text-black mb-2">Custom Prompt</label>
+                <textarea
+                  placeholder="Custom instructions (e.g., 'Translate to Spanish', 'Format as bullets')"
+                  class="w-full px-4 py-3 bg-white border-3 border-black rounded-xl focus:bg-yellow-50 focus:outline-none transition-all h-20 resize-none text-sm shadow-sm focus:shadow-md"
+                />
+              </div>
+              
+              {/* ✨ SURPRISE PROMPT EXAMPLES */}
+              <div>
+                <label class="block text-sm font-black text-black mb-3">✨ Quick Prompts</label>
+                <div class="grid grid-cols-2 gap-2">
+                  {[
+                    { emoji: '🌐', text: 'Translate', prompt: 'Translate to Spanish' },
+                    { emoji: '🔥', text: 'Spice Up', prompt: 'Make this sound more exciting and energetic' },
+                    { emoji: '📝', text: 'Bullets', prompt: 'Format as bullet points' },
+                    { emoji: '🎭', text: 'Dramatic', prompt: 'Rewrite in a dramatic, theatrical style' },
+                    { emoji: '🤖', text: 'Tech', prompt: 'Convert to technical documentation' },
+                    { emoji: '✨', text: 'Surprise!', prompt: 'surprise' }
+                  ].map(({ emoji, text, prompt }) => (
+                    <button
+                      key={text}
+                      onClick={() => {
+                        const textarea = document.querySelector('textarea') as HTMLTextAreaElement
+                        if (textarea) {
+                          if (prompt === 'surprise') {
+                            const surprisePrompts = [
+                              'Turn this into a pirate shanty',
+                              'Explain like I\'m a golden retriever',
+                              'Write as a noir detective story',
+                              'Convert to emoji-only communication',
+                              'Make it sound like a cooking recipe',
+                              'Transform into a haiku'
+                            ]
+                            textarea.value = surprisePrompts[Math.floor(Math.random() * surprisePrompts.length)]
+                          } else {
+                            textarea.value = prompt
+                          }
+                          textarea.focus()
+                        }
+                      }}
+                      class="flex items-center gap-2 px-3 py-2 bg-white border-2 border-black rounded-lg hover:bg-amber-50 transition-all text-xs font-black shadow-sm hover:shadow-md active:scale-95"
+                      style={{
+                        boxShadow: '1px 1px 0px #000000'
+                      }}
+                    >
+                      <span>{emoji}</span>
+                      <span>{text}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+              
+              <div class="text-xs text-gray-600">
+                💡 Get your free key at <a href="https://aistudio.google.com/apikey" target="_blank" class="text-blue-600 underline">aistudio.google.com/apikey</a>
+              </div>
+            </div>
+          </div>
+          
+          {/* Recording Behavior Section */}
+          <div>
+            <h4 class="text-lg font-black text-gray-900 mb-4 flex items-center gap-2">
+              <span class="w-6 h-6 bg-yellow-200 rounded-full border-2 border-black"></span>
+              Recording Behavior
+            </h4>
+            
+            {/* Visual Feedback Style */}
+            <div class="mb-6">
+              <h5 class="text-md font-black text-gray-800 mb-3">Visual Feedback</h5>
+              <div class="grid grid-cols-2 gap-3">
+                {[
+                  { value: 'timer', label: 'Timer', icon: '⏱️' },
+                  { value: 'pulse', label: 'Pulse', icon: '💓' },
+                  { value: 'glow', label: 'Glow', icon: '✨' },
+                  { value: 'ring', label: 'Ring', icon: '⭕' }
+                ].map(({ value, label, icon }) => (
+                  <button
+                    key={value}
+                    onClick={() => updateRecording('visualFeedback', value)}
+                    class={`px-4 py-3 rounded-xl border-3 border-black font-black transition-all h-12 shadow-sm hover:shadow-md active:scale-95 flex items-center gap-2 ${
+                      customization.recording.visualFeedback === value
+                        ? 'bg-yellow-200 hover:bg-yellow-300 text-black shadow-md scale-105'
+                        : 'bg-white hover:bg-yellow-50 text-black'
+                    }`}
+                    style={{
+                      boxShadow: customization.recording.visualFeedback === value 
+                        ? '3px 3px 0px #000000' 
+                        : '2px 2px 0px #000000'
+                    }}
+                  >
+                    <span>{icon}</span>
+                    <span>{label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+            
+            {/* Keep Size Toggle */}
+            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl border-2 border-gray-200 mb-6">
+              <div>
+                <h5 class="font-black text-gray-900">Prevent Layout Shift</h5>
+                <p class="text-sm text-gray-600">Keep button size consistent during recording</p>
+              </div>
+              <button
+                onClick={() => updateRecording('keepSize', !customization.recording.keepSize)}
+                class={`w-14 h-8 rounded-full border-3 border-black transition-all ${
+                  customization.recording.keepSize ? 'bg-green-400' : 'bg-gray-300'
+                }`}
+                style={{
+                  boxShadow: '2px 2px 0px #000000'
+                }}
+              >
+                <div
+                  class={`w-6 h-6 bg-white border-2 border-black rounded-full transition-transform ${
+                    customization.recording.keepSize ? 'translate-x-6' : 'translate-x-0'
+                  }`}
+                />
+              </button>
+            </div>
+            
+            {/* Pulse Intensity (if pulse selected) */}
+            {customization.recording.visualFeedback === 'pulse' && (
+              <div>
+                <h5 class="text-md font-black text-gray-800 mb-4">Pulse Intensity</h5>
+                <div class="space-y-4">
+                  <div class="flex items-center justify-between">
+                    <span class="text-sm font-bold text-gray-700">Intensity</span>
+                    <div class="bg-gradient-to-r from-yellow-100 to-yellow-200 border-3 border-black px-4 py-2 rounded-xl">
+                      <span class="text-lg font-black text-gray-900">{customization.recording.pulseIntensity}%</span>
+                    </div>
+                  </div>
+                  <input
+                    type="range"
+                    min={0}
+                    max={100}
+                    step={10}
+                    value={customization.recording.pulseIntensity}
+                    onInput={(e) => updateRecording('pulseIntensity', parseInt((e.target as HTMLInputElement).value))}
+                    class="w-full h-6 bg-white border-3 border-black rounded-full appearance-none cursor-grab hover:cursor-grabbing"
+                    style={{
+                      background: `linear-gradient(to right, #fbbf24 0%, #fbbf24 ${customization.recording.pulseIntensity}%, #f8f9fa ${customization.recording.pulseIntensity}%, #f8f9fa 100%)`
+                    }}
+                  />
+                </div>
+              </div>
+            )}
+            
+          </div>
           
         </div>
       </CollapsiblePanel>
