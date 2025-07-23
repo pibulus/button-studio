@@ -1,10 +1,14 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to Claude Code (claude.ai/code) when working with
+code in this repository.
 
 ## Project Overview
 
-ButtonStudio is a Deno Fresh application that creates customizable voice recording buttons with real-time transcription using Google Gemini. It features a visual design studio for creating personalized voice buttons with extensive customization options.
+ButtonStudio is a Deno Fresh application that creates customizable voice
+recording buttons with real-time transcription using Google Gemini. It features
+a visual design studio for creating personalized voice buttons with extensive
+customization options.
 
 ## Key Technologies
 
@@ -12,7 +16,8 @@ ButtonStudio is a Deno Fresh application that creates customizable voice recordi
 - **Runtime**: Deno (TypeScript-first, no Node.js dependencies)
 - **Frontend**: Preact with signals for reactive state management
 - **Styling**: Twind (Tailwind CSS-in-JS) with extensive custom theme
-- **Audio**: Web APIs (MediaRecorder, AudioContext) with custom waveform analysis
+- **Audio**: Web APIs (MediaRecorder, AudioContext) with custom waveform
+  analysis
 - **AI**: Google Gemini for speech-to-text transcription
 
 ## Common Development Commands
@@ -46,31 +51,70 @@ deno task update
 
 ### Key Components
 
-1. **VoiceButton** (`components/VoiceButton.tsx`): Main voice recording component with configurable appearance, recording states, and transcription
-2. **CustomizationPanel** (`components/CustomizationPanel.tsx`): Main design interface with collapsible sections and color-coded panels
-3. **ButtonStudio** (`islands/ButtonStudio.tsx`): Main island that orchestrates the entire button design experience
-4. **EmojiPicker** (`components/EmojiPicker.tsx`): Custom emoji/text selection interface  
+1. **VoiceButton** (`components/VoiceButton.tsx`): Main voice recording
+   component with configurable appearance, recording states, and transcription
+2. **CustomizationPanel** (`components/CustomizationPanel.tsx`): Main design
+   interface with collapsible sections and color-coded panels
+3. **ButtonStudio** (`islands/ButtonStudio.tsx`): Main island that orchestrates
+   the entire button design experience
+4. **EmojiPicker** (`components/EmojiPicker.tsx`): Custom emoji/text selection
+   interface
 5. **Toast** (`components/Toast.tsx`): Notification system for user feedback
+6. **AudioSettings** (`components/AudioSettings.tsx`): Global audio/haptic toggle controls
+7. **SoundPicker** (`components/SoundPicker.tsx`): Sound theme selection interface  
+8. **SoundDesigner** (`islands/SoundDesigner.tsx`): Advanced sound customization studio
 
 ### State Management Pattern
 
 Uses Preact signals for reactive state management:
+
 - `buttonConfig` signal in VoiceButtonStudio for design configuration
 - `buttonState` signal in VoiceButton for recording states
 - `transcript` signal for transcription results
 
 ### Audio Processing Flow
 
-1. **Recording**: `AudioRecorder` class handles MediaRecorder setup with optimized settings for speech
-2. **Analysis**: `AudioAnalyzer` class provides real-time waveform data during recording
+1. **Recording**: `AudioRecorder` class handles MediaRecorder setup with
+   optimized settings for speech
+2. **Analysis**: `AudioAnalyzer` class provides real-time waveform data during
+   recording
 3. **Transcription**: Gemini API integration for speech-to-text processing
 4. **Feedback**: Haptic feedback patterns and visual state transitions
+
+### Audio System Architecture
+
+The app uses a unified audio system with three main components:
+
+- **`soundMapping.ts`**: Universal sound mapping that connects audio config to playback
+- **`soundConfig.ts`**: Centralized configuration for all UI sound categories
+- **`soundService.ts`**: Low-level audio playback engine with Web Audio API
+
+#### Unified playSound API
+All components use the standardized `playSound` API for consistent audio feedback:
+
+```typescript
+import { playSound } from '../utils/audio/soundMapping.ts'
+
+// Standard interactions
+onClick={() => playSound.primaryClick()}
+onMouseEnter={() => playSound.hover()}
+onSlide={() => playSound.sliderStep()}
+onToggle={() => playSound.panelOpen()}
+```
+
+#### Audio Components
+- **AudioSettings** (`components/AudioSettings.tsx`): Global audio/haptic toggle controls
+- **SoundPicker** (`components/SoundPicker.tsx`): Sound theme selection interface  
+- **SoundDesigner** (`islands/SoundDesigner.tsx`): Advanced sound customization studio
 
 ### Design System ("Soft Stack")
 
 Custom Twind theme with three main design languages:
-- **Soft Stack**: Warm, friendly aesthetic with rounded corners and gentle shadows
-- **Flamingo Brutalist**: Bold, chunky design with strong colors and pronounced shadows
+
+- **Soft Stack**: Warm, friendly aesthetic with rounded corners and gentle
+  shadows
+- **Flamingo Brutalist**: Bold, chunky design with strong colors and pronounced
+  shadows
 - **Voice/Amber**: Clean, professional appearance
 
 ## File Organization
@@ -81,16 +125,25 @@ Custom Twind theme with three main design languages:
 ├── islands/          # Client-side interactive components
 ├── components/       # Shared UI components
 ├── utils/           # Utility functions (audio processing)
+│   └── audio/       # Audio system modules
+│       ├── soundMapping.ts    # Universal sound API
+│       ├── soundConfig.ts     # Audio configuration
+│       ├── soundService.ts    # Audio playback engine
+│       ├── synthEngine.ts     # Sound synthesis
+│       └── hapticService.ts   # Haptic feedback
 ├── types/           # TypeScript type definitions
 ├── plugins/         # AI transcription plugins
 ├── static/          # Static assets
+│   └── sounds/      # Audio files (MP3)
 └── twind.config.ts  # Comprehensive design system
 ```
 
 ## Development Patterns
 
 ### Component Props Pattern
+
 Components use comprehensive config objects rather than many individual props:
+
 ```typescript
 buttonConfig: {
   content: { text: string, autoScale: boolean }
@@ -101,21 +154,32 @@ buttonConfig: {
 ```
 
 ### Error Handling
-Custom `VoiceButtonError` class with specific error codes for audio permission, recording, and transcription failures.
+
+Custom `VoiceButtonError` class with specific error codes for audio permission,
+recording, and transcription failures.
 
 ### Styling Approach
+
 - Twind for utility-first CSS with extensive custom theme
 - Dynamic inline styles for user-customizable properties
 - State-based animations using CSS classes
 - Custom slider styling for design controls
 
 ### CustomizationPanel Color System
-The `CustomizationPanel` uses a color-coded design system for visual organization:
-- **Panel Headers**: Each collapsible panel has a distinct color (red, orange, pink, yellow, cyan, purple, green, blue)
-- **Color Mapping**: Uses `getBackgroundColor()` function to map color keys to Tailwind classes
-- **Button Theming**: Panel buttons inherit colors from their parent panel via `getButtonColors()`
-- **Available Colors**: lightest, light, medium, warm, cool, deep, effects, recording, juice
-- **CSS Scoping**: Juice sliders use `.juice-slider` class with `!important` declarations for specificity
+
+The `CustomizationPanel` uses a color-coded design system for visual
+organization:
+
+- **Panel Headers**: Each collapsible panel has a distinct color (red, orange,
+  pink, yellow, cyan, purple, green, blue)
+- **Color Mapping**: Uses `getBackgroundColor()` function to map color keys to
+  Tailwind classes
+- **Button Theming**: Panel buttons inherit colors from their parent panel via
+  `getButtonColors()`
+- **Available Colors**: lightest, light, medium, warm, cool, deep, effects,
+  recording, juice
+- **CSS Scoping**: Juice sliders use `.juice-slider` class with `!important`
+  declarations for specificity
 
 ## Testing and Quality
 
@@ -134,7 +198,9 @@ The `CustomizationPanel` uses a color-coded design system for visual organizatio
 
 ## Development Notes
 
-- The app uses Deno's permission system - audio recording requires microphone permissions
+- The app uses Deno's permission system - audio recording requires microphone
+  permissions
 - Fresh's island architecture means only `islands/` components run on the client
 - The design studio provides real-time preview of button configurations
-- Audio settings are optimized for speech recognition (16kHz, noise suppression, echo cancellation)
+- Audio settings are optimized for speech recognition (16kHz, noise suppression,
+  echo cancellation)

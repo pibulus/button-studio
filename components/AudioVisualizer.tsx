@@ -1,23 +1,23 @@
-import { signal } from '@preact/signals'
+import { signal } from "@preact/signals";
 
 // Access the existing button state from VoiceButton
 declare global {
   interface Window {
-    buttonState?: any
-    transcript?: any
+    buttonState?: any;
+    transcript?: any;
   }
 }
 
 export default function AudioVisualizer() {
   // We'll get the state from the global signals if available
   // or create our own indicators
-  
+
   return (
     <div class="w-full">
       <h3 class="text-xl font-black text-black mb-4">
         Audio Status
       </h3>
-      
+
       {/* Status Indicator */}
       <div class="flex items-center justify-between mb-4">
         <span class="text-sm font-bold text-gray-600">Status</span>
@@ -26,23 +26,23 @@ export default function AudioVisualizer() {
           <span class="text-sm font-medium text-gray-700">Ready</span>
         </div>
       </div>
-      
+
       {/* Waveform Placeholder */}
       <div class="w-full h-24 bg-gray-100 rounded-xl flex items-center justify-center mb-4">
         <div class="flex items-end space-x-1">
           {Array.from({ length: 20 }).map((_, i) => (
-            <div 
+            <div
               key={i}
               class="w-2 bg-gray-300 rounded-t animate-pulse"
-              style={{ 
+              style={{
                 height: `${Math.random() * 40 + 10}px`,
-                animationDelay: `${i * 0.1}s`
+                animationDelay: `${i * 0.1}s`,
               }}
             />
           ))}
         </div>
       </div>
-      
+
       {/* Recording Info */}
       <div class="grid grid-cols-2 gap-4 text-sm">
         <div>
@@ -54,7 +54,7 @@ export default function AudioVisualizer() {
           <div class="text-lg font-bold text-green-600">HD</div>
         </div>
       </div>
-      
+
       {/* Transcript Area */}
       <div class="mt-6">
         <h4 class="text-sm font-bold text-gray-600 mb-2">Transcript</h4>
@@ -63,5 +63,5 @@ export default function AudioVisualizer() {
         </div>
       </div>
     </div>
-  )
+  );
 }

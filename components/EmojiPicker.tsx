@@ -1,44 +1,50 @@
-import { signal } from '@preact/signals'
-import { useEffect, useRef } from 'preact/hooks'
+import { signal } from "@preact/signals";
+import { useEffect, useRef } from "preact/hooks";
 
 interface EmojiPickerProps {
-  value: string
-  onChange: (emoji: string) => void
-  placeholder?: string
+  value: string;
+  onChange: (emoji: string) => void;
+  placeholder?: string;
 }
 
-const isOpen = signal<boolean>(false)
+const isOpen = signal<boolean>(false);
 
 // Common emojis organized by category
 const emojiCategories = {
-  'Voice & Sound': ['🎤', '🎧', '🔊', '📢', '📣', '🎵', '🎶', '🔉', '🔔', '📯'],
-  'Smileys': ['😊', '😂', '🥰', '😎', '🤔', '😍', '🙂', '😃', '😄', '😆'],
-  'Hands': ['👋', '✋', '🤚', '🖐️', '✌️', '🤞', '🤟', '🤘', '👌', '🤏'],
-  'Objects': ['💎', '⭐', '✨', '🔥', '💡', '🎯', '🚀', '💫', '⚡', '🌟'],
-  'Hearts': ['❤️', '💖', '💕', '💓', '💗', '💘', '💝', '💟', '❣️', '💔'],
-  'Arrows': ['➡️', '⬅️', '⬆️', '⬇️', '↗️', '↖️', '↙️', '↘️', '🔄', '🔃']
-}
+  "Voice & Sound": ["🎤", "🎧", "🔊", "📢", "📣", "🎵", "🎶", "🔉", "🔔", "📯"],
+  "Smileys": ["😊", "😂", "🥰", "😎", "🤔", "😍", "🙂", "😃", "😄", "😆"],
+  "Hands": ["👋", "✋", "🤚", "🖐️", "✌️", "🤞", "🤟", "🤘", "👌", "🤏"],
+  "Objects": ["💎", "⭐", "✨", "🔥", "💡", "🎯", "🚀", "💫", "⚡", "🌟"],
+  "Hearts": ["❤️", "💖", "💕", "💓", "💗", "💘", "💝", "💟", "❣️", "💔"],
+  "Arrows": ["➡️", "⬅️", "⬆️", "⬇️", "↗️", "↖️", "↙️", "↘️", "🔄", "🔃"],
+};
 
-export default function EmojiPicker({ value, onChange, placeholder = '🎤' }: EmojiPickerProps) {
-  const containerRef = useRef<HTMLDivElement>(null)
+export default function EmojiPicker(
+  { value, onChange, placeholder = "🎤" }: EmojiPickerProps,
+) {
+  const containerRef = useRef<HTMLDivElement>(null);
 
   // Close picker when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
-        isOpen.value = false
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target as Node)
+      ) {
+        isOpen.value = false;
       }
     }
 
     if (isOpen.value) {
-      document.addEventListener('mousedown', handleClickOutside)
-      return () => document.removeEventListener('mousedown', handleClickOutside)
+      document.addEventListener("mousedown", handleClickOutside);
+      return () =>
+        document.removeEventListener("mousedown", handleClickOutside);
     }
-  }, [isOpen.value])
+  }, [isOpen.value]);
 
   function selectEmoji(emoji: string) {
-    onChange(emoji)
-    isOpen.value = false
+    onChange(emoji);
+    isOpen.value = false;
   }
 
   return (
@@ -51,7 +57,7 @@ export default function EmojiPicker({ value, onChange, placeholder = '🎤' }: E
       >
         <span class="text-2xl">{value || placeholder}</span>
         <span class="text-flamingo-purple text-sm">
-          {isOpen.value ? '▲' : '▼'}
+          {isOpen.value ? "▲" : "▼"}
         </span>
       </button>
 
@@ -65,7 +71,7 @@ export default function EmojiPicker({ value, onChange, placeholder = '🎤' }: E
                   {categoryName}
                 </h4>
                 <div class="grid grid-cols-5 gap-2">
-                  {emojis.map(emoji => (
+                  {emojis.map((emoji) => (
                     <button
                       key={emoji}
                       type="button"
@@ -79,7 +85,7 @@ export default function EmojiPicker({ value, onChange, placeholder = '🎤' }: E
                 </div>
               </div>
             ))}
-            
+
             {/* Text Input for Custom */}
             <div class="border-t-2 border-flamingo-cream pt-4">
               <h4 class="text-xs font-chunky text-flamingo-charcoal mb-2 uppercase tracking-wide">
@@ -90,20 +96,22 @@ export default function EmojiPicker({ value, onChange, placeholder = '🎤' }: E
                 placeholder="Type any text..."
                 class="w-full p-2 border-2 border-flamingo-concrete rounded-md text-sm focus:outline-none focus:border-flamingo-purple"
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    const target = e.target as HTMLInputElement
+                  if (e.key === "Enter") {
+                    const target = e.target as HTMLInputElement;
                     if (target.value.trim()) {
-                      selectEmoji(target.value.trim())
-                      target.value = ''
+                      selectEmoji(target.value.trim());
+                      target.value = "";
                     }
                   }
                 }}
               />
-              <p class="text-xs text-flamingo-purple mt-1">Press Enter to use</p>
+              <p class="text-xs text-flamingo-purple mt-1">
+                Press Enter to use
+              </p>
             </div>
           </div>
         </div>
       )}
     </div>
-  )
+  );
 }
