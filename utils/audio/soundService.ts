@@ -8,7 +8,7 @@ import { toast } from "../../components/Toast.tsx";
 
 // Check if we're in a browser environment with audio support
 const hasAudioSupport = typeof window !== "undefined" &&
-  window.HTMLAudioElement;
+  globalThis.HTMLAudioElement;
 
 // Store settings flag - default to true
 let soundsEnabled = true;

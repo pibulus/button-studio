@@ -10,6 +10,8 @@ import { hapticService } from "../utils/audio/hapticService.ts";
 import { SOUND_PRESETS, synthEngine } from "../utils/audio/synthEngine.ts";
 import { playSound } from "../utils/audio/soundMapping.ts";
 import SoundPicker from "./SoundPicker.tsx";
+import { ButtonExporter } from "../utils/export/ButtonExporter.ts";
+import { toast } from "./Toast.tsx";
 
 interface CustomizationPanelProps {
   customization: ButtonCustomization;
@@ -128,6 +130,166 @@ export default function CustomizationPanel(
         [key]: value,
       },
     });
+  };
+
+  // ===================================================================
+  // EXPORT SYSTEM - The journey completion!
+  // ===================================================================
+
+  const handleExport = async (exportType: string) => {
+    try {
+      // Play export sound with sparkles!
+      playSound.export();
+      hapticService.buttonPress();
+
+      // Show loading status
+      const statusDiv = document.getElementById("export-status");
+      if (statusDiv) {
+        statusDiv.className =
+          "p-4 bg-blue-50 border-2 border-blue-300 rounded-xl";
+        statusDiv.innerHTML = `
+          <div class="flex items-center gap-3">
+            <div class="text-2xl">⏳</div>
+            <div>
+              <div class="font-black text-blue-800">Generating Export...</div>
+              <div class="text-sm text-blue-600">Creating your ${exportType} export</div>
+            </div>
+          </div>
+        `;
+      }
+
+      // Get API key if available (from voice panel)
+      const apiKeyInput = document.querySelector(
+        'input[type="password"]',
+      ) as HTMLInputElement;
+      const apiKey = apiKeyInput?.value || undefined;
+
+      // Create exporter
+      const exporter = new ButtonExporter(customization, apiKey);
+
+      let result;
+
+      switch (exportType) {
+        case "html":
+          result = exporter.generateHTML({
+            includeAI: !!apiKey,
+            customBranding: false,
+          });
+          if (result.success && result.data) {
+            downloadFile(
+              result.data as string,
+              result.downloadName!,
+              "text/html",
+            );
+            toast.success("🎉 HTML file downloaded!");
+          }
+          break;
+
+        case "pwa":
+          result = exporter.generatePWA({
+            includeAI: !!apiKey,
+            customBranding: false,
+          });
+          if (result.success && result.data) {
+            // For now, just download the main HTML - would need zip library for full PWA
+            const pwaData = result.data as any;
+            downloadFile(
+              pwaData.files[0].content,
+              "voice-button-pwa.html",
+              "text/html",
+            );
+            toast.success("📱 PWA files ready! (Full package coming soon)");
+          }
+          break;
+
+        case "share":
+          result = exporter.generateShareLink({
+            title: customization.content.label || "Voice Button",
+          });
+          if (result.success && result.data) {
+            await navigator.clipboard.writeText(result.data as string);
+            toast.success("🔗 Share link copied to clipboard!");
+          }
+          break;
+
+        case "embed":
+          result = exporter.generateEmbedCode({
+            responsive: true,
+          });
+          if (result.success && result.data) {
+            await navigator.clipboard.writeText(result.data as string);
+            toast.success("🎯 Embed code copied to clipboard!");
+          }
+          break;
+
+        case "mobile-react-native":
+          toast.info("💎 Premium feature coming soon! React Native templates");
+          break;
+
+        case "no-branding":
+          toast.info("✨ Premium feature coming soon! Custom branding removal");
+          break;
+
+        default:
+          toast.error("❌ Export type not supported yet");
+          return;
+      }
+
+      if (result && result.success) {
+        // Show success status
+        if (statusDiv) {
+          statusDiv.className =
+            "p-4 bg-green-50 border-2 border-green-300 rounded-xl";
+          statusDiv.innerHTML = `
+            <div class="flex items-center gap-3">
+              <div class="text-2xl">✅</div>
+              <div>
+                <div class="font-black text-green-800">Export Successful!</div>
+                <div class="text-sm text-green-600">Your ${exportType} export is ready!</div>
+              </div>
+            </div>
+          `;
+
+          // Hide after 3 seconds
+          setTimeout(() => {
+            statusDiv.classList.add("hidden");
+          }, 3000);
+        }
+
+        // Celebration sound!
+        setTimeout(() => playSound.celebration(), 500);
+      } else if (result && !result.success) {
+        toast.error(`❌ Export failed: ${result.error}`);
+        if (statusDiv) {
+          statusDiv.classList.add("hidden");
+        }
+      }
+    } catch (error) {
+      console.error("Export error:", error);
+      toast.error("❌ Export failed. Please try again.");
+
+      const statusDiv = document.getElementById("export-status");
+      if (statusDiv) {
+        statusDiv.classList.add("hidden");
+      }
+    }
+  };
+
+  // Helper function to download files
+  const downloadFile = (
+    content: string,
+    filename: string,
+    mimeType: string,
+  ) => {
+    const blob = new Blob([content], { type: mimeType });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
   // ===================================================================
@@ -1653,35 +1815,179 @@ function handleButtonClick() {
         </div>
       </CollapsiblePanel>
 
-      {/* Export Code */}
-      <CollapsiblePanel id="export" title="Export Code" color="deep">
-        <div class="space-y-4">
+      {/* 📤 ULTIMATE EXPORT SYSTEM - The money maker! */}
+      <CollapsiblePanel id="export" title="📤 Export Your Button" color="deep">
+        <div class="space-y-6">
+          {/* Export Options Grid */}
           <div>
-            <label class="block text-sm font-black text-black mb-2">
-              Button HTML & CSS
-            </label>
-            <textarea
-              value={generateCode()}
-              readonly
-              class="w-full px-4 py-3 bg-gray-50 border-2 border-black rounded-xl font-mono text-xs h-32 resize-none"
-              onClick={(e) => (e.target as HTMLTextAreaElement).select()}
-            />
+            <h4 class="text-lg font-black text-gray-900 mb-4 flex items-center gap-2">
+              <span class="w-6 h-6 bg-purple-200 rounded-full border-2 border-black">
+              </span>
+              Save & Share Your Creation
+            </h4>
+
+            <div class="grid grid-cols-2 gap-4">
+              {/* HTML Export */}
+              <button
+                onClick={() => handleExport("html")}
+                onMouseEnter={() => playSound.hover()}
+                class="group p-4 bg-gradient-to-br from-green-100 to-green-200 border-3 border-black rounded-2xl font-black transition-all duration-300 ease-out shadow-lg hover:shadow-xl active:scale-95 transform hover:scale-105 hover:-translate-y-1"
+                style={{
+                  boxShadow: "4px 4px 0px #000000",
+                  transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
+                }}
+              >
+                <div class="text-3xl mb-2 group-hover:scale-110 transition-transform duration-300">
+                  💾
+                </div>
+                <div class="text-sm font-black">HTML File</div>
+                <div class="text-xs text-gray-600 font-bold mt-1">
+                  Standalone webpage
+                </div>
+              </button>
+
+              {/* PWA Export */}
+              <button
+                onClick={() => handleExport("pwa")}
+                onMouseEnter={() => playSound.hover()}
+                class="group p-4 bg-gradient-to-br from-blue-100 to-blue-200 border-3 border-black rounded-2xl font-black transition-all duration-300 ease-out shadow-lg hover:shadow-xl active:scale-95 transform hover:scale-105 hover:-translate-y-1"
+                style={{
+                  boxShadow: "4px 4px 0px #000000",
+                  transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
+                }}
+              >
+                <div class="text-3xl mb-2 group-hover:scale-110 transition-transform duration-300">
+                  📱
+                </div>
+                <div class="text-sm font-black">Mobile App</div>
+                <div class="text-xs text-gray-600 font-bold mt-1">
+                  Progressive Web App
+                </div>
+              </button>
+
+              {/* Share Link */}
+              <button
+                onClick={() => handleExport("share")}
+                onMouseEnter={() => playSound.hover()}
+                class="group p-4 bg-gradient-to-br from-orange-100 to-orange-200 border-3 border-black rounded-2xl font-black transition-all duration-300 ease-out shadow-lg hover:shadow-xl active:scale-95 transform hover:scale-105 hover:-translate-y-1"
+                style={{
+                  boxShadow: "4px 4px 0px #000000",
+                  transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
+                }}
+              >
+                <div class="text-3xl mb-2 group-hover:scale-110 transition-transform duration-300">
+                  🔗
+                </div>
+                <div class="text-sm font-black">Share Link</div>
+                <div class="text-xs text-gray-600 font-bold mt-1">
+                  Instant sharing
+                </div>
+              </button>
+
+              {/* Embed Code */}
+              <button
+                onClick={() => handleExport("embed")}
+                onMouseEnter={() => playSound.hover()}
+                class="group p-4 bg-gradient-to-br from-pink-100 to-pink-200 border-3 border-black rounded-2xl font-black transition-all duration-300 ease-out shadow-lg hover:shadow-xl active:scale-95 transform hover:scale-105 hover:-translate-y-1"
+                style={{
+                  boxShadow: "4px 4px 0px #000000",
+                  transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
+                }}
+              >
+                <div class="text-3xl mb-2 group-hover:scale-110 transition-transform duration-300">
+                  🎯
+                </div>
+                <div class="text-sm font-black">Embed Code</div>
+                <div class="text-xs text-gray-600 font-bold mt-1">
+                  For websites
+                </div>
+              </button>
+            </div>
           </div>
-          <button
-            onClick={() => {
-              navigator.clipboard.writeText(generateCode());
-              playSound.copyCode();
-              hapticService.buttonPress();
-              // Could add a toast notification here
-            }}
-            onMouseEnter={() => playSound.hover()}
-            class="w-full bg-white border-3 border-black rounded-xl px-4 py-3 font-black hover:bg-purple-50 transition-all h-12 shadow-sm hover:shadow-md active:scale-95"
-            style={{
-              boxShadow: "2px 2px 0px #000000",
-            }}
+
+          {/* Premium Export Options */}
+          <div>
+            <h4 class="text-lg font-black text-gray-900 mb-4 flex items-center gap-2">
+              <span class="w-6 h-6 bg-gradient-to-r from-yellow-300 to-orange-300 rounded-full border-2 border-black flex items-center justify-center">
+                <span class="text-xs">✨</span>
+              </span>
+              Premium Exports
+            </h4>
+
+            <div class="grid grid-cols-1 gap-3">
+              {/* React Native Template */}
+              <button
+                onClick={() => handleExport("mobile-react-native")}
+                onMouseEnter={() => playSound.hover()}
+                class="group flex items-center justify-between p-4 bg-gradient-to-r from-purple-100 via-pink-100 to-purple-100 border-3 border-black rounded-2xl font-black transition-all duration-300 ease-out shadow-lg hover:shadow-xl active:scale-95 transform hover:scale-105 hover:-translate-y-1"
+                style={{
+                  boxShadow: "4px 4px 0px #000000",
+                  transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
+                }}
+              >
+                <div class="flex items-center gap-3">
+                  <div class="text-2xl group-hover:scale-110 transition-transform duration-300">
+                    📦
+                  </div>
+                  <div class="text-left">
+                    <div class="text-sm font-black">React Native Template</div>
+                    <div class="text-xs text-gray-600 font-bold">
+                      Ready-to-build mobile app
+                    </div>
+                  </div>
+                </div>
+                <div class="text-sm font-black text-purple-600">$2</div>
+              </button>
+
+              {/* Custom Branding */}
+              <button
+                onClick={() => handleExport("no-branding")}
+                onMouseEnter={() => playSound.hover()}
+                class="group flex items-center justify-between p-4 bg-gradient-to-r from-yellow-100 via-orange-100 to-yellow-100 border-3 border-black rounded-2xl font-black transition-all duration-300 ease-out shadow-lg hover:shadow-xl active:scale-95 transform hover:scale-105 hover:-translate-y-1"
+                style={{
+                  boxShadow: "4px 4px 0px #000000",
+                  transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
+                }}
+              >
+                <div class="flex items-center gap-3">
+                  <div class="text-2xl group-hover:scale-110 transition-transform duration-300">
+                    🏷️
+                  </div>
+                  <div class="text-left">
+                    <div class="text-sm font-black">
+                      Remove ButtonStudio Branding
+                    </div>
+                    <div class="text-xs text-gray-600 font-bold">
+                      Clean, professional exports
+                    </div>
+                  </div>
+                </div>
+                <div class="text-sm font-black text-orange-600">$1</div>
+              </button>
+            </div>
+          </div>
+
+          {/* Success/Status Area */}
+          <div
+            id="export-status"
+            class="hidden p-4 bg-green-50 border-2 border-green-300 rounded-xl"
           >
-            📋 Copy Code
-          </button>
+            <div class="flex items-center gap-3">
+              <div class="text-2xl">✅</div>
+              <div>
+                <div class="font-black text-green-800">Export Successful!</div>
+                <div class="text-sm text-green-600">
+                  Your button has been exported successfully.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* ButtonStudio Attribution */}
+          <div class="text-center text-xs text-gray-500 border-t-2 border-gray-200 pt-4">
+            🎲 Made with <span class="font-black">ButtonStudio</span>{" "}
+            - Where voice buttons come alive!
+          </div>
         </div>
       </CollapsiblePanel>
     </div>

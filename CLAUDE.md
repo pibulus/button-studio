@@ -208,14 +208,17 @@ organization:
 
 ## Export System (NEW!)
 
-ButtonStudio now includes a comprehensive export system that completes the user journey:
+ButtonStudio now includes a comprehensive export system that completes the user
+journey:
 
 ### Export Architecture
 
 - **`ButtonExporter`** (`utils/export/ButtonExporter.ts`): Main export engine
-- **Templates** (`utils/export/templates/`): HTML, PWA, and mobile app generators
+- **Templates** (`utils/export/templates/`): HTML, PWA, and mobile app
+  generators
 - **Share Links** (`utils/export/shareLink.ts`): URL encoding/decoding system
-- **Export UI** (integrated in `CustomizationPanel.tsx`): User-friendly export interface
+- **Export UI** (integrated in `CustomizationPanel.tsx`): User-friendly export
+  interface
 
 ### Export Formats
 
@@ -237,7 +240,7 @@ const shareUrl = exporter.generateShareLink(); // Shareable URL
 ### Premium Export Features
 
 - Advanced mobile app templates
-- Custom branding removal  
+- Custom branding removal
 - Advanced PWA features (offline, notifications)
 - Analytics integration
 - Team collaboration exports
@@ -250,5 +253,6 @@ const shareUrl = exporter.generateShareLink(); // Shareable URL
 - The design studio provides real-time preview of button configurations
 - Audio settings are optimized for speech recognition (16kHz, noise suppression,
   echo cancellation)
-- **Export system completes the user journey** - users can now save, share, and deploy their creations
+- **Export system completes the user journey** - users can now save, share, and
+  deploy their creations
 - Export UI integrates with existing brutalist design system and sound feedback
