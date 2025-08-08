@@ -19,33 +19,40 @@ const noKeyResult = exporter.generateHTML({
 
 if (noKeyResult.success) {
   const htmlContent = noKeyResult.data as string;
-  
+
   const checks = {
-    hasSetupUI: htmlContent.includes('🚀 Enable AI Transcription'),
-    hasStepByStep: htmlContent.includes('Google AI Studio'),
-    hasDirectLink: htmlContent.includes('aistudio.google.com/app/apikey'),
-    hasValidation: htmlContent.includes('AIza'),
-    hasLocalStorage: htmlContent.includes('localStorage'),
-    hasFallback: htmlContent.includes('Set up API key above'),
+    hasSetupUI: htmlContent.includes("🚀 Enable AI Transcription"),
+    hasStepByStep: htmlContent.includes("Google AI Studio"),
+    hasDirectLink: htmlContent.includes("aistudio.google.com/app/apikey"),
+    hasValidation: htmlContent.includes("AIza"),
+    hasLocalStorage: htmlContent.includes("localStorage"),
+    hasFallback: htmlContent.includes("Set up API key above"),
   };
-  
+
   console.log("   Setup UI Features:");
-  console.log(`   🎨 Beautiful setup UI: ${checks.hasSetupUI ? '✅' : '❌'}`);
-  console.log(`   📋 Step-by-step guide: ${checks.hasStepByStep ? '✅' : '❌'}`);
-  console.log(`   🔗 Direct link to API: ${checks.hasDirectLink ? '✅' : '❌'}`);
-  console.log(`   ✅ Key validation: ${checks.hasValidation ? '✅' : '❌'}`);
-  console.log(`   💾 Browser storage: ${checks.hasLocalStorage ? '✅' : '❌'}`);
-  console.log(`   🔄 Smart fallback: ${checks.hasFallback ? '✅' : '❌'}`);
-  
+  console.log(`   🎨 Beautiful setup UI: ${checks.hasSetupUI ? "✅" : "❌"}`);
+  console.log(
+    `   📋 Step-by-step guide: ${checks.hasStepByStep ? "✅" : "❌"}`,
+  );
+  console.log(
+    `   🔗 Direct link to API: ${checks.hasDirectLink ? "✅" : "❌"}`,
+  );
+  console.log(`   ✅ Key validation: ${checks.hasValidation ? "✅" : "❌"}`);
+  console.log(`   💾 Browser storage: ${checks.hasLocalStorage ? "✅" : "❌"}`);
+  console.log(`   🔄 Smart fallback: ${checks.hasFallback ? "✅" : "❌"}`);
+
   const allGood = Object.values(checks).every(Boolean);
-  console.log(`\n   🎯 API FLOW: ${allGood ? '✅ PERFECT!' : '❌ NEEDS FIX'}`);
+  console.log(`\n   🎯 API FLOW: ${allGood ? "✅ PERFECT!" : "❌ NEEDS FIX"}`);
 } else {
   console.log("❌ Failed to generate HTML");
 }
 
 // Test 2: Export with API key (should skip setup)
 console.log("\n🧪 Test 2: Export with API key provided");
-const exporterWithKey = new ButtonExporter(defaultCustomization, "AIza-test-key-12345");
+const exporterWithKey = new ButtonExporter(
+  defaultCustomization,
+  "AIza-test-key-12345",
+);
 const withKeyResult = exporterWithKey.generateHTML({
   includeAI: true,
   apiKey: "AIza-test-key-12345", // Mock API key
@@ -53,11 +60,17 @@ const withKeyResult = exporterWithKey.generateHTML({
 
 if (withKeyResult.success) {
   const htmlContent = withKeyResult.data as string;
-  
-  const setupHidden = htmlContent.includes('api-setup" class="mt-4 max-w-lg mx-auto p-6 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border-2 border-dashed border-blue-200 hidden');
-  
-  console.log(`   🎯 Setup UI hidden: ${setupHidden ? '✅' : '❌'}`);
-  console.log(`   🚀 Ready to transcribe: ${htmlContent.includes('generateContent') ? '✅' : '❌'}`);
+
+  const setupHidden = htmlContent.includes(
+    'api-setup" class="mt-4 max-w-lg mx-auto p-6 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border-2 border-dashed border-blue-200 hidden',
+  );
+
+  console.log(`   🎯 Setup UI hidden: ${setupHidden ? "✅" : "❌"}`);
+  console.log(
+    `   🚀 Ready to transcribe: ${
+      htmlContent.includes("generateContent") ? "✅" : "❌"
+    }`,
+  );
 }
 
 console.log("\n✨ USER EXPERIENCE FLOW:");

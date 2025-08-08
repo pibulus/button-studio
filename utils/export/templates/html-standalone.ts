@@ -84,11 +84,13 @@ export function generateStandaloneHTML(
         
         <!-- Status Display -->
         <div id="status" class="mt-6 text-lg font-medium text-gray-600">
-            ${options.autoStart ? 'Ready to auto-record...' : 'Click to record'}
+            ${options.autoStart ? "Ready to auto-record..." : "Click to record"}
         </div>
         
         <!-- API Key Setup (shown when no key) -->
-        <div id="api-setup" class="mt-4 max-w-lg mx-auto p-6 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border-2 border-dashed border-blue-200 ${options.apiKey ? 'hidden' : ''}">
+        <div id="api-setup" class="mt-4 max-w-lg mx-auto p-6 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border-2 border-dashed border-blue-200 ${
+    options.apiKey ? "hidden" : ""
+  }">
             <h3 class="text-xl font-bold mb-3 text-center">🚀 Enable AI Transcription</h3>
             <p class="text-gray-600 mb-4 text-center">Get a free Gemini API key in 2 minutes:</p>
             
@@ -151,7 +153,11 @@ export function generateStandaloneHTML(
         let audioChunks = [];
         let isRecording = false;
         let currentTranscript = '';
-        let userApiKey = ${options.apiKey ? `'${options.apiKey}'` : 'localStorage.getItem("gemini-api-key") || null'};
+        let userApiKey = ${
+    options.apiKey
+      ? `'${options.apiKey}'`
+      : 'localStorage.getItem("gemini-api-key") || null'
+  };
         
         // API Key Management
         function saveApiKey() {
@@ -187,21 +193,27 @@ export function generateStandaloneHTML(
         
         // Check API key on load
         window.addEventListener('load', () => {
-            if (userApiKey && !${options.apiKey ? 'true' : 'false'}) {
+            if (userApiKey && !${options.apiKey ? "true" : "false"}) {
                 document.getElementById('api-setup').classList.add('hidden');
                 document.getElementById('status').textContent = 'Click to record';
             }
         });
         
-        ${options.autoStopOnSilence ? `
+        ${
+    options.autoStopOnSilence
+      ? `
         // Silence Detection Variables
         let audioContext = null;
         let analyser = null;
         let silenceTimeout = null;
         let lastAudioTime = Date.now();
-        const silenceDuration = ${options.silenceDuration || 3} * 1000; // Convert to milliseconds
+        const silenceDuration = ${
+        options.silenceDuration || 3
+      } * 1000; // Convert to milliseconds
         const silenceThreshold = -50; // dB threshold for silence
-        ` : ''}
+        `
+      : ""
+  }
         
         const button = document.getElementById('${buttonId}');
         const status = document.getElementById('status');
@@ -242,7 +254,9 @@ export function generateStandaloneHTML(
                 audioChunks = [];
                 isRecording = true;
                 
-                ${options.autoStopOnSilence ? `
+                ${
+    options.autoStopOnSilence
+      ? `
                 // Set up silence detection
                 try {
                     audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -258,10 +272,16 @@ export function generateStandaloneHTML(
                 } catch (error) {
                     console.warn('Could not set up silence detection:', error);
                 }
-                ` : ''}
+                `
+      : ""
+  }
                 
                 // Update UI
-                status.textContent = '${options.autoStopOnSilence ? 'Recording... (Auto-stops on silence)' : 'Recording... Click to stop'}';
+                status.textContent = '${
+    options.autoStopOnSilence
+      ? "Recording... (Auto-stops on silence)"
+      : "Recording... Click to stop"
+  }';
                 button.classList.add('recording');
                 
                 // Handle recorded data
@@ -273,7 +293,9 @@ export function generateStandaloneHTML(
                 
                 // Handle recording stop
                 mediaRecorder.onstop = async () => {
-                    ${options.autoStopOnSilence ? `
+                    ${
+    options.autoStopOnSilence
+      ? `
                     // Clean up silence detection
                     if (silenceTimeout) {
                         clearTimeout(silenceTimeout);
@@ -284,7 +306,9 @@ export function generateStandaloneHTML(
                         audioContext = null;
                         analyser = null;
                     }
-                    ` : ''}
+                    `
+      : ""
+  }
                     
                     const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
                     await processAudio(audioBlob);
@@ -319,7 +343,7 @@ export function generateStandaloneHTML(
                 const base64Audio = await blobToBase64(audioBlob);
                 
                 // Call Gemini API for transcription
-                const apiKey = userApiKey || '${options.apiKey || ''}';
+                const apiKey = userApiKey || '${options.apiKey || ""}';
                 if (!apiKey) {
                     status.textContent = 'Please set up your API key first';
                     return;
@@ -377,16 +401,20 @@ export function generateStandaloneHTML(
             transcriptText.textContent = transcript;
             transcriptDiv.classList.remove('hidden');
             
-            ${options.autoCopy ? `
+            ${
+    options.autoCopy
+      ? `
             // Auto-copy transcript to clipboard
             navigator.clipboard.writeText(transcript).then(() => {
                 status.textContent = 'Transcription complete! Auto-copied to clipboard ✅';
             }).catch(() => {
                 status.textContent = 'Transcription complete! (Auto-copy failed)';
             });
-            ` : `
+            `
+      : `
             status.textContent = 'Transcription complete!';
-            `}
+            `
+  }
         }
         
         function copyTranscript() {
@@ -416,7 +444,9 @@ export function generateStandaloneHTML(
             });
         }
         
-        ${options.autoStopOnSilence ? `
+        ${
+    options.autoStopOnSilence
+      ? `
         // Monitor audio levels for silence detection
         function monitorAudioLevels() {
             if (!analyser || !isRecording) return;
@@ -463,9 +493,13 @@ export function generateStandaloneHTML(
                 requestAnimationFrame(monitorAudioLevels);
             }
         }
-        ` : ''}
+        `
+      : ""
+  }
         
-        ${options.autoStart ? `
+        ${
+    options.autoStart
+      ? `
         // Auto-start recording when page loads
         window.addEventListener('load', () => {
             // Add a small delay for user awareness
@@ -482,7 +516,9 @@ export function generateStandaloneHTML(
                 }, 1000);
             }, 1000);
         });
-        ` : ''}
+        `
+      : ""
+  }
     </script>
 </body>
 </html>`;

@@ -208,20 +208,28 @@ organization:
 
 ## 🚀 Complete Export System
 
-ButtonStudio transforms from a design tool into a **complete platform** with full export capabilities. Users can design beautiful voice buttons and deploy them anywhere.
+ButtonStudio transforms from a design tool into a **complete platform** with
+full export capabilities. Users can design beautiful voice buttons and deploy
+them anywhere.
 
 ### Export Architecture
 
-- **`ButtonExporter`** (`utils/export/ButtonExporter.ts`): Main export engine with Unicode support
-- **Templates** (`utils/export/templates/`): Self-contained HTML, PWA, and mobile app generators  
-- **Share Links** (`utils/export/shareLink.ts`): URL-safe encoding/decoding with compression
-- **Export UI** (integrated in `CustomizationPanel.tsx`): Brutalist design with power user options
+- **`ButtonExporter`** (`utils/export/ButtonExporter.ts`): Main export engine
+  with Unicode support
+- **Templates** (`utils/export/templates/`): Self-contained HTML, PWA, and
+  mobile app generators
+- **Share Links** (`utils/export/shareLink.ts`): URL-safe encoding/decoding with
+  compression
+- **Export UI** (integrated in `CustomizationPanel.tsx`): Brutalist design with
+  power user options
 
 ### Export Formats
 
-1. **📄 HTML Standalone** - Self-contained files with embedded Gemini AI transcription
-2. **📱 PWA Generator** - Progressive Web Apps with iOS home screen support  
-3. **🔗 Share Links** - URL-encoded configurations for instant sharing (Unicode-safe)
+1. **📄 HTML Standalone** - Self-contained files with embedded Gemini AI
+   transcription
+2. **📱 PWA Generator** - Progressive Web Apps with iOS home screen support
+3. **🔗 Share Links** - URL-encoded configurations for instant sharing
+   (Unicode-safe)
 4. **🎯 Embed Code** - Responsive iframe code for website integration
 5. **📦 Mobile Templates** - React Native and Capacitor projects (Premium)
 
@@ -232,22 +240,24 @@ Export system includes advanced automation options:
 ```typescript
 // Export with power features
 const result = exporter.generatePWA({
-  includeAI: true,        // Gemini transcription
-  autoStart: true,        // Auto-record on app load  
-  autoCopy: true,         // Auto-copy transcript to clipboard
-  customBranding: false   // Keep ButtonStudio attribution
+  includeAI: true, // Gemini transcription
+  autoStart: true, // Auto-record on app load
+  autoCopy: true, // Auto-copy transcript to clipboard
+  customBranding: false, // Keep ButtonStudio attribution
 });
 ```
 
-**Auto-Start Flow**: PWA opens → 3-2-1 countdown → recording begins automatically  
-**Auto-Copy Flow**: Transcription completes → clipboard copy → visual feedback ✅
+**Auto-Start Flow**: PWA opens → 3-2-1 countdown → recording begins
+automatically\
+**Auto-Copy Flow**: Transcription completes → clipboard copy → visual feedback
+✅
 
 ### 📱 PWA Deployment Workflow
 
 Perfect iPhone home screen installation:
 
 1. **Design** custom button with full personalization
-2. **Export** as PWA with enhanced iOS manifest  
+2. **Export** as PWA with enhanced iOS manifest
 3. **Upload** files to any HTTPS server
 4. **Visit** URL in Safari on iPhone
 5. **Install** via "Add to Home Screen"
@@ -255,9 +265,10 @@ Perfect iPhone home screen installation:
 
 ### Technical Features
 
-- **Unicode Support**: Full emoji and international character support in icons/text
+- **Unicode Support**: Full emoji and international character support in
+  icons/text
 - **iOS Optimized**: Maskable icons, apple-touch-icon, proper display modes
-- **Offline Ready**: Service worker with caching for PWA functionality  
+- **Offline Ready**: Service worker with caching for PWA functionality
 - **Custom Icons**: Dynamic SVG generation matching button appearance
 - **Smart Encoding**: Base64 with UTF-8 encoding for reliable sharing
 
@@ -276,19 +287,22 @@ Perfect iPhone home screen installation:
 ### $1 Feature Categories
 
 **📊 Data & History**
+
 - Transcript history (last 100 recordings per button)
 - Export transcripts as CSV/PDF
 - Usage analytics dashboard
 - Cloud sync for transcripts
 
-**🎨 Visual & Audio**  
+**🎨 Visual & Audio**
+
 - Premium theme packs (neon, glass, retro)
 - Custom animations (sparkles, ripples, glow)
 - Professional sound packs
 - Advanced styling options
 
 **⚡ Power Features**
-- Advanced PWA capabilities (offline mode, notifications)  
+
+- Advanced PWA capabilities (offline mode, notifications)
 - AI transcript enhancement (grammar correction, formatting)
 - Custom voice commands integration
 - Advanced sharing and collaboration
@@ -303,7 +317,7 @@ Perfect iPhone home screen installation:
 ### Revenue Projections
 
 - **Average User**: 3-5 buttons with 2-3 unlocks each = $6-15 LTV
-- **Power Users**: 10+ buttons with multiple unlocks = $30+ LTV  
+- **Power Users**: 10+ buttons with multiple unlocks = $30+ LTV
 - **Market**: Voice-to-text is massive and growing exponentially
 
 ## Development Notes

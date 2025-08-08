@@ -4,12 +4,14 @@
 // Comprehensive interface for all button appearance, behavior, and functionality
 
 export type ButtonTheme = "minimal" | "warm" | "professional" | "lush";
+export type ColorIntensity = "pastel" | "neon";
 
 // Main customization interface - everything configurable about a button
 export interface ButtonCustomization {
   // Visual Properties
   appearance: {
     theme: ButtonTheme;
+    colorIntensity: ColorIntensity; // NEW: Pastel vs Neon toggle
     fillType: "solid" | "gradient";
     solidColor: string; // Hex color for solid fills
     shape: "circle" | "rounded" | "square";
@@ -149,6 +151,7 @@ export const defaultEffects: EffectToggles = {
 export const defaultCustomization: ButtonCustomization = {
   appearance: {
     theme: "warm",
+    colorIntensity: "pastel", // Default to pastel
     fillType: "gradient",
     solidColor: "#ff60e0",
     shape: "rounded",
@@ -295,6 +298,87 @@ export const sliderConfig: SliderDefinition[] = [
 ];
 
 // ===================================================================
+// COLOR INTENSITY SYSTEM - Pastel vs Neon palettes
+// ===================================================================
+
+export const colorPalettes = {
+  pastel: {
+    // Soft, gentle colors
+    pink: {
+      solid: "#f8c2cc",
+      gradientStart: "#f8c2cc",
+      gradientEnd: "#f0d1a8",
+    },
+    blue: {
+      solid: "#b3d9ff",
+      gradientStart: "#b3d9ff",
+      gradientEnd: "#d4b3ff",
+    },
+    green: {
+      solid: "#c2f0c2",
+      gradientStart: "#c2f0c2",
+      gradientEnd: "#b3e5fc",
+    },
+    purple: {
+      solid: "#d4b3ff",
+      gradientStart: "#d4b3ff",
+      gradientEnd: "#f8c2cc",
+    },
+    orange: {
+      solid: "#ffcc99",
+      gradientStart: "#ffcc99",
+      gradientEnd: "#ffd9b3",
+    },
+    yellow: {
+      solid: "#fff2b3",
+      gradientStart: "#fff2b3",
+      gradientEnd: "#ffcc99",
+    },
+  },
+  neon: {
+    // Electric, vibrant colors
+    pink: {
+      solid: "#ff1493",
+      gradientStart: "#ff1493",
+      gradientEnd: "#ff6347",
+    },
+    blue: {
+      solid: "#00ffff",
+      gradientStart: "#00ffff",
+      gradientEnd: "#1e90ff",
+    },
+    green: {
+      solid: "#00ff00",
+      gradientStart: "#00ff00",
+      gradientEnd: "#32cd32",
+    },
+    purple: {
+      solid: "#8a2be2",
+      gradientStart: "#8a2be2",
+      gradientEnd: "#ff1493",
+    },
+    orange: {
+      solid: "#ff4500",
+      gradientStart: "#ff4500",
+      gradientEnd: "#ffa500",
+    },
+    yellow: {
+      solid: "#ffff00",
+      gradientStart: "#ffff00",
+      gradientEnd: "#ff4500",
+    },
+  },
+};
+
+// Helper to get colors based on intensity setting
+export function getColorForIntensity(
+  colorIntensity: ColorIntensity,
+  colorName: keyof typeof colorPalettes.pastel = "pink",
+) {
+  return colorPalettes[colorIntensity][colorName];
+}
+
+// ===================================================================
 // UTILITY FUNCTIONS - Style generation and helpers
 // ===================================================================
 
@@ -302,26 +386,54 @@ export const sliderConfig: SliderDefinition[] = [
 export function generateButtonStyles(
   customization: ButtonCustomization,
 ): Record<string, string> {
-  const { gradient } = customization.appearance;
+  const { gradient, colorIntensity } = customization.appearance;
+
+  // Auto-enhance colors based on intensity
+  const enhancedGradient = enhanceColorsForIntensity(gradient, colorIntensity);
 
   return {
     // CSS custom properties for real-time updates
-    "--button-radius": `${customization.appearance.radius}px`,
+    "--button-radius": `${customization.appearance.roundness}px`,
     "--button-scale": customization.appearance.scale.toString(),
-    "--button-elevation": `${customization.appearance.elevation}px`,
-    "--button-saturation": `${customization.appearance.saturation}%`,
 
-    // Computed values
-    "--shadow-blur": `${customization.appearance.elevation * 2}px`,
-    "--shadow-spread": `${customization.appearance.elevation * 0.5}px`,
+    // Enhanced gradient background with intensity
+    background: customization.appearance.fillType === "solid"
+      ? enhanceColorForIntensity(
+        customization.appearance.solidColor,
+        colorIntensity,
+      )
+      : `linear-gradient(${enhancedGradient.direction}deg, ${enhancedGradient.start}, ${enhancedGradient.end})`,
 
-    // Pablo's gradient background
-    background:
-      `linear-gradient(${gradient.direction}deg, ${gradient.start}, ${gradient.end})`,
-
-    // Pablo's thick border
+    // Border styling
     borderColor: "#000000",
-    borderWidth: "4px",
+    borderWidth: `${customization.appearance.borderWidth}px`,
+
+    // Neon glow effect for neon mode
+    ...(colorIntensity === "neon" && {
+      boxShadow:
+        `0 0 20px ${enhancedGradient.start}80, 0 4px 8px rgba(0,0,0,0.3)`,
+      filter: "saturate(1.2) brightness(1.1)",
+    }),
+  };
+}
+
+// Helper functions for color intensity
+function enhanceColorForIntensity(
+  color: string,
+  intensity: ColorIntensity,
+): string {
+  if (intensity === "neon") {
+    // For neon, we boost saturation and brightness
+    return color; // Keep original for now, could add HSL manipulation
+  }
+  return color; // Pastel stays as-is
+}
+
+function enhanceColorsForIntensity(gradient: any, intensity: ColorIntensity) {
+  return {
+    start: enhanceColorForIntensity(gradient.start, intensity),
+    end: enhanceColorForIntensity(gradient.end, intensity),
+    direction: gradient.direction,
   };
 }
 

@@ -165,9 +165,15 @@ export default function CustomizationPanel(
       const apiKey = apiKeyInput?.value || undefined;
 
       // Get power user options from checkboxes
-      const autoStartChecked = (document.getElementById("auto-start-export") as HTMLInputElement)?.checked || false;
-      const autoStopChecked = (document.getElementById("auto-stop-export") as HTMLInputElement)?.checked || false;
-      const autoCopyChecked = (document.getElementById("auto-copy-export") as HTMLInputElement)?.checked || false;
+      const autoStartChecked =
+        (document.getElementById("auto-start-export") as HTMLInputElement)
+          ?.checked || false;
+      const autoStopChecked =
+        (document.getElementById("auto-stop-export") as HTMLInputElement)
+          ?.checked || false;
+      const autoCopyChecked =
+        (document.getElementById("auto-copy-export") as HTMLInputElement)
+          ?.checked || false;
 
       // Create exporter
       const exporter = new ButtonExporter(customization, apiKey);
@@ -1841,7 +1847,9 @@ function handleButtonClick() {
 
             {/* Power User Options */}
             <div class="bg-gray-50 border-2 border-gray-200 rounded-xl p-4 mb-4">
-              <h5 class="font-black text-gray-900 mb-3 text-sm">⚡ Power Features</h5>
+              <h5 class="font-black text-gray-900 mb-3 text-sm">
+                ⚡ Power Features
+              </h5>
               <div class="flex flex-col gap-3">
                 <label class="flex items-center gap-3 cursor-pointer">
                   <input
@@ -1850,8 +1858,12 @@ function handleButtonClick() {
                     class="w-4 h-4 border-2 border-black rounded"
                   />
                   <div>
-                    <div class="text-sm font-bold text-gray-900">🚀 Auto-start recording</div>
-                    <div class="text-xs text-gray-600">Start recording automatically when PWA/HTML loads</div>
+                    <div class="text-sm font-bold text-gray-900">
+                      🚀 Auto-start recording
+                    </div>
+                    <div class="text-xs text-gray-600">
+                      Start recording automatically when PWA/HTML loads
+                    </div>
                   </div>
                 </label>
                 <label class="flex items-center gap-3 cursor-pointer">
@@ -1862,8 +1874,12 @@ function handleButtonClick() {
                     checked
                   />
                   <div>
-                    <div class="text-sm font-bold text-gray-900">🔇 Auto-stop on silence</div>
-                    <div class="text-xs text-gray-600">Automatically stop recording after 3 seconds of silence</div>
+                    <div class="text-sm font-bold text-gray-900">
+                      🔇 Auto-stop on silence
+                    </div>
+                    <div class="text-xs text-gray-600">
+                      Automatically stop recording after 3 seconds of silence
+                    </div>
                   </div>
                 </label>
                 <label class="flex items-center gap-3 cursor-pointer">
@@ -1873,8 +1889,12 @@ function handleButtonClick() {
                     class="w-4 h-4 border-2 border-black rounded"
                   />
                   <div>
-                    <div class="text-sm font-bold text-gray-900">📋 Auto-copy output</div>
-                    <div class="text-xs text-gray-600">Automatically copy transcript to clipboard</div>
+                    <div class="text-sm font-bold text-gray-900">
+                      📋 Auto-copy output
+                    </div>
+                    <div class="text-xs text-gray-600">
+                      Automatically copy transcript to clipboard
+                    </div>
                   </div>
                 </label>
               </div>
