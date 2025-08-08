@@ -3,14 +3,14 @@ function b64decode(b64) {
   const binString = atob(b64);
   const size = binString.length;
   const bytes = new Uint8Array(size);
-  for(let i = 0; i < size; i++){
+  for (let i = 0; i < size; i++) {
     bytes[i] = binString.charCodeAt(i);
   }
   return bytes;
 }
 const INVALID_REFERENCE_ERROR = "Invalid reference";
 function getPropertyFromPath(o, path) {
-  for (const key of path){
+  for (const key of path) {
     if (key === null) continue;
     if (key !== "value" && !Object.hasOwn(o, key)) {
       throw new Error(INVALID_REFERENCE_ERROR);
@@ -45,9 +45,9 @@ export function deserialize(str, signal) {
   }
   const { v, r } = JSON.parse(str, reviver);
   const references = r ?? [];
-  for (const [targetPath, ...refPaths] of references){
+  for (const [targetPath, ...refPaths] of references) {
     const target = getPropertyFromPath(v, targetPath);
-    for (const refPath of refPaths){
+    for (const refPath of refPaths) {
       if (refPath.length === 0) throw new Error(INVALID_REFERENCE_ERROR);
       // set the reference to the target object
       const parent = getPropertyFromPath(v, refPath.slice(0, -1));

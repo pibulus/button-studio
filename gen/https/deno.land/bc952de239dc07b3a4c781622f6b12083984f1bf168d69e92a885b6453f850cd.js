@@ -31,8 +31,13 @@ export class RenderState {
   islandDepth = 0;
   url;
   basePath;
-  constructor(renderUuid, routeOptions, // deno-lint-ignore no-explicit-any
-  componentStack, csp, error){
+  constructor(
+    renderUuid,
+    routeOptions, // deno-lint-ignore no-explicit-any
+    componentStack,
+    csp,
+    error,
+  ) {
     this.renderUuid = renderUuid;
     this.routeOptions = routeOptions;
     this.csp = csp;

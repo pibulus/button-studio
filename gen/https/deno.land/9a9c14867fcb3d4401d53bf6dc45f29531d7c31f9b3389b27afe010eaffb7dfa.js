@@ -7,7 +7,8 @@
  * values for AssertionError messages in browsers.
  *
  * @module
- */ export * from "./assert_almost_equals.ts";
+ */
+export * from "./assert_almost_equals.ts";
 export * from "./assert_array_includes.ts";
 export * from "./assert_equals.ts";
 export * from "./assert_exists.ts";

@@ -9,8 +9,8 @@ import { greaterThan } from "./greater_than.ts";
  * @returns A valid SemVer or INVALID
  */ export function rangeMax(range) {
   let max;
-  for (const comparators of range){
-    for (const comparator of comparators){
+  for (const comparators of range) {
+    for (const comparator of comparators) {
       const candidate = comparatorMax(comparator);
       if (!testRange(candidate, range)) continue;
       max = max && greaterThan(max, candidate) ? max : candidate;

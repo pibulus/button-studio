@@ -9,13 +9,15 @@ import { createWalkEntry, createWalkEntrySync, toPathString } from "./_util.ts";
 const isWindows = Deno.build.os === "windows";
 function split(path) {
   const s = SEP_PATTERN.source;
-  const segments = path.replace(new RegExp(`^${s}|${s}$`, "g"), "").split(SEP_PATTERN);
+  const segments = path.replace(new RegExp(`^${s}|${s}$`, "g"), "").split(
+    SEP_PATTERN,
+  );
   const isAbsolute_ = isAbsolute(path);
   return {
     segments,
     isAbsolute: isAbsolute_,
     hasTrailingSep: !!path.match(new RegExp(`${s}$`)),
-    winRoot: isWindows && isAbsolute_ ? segments.shift() : undefined
+    winRoot: isWindows && isAbsolute_ ? segments.shift() : undefined,
   };
 }
 function throwUnlessNotFound(error) {
@@ -42,25 +44,42 @@ function comparePath(a, b) {
  *   console.log(file);
  * }
  * ```
- */ export async function* expandGlob(glob, { root, exclude = [], includeDirs = true, extended = true, globstar = true, caseInsensitive, followSymlinks, canonicalize } = {}) {
-  const { segments, isAbsolute: isGlobAbsolute, hasTrailingSep, winRoot } = split(toPathString(glob));
+ */ export async function* expandGlob(
+  glob,
+  {
+    root,
+    exclude = [],
+    includeDirs = true,
+    extended = true,
+    globstar = true,
+    caseInsensitive,
+    followSymlinks,
+    canonicalize,
+  } = {},
+) {
+  const { segments, isAbsolute: isGlobAbsolute, hasTrailingSep, winRoot } =
+    split(toPathString(glob));
   root ??= isGlobAbsolute ? winRoot ?? "/" : Deno.cwd();
   const globOptions = {
     extended,
     globstar,
-    caseInsensitive
+    caseInsensitive,
   };
   const absRoot = isGlobAbsolute ? root : resolve(root); // root is always string here
-  const resolveFromRoot = (path)=>resolve(absRoot, path);
-  const excludePatterns = exclude.map(resolveFromRoot).map((s)=>globToRegExp(s, globOptions));
-  const shouldInclude = (path)=>!excludePatterns.some((p)=>!!path.match(p));
-  let fixedRoot = isGlobAbsolute ? winRoot !== undefined ? winRoot : "/" : absRoot;
-  while(segments.length > 0 && !isGlob(segments[0])){
+  const resolveFromRoot = (path) => resolve(absRoot, path);
+  const excludePatterns = exclude.map(resolveFromRoot).map((s) =>
+    globToRegExp(s, globOptions)
+  );
+  const shouldInclude = (path) => !excludePatterns.some((p) => !!path.match(p));
+  let fixedRoot = isGlobAbsolute
+    ? winRoot !== undefined ? winRoot : "/"
+    : absRoot;
+  while (segments.length > 0 && !isGlob(segments[0])) {
     const seg = segments.shift();
     assert(seg !== undefined);
     fixedRoot = joinGlobs([
       fixedRoot,
-      seg
+      seg,
     ], globOptions);
   }
   let fixedRootInfo;
@@ -75,7 +94,7 @@ function comparePath(a, b) {
     } else if (globSegment === "..") {
       const parentPath = joinGlobs([
         walkInfo.path,
-        ".."
+        "..",
       ], globOptions);
       try {
         if (shouldInclude(parentPath)) {
@@ -90,41 +109,45 @@ function comparePath(a, b) {
         skip: excludePatterns,
         maxDepth: globstar ? Infinity : 1,
         followSymlinks,
-        canonicalize
+        canonicalize,
       });
     }
     const globPattern = globToRegExp(globSegment, globOptions);
-    for await (const walkEntry of walk(walkInfo.path, {
-      maxDepth: 1,
-      skip: excludePatterns,
-      followSymlinks
-    })){
-      if (walkEntry.path !== walkInfo.path && walkEntry.name.match(globPattern)) {
+    for await (
+      const walkEntry of walk(walkInfo.path, {
+        maxDepth: 1,
+        skip: excludePatterns,
+        followSymlinks,
+      })
+    ) {
+      if (
+        walkEntry.path !== walkInfo.path && walkEntry.name.match(globPattern)
+      ) {
         yield walkEntry;
       }
     }
   }
   let currentMatches = [
-    fixedRootInfo
+    fixedRootInfo,
   ];
-  for (const segment of segments){
+  for (const segment of segments) {
     // Advancing the list of current matches may introduce duplicates, so we
     // pass everything through this Map.
     const nextMatchMap = new Map();
-    await Promise.all(currentMatches.map(async (currentMatch)=>{
-      for await (const nextMatch of advanceMatch(currentMatch, segment)){
+    await Promise.all(currentMatches.map(async (currentMatch) => {
+      for await (const nextMatch of advanceMatch(currentMatch, segment)) {
         nextMatchMap.set(nextMatch.path, nextMatch);
       }
     }));
     currentMatches = [
-      ...nextMatchMap.values()
+      ...nextMatchMap.values(),
     ].sort(comparePath);
   }
   if (hasTrailingSep) {
-    currentMatches = currentMatches.filter((entry)=>entry.isDirectory);
+    currentMatches = currentMatches.filter((entry) => entry.isDirectory);
   }
   if (!includeDirs) {
-    currentMatches = currentMatches.filter((entry)=>!entry.isDirectory);
+    currentMatches = currentMatches.filter((entry) => !entry.isDirectory);
   }
   yield* currentMatches;
 }
@@ -138,25 +161,42 @@ function comparePath(a, b) {
  *   console.log(file);
  * }
  * ```
- */ export function* expandGlobSync(glob, { root, exclude = [], includeDirs = true, extended = true, globstar = true, caseInsensitive, followSymlinks, canonicalize } = {}) {
-  const { segments, isAbsolute: isGlobAbsolute, hasTrailingSep, winRoot } = split(toPathString(glob));
+ */ export function* expandGlobSync(
+  glob,
+  {
+    root,
+    exclude = [],
+    includeDirs = true,
+    extended = true,
+    globstar = true,
+    caseInsensitive,
+    followSymlinks,
+    canonicalize,
+  } = {},
+) {
+  const { segments, isAbsolute: isGlobAbsolute, hasTrailingSep, winRoot } =
+    split(toPathString(glob));
   root ??= isGlobAbsolute ? winRoot ?? "/" : Deno.cwd();
   const globOptions = {
     extended,
     globstar,
-    caseInsensitive
+    caseInsensitive,
   };
   const absRoot = isGlobAbsolute ? root : resolve(root); // root is always string here
-  const resolveFromRoot = (path)=>resolve(absRoot, path);
-  const excludePatterns = exclude.map(resolveFromRoot).map((s)=>globToRegExp(s, globOptions));
-  const shouldInclude = (path)=>!excludePatterns.some((p)=>!!path.match(p));
-  let fixedRoot = isGlobAbsolute ? winRoot !== undefined ? winRoot : "/" : absRoot;
-  while(segments.length > 0 && !isGlob(segments[0])){
+  const resolveFromRoot = (path) => resolve(absRoot, path);
+  const excludePatterns = exclude.map(resolveFromRoot).map((s) =>
+    globToRegExp(s, globOptions)
+  );
+  const shouldInclude = (path) => !excludePatterns.some((p) => !!path.match(p));
+  let fixedRoot = isGlobAbsolute
+    ? winRoot !== undefined ? winRoot : "/"
+    : absRoot;
+  while (segments.length > 0 && !isGlob(segments[0])) {
     const seg = segments.shift();
     assert(seg !== undefined);
     fixedRoot = joinGlobs([
       fixedRoot,
-      seg
+      seg,
     ], globOptions);
   }
   let fixedRootInfo;
@@ -171,7 +211,7 @@ function comparePath(a, b) {
     } else if (globSegment === "..") {
       const parentPath = joinGlobs([
         walkInfo.path,
-        ".."
+        "..",
       ], globOptions);
       try {
         if (shouldInclude(parentPath)) {
@@ -186,41 +226,45 @@ function comparePath(a, b) {
         skip: excludePatterns,
         maxDepth: globstar ? Infinity : 1,
         followSymlinks,
-        canonicalize
+        canonicalize,
       });
     }
     const globPattern = globToRegExp(globSegment, globOptions);
-    for (const walkEntry of walkSync(walkInfo.path, {
-      maxDepth: 1,
-      skip: excludePatterns,
-      followSymlinks
-    })){
-      if (walkEntry.path !== walkInfo.path && walkEntry.name.match(globPattern)) {
+    for (
+      const walkEntry of walkSync(walkInfo.path, {
+        maxDepth: 1,
+        skip: excludePatterns,
+        followSymlinks,
+      })
+    ) {
+      if (
+        walkEntry.path !== walkInfo.path && walkEntry.name.match(globPattern)
+      ) {
         yield walkEntry;
       }
     }
   }
   let currentMatches = [
-    fixedRootInfo
+    fixedRootInfo,
   ];
-  for (const segment of segments){
+  for (const segment of segments) {
     // Advancing the list of current matches may introduce duplicates, so we
     // pass everything through this Map.
     const nextMatchMap = new Map();
-    for (const currentMatch of currentMatches){
-      for (const nextMatch of advanceMatch(currentMatch, segment)){
+    for (const currentMatch of currentMatches) {
+      for (const nextMatch of advanceMatch(currentMatch, segment)) {
         nextMatchMap.set(nextMatch.path, nextMatch);
       }
     }
     currentMatches = [
-      ...nextMatchMap.values()
+      ...nextMatchMap.values(),
     ].sort(comparePath);
   }
   if (hasTrailingSep) {
-    currentMatches = currentMatches.filter((entry)=>entry.isDirectory);
+    currentMatches = currentMatches.filter((entry) => entry.isDirectory);
   }
   if (!includeDirs) {
-    currentMatches = currentMatches.filter((entry)=>!entry.isDirectory);
+    currentMatches = currentMatches.filter((entry) => !entry.isDirectory);
   }
   yield* currentMatches;
 }

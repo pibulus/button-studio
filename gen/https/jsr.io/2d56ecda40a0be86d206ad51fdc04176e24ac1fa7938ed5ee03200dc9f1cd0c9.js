@@ -1,6 +1,11 @@
 var _computedKey;
 import { fromFileUrl } from "jsr:@std/path@^1.0.6";
-import { mapContentType, mediaTypeToLoader, parseJsrSpecifier, parseNpmSpecifier } from "./shared.ts";
+import {
+  mapContentType,
+  mediaTypeToLoader,
+  parseJsrSpecifier,
+  parseNpmSpecifier,
+} from "./shared.ts";
 import { instantiate } from "./wasm/loader.generated.js";
 const JSR_URL = Deno.env.get("JSR_URL") ?? "https://jsr.io";
 async function readLockfile(path) {
@@ -22,7 +27,7 @@ export class PortableLoader {
   #lockfile;
   #fetchModules = new Map();
   #fetchRedirects = new Map();
-  constructor(options){
+  constructor(options) {
     this.#options = options;
   }
   [_computedKey]() {
@@ -31,49 +36,44 @@ export class PortableLoader {
     }
   }
   async resolve(specifier) {
-    switch(specifier.protocol){
-      case "file:":
-        {
-          return {
-            kind: "esm",
-            specifier
-          };
-        }
+    switch (specifier.protocol) {
+      case "file:": {
+        return {
+          kind: "esm",
+          specifier,
+        };
+      }
       case "http:":
       case "https:":
-      case "data:":
-        {
-          const module = await this.#loadRemote(specifier.href);
-          return {
-            kind: "esm",
-            specifier: new URL(module.specifier)
-          };
-        }
-      case "npm:":
-        {
-          const npmSpecifier = parseNpmSpecifier(specifier);
-          return {
-            kind: "npm",
-            packageId: "",
-            packageName: npmSpecifier.name,
-            path: npmSpecifier.path ?? ""
-          };
-        }
-      case "node:":
-        {
-          return {
-            kind: "node",
-            path: specifier.pathname
-          };
-        }
-      case "jsr:":
-        {
-          const resolvedSpecifier = await this.#resolveJsrSpecifier(specifier);
-          return {
-            kind: "esm",
-            specifier: resolvedSpecifier
-          };
-        }
+      case "data:": {
+        const module = await this.#loadRemote(specifier.href);
+        return {
+          kind: "esm",
+          specifier: new URL(module.specifier),
+        };
+      }
+      case "npm:": {
+        const npmSpecifier = parseNpmSpecifier(specifier);
+        return {
+          kind: "npm",
+          packageId: "",
+          packageName: npmSpecifier.name,
+          path: npmSpecifier.path ?? "",
+        };
+      }
+      case "node:": {
+        return {
+          kind: "node",
+          path: specifier.pathname,
+        };
+      }
+      case "jsr:": {
+        const resolvedSpecifier = await this.#resolveJsrSpecifier(specifier);
+        return {
+          kind: "esm",
+          specifier: resolvedSpecifier,
+        };
+      }
       default:
         throw new Error(`Unsupported scheme: '${specifier.protocol}'`);
     }
@@ -83,26 +83,37 @@ export class PortableLoader {
     const jsrSpecifier = parseJsrSpecifier(specifier);
     // Attempt to load the lockfile.
     if (this.#lockfile === undefined) {
-      this.#lockfile = typeof this.#options.lock === "string" ? readLockfile(this.#options.lock) : null;
+      this.#lockfile = typeof this.#options.lock === "string"
+        ? readLockfile(this.#options.lock)
+        : null;
     }
     if (this.#lockfile instanceof Promise) {
       this.#lockfile = await this.#lockfile;
     }
     if (this.#lockfile === null) {
-      throw new Error("jsr: specifiers are not supported in the portable loader without a lockfile");
+      throw new Error(
+        "jsr: specifiers are not supported in the portable loader without a lockfile",
+      );
     }
     const lockfile = this.#lockfile;
     // Look up the package + constraint in the lockfile.
-    const id = `jsr:${jsrSpecifier.name}${jsrSpecifier.version ? `@${jsrSpecifier.version}` : ""}`;
+    const id = `jsr:${jsrSpecifier.name}${
+      jsrSpecifier.version ? `@${jsrSpecifier.version}` : ""
+    }`;
     const resolvedVersion = lockfile.package_version(id);
     if (!resolvedVersion) {
       throw new Error(`Specifier not found in lockfile: ${id}`);
     }
     // Load the JSR manifest to find the export path.
-    const manifestUrl = new URL(`./${jsrSpecifier.name}/${resolvedVersion}_meta.json`, JSR_URL);
+    const manifestUrl = new URL(
+      `./${jsrSpecifier.name}/${resolvedVersion}_meta.json`,
+      JSR_URL,
+    );
     const manifest = await this.#loadRemote(manifestUrl.href);
     if (manifest.mediaType !== "Json") {
-      throw new Error(`Expected JSON media type for JSR manifest, got: ${manifest.mediaType}`);
+      throw new Error(
+        `Expected JSON media type for JSR manifest, got: ${manifest.mediaType}`,
+      );
     }
     const manifestData = new TextDecoder().decode(manifest.data);
     const manifestJson = JSON.parse(manifestData);
@@ -110,26 +121,29 @@ export class PortableLoader {
     const exportEntry = `.${jsrSpecifier.path ?? ""}`;
     const exportPath = manifestJson.exports[exportEntry];
     if (!exportPath) {
-      throw new Error(`Package 'jsr:${jsrSpecifier.name}@${resolvedVersion}' has no export named '${exportEntry}'`);
+      throw new Error(
+        `Package 'jsr:${jsrSpecifier.name}@${resolvedVersion}' has no export named '${exportEntry}'`,
+      );
     }
     // Return the resolved URL.
-    return new URL(`./${jsrSpecifier.name}/${resolvedVersion}/${exportPath}`, JSR_URL);
+    return new URL(
+      `./${jsrSpecifier.name}/${resolvedVersion}/${exportPath}`,
+      JSR_URL,
+    );
   }
   async loadEsm(url) {
     let module;
-    switch(url.protocol){
-      case "file:":
-        {
-          module = await this.#loadLocal(url);
-          break;
-        }
+    switch (url.protocol) {
+      case "file:": {
+        module = await this.#loadLocal(url);
+        break;
+      }
       case "http:":
       case "https:":
-      case "data:":
-        {
-          module = await this.#loadRemote(url.href);
-          break;
-        }
+      case "data:": {
+        module = await this.#loadRemote(url.href);
+        break;
+      }
       default:
         throw new Error("[unreachable] unsupported esm scheme " + url.protocol);
     }
@@ -137,11 +151,11 @@ export class PortableLoader {
     if (loader === null) return undefined;
     const res = {
       contents: module.data,
-      loader
+      loader,
     };
     if (url.protocol === "file:") {
       res.watchFiles = [
-        fromFileUrl(module.specifier)
+        fromFileUrl(module.specifier),
       ];
     }
     return res;
@@ -150,7 +164,7 @@ export class PortableLoader {
     return this.#fetchRedirects.get(specifier) ?? specifier;
   }
   async #loadRemote(specifier) {
-    for(let i = 0; i < 10; i++){
+    for (let i = 0; i < 10; i++) {
       specifier = this.#resolveRemote(specifier);
       const module = this.#fetchModules.get(specifier);
       if (module) return module;
@@ -165,20 +179,26 @@ export class PortableLoader {
   }
   async #fetch(specifier) {
     const resp = await fetch(specifier, {
-      redirect: "manual"
+      redirect: "manual",
     });
     if (resp.status < 200 && resp.status >= 400) {
-      throw new Error(`Encountered status code ${resp.status} while fetching ${specifier}.`);
+      throw new Error(
+        `Encountered status code ${resp.status} while fetching ${specifier}.`,
+      );
     }
     if (resp.status >= 300 && resp.status < 400) {
       await resp.body?.cancel();
       const location = resp.headers.get("location");
       if (!location) {
-        throw new Error(`Redirected without location header while fetching ${specifier}.`);
+        throw new Error(
+          `Redirected without location header while fetching ${specifier}.`,
+        );
       }
       const url = new URL(location, specifier);
       if (url.protocol !== "https:" && url.protocol !== "http:") {
-        throw new Error(`Redirected to unsupported protocol '${url.protocol}' while fetching ${specifier}.`);
+        throw new Error(
+          `Redirected to unsupported protocol '${url.protocol}' while fetching ${specifier}.`,
+        );
       }
       this.#fetchRedirects.set(specifier, url.href);
       return;
@@ -189,7 +209,7 @@ export class PortableLoader {
     this.#fetchModules.set(specifier, {
       specifier,
       mediaType,
-      data
+      data,
     });
   }
   async #loadLocal(specifier) {
@@ -199,7 +219,7 @@ export class PortableLoader {
     return {
       specifier: specifier.href,
       mediaType,
-      data
+      data,
     };
   }
 }

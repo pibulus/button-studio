@@ -5,14 +5,15 @@ export function setup(options, sheet) {
   const config = {
     ...options,
     mode: "silent",
-    sheet
+    sheet,
   };
   twSetup(config);
   // Hook into options._diff which is called whenever a new comparison
   // starts in Preact.
   const originalHook = preactOptions.__b;
-  preactOptions.__b = (// deno-lint-ignore no-explicit-any
-  vnode)=>{
+  preactOptions.__b = ( // deno-lint-ignore no-explicit-any
+    vnode,
+  ) => {
     if (typeof vnode.type === "string" && typeof vnode.props === "object") {
       const { props } = vnode;
       const classes = [];

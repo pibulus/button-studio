@@ -2,11 +2,17 @@
 // when the user has no `deno.json` in their project folder.
 // This commonly occurs when the user is bootstrapping a new
 // project.
-export { isIdentifierChar, isIdentifierStart } from "https://esm.sh/@babel/helper-validator-identifier@7.22.20";
-import { isIdentifierChar, isIdentifierStart } from "https://esm.sh/@babel/helper-validator-identifier@7.22.20";
+export {
+  isIdentifierChar,
+  isIdentifierStart,
+} from "https://esm.sh/@babel/helper-validator-identifier@7.22.20";
+import {
+  isIdentifierChar,
+  isIdentifierStart,
+} from "https://esm.sh/@babel/helper-validator-identifier@7.22.20";
 export function stringToIdentifier(str) {
   let ident = "";
-  for(let i = 0; i < str.length; i++){
+  for (let i = 0; i < str.length; i++) {
     const char = str.charCodeAt(i);
     if (i === 0 && !isIdentifierStart(char)) {
       ident += "_";

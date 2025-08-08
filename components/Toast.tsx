@@ -1,5 +1,5 @@
 import { signal } from "@preact/signals";
-import { useEffect } from "preact/hooks";
+// import { useEffect } from "preact/hooks";
 
 // Toast state management
 interface ToastMessage {

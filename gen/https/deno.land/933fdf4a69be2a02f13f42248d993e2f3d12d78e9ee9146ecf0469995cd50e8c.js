@@ -1,7 +1,7 @@
 // Copyright 2018-2023 the Deno authors. All rights reserved. MIT license.
 // This module is browser compatible.
 // Keep this up-to-date with Deno.build.os
-export const osType = (()=>{
+export const osType = (() => {
   // deno-lint-ignore no-explicit-any
   const { Deno } = globalThis;
   if (typeof Deno?.build?.os === "string") {

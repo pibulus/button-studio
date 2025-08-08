@@ -9,7 +9,7 @@ import { greaterThan } from "./greater_than.ts";
  * @returns The highest version in versions that satisfies the range.
  */ export function maxSatisfying(versions, range) {
   let max;
-  for (const version of versions){
+  for (const version of versions) {
     if (!testRange(version, range)) continue;
     max = max && greaterThan(max, version) ? max : version;
   }

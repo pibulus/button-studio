@@ -33,10 +33,12 @@ import { typeByExtension } from "./type_by_extension.ts";
  * ```
  */ export function contentType(extensionOrType) {
   try {
-    const [mediaType, params = {}] = extensionOrType.includes("/") ? parseMediaType(extensionOrType) : [
-      typeByExtension(extensionOrType),
-      undefined
-    ];
+    const [mediaType, params = {}] = extensionOrType.includes("/")
+      ? parseMediaType(extensionOrType)
+      : [
+        typeByExtension(extensionOrType),
+        undefined,
+      ];
     if (!mediaType) {
       return undefined;
     }
@@ -47,8 +49,8 @@ import { typeByExtension } from "./type_by_extension.ts";
       }
     }
     return formatMediaType(mediaType, params);
-  } catch  {
-  // just swallow returning undefined
+  } catch {
+    // just swallow returning undefined
   }
   return undefined;
 }

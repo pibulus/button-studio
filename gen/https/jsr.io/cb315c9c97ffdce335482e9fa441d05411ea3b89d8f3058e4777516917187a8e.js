@@ -22,7 +22,8 @@
  * ```
  *
  * @module
- */ export * from "./concat.ts";
+ */
+export * from "./concat.ts";
 export * from "./copy.ts";
 export * from "./ends_with.ts";
 export * from "./equals.ts";

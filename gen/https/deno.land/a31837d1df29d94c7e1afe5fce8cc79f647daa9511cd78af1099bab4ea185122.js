@@ -3,7 +3,7 @@ import { setBuildId } from "../server/build_id.ts";
 export class AotSnapshot {
   #files;
   #dependencies;
-  constructor(files, dependencies){
+  constructor(files, dependencies) {
     this.#files = files;
     this.#dependencies = dependencies;
   }
@@ -15,7 +15,7 @@ export class AotSnapshot {
     if (filePath !== undefined) {
       try {
         const file = await Deno.open(filePath, {
-          read: true
+          read: true,
         });
         return file.readable;
       } catch (_err) {
@@ -39,7 +39,7 @@ export async function loadAotSnapshot(config) {
       setBuildId(json.build_id);
       const dependencies = new Map(Object.entries(json.files));
       const files = new Map();
-      Object.keys(json.files).forEach((name)=>{
+      Object.keys(json.files).forEach((name) => {
         const filePath = join(snapshotDirPath, name);
         files.set(name, filePath);
       });

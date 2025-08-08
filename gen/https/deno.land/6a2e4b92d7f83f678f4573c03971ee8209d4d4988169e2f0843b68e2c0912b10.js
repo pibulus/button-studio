@@ -14,11 +14,13 @@
  * @returns string of object
  */ export function stringify(object) {
   const lines = [];
-  for (const [key, value] of Object.entries(object)){
+  for (const [key, value] of Object.entries(object)) {
     let quote;
     let escapedValue = value ?? "";
     if (key.startsWith("#")) {
-      console.warn(`key starts with a '#' indicates a comment and is ignored: '${key}'`);
+      console.warn(
+        `key starts with a '#' indicates a comment and is ignored: '${key}'`,
+      );
       continue;
     } else if (escapedValue.includes("\n")) {
       // escape inner new lines

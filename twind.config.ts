@@ -6,356 +6,368 @@ export default {
     extend: {
       // Custom fonts for chunky typography
       fontFamily: {
-        'brutalist': ['Inter', 'system-ui', 'sans-serif'],
-        'chunky': ['Inter Black', 'Inter', 'system-ui', 'sans-serif'],
+        "brutalist": ["Inter", "system-ui", "sans-serif"],
+        "chunky": ["Inter Black", "Inter", "system-ui", "sans-serif"],
       },
-      
+
       // Enhanced font weights
       fontWeight: {
-        'chunky': '900',
-        'thick': '800',
-        'bold': '700',
-        'medium': '500',
-        'normal': '400',
+        "chunky": "900",
+        "thick": "800",
+        "bold": "700",
+        "medium": "500",
+        "normal": "400",
       },
-      
+
       // Generous letter spacing for brutalist feel
       letterSpacing: {
-        'chunky': '0.05em',
-        'wide': '0.025em',
-        'wider': '0.05em',
-        'widest': '0.1em',
+        "chunky": "0.05em",
+        "wide": "0.025em",
+        "wider": "0.05em",
+        "widest": "0.1em",
       },
-      
+
       // Enhanced size scale for chonky elements
       spacing: {
-        '18': '4.5rem',   // 72px
-        '22': '5.5rem',   // 88px
-        '26': '6.5rem',   // 104px
-        '30': '7.5rem',   // 120px
-        '34': '8.5rem',   // 136px
-        '38': '9.5rem',   // 152px
+        "18": "4.5rem", // 72px
+        "22": "5.5rem", // 88px
+        "26": "6.5rem", // 104px
+        "30": "7.5rem", // 120px
+        "34": "8.5rem", // 136px
+        "38": "9.5rem", // 152px
       },
-      
+
       animation: {
-        'pulse-glow': 'pulse-glow 2s ease-in-out infinite',
-        'breathe': 'breathe 3s ease-in-out infinite',
-        'button-glow': 'button-glow 2s ease-in-out infinite',
-        'rainbow-flow': 'rainbow-flow 3s linear infinite',
-        'squish': 'squish 0.15s ease-out',
-        'pop': 'pop 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
-        'recording-pulse': 'recording-pulse 1s ease-in-out infinite',
-        'success-pop': 'success-pop 0.6s ease-out',
-        'error-shake': 'error-shake 0.5s ease-in-out',
-        'waveform': 'waveform 0.8s ease-in-out infinite alternate',
-        'flamingo-glow': 'flamingo-glow 4s ease-in-out infinite',
-        'sunset-pulse': 'sunset-pulse 3s ease-in-out infinite',
-        'float': 'float 6s ease-in-out infinite',
-        'slide-in-right': 'slide-in-right 0.3s ease-out',
-        'slide-down': 'slide-down 0.3s ease-out',
+        "pulse-glow": "pulse-glow 2s ease-in-out infinite",
+        "breathe": "breathe 3s ease-in-out infinite",
+        "button-glow": "button-glow 2s ease-in-out infinite",
+        "rainbow-flow": "rainbow-flow 3s linear infinite",
+        "squish": "squish 0.15s ease-out",
+        "pop": "pop 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)",
+        "recording-pulse": "recording-pulse 1s ease-in-out infinite",
+        "success-pop": "success-pop 0.6s ease-out",
+        "error-shake": "error-shake 0.5s ease-in-out",
+        "waveform": "waveform 0.8s ease-in-out infinite alternate",
+        "flamingo-glow": "flamingo-glow 4s ease-in-out infinite",
+        "sunset-pulse": "sunset-pulse 3s ease-in-out infinite",
+        "float": "float 6s ease-in-out infinite",
+        "slide-in-right": "slide-in-right 0.3s ease-out",
+        "slide-down": "slide-down 0.3s ease-out",
       },
-      
+
       keyframes: {
-        'pulse-glow': {
-          '0%, 100%': { opacity: '1', transform: 'scale(1)' },
-          '50%': { opacity: '0.8', transform: 'scale(1.02)' },
+        "pulse-glow": {
+          "0%, 100%": { opacity: "1", transform: "scale(1)" },
+          "50%": { opacity: "0.8", transform: "scale(1.02)" },
         },
-        'breathe': {
-          '0%, 100%': { 
-            transform: 'scale(1)',
-            filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.25)) drop-shadow(0 0 20px rgba(255,149,0,0.2))'
+        "breathe": {
+          "0%, 100%": {
+            transform: "scale(1)",
+            filter:
+              "drop-shadow(0 8px 16px rgba(0,0,0,0.25)) drop-shadow(0 0 20px rgba(255,149,0,0.2))",
           },
-          '50%': { 
-            transform: 'scale(1.02)',
-            filter: 'drop-shadow(0 12px 24px rgba(0,0,0,0.3)) drop-shadow(0 0 30px rgba(255,149,0,0.4))'
-          },
-        },
-        'button-glow': {
-          '0%, 100%': { 
-            filter: 'drop-shadow(0 0 20px rgba(255,149,0,0.2))'
-          },
-          '50%': { 
-            filter: 'drop-shadow(0 0 40px rgba(255,149,0,0.5))'
+          "50%": {
+            transform: "scale(1.02)",
+            filter:
+              "drop-shadow(0 12px 24px rgba(0,0,0,0.3)) drop-shadow(0 0 30px rgba(255,149,0,0.4))",
           },
         },
-        'rainbow-flow': {
-          '0%': { 'background-position': '0% 50%' },
-          '50%': { 'background-position': '100% 50%' },
-          '100%': { 'background-position': '0% 50%' }
-        },
-        'squish': {
-          '0%': { transform: 'scale(1)' },
-          '50%': { transform: 'scale(0.95) scaleY(0.9)' },
-          '100%': { transform: 'scale(1)' }
-        },
-        'pop': {
-          '0%': { transform: 'scale(1)' },
-          '50%': { transform: 'scale(1.1)' },
-          '100%': { transform: 'scale(1)' }
-        },
-        'recording-pulse': {
-          '0%': { opacity: '1', transform: 'scale(1)' },
-          '50%': { opacity: '0.7', transform: 'scale(1.08)' },
-          '100%': { opacity: '1', transform: 'scale(1)' },
-        },
-        'success-pop': {
-          '0%': { transform: 'scale(1)' },
-          '50%': { transform: 'scale(1.2)' },
-          '100%': { transform: 'scale(1)' },
-        },
-        'error-shake': {
-          '0%, 100%': { transform: 'translateX(0)' },
-          '25%': { transform: 'translateX(-5px)' },
-          '75%': { transform: 'translateX(5px)' },
-        },
-        'waveform': {
-          '0%': { transform: 'scaleY(0.3)' },
-          '100%': { transform: 'scaleY(1)' },
-        },
-        'flamingo-glow': {
-          '0%, 100%': { 
-            boxShadow: '0 0 40px rgba(255, 105, 180, 0.3), 0 0 80px rgba(255, 182, 193, 0.2)' 
+        "button-glow": {
+          "0%, 100%": {
+            filter: "drop-shadow(0 0 20px rgba(255,149,0,0.2))",
           },
-          '50%': { 
-            boxShadow: '0 0 60px rgba(255, 105, 180, 0.5), 0 0 120px rgba(255, 182, 193, 0.3)' 
+          "50%": {
+            filter: "drop-shadow(0 0 40px rgba(255,149,0,0.5))",
           },
         },
-        'sunset-pulse': {
-          '0%, 100%': { transform: 'scale(1)', opacity: '0.9' },
-          '50%': { transform: 'scale(1.02)', opacity: '1' },
+        "rainbow-flow": {
+          "0%": { "background-position": "0% 50%" },
+          "50%": { "background-position": "100% 50%" },
+          "100%": { "background-position": "0% 50%" },
         },
-        'float': {
-          '0%, 100%': { transform: 'translateY(0px)' },
-          '50%': { transform: 'translateY(-10px)' },
+        "squish": {
+          "0%": { transform: "scale(1)" },
+          "50%": { transform: "scale(0.95) scaleY(0.9)" },
+          "100%": { transform: "scale(1)" },
         },
-        'slide-in-right': {
-          '0%': { transform: 'translateX(100%)', opacity: '0' },
-          '100%': { transform: 'translateX(0)', opacity: '1' },
+        "pop": {
+          "0%": { transform: "scale(1)" },
+          "50%": { transform: "scale(1.1)" },
+          "100%": { transform: "scale(1)" },
         },
-        'slide-down': {
-          '0%': { transform: 'translateY(-10px)', opacity: '0' },
-          '100%': { transform: 'translateY(0)', opacity: '1' },
+        "recording-pulse": {
+          "0%": { opacity: "1", transform: "scale(1)" },
+          "50%": { opacity: "0.7", transform: "scale(1.08)" },
+          "100%": { opacity: "1", transform: "scale(1)" },
+        },
+        "success-pop": {
+          "0%": { transform: "scale(1)" },
+          "50%": { transform: "scale(1.2)" },
+          "100%": { transform: "scale(1)" },
+        },
+        "error-shake": {
+          "0%, 100%": { transform: "translateX(0)" },
+          "25%": { transform: "translateX(-5px)" },
+          "75%": { transform: "translateX(5px)" },
+        },
+        "waveform": {
+          "0%": { transform: "scaleY(0.3)" },
+          "100%": { transform: "scaleY(1)" },
+        },
+        "flamingo-glow": {
+          "0%, 100%": {
+            boxShadow:
+              "0 0 40px rgba(255, 105, 180, 0.3), 0 0 80px rgba(255, 182, 193, 0.2)",
+          },
+          "50%": {
+            boxShadow:
+              "0 0 60px rgba(255, 105, 180, 0.5), 0 0 120px rgba(255, 182, 193, 0.3)",
+          },
+        },
+        "sunset-pulse": {
+          "0%, 100%": { transform: "scale(1)", opacity: "0.9" },
+          "50%": { transform: "scale(1.02)", opacity: "1" },
+        },
+        "float": {
+          "0%, 100%": { transform: "translateY(0px)" },
+          "50%": { transform: "translateY(-10px)" },
+        },
+        "slide-in-right": {
+          "0%": { transform: "translateX(100%)", opacity: "0" },
+          "100%": { transform: "translateX(0)", opacity: "1" },
+        },
+        "slide-down": {
+          "0%": { transform: "translateY(-10px)", opacity: "0" },
+          "100%": { transform: "translateY(0)", opacity: "1" },
         },
       },
-      
+
       colors: {
         // Professional Warm System (Research-Backed 2024)
         neutral: {
-          50: '#faf9f7',   // cream whisper
-          100: '#f5f2ec',  // warm white
-          200: '#ede7db',  // soft beige
-          300: '#e1d6c7',  // wheatfield beige
-          400: '#d1c0a8',  // warm sand
-          500: '#b8a082',  // mocha mousse
-          600: '#9b8067',  // rich earth
-          700: '#7d6551',  // deep earth
-          800: '#5f4d3e',  // dark earth
-          900: '#433a2f'   // charcoal earth
+          50: "#faf9f7", // cream whisper
+          100: "#f5f2ec", // warm white
+          200: "#ede7db", // soft beige
+          300: "#e1d6c7", // wheatfield beige
+          400: "#d1c0a8", // warm sand
+          500: "#b8a082", // mocha mousse
+          600: "#9b8067", // rich earth
+          700: "#7d6551", // deep earth
+          800: "#5f4d3e", // dark earth
+          900: "#433a2f", // charcoal earth
         },
-        
+
         warm: {
-          50: '#fef7f0',   // peach whisper
-          100: '#fde9d9',  // soft peach
-          200: '#fbd0b5',  // warm coral
-          300: '#f8b088',  // gentle coral
-          400: '#f48c5c',  // sunset coral
-          500: '#ef6c35',  // burnt orange (sparingly)
-          600: '#d4541f',  // deep orange
-          700: '#b3421a',  // rich rust
-          800: '#923317',  // deep rust
-          900: '#7a2817'   // burgundy rust
+          50: "#fef7f0", // peach whisper
+          100: "#fde9d9", // soft peach
+          200: "#fbd0b5", // warm coral
+          300: "#f8b088", // gentle coral
+          400: "#f48c5c", // sunset coral
+          500: "#ef6c35", // burnt orange (sparingly)
+          600: "#d4541f", // deep orange
+          700: "#b3421a", // rich rust
+          800: "#923317", // deep rust
+          900: "#7a2817", // burgundy rust
         },
-        
+
         serene: {
-          50: '#f0f9ff',   // sky whisper
-          100: '#e0f2fe',  // soft sky
-          200: '#bae6fd',  // gentle blue
-          300: '#7dd3fc',  // soft blue
-          400: '#38bdf8',  // serene blue
-          500: '#0ea5e9',  // professional blue
-          600: '#0284c7',  // deep blue
-          700: '#0369a1',  // navy blue
-          800: '#075985',  // dark navy
-          900: '#0c4a6e'   // midnight blue
+          50: "#f0f9ff", // sky whisper
+          100: "#e0f2fe", // soft sky
+          200: "#bae6fd", // gentle blue
+          300: "#7dd3fc", // soft blue
+          400: "#38bdf8", // serene blue
+          500: "#0ea5e9", // professional blue
+          600: "#0284c7", // deep blue
+          700: "#0369a1", // navy blue
+          800: "#075985", // dark navy
+          900: "#0c4a6e", // midnight blue
         },
-        
+
         // NEW: Soft Stack Theme 🧁 (Warm, Chonky, Friendly)
         soft: {
           // Backgrounds
-          cream: '#fffaf5',      // Main background - warm cream
-          paper: '#fefbf7',      // Card backgrounds - slightly warmer
-          mist: '#f8f4f0',       // Subtle section dividers
-          
+          cream: "#fffaf5", // Main background - warm cream
+          paper: "#fefbf7", // Card backgrounds - slightly warmer
+          mist: "#f8f4f0", // Subtle section dividers
+
           // Text colors
-          charcoal: '#1e1e1e',   // Primary text - friendly dark
-          slate: '#4a4a4a',      // Secondary text
-          quiet: '#6b6b6b',      // Muted text
-          
+          charcoal: "#1e1e1e", // Primary text - friendly dark
+          slate: "#4a4a4a", // Secondary text
+          quiet: "#6b6b6b", // Muted text
+
           // Accent colors (chonky gradients)
-          peach: '#fda085',      // Warm peach
-          coral: '#fd9892',      // Soft coral  
-          sunset: '#f6d365',     // Golden sunset
-          lavender: '#e1d7fb',   // Soft purple
-          mint: '#a8e6cf',       // Gentle mint
-          
+          peach: "#fda085", // Warm peach
+          coral: "#fd9892", // Soft coral
+          sunset: "#f6d365", // Golden sunset
+          lavender: "#e1d7fb", // Soft purple
+          mint: "#a8e6cf", // Gentle mint
+
           // Interaction colors
-          glow: '#ff6b9d',       // Pink glow for highlights
-          success: '#22c55e',    // Success actions
-          warning: '#f59e0b',    // Warning states
+          glow: "#ff6b9d", // Pink glow for highlights
+          success: "#22c55e", // Success actions
+          warning: "#f59e0b", // Warning states
         },
-        
+
         // Pablo's Original Amber Theme (preserved)
         voice: {
-          primary: '#f59e0b',    // amber-500
-          secondary: '#fbbf24',  // amber-400  
-          accent: '#d97706',     // amber-600
-          light: '#fef3c7',      // amber-100
-          dark: '#92400e',       // amber-800
+          primary: "#f59e0b", // amber-500
+          secondary: "#fbbf24", // amber-400
+          accent: "#d97706", // amber-600
+          light: "#fef3c7", // amber-100
+          dark: "#92400e", // amber-800
         },
-        
+
         // NEW: Flamingo Chill Theme 🦩🌅 (Warmer & Friendlier)
         flamingo: {
           // Core peachy-purple palette (softened)
-          primary: '#FF8FA3',     // Softer coral pink (was hot pink)
-          secondary: '#FFB8CC',   // Warmer peachy pink
-          accent: '#FF9575',      // Gentle sunset coral
-          
+          primary: "#FF8FA3", // Softer coral pink (was hot pink)
+          secondary: "#FFB8CC", // Warmer peachy pink
+          accent: "#FF9575", // Gentle sunset coral
+
           // Warmer purple accents
-          purple: '#B19CD9',      // Softer lavender purple
-          lavender: '#E0C3E0',    // Even gentler lavender
-          violet: '#D4AFDD',      // Warm light violet
-          
+          purple: "#B19CD9", // Softer lavender purple
+          lavender: "#E0C3E0", // Even gentler lavender
+          violet: "#D4AFDD", // Warm light violet
+
           // Sunset oranges/peaches (warmer)
-          peach: '#FFBFA3',       // Warmer soft peach
-          coral: '#FF8B6B',       // Friendlier coral
-          sunset: '#FFA58C',      // Warmer sunset orange
-          
+          peach: "#FFBFA3", // Warmer soft peach
+          coral: "#FF8B6B", // Friendlier coral
+          sunset: "#FFA58C", // Warmer sunset orange
+
           // Friendlier contrast colors
-          cream: '#FFFAF5',       // Warmer cream background
-          concrete: '#F8F6F3',    // Warmer concrete gray
-          charcoal: '#4A4A4A',    // Softer charcoal (less harsh)
-          
+          cream: "#FFFAF5", // Warmer cream background
+          concrete: "#F8F6F3", // Warmer concrete gray
+          charcoal: "#4A4A4A", // Softer charcoal (less harsh)
+
           // Gentler neon accents
-          neon: '#FF6B9D',        // Softer electric pink
-          glow: '#FF91B8',        // Gentler pink glow
+          neon: "#FF6B9D", // Softer electric pink
+          glow: "#FF91B8", // Gentler pink glow
         },
-        
+
         // Additional themes (preserved)
         neon: {
-          cyan: '#00ffff',
-          magenta: '#ff00ff', 
-          green: '#00ff00',
-          dark: '#0a0a0a',
+          cyan: "#00ffff",
+          magenta: "#ff00ff",
+          green: "#00ff00",
+          dark: "#0a0a0a",
         },
         organic: {
-          forest: '#059669',
-          amber: '#d97706',
-          earth: '#dc2626',
-          cream: '#f9fafb',
-        }
+          forest: "#059669",
+          amber: "#d97706",
+          earth: "#dc2626",
+          cream: "#f9fafb",
+        },
       },
-      
+
       // Enhanced shadows for brutalist depth
       boxShadow: {
         // NEW: Soft Stack Shadows 🧁 (Chonky but friendly)
-        'soft-card': '0 8px 32px rgba(30, 30, 30, 0.08), 0 2px 8px rgba(30, 30, 30, 0.04)',
-        'soft-hover': '0 12px 40px rgba(30, 30, 30, 0.12), 0 4px 16px rgba(30, 30, 30, 0.06)',
-        'soft-glow': '0 0 0 1px rgba(255, 107, 157, 0.1), 0 0 32px rgba(255, 107, 157, 0.15)',
-        'chonky': '8px 8px 0px rgba(30, 30, 30, 0.15)',
-        'chonky-hover': '12px 12px 0px rgba(30, 30, 30, 0.2)',
-        'button-primary': '0 4px 20px rgba(253, 160, 133, 0.4), 0 2px 8px rgba(253, 160, 133, 0.2)',
-        'button-surprise': '0 4px 20px rgba(255, 107, 157, 0.4), 0 2px 8px rgba(255, 107, 157, 0.2)',
-        
+        "soft-card":
+          "0 8px 32px rgba(30, 30, 30, 0.08), 0 2px 8px rgba(30, 30, 30, 0.04)",
+        "soft-hover":
+          "0 12px 40px rgba(30, 30, 30, 0.12), 0 4px 16px rgba(30, 30, 30, 0.06)",
+        "soft-glow":
+          "0 0 0 1px rgba(255, 107, 157, 0.1), 0 0 32px rgba(255, 107, 157, 0.15)",
+        "chonky": "8px 8px 0px rgba(30, 30, 30, 0.15)",
+        "chonky-hover": "12px 12px 0px rgba(30, 30, 30, 0.2)",
+        "button-primary":
+          "0 4px 20px rgba(253, 160, 133, 0.4), 0 2px 8px rgba(253, 160, 133, 0.2)",
+        "button-surprise":
+          "0 4px 20px rgba(255, 107, 157, 0.4), 0 2px 8px rgba(255, 107, 157, 0.2)",
+
         // Original shadows (preserved)
-        'voice-glow': '0 0 20px rgba(245, 158, 11, 0.4)',
-        'voice-press': '0 2px 8px rgba(245, 158, 11, 0.3)',
-        'neon-glow': '0 0 30px rgba(0, 255, 255, 0.5)',
-        
+        "voice-glow": "0 0 20px rgba(245, 158, 11, 0.4)",
+        "voice-press": "0 2px 8px rgba(245, 158, 11, 0.3)",
+        "neon-glow": "0 0 30px rgba(0, 255, 255, 0.5)",
+
         // NEW: Flamingo brutalist shadows
-        'flamingo-glow': '0 0 40px rgba(255, 105, 180, 0.4), 0 0 80px rgba(255, 182, 193, 0.2)',
-        'flamingo-press': '0 8px 25px rgba(255, 107, 157, 0.3)',
-        'brutalist-chunky': '8px 8px 0px rgba(44, 44, 44, 0.8)',
-        'brutalist-float': '12px 12px 24px rgba(255, 107, 157, 0.3), 0 0 40px rgba(255, 182, 193, 0.2)',
-        'sunset-halo': '0 0 60px rgba(255, 149, 117, 0.4), 0 0 120px rgba(255, 171, 145, 0.2)',
-        
+        "flamingo-glow":
+          "0 0 40px rgba(255, 105, 180, 0.4), 0 0 80px rgba(255, 182, 193, 0.2)",
+        "flamingo-press": "0 8px 25px rgba(255, 107, 157, 0.3)",
+        "brutalist-chunky": "8px 8px 0px rgba(44, 44, 44, 0.8)",
+        "brutalist-float":
+          "12px 12px 24px rgba(255, 107, 157, 0.3), 0 0 40px rgba(255, 182, 193, 0.2)",
+        "sunset-halo":
+          "0 0 60px rgba(255, 149, 117, 0.4), 0 0 120px rgba(255, 171, 145, 0.2)",
+
         // Chunky card shadows
-        'card-chunky': '6px 6px 0px rgba(44, 44, 44, 0.1)',
-        'card-float': '0 20px 40px rgba(255, 107, 157, 0.15)',
+        "card-chunky": "6px 6px 0px rgba(44, 44, 44, 0.1)",
+        "card-float": "0 20px 40px rgba(255, 107, 157, 0.15)",
       },
-      
+
       // Enhanced border radius for soft brutalism
       borderRadius: {
-        'chunky': '12px',
-        'brutalist': '8px',
-        'soft': '16px',
-        'extra-soft': '24px',
+        "chunky": "12px",
+        "brutalist": "8px",
+        "soft": "16px",
+        "extra-soft": "24px",
       },
-      
+
       backdropBlur: {
-        'voice': '12px',
-        'flamingo': '16px',
+        "voice": "12px",
+        "flamingo": "16px",
       },
-      
+
       // Custom border widths for chunky elements
       borderWidth: {
-        '3': '3px',
-        '4': '4px',
-        '5': '5px',
-        '6': '6px',
+        "3": "3px",
+        "4": "4px",
+        "5": "5px",
+        "6": "6px",
       },
     },
   },
   // Custom styles for our design studio
   preflight: {
-    '.slider-flamingo::-webkit-slider-thumb': {
-      'appearance': 'none',
-      'height': '20px',
-      'width': '20px', 
-      'border-radius': '6px',
-      'background': '#FF8FA3',
-      'border': '2px solid #4A4A4A',
-      'cursor': 'pointer',
-      'box-shadow': '2px 2px 0px rgba(74, 74, 74, 0.5)',
+    ".slider-flamingo::-webkit-slider-thumb": {
+      "appearance": "none",
+      "height": "20px",
+      "width": "20px",
+      "border-radius": "6px",
+      "background": "#FF8FA3",
+      "border": "2px solid #4A4A4A",
+      "cursor": "pointer",
+      "box-shadow": "2px 2px 0px rgba(74, 74, 74, 0.5)",
     },
-    '.slider-flamingo::-webkit-slider-thumb:hover': {
-      'background': '#FF6B9D',
-      'transform': 'scale(1.1)',
+    ".slider-flamingo::-webkit-slider-thumb:hover": {
+      "background": "#FF6B9D",
+      "transform": "scale(1.1)",
     },
-    '.slider-flamingo::-moz-range-thumb': {
-      'height': '20px',
-      'width': '20px',
-      'border-radius': '6px', 
-      'background': '#FF8FA3',
-      'border': '2px solid #4A4A4A',
-      'cursor': 'pointer',
-      'box-shadow': '2px 2px 0px rgba(74, 74, 74, 0.5)',
+    ".slider-flamingo::-moz-range-thumb": {
+      "height": "20px",
+      "width": "20px",
+      "border-radius": "6px",
+      "background": "#FF8FA3",
+      "border": "2px solid #4A4A4A",
+      "cursor": "pointer",
+      "box-shadow": "2px 2px 0px rgba(74, 74, 74, 0.5)",
     },
-    
+
     // NEW: Soft Stack Slider Styling
-    '.slider-soft::-webkit-slider-thumb': {
-      'appearance': 'none',
-      'height': '24px',
-      'width': '24px', 
-      'border-radius': '12px',
-      'background': '#ff6b9d',
-      'border': '3px solid #ffffff',
-      'cursor': 'pointer',
-      'box-shadow': '0 4px 12px rgba(255, 107, 157, 0.3)',
-      'transition': 'all 0.2s ease',
+    ".slider-soft::-webkit-slider-thumb": {
+      "appearance": "none",
+      "height": "24px",
+      "width": "24px",
+      "border-radius": "12px",
+      "background": "#ff6b9d",
+      "border": "3px solid #ffffff",
+      "cursor": "pointer",
+      "box-shadow": "0 4px 12px rgba(255, 107, 157, 0.3)",
+      "transition": "all 0.2s ease",
     },
-    '.slider-soft::-webkit-slider-thumb:hover': {
-      'background': '#ff4d8a',
-      'transform': 'scale(1.1)',
-      'box-shadow': '0 6px 20px rgba(255, 107, 157, 0.4)',
+    ".slider-soft::-webkit-slider-thumb:hover": {
+      "background": "#ff4d8a",
+      "transform": "scale(1.1)",
+      "box-shadow": "0 6px 20px rgba(255, 107, 157, 0.4)",
     },
-    '.slider-soft::-moz-range-thumb': {
-      'height': '24px',
-      'width': '24px',
-      'border-radius': '12px', 
-      'background': '#ff6b9d',
-      'border': '3px solid #ffffff',
-      'cursor': 'pointer',
-      'box-shadow': '0 4px 12px rgba(255, 107, 157, 0.3)',
+    ".slider-soft::-moz-range-thumb": {
+      "height": "24px",
+      "width": "24px",
+      "border-radius": "12px",
+      "background": "#ff6b9d",
+      "border": "3px solid #ffffff",
+      "cursor": "pointer",
+      "box-shadow": "0 4px 12px rgba(255, 107, 157, 0.3)",
     },
   },
 } as Options;

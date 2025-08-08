@@ -1,29 +1,32 @@
 # 🎨 ButtonStudio.app
 
 ```
-    ██████╗ ██╗   ██╗████████╗████████╗ ██████╗ ███╗   ██╗
-    ██╔══██╗██║   ██║╚══██╔══╝╚══██╔══╝██╔═══██╗████╗  ██║
-    ██████╔╝██║   ██║   ██║      ██║   ██║   ██║██╔██╗ ██║
-    ██╔══██╗██║   ██║   ██║      ██║   ██║   ██║██║╚██╗██║
-    ██████╔╝╚██████╔╝   ██║      ██║   ╚██████╔╝██║ ╚████║
-    ╚═════╝  ╚═════╝    ╚═╝      ╚═╝    ╚═════╝ ╚═╝  ╚═══╝
-                                                            
-     ███████╗████████╗██╗   ██╗██████╗ ██╗ ██████╗ 
-     ██╔════╝╚══██╔══╝██║   ██║██╔══██╗██║██╔═══██╗
-     ███████╗   ██║   ██║   ██║██║  ██║██║██║   ██║
-     ╚════██║   ██║   ██║   ██║██║  ██║██║██║   ██║
-     ███████║   ██║   ╚██████╔╝██████╔╝██║╚██████╔╝
-     ╚══════╝   ╚═╝    ╚═════╝ ╚═════╝ ╚═╝ ╚═════╝ 
+██████╗ ██╗   ██╗████████╗████████╗ ██████╗ ███╗   ██╗
+██╔══██╗██║   ██║╚══██╔══╝╚══██╔══╝██╔═══██╗████╗  ██║
+██████╔╝██║   ██║   ██║      ██║   ██║   ██║██╔██╗ ██║
+██╔══██╗██║   ██║   ██║      ██║   ██║   ██║██║╚██╗██║
+██████╔╝╚██████╔╝   ██║      ██║   ╚██████╔╝██║ ╚████║
+╚═════╝  ╚═════╝    ╚═╝      ╚═╝    ╚═════╝ ╚═╝  ╚═══╝
+                                                        
+ ███████╗████████╗██╗   ██╗██████╗ ██╗ ██████╗ 
+ ██╔════╝╚══██╔══╝██║   ██║██╔══██╗██║██╔═══██╗
+ ███████╗   ██║   ██║   ██║██║  ██║██║██║   ██║
+ ╚════██║   ██║   ██║   ██║██║  ██║██║██║   ██║
+ ███████║   ██║   ╚██████╔╝██████╔╝██║╚██████╔╝
+ ╚══════╝   ╚═╝    ╚═════╝ ╚═════╝ ╚═╝ ╚═════╝
 ```
 
 > **A lush, clean, minimal button generator with serious vibes** ✨
 
-Create beautiful, customizable voice recording buttons with real-time transcription, modular effects, and that *perfect* tactile feel. Built with Deno Fresh and packed with **soft neo toybrut** aesthetics.
+Create beautiful, customizable voice recording buttons with real-time
+transcription, modular effects, and that _perfect_ tactile feel. Built with Deno
+Fresh and packed with **soft neo toybrut** aesthetics.
 
 ## 🌟 Features That Slap
 
 ### 🎮 **Modular Effects System**
-- **🫁 Breathe** - Gentle breathing animation 
+
+- **🫁 Breathe** - Gentle breathing animation
 - **⬆️ Bounce** - Satisfying vertical bounce
 - **🐛 Wiggle** - Playful rotation wiggle
 - **✨ Glow** - Dynamic glow that matches your button color
@@ -31,6 +34,7 @@ Create beautiful, customizable voice recording buttons with real-time transcript
 - **🌈 Rainbow** - Flowing gradient border magic
 
 ### 🎨 **Lush Design Studio**
+
 - **Live preview** with instant updates
 - **Warm color palette** inspired by succulent morning dew
 - **Shape control** - circle, square, rounded with custom radius
@@ -39,6 +43,7 @@ Create beautiful, customizable voice recording buttons with real-time transcript
 - **Smart conflict resolution** - effects that play nice together
 
 ### 🎤 **Voice Magic**
+
 - **Real-time transcription** using Google Gemini
 - **Automatic clipboard copy** - your voice instantly becomes text
 - **Haptic feedback** on mobile devices
@@ -46,6 +51,7 @@ Create beautiful, customizable voice recording buttons with real-time transcript
 - **Custom prompts** - translate, dramatize, or surprise yourself
 
 ### 🛠️ **Developer Friendly**
+
 - **Export HTML/CSS** - grab your button code instantly
 - **TypeScript throughout** - fully typed for safety
 - **Modular architecture** - easy to extend and customize
@@ -69,14 +75,16 @@ Visit `http://localhost:8000` and start creating buttons that spark joy! 🎉
 
 ## 🎯 Usage
 
-1. **Design Your Button** - Use the master controls to set size, shape, and colors
+1. **Design Your Button** - Use the master controls to set size, shape, and
+   colors
 2. **Add Effects** - Click effect buttons to bring your button to life
 3. **Configure Voice** - Add your Gemini API key for transcription magic
 4. **Export & Share** - Copy the generated HTML/CSS or share your creation
 
 ## 🧬 Tech Stack
 
-- **[Deno Fresh 1.7.3](https://fresh.deno.dev/)** - The edge-rendered web framework
+- **[Deno Fresh 1.7.3](https://fresh.deno.dev/)** - The edge-rendered web
+  framework
 - **[Preact](https://preactjs.com/)** - Fast 3kB alternative to React
 - **[Twind](https://twind.dev/)** - Tailwind CSS-in-JS
 - **[Google Gemini](https://ai.google.dev/)** - AI-powered speech transcription
@@ -85,8 +93,9 @@ Visit `http://localhost:8000` and start creating buttons that spark joy! 🎉
 ## 🎨 Design Philosophy
 
 **Soft Neo Toybrut** - A unique aesthetic combining:
+
 - **Kawaii minimalism** with playful, friendly interactions
-- **Brutalist borders** for that chunky, tactile feel  
+- **Brutalist borders** for that chunky, tactile feel
 - **Warm gradients** inspired by natural succulent colors
 - **Modular effects** following the 80/20 rule for maximum impact
 
@@ -105,17 +114,19 @@ MIT License - Build amazing things! 🚀
 
 ## 🙏 Credits
 
-Created with love using [Claude Code](https://claude.ai/code) - where AI meets artisanal craftsmanship.
+Created with love using [Claude Code](https://claude.ai/code) - where AI meets
+artisanal craftsmanship.
 
 ---
 
-**Made with 💖 for the button lovers, voice note enthusiasts, and anyone who believes UI should spark joy.**
+**Made with 💖 for the button lovers, voice note enthusiasts, and anyone who
+believes UI should spark joy.**
 
 ```
-   ╭─────────────────────────────────────╮
-   │  🎨 Happy button making! ✨        │
-   │                                     │
-   │  "The best buttons feel like magic  │
-   │   but work like clockwork" 🕰️       │
-   ╰─────────────────────────────────────╯
+╭─────────────────────────────────────╮
+│  🎨 Happy button making! ✨        │
+│                                     │
+│  "The best buttons feel like magic  │
+│   but work like clockwork" 🕰️       │
+╰─────────────────────────────────────╯
 ```

@@ -16,15 +16,18 @@
  * serialized only once.
  *
  * The corresponding deserializer is in `src/runtime/deserializer.ts`.
- */ import { isValidElement } from "preact";
+ */
+import { isValidElement } from "preact";
 import { KEY } from "../runtime/deserializer.ts";
 // deno-lint-ignore no-explicit-any
 function isSignal(x) {
-  return x !== null && typeof x === "object" && typeof x.peek === "function" && "value" in x;
+  return x !== null && typeof x === "object" && typeof x.peek === "function" &&
+    "value" in x;
 }
 // deno-lint-ignore no-explicit-any
 function isVNode(x) {
-  return x !== null && typeof x === "object" && "type" in x && "ref" in x && "__k" in x && isValidElement(x);
+  return x !== null && typeof x === "object" && "type" in x && "ref" in x &&
+    "__k" in x && isValidElement(x);
 }
 export function serialize(data) {
   let requiresDeserializer = false;
@@ -36,20 +39,20 @@ export function serialize(data) {
   let earlyReturn = false;
   const toSerialize = {
     v: data,
-    get r () {
+    get r() {
       earlyReturn = true;
       if (references.size > 0) {
         const refs = [];
-        for (const [targetPath, refPaths] of references){
+        for (const [targetPath, refPaths] of references) {
           refs.push([
             targetPath,
-            ...refPaths
+            ...refPaths,
           ]);
         }
         return refs;
       }
       return undefined;
-    }
+    },
   };
   function replacer(key, value) {
     if (value === toSerialize || earlyReturn) {
@@ -77,19 +80,19 @@ export function serialize(data) {
       parentStack.splice(parentIndex + 1);
       keyStack.splice(parentIndex);
       keyStack.push(key);
-    // the parent is pushed before return
+      // the parent is pushed before return
     }
     if (typeof value === "object" && value !== null) {
       const path = seen.get(value);
       const currentPath = [
-        ...keyStack
+        ...keyStack,
       ];
       if (path !== undefined) {
         requiresDeserializer = true;
         const referenceArr = references.get(path);
         if (referenceArr === undefined) {
           references.set(path, [
-            currentPath
+            currentPath,
           ]);
         } else {
           referenceArr.push(currentPath);
@@ -111,7 +114,7 @@ export function serialize(data) {
       hasSignals = true;
       const res = {
         [KEY]: "s",
-        v: value.peek()
+        v: value.peek(),
       };
       parentStack.push(res);
       return res;
@@ -119,7 +122,7 @@ export function serialize(data) {
       requiresDeserializer = true;
       const res = {
         [KEY]: "b",
-        d: value.toString()
+        d: value.toString(),
       };
       parentStack.push(res);
       return res;
@@ -127,7 +130,7 @@ export function serialize(data) {
       requiresDeserializer = true;
       const res = {
         [KEY]: "u8a",
-        d: b64encode(value)
+        d: b64encode(value),
       };
       parentStack.push(res);
       return res;
@@ -135,14 +138,14 @@ export function serialize(data) {
       requiresDeserializer = true;
       // deno-lint-ignore no-explicit-any
       const v = {
-        ...value
+        ...value,
       };
       const k = v[KEY];
       delete v[KEY];
       const res = {
         [KEY]: "l",
         k,
-        v
+        v,
       };
       parentStack.push(res);
       return res;
@@ -155,7 +158,7 @@ export function serialize(data) {
   return {
     serialized,
     requiresDeserializer,
-    hasSignals
+    hasSignals,
   };
 }
 // deno-fmt-ignore
@@ -232,7 +235,7 @@ const base64abc = [
   const uint8 = new Uint8Array(buffer);
   let result = "", i;
   const l = uint8.length;
-  for(i = 2; i < l; i += 3){
+  for (i = 2; i < l; i += 3) {
     result += base64abc[uint8[i - 2] >> 2];
     result += base64abc[(uint8[i - 2] & 0x03) << 4 | uint8[i - 1] >> 4];
     result += base64abc[(uint8[i - 1] & 0x0f) << 2 | uint8[i] >> 6];

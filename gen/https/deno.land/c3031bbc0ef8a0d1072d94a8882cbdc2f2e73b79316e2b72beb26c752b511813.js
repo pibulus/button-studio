@@ -9,7 +9,7 @@ import { lessThan } from "./less_than.ts";
  * @returns The lowest version in versions that satisfies the range.
  */ export function minSatisfying(versions, range) {
   let min;
-  for (const version of versions){
+  for (const version of versions) {
     if (!testRange(version, range)) continue;
     min = min && lessThan(min, version) ? min : version;
   }

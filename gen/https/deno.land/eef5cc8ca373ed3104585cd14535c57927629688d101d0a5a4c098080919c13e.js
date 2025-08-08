@@ -9,7 +9,7 @@
  * throw new AssertionError("Assertion failed");
  * ```
  */ export class AssertionError extends Error {
-  /** Constructs a new instance. */ constructor(message){
+  /** Constructs a new instance. */ constructor(message) {
     super(message);
     this.name = "AssertionError";
   }

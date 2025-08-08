@@ -201,10 +201,10 @@ export const APP_SOUND_PRESETS = {
 
 /**
  * Add a new sound category to the system
- * 
+ *
  * Dynamically extends the sound system with new categories at runtime.
  * Useful for apps that need to add custom sound categories beyond the defaults.
- * 
+ *
  * @param {string} name - Category name (e.g., 'modalControls')
  * @param {any} config - Category configuration with action->function mappings
  * @returns {void}
@@ -222,10 +222,10 @@ export function addSoundCategory(name: string, config: any) {
 
 /**
  * Add new sounds to the sound file library
- * 
+ *
  * Extends the sound file library with new audio files.
  * Allows apps to add custom sound files beyond the default set.
- * 
+ *
  * @param {string} category - Library category (e.g., 'animations')
  * @param {Record<string, string>} sounds - Object mapping sound names to file paths
  * @returns {void}

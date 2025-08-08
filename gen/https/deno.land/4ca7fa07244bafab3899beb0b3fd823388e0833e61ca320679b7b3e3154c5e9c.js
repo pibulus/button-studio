@@ -10,9 +10,11 @@ import { increment } from "./increment.ts";
  */ export function comparatorMin(comparator) {
   const semver = comparator.semver ?? comparator;
   if (semver === ANY) return MIN;
-  switch(comparator.operator){
+  switch (comparator.operator) {
     case ">":
-      return semver.prerelease && semver.prerelease.length > 0 ? increment(semver, "pre") : increment(semver, "patch");
+      return semver.prerelease && semver.prerelease.length > 0
+        ? increment(semver, "pre")
+        : increment(semver, "patch");
     case "!=":
     case "!==":
     case "<=":
@@ -29,7 +31,7 @@ import { increment } from "./increment.ts";
         minor: semver.minor,
         patch: semver.patch,
         prerelease: semver.prerelease,
-        build: semver.build
+        build: semver.build,
       };
   }
 }

@@ -1,23 +1,32 @@
 import { h } from "preact";
 import * as router from "./router.ts";
 import DefaultErrorHandler from "./default_error_page.tsx";
-import { basename, contentType, dirname, extname, join, SEPARATOR, toFileUrl, walk } from "./deps.ts";
+import {
+  basename,
+  contentType,
+  dirname,
+  extname,
+  join,
+  SEPARATOR,
+  toFileUrl,
+  walk,
+} from "./deps.ts";
 import { BUILD_ID } from "./build_id.ts";
 import { toBaseRoute } from "./compose.ts";
 import { stringToIdentifier } from "./init_safe_deps.ts";
 export const ROOT_BASE_ROUTE = toBaseRoute("/");
 const DEFAULT_APP = {
-  default: ({ Component })=>h(Component, {})
+  default: ({ Component }) => h(Component, {}),
 };
 const DEFAULT_NOT_FOUND = {
   baseRoute: toBaseRoute("/"),
   pattern: "",
   url: "",
   name: "_404",
-  handler: (req)=>router.defaultOtherHandler(req),
+  handler: (req) => router.defaultOtherHandler(req),
   csp: false,
   appWrapper: true,
-  inheritLayouts: true
+  inheritLayouts: true,
 };
 const DEFAULT_ERROR = {
   baseRoute: toBaseRoute("/"),
@@ -25,10 +34,10 @@ const DEFAULT_ERROR = {
   url: "",
   name: "_500",
   component: DefaultErrorHandler,
-  handler: (_req, ctx)=>ctx.render(),
+  handler: (_req, ctx) => ctx.render(),
   csp: false,
   appWrapper: true,
-  inheritLayouts: true
+  inheritLayouts: true,
 };
 /**
  * Extract all routes, and prepare them into the `Page` structure.
@@ -46,21 +55,28 @@ const DEFAULT_ERROR = {
   const allRoutes = [
     ...Object.entries(manifest.routes),
     ...config.plugins ? getMiddlewareRoutesFromPlugins(config.plugins) : [],
-    ...config.plugins ? getRoutesFromPlugins(config.plugins) : []
+    ...config.plugins ? getRoutesFromPlugins(config.plugins) : [],
   ];
   // Presort all routes so that we only need to sort once
-  allRoutes.sort((a, b)=>sortRoutePaths(a[0], b[0]));
-  for (const [self, module] of allRoutes){
+  allRoutes.sort((a, b) => sortRoutePaths(a[0], b[0]));
+  for (const [self, module] of allRoutes) {
     const url = new URL(self, baseUrl).href;
     if (!url.startsWith(baseUrl + "routes")) {
       throw new TypeError("Page is not a child of the basepath.");
     }
     const path = url.substring(baseUrl.length + "routes".length);
     let baseRoute = path.substring(1, path.length - extname(path).length);
-    baseRoute = join(state.config.basePath.slice(1), baseRoute).replaceAll(SEPARATOR, "/");
+    baseRoute = join(state.config.basePath.slice(1), baseRoute).replaceAll(
+      SEPARATOR,
+      "/",
+    );
     const name = baseRoute.replace(/\//g, "-");
-    const isLayout = path.endsWith("/_layout.tsx") || path.endsWith("/_layout.ts") || path.endsWith("/_layout.jsx") || path.endsWith("/_layout.js");
-    const isMiddleware = path.endsWith("/_middleware.tsx") || path.endsWith("/_middleware.ts") || path.endsWith("/_middleware.jsx") || path.endsWith("/_middleware.js");
+    const isLayout = path.endsWith("/_layout.tsx") ||
+      path.endsWith("/_layout.ts") || path.endsWith("/_layout.jsx") ||
+      path.endsWith("/_layout.js");
+    const isMiddleware = path.endsWith("/_middleware.tsx") ||
+      path.endsWith("/_middleware.ts") || path.endsWith("/_middleware.jsx") ||
+      path.endsWith("/_middleware.js");
     if (!path.startsWith("/_") && !isLayout && !isMiddleware) {
       const { default: component, config } = module;
       let pattern = pathToPattern(baseRoute);
@@ -69,21 +85,28 @@ const DEFAULT_ERROR = {
       }
       let { handler } = module;
       if (!handler && "handlers" in module) {
-        throw new Error(`Found named export "handlers" in ${self} instead of "handler". Did you mean "handler"?`);
+        throw new Error(
+          `Found named export "handlers" in ${self} instead of "handler". Did you mean "handler"?`,
+        );
       }
       handler ??= {};
-      if (component && typeof handler === "object" && handler.GET === undefined) {
-        handler.GET = (_req, { render })=>render();
+      if (
+        component && typeof handler === "object" && handler.GET === undefined
+      ) {
+        handler.GET = (_req, { render }) => render();
       }
-      if (typeof handler === "object" && handler.GET !== undefined && handler.HEAD === undefined) {
+      if (
+        typeof handler === "object" && handler.GET !== undefined &&
+        handler.HEAD === undefined
+      ) {
         const GET = handler.GET;
-        handler.HEAD = async (req, ctx)=>{
+        handler.HEAD = async (req, ctx) => {
           const resp = await GET(req, ctx);
           resp.body?.cancel();
           return new Response(null, {
             headers: resp.headers,
             status: resp.status,
-            statusText: resp.statusText
+            statusText: resp.statusText,
           });
         };
       }
@@ -96,15 +119,18 @@ const DEFAULT_ERROR = {
         handler,
         csp: Boolean(config?.csp ?? false),
         appWrapper: !config?.skipAppWrapper,
-        inheritLayouts: !config?.skipInheritedLayouts
+        inheritLayouts: !config?.skipInheritedLayouts,
       };
       routes.push(route);
     } else if (isMiddleware) {
       middlewares.push({
         baseRoute: toBaseRoute(baseRoute),
-        module: module
+        module: module,
       });
-    } else if (path === "/_app.tsx" || path === "/_app.ts" || path === "/_app.jsx" || path === "/_app.js") {
+    } else if (
+      path === "/_app.tsx" || path === "/_app.ts" || path === "/_app.jsx" ||
+      path === "/_app.js"
+    ) {
       app = module;
     } else if (isLayout) {
       const mod = module;
@@ -114,13 +140,16 @@ const DEFAULT_ERROR = {
         handler: mod.handler,
         component: mod.default,
         appWrapper: !config?.skipAppWrapper,
-        inheritLayouts: !config?.skipInheritedLayouts
+        inheritLayouts: !config?.skipInheritedLayouts,
       });
-    } else if (path === "/_404.tsx" || path === "/_404.ts" || path === "/_404.jsx" || path === "/_404.js") {
+    } else if (
+      path === "/_404.tsx" || path === "/_404.ts" || path === "/_404.jsx" ||
+      path === "/_404.js"
+    ) {
       const { default: component, config } = module;
       let { handler } = module;
       if (component && handler === undefined) {
-        handler = (_req, { render })=>render();
+        handler = (_req, { render }) => render();
       }
       notFound = {
         baseRoute: ROOT_BASE_ROUTE,
@@ -128,16 +157,19 @@ const DEFAULT_ERROR = {
         url,
         name,
         component,
-        handler: handler ?? ((req)=>router.defaultOtherHandler(req)),
+        handler: handler ?? ((req) => router.defaultOtherHandler(req)),
         csp: Boolean(config?.csp ?? false),
         appWrapper: !config?.skipAppWrapper,
-        inheritLayouts: !config?.skipInheritedLayouts
+        inheritLayouts: !config?.skipInheritedLayouts,
       };
-    } else if (path === "/_500.tsx" || path === "/_500.ts" || path === "/_500.jsx" || path === "/_500.js") {
+    } else if (
+      path === "/_500.tsx" || path === "/_500.ts" || path === "/_500.jsx" ||
+      path === "/_500.js"
+    ) {
       const { default: component, config: routeConfig } = module;
       let { handler } = module;
       if (component && handler === undefined) {
-        handler = (_req, { render })=>render();
+        handler = (_req, { render }) => render();
       }
       error = {
         baseRoute: toBaseRoute("/"),
@@ -148,26 +180,26 @@ const DEFAULT_ERROR = {
         handler: handler ?? router.defaultErrorHandler,
         csp: Boolean(routeConfig?.csp ?? false),
         appWrapper: !routeConfig?.skipAppWrapper,
-        inheritLayouts: !routeConfig?.skipInheritedLayouts
+        inheritLayouts: !routeConfig?.skipInheritedLayouts,
       };
     }
   }
   const processedIslands = [];
-  for (const plugin of config.plugins || []){
+  for (const plugin of config.plugins || []) {
     if (!plugin.islands) continue;
     const base = dirname(plugin.islands.baseLocation);
-    for (const specifier of plugin.islands.paths){
+    for (const specifier of plugin.islands.paths) {
       const full = join(base, specifier);
       const module = await import(full);
       const name = sanitizeIslandName(basename(full, extname(full)));
       processedIslands.push({
         name,
         path: full,
-        module
+        module,
       });
     }
   }
-  for (const [self, module] of Object.entries(manifest.islands)){
+  for (const [self, module] of Object.entries(manifest.islands)) {
     const url = new URL(self, baseUrl).href;
     if (!url.startsWith(baseUrl)) {
       throw new TypeError("Island is not a child of the basepath.");
@@ -180,11 +212,15 @@ const DEFAULT_ERROR = {
     processedIslands.push({
       name: sanitizeIslandName(baseRoute),
       path: url,
-      module
+      module,
     });
   }
-  for (const processedIsland of processedIslands){
-    for (const [exportName, exportedFunction] of Object.entries(processedIsland.module)){
+  for (const processedIsland of processedIslands) {
+    for (
+      const [exportName, exportedFunction] of Object.entries(
+        processedIsland.module,
+      )
+    ) {
       if (typeof exportedFunction !== "function") continue;
       const name = processedIsland.name.toLowerCase();
       const id = `${name}_${exportName.toLowerCase()}`;
@@ -194,47 +230,54 @@ const DEFAULT_ERROR = {
         url: processedIsland.path,
         // deno-lint-ignore no-explicit-any
         component: exportedFunction,
-        exportName
+        exportName,
       });
     }
   }
   const staticFiles = [];
   try {
     const staticDirs = [
-      config.staticDir
+      config.staticDir,
     ];
     // Only fall through to files in /_fresh/static when not in dev
     if (state.loadSnapshot) {
       const outDirStatic = join(config.build.outDir, "static");
       staticDirs.push(outDirStatic);
     }
-    for (const staticDir of staticDirs){
+    for (const staticDir of staticDirs) {
       const staticDirUrl = toFileUrl(staticDir);
       const entries = walk(staticDir, {
         includeFiles: true,
         includeDirs: false,
-        followSymlinks: false
+        followSymlinks: false,
       });
       const encoder = new TextEncoder();
-      for await (const entry of entries){
+      for await (const entry of entries) {
         const localUrl = toFileUrl(entry.path);
         const path = localUrl.href.substring(staticDirUrl.href.length);
         const stat = await Deno.stat(localUrl);
         const type = contentType(extname(path)) ?? "application/octet-stream";
-        const etag = await crypto.subtle.digest("SHA-1", encoder.encode(BUILD_ID + path)).then((hash)=>Array.from(new Uint8Array(hash)).map((byte)=>byte.toString(16).padStart(2, "0")).join(""));
+        const etag = await crypto.subtle.digest(
+          "SHA-1",
+          encoder.encode(BUILD_ID + path),
+        ).then((hash) =>
+          Array.from(new Uint8Array(hash)).map((byte) =>
+            byte.toString(16).padStart(2, "0")
+          ).join("")
+        );
         const staticFile = {
           localUrl,
           path: join(state.config.basePath, path),
           size: stat.size,
           contentType: type,
-          etag
+          etag,
         };
         staticFiles.push(staticFile);
       }
     }
   } catch (err) {
     if (err.cause instanceof Deno.errors.NotFound) {
-    // Do nothing.
+      // Do nothing.
     } else {
       throw err;
     }
@@ -247,7 +290,7 @@ const DEFAULT_ERROR = {
     middlewares,
     notFound,
     routes,
-    staticFiles
+    staticFiles,
   };
 }
 const APP_REG = /_app\.[tj]sx?$/;
@@ -262,7 +305,7 @@ const APP_REG = /_app\.[tj]sx?$/;
   const aLen = a.length;
   const bLen = b.length;
   const maxLen = aLen > bLen ? aLen : bLen;
-  for(let i = 0; i < maxLen; i++){
+  for (let i = 0; i < maxLen; i++) {
     const charA = a.charAt(i);
     const charB = b.charAt(i);
     const nextA = i + 1 < aLen ? a.charAt(i + 1) : "";
@@ -301,7 +344,9 @@ const APP_REG = /_app\.[tj]sx?$/;
   return 2;
 }
 /**
- * Transform a filesystem URL path to a `path-to-regex` style matcher. */ export function pathToPattern(path) {
+ * Transform a filesystem URL path to a `path-to-regex` style matcher. */ export function pathToPattern(
+  path,
+) {
   const parts = path.split("/");
   if (parts[parts.length - 1] === "index") {
     if (parts.length === 1) {
@@ -310,7 +355,7 @@ const APP_REG = /_app\.[tj]sx?$/;
     parts.pop();
   }
   let route = "";
-  for(let i = 0; i < parts.length; i++){
+  for (let i = 0; i < parts.length; i++) {
     const part = parts[i];
     // Case: /[...foo].tsx
     if (part.startsWith("[...") && part.endsWith("]")) {
@@ -328,7 +373,9 @@ const APP_REG = /_app\.[tj]sx?$/;
     // Disallow neighbouring params like `/[id][bar].tsx` because
     // it's ambiguous where the `id` param ends and `bar` begins.
     if (part.includes("][")) {
-      throw new SyntaxError(`Invalid route pattern: "${path}". A parameter cannot be followed by another parameter without any characters in between.`);
+      throw new SyntaxError(
+        `Invalid route pattern: "${path}". A parameter cannot be followed by another parameter without any characters in between.`,
+      );
     }
     // Case: /[[id]].tsx
     // Case: /[id].tsx
@@ -339,13 +386,15 @@ const APP_REG = /_app\.[tj]sx?$/;
     let pattern = "";
     let groupOpen = 0;
     let optional = false;
-    for(let j = 0; j < part.length; j++){
+    for (let j = 0; j < part.length; j++) {
       const char = part[j];
       if (char === "[") {
         if (part[j + 1] === "[") {
           // Disallow optional dynamic params like `foo-[[bar]]`
           if (part[j - 1] !== "/" && !!part[j - 1]) {
-            throw new SyntaxError(`Invalid route pattern: "${path}". An optional parameter needs to be a full segment.`);
+            throw new SyntaxError(
+              `Invalid route pattern: "${path}". An optional parameter needs to be a full segment.`,
+            );
           }
           groupOpen++;
           optional = true;
@@ -358,7 +407,9 @@ const APP_REG = /_app\.[tj]sx?$/;
         if (part[j + 1] === "]") {
           // Disallow optional dynamic params like `[[foo]]-bar`
           if (part[j + 2] !== "/" && !!part[j + 2]) {
-            throw new SyntaxError(`Invalid route pattern: "${path}". An optional parameter needs to be a full segment.`);
+            throw new SyntaxError(
+              `Invalid route pattern: "${path}". An optional parameter needs to be a full segment.`,
+            );
           }
           groupOpen--;
           pattern += "}?";
@@ -380,7 +431,10 @@ const APP_REG = /_app\.[tj]sx?$/;
   return route;
 }
 function toPascalCase(text) {
-  return text.replace(/(^\w|-\w)/g, (substring)=>substring.replace(/-/, "").toUpperCase());
+  return text.replace(
+    /(^\w|-\w)/g,
+    (substring) => substring.replace(/-/, "").toUpperCase(),
+  );
 }
 function sanitizeIslandName(name) {
   const fileName = stringToIdentifier(name);
@@ -392,21 +446,25 @@ function formatMiddlewarePath(path) {
   return prefix + path + suffix;
 }
 function getMiddlewareRoutesFromPlugins(plugins) {
-  const middlewares = plugins.flatMap((plugin)=>plugin.middlewares ?? []);
+  const middlewares = plugins.flatMap((plugin) => plugin.middlewares ?? []);
   const mws = {};
-  for(let i = 0; i < middlewares.length; i++){
+  for (let i = 0; i < middlewares.length; i++) {
     const mw = middlewares[i];
     const handler = mw.middleware.handler;
     const key = `./routes${formatMiddlewarePath(mw.path)}_middleware.ts`;
-    if (!mws[key]) mws[key] = [
-      key,
-      {
-        handler: []
-      }
-    ];
-    mws[key][1].handler.push(...Array.isArray(handler) ? handler : [
-      handler
-    ]);
+    if (!mws[key]) {
+      mws[key] = [
+        key,
+        {
+          handler: [],
+        },
+      ];
+    }
+    mws[key][1].handler.push(
+      ...Array.isArray(handler) ? handler : [
+        handler,
+      ],
+    );
   }
   return Object.values(mws);
 }
@@ -414,14 +472,14 @@ function formatRoutePath(path) {
   return path.startsWith("/") ? path : "/" + path;
 }
 function getRoutesFromPlugins(plugins) {
-  return plugins.flatMap((plugin)=>plugin.routes ?? []).map((route)=>{
+  return plugins.flatMap((plugin) => plugin.routes ?? []).map((route) => {
     return [
       `./routes${formatRoutePath(route.path)}.ts`,
       {
         // deno-lint-ignore no-explicit-any
         default: route.component,
-        handler: route.handler
-      }
+        handler: route.handler,
+      },
     ];
   });
 }

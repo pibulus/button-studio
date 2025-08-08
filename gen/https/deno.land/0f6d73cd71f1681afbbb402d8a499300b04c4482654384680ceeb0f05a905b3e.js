@@ -31,13 +31,16 @@ import { CAN_NOT_DISPLAY } from "./_constants.ts";
   const actualString = formatter(actual);
   const expectedString = formatter(expected);
   try {
-    const stringDiff = typeof actual === "string" && typeof expected === "string";
-    const diffResult = stringDiff ? diffstr(actual, expected) : diff(actualString.split("\n"), expectedString.split("\n"));
+    const stringDiff = typeof actual === "string" &&
+      typeof expected === "string";
+    const diffResult = stringDiff
+      ? diffstr(actual, expected)
+      : diff(actualString.split("\n"), expectedString.split("\n"));
     const diffMsg = buildMessage(diffResult, {
-      stringDiff
+      stringDiff,
     }).join("\n");
     message = `${message}\n${diffMsg}`;
-  } catch  {
+  } catch {
     message = `${message}\n${red(CAN_NOT_DISPLAY)} + \n\n`;
   }
   throw new AssertionError(message);

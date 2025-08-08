@@ -31,10 +31,13 @@
  * This module is browser compatible.
  *
  * @module
- */ import * as _windows from "./windows/mod.ts";
+ */
+import * as _windows from "./windows/mod.ts";
 import * as _posix from "./posix/mod.ts";
-/** @deprecated (will be removed after 1.0.0) Import from {@link https://deno.land/std/path/windows/mod.ts} instead. */ export const win32 = _windows;
-/** @deprecated (will be removed after 1.0.0) Import from {@link https://deno.land/std/posix/mod.ts} instead. */ export const posix = _posix;
+/** @deprecated (will be removed after 1.0.0) Import from {@link https://deno.land/std/path/windows/mod.ts} instead. */ export const win32 =
+  _windows;
+/** @deprecated (will be removed after 1.0.0) Import from {@link https://deno.land/std/posix/mod.ts} instead. */ export const posix =
+  _posix;
 export * from "./basename.ts";
 export * from "./constants.ts";
 export * from "./dirname.ts";

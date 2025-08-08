@@ -5,7 +5,8 @@ import {
   type SynthConfig,
   synthEngine,
 } from "../utils/audio/synthEngine.ts";
-import { playSound, setSoundEnabled } from "../utils/audio/soundMapping.ts";
+import { playSound } from "../utils/audio/soundMapping.ts";
+import { setSoundEnabled } from "../utils/audio/soundService.ts";
 import { hapticService } from "../utils/audio/hapticService.ts";
 
 // Sound designer state

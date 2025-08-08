@@ -1,5 +1,11 @@
-import { ensureDir, ensureDirSync } from "https://deno.land/std@0.208.0/fs/ensure_dir.ts";
-import { expandGlob, expandGlobSync } from "https://deno.land/std@0.208.0/fs/expand_glob.ts";
+import {
+  ensureDir,
+  ensureDirSync,
+} from "https://deno.land/std@0.208.0/fs/ensure_dir.ts";
+import {
+  expandGlob,
+  expandGlobSync,
+} from "https://deno.land/std@0.208.0/fs/expand_glob.ts";
 import * as stdPath from "https://deno.land/std@0.208.0/path/mod.ts";
 // deno-lint-ignore no-explicit-any
 export class DenoRuntime {
@@ -15,7 +21,7 @@ export class DenoRuntime {
     return stdPath.globToRegExp(pattern, {
       extended: true,
       globstar: true,
-      os: "linux"
+      os: "linux",
     }).test(path);
   }
 }
@@ -33,12 +39,12 @@ class DenoRuntimePath {
 class DenoRuntimeFileSystem {
   delete(path) {
     return Deno.remove(path, {
-      recursive: true
+      recursive: true,
     });
   }
   deleteSync(path) {
     Deno.removeSync(path, {
-      recursive: true
+      recursive: true,
     });
   }
   readDirSync(dirPath) {
@@ -95,12 +101,12 @@ class DenoRuntimeFileSystem {
   // deno-lint-ignore no-explicit-any
   #toStat(stat) {
     return {
-      isFile () {
+      isFile() {
         return stat.isFile;
       },
-      isDirectory () {
+      isDirectory() {
         return stat.isDirectory;
-      }
+      },
     };
   }
   realpathSync(path) {
@@ -116,9 +122,9 @@ class DenoRuntimeFileSystem {
       root: this.getCurrentDirectory(),
       extended: true,
       globstar: true,
-      exclude: excludePatterns
+      exclude: excludePatterns,
     });
-    for await (const globEntry of globEntries){
+    for await (const globEntry of globEntries) {
       if (globEntry.isFile) result.push(globEntry.path);
     }
     return result;
@@ -130,9 +136,9 @@ class DenoRuntimeFileSystem {
       root: this.getCurrentDirectory(),
       extended: true,
       globstar: true,
-      exclude: excludePatterns
+      exclude: excludePatterns,
     });
-    for (const globEntry of globEntries){
+    for (const globEntry of globEntries) {
       if (globEntry.isFile) result.push(globEntry.path);
     }
     return result;
@@ -145,13 +151,17 @@ class DenoRuntimeFileSystem {
 function globPatternsToPattern(patterns) {
   const excludePatterns = [];
   const includePatterns = [];
-  for (const pattern of patterns){
+  for (const pattern of patterns) {
     if (isNegatedGlob(pattern)) excludePatterns.push(pattern);
     else includePatterns.push(pattern);
   }
   return {
     excludePatterns,
-    pattern: includePatterns.length === 0 ? "." : includePatterns.length === 1 ? includePatterns[0] : `{${includePatterns.join(",")}}`
+    pattern: includePatterns.length === 0
+      ? "."
+      : includePatterns.length === 1
+      ? includePatterns[0]
+      : `{${includePatterns.join(",")}}`,
   };
   function isNegatedGlob(glob) {
     // https://github.com/micromatch/is-negated-glob/blob/master/index.js

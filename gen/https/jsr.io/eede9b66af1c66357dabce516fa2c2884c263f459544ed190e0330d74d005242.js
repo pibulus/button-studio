@@ -50,11 +50,11 @@
     return -1;
   }
   const s = needle[0];
-  for(let i = start; i < source.length; i++){
+  for (let i = start; i < source.length; i++) {
     if (source[i] !== s) continue;
     let matched = 1;
     let j = i + 1;
-    while(matched < needle.length && source[j] === needle[j - i]){
+    while (matched < needle.length && source[j] === needle[j - i]) {
       matched++;
       j++;
     }

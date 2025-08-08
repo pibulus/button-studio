@@ -12,7 +12,7 @@ export function checkIdentifier(v1 = [], v2 = []) {
 }
 export function compareIdentifier(v1 = [], v2 = []) {
   const length = Math.max(v1.length, v2.length);
-  for(let i = 0; i < length; i++){
+  for (let i = 0; i < length; i++) {
     const a = v1[i];
     const b = v2[i];
     // same length is equal
@@ -27,7 +27,7 @@ export function compareIdentifier(v1 = [], v2 = []) {
     if (typeof a === "number" && typeof b === "string") return -1;
     if (a < b) return -1;
     if (a > b) return 1;
-  // If they're equal, continue comparing segments.
+    // If they're equal, continue comparing segments.
   }
   return 0;
 }
@@ -39,21 +39,25 @@ export function compareIdentifier(v1 = [], v2 = []) {
  */ const NON_NUMERIC_IDENTIFIER = "\\d*[a-zA-Z-][a-zA-Z0-9-]*";
 /**
  * Three dot-separated numeric identifiers.
- */ const VERSION_CORE = `(?<major>${NUMERIC_IDENTIFIER})\\.(?<minor>${NUMERIC_IDENTIFIER})\\.(?<patch>${NUMERIC_IDENTIFIER})`;
+ */ const VERSION_CORE =
+  `(?<major>${NUMERIC_IDENTIFIER})\\.(?<minor>${NUMERIC_IDENTIFIER})\\.(?<patch>${NUMERIC_IDENTIFIER})`;
 /**
  * A numeric identifier, or a non-numeric identifier.
- */ const PRERELEASE_IDENTIFIER = `(?:${NUMERIC_IDENTIFIER}|${NON_NUMERIC_IDENTIFIER})`;
+ */ const PRERELEASE_IDENTIFIER =
+  `(?:${NUMERIC_IDENTIFIER}|${NON_NUMERIC_IDENTIFIER})`;
 /**
  * A hyphen, followed by one or more dot-separated pre-release version identifiers.
  * @example "-pre.release"
- */ const PRERELEASE = `(?:-(?<prerelease>${PRERELEASE_IDENTIFIER}(?:\\.${PRERELEASE_IDENTIFIER})*))`;
+ */ const PRERELEASE =
+  `(?:-(?<prerelease>${PRERELEASE_IDENTIFIER}(?:\\.${PRERELEASE_IDENTIFIER})*))`;
 /**
  * Any combination of digits, letters, or hyphens.
  */ const BUILD_IDENTIFIER = "[0-9A-Za-z-]+";
 /**
  * A plus sign, followed by one or more period-separated build metadata identifiers.
  * @example "+build.meta"
- */ const BUILD = `(?:\\+(?<buildmetadata>${BUILD_IDENTIFIER}(?:\\.${BUILD_IDENTIFIER})*))`;
+ */ const BUILD =
+  `(?:\\+(?<buildmetadata>${BUILD_IDENTIFIER}(?:\\.${BUILD_IDENTIFIER})*))`;
 /**
  * A version, followed optionally by a pre-release version and build metadata.
  */ const FULL_VERSION = `v?${VERSION_CORE}${PRERELEASE}?${BUILD}?`;
@@ -70,15 +74,20 @@ const XRANGE_IDENTIFIER = `${NUMERIC_IDENTIFIER}|${WILDCARD_IDENTIFIER}`;
 /**
  * A version that can contain wildcards.
  * @example "x", "1.x", "1.x.x", "1.2.x", "*", "1.*", "1.*.*", "1.2.*"
- */ export const XRANGE = `[v=\\s]*(?<major>${XRANGE_IDENTIFIER})(?:\\.(?<minor>${XRANGE_IDENTIFIER})(?:\\.(?<patch>${XRANGE_IDENTIFIER})${PRERELEASE}?${BUILD}?)?)?`;
+ */ export const XRANGE =
+  `[v=\\s]*(?<major>${XRANGE_IDENTIFIER})(?:\\.(?<minor>${XRANGE_IDENTIFIER})(?:\\.(?<patch>${XRANGE_IDENTIFIER})${PRERELEASE}?${BUILD}?)?)?`;
 /**
  * An operator (`~`, `~>`, `^`, `=`, `<`, `<=`, `>`, or `>=`), followed by an x-range.
  * @example "~1.x.x", "^1.2.*", ">=1.2.3"
- */ export const OPERATOR_XRANGE_REGEXP = new RegExp(`^(?<operator>~>?|\\^|${COMPARATOR})\\s*${XRANGE}$`);
+ */ export const OPERATOR_XRANGE_REGEXP = new RegExp(
+  `^(?<operator>~>?|\\^|${COMPARATOR})\\s*${XRANGE}$`,
+);
 /**
  * An empty string or a comparator (`=`, `<`, `<=`, `>`, or `>=`), followed by a version.
  * @example ">1.2.3"
- */ export const COMPARATOR_REGEXP = new RegExp(`^(?<operator>${COMPARATOR})\\s*(${FULL_VERSION})$|^$`);
+ */ export const COMPARATOR_REGEXP = new RegExp(
+  `^(?<operator>${COMPARATOR})\\s*(${FULL_VERSION})$|^$`,
+);
 /**
  * Returns true if the value is a valid SemVer number.
  *
@@ -87,7 +96,8 @@ const XRANGE_IDENTIFIER = `${NUMERIC_IDENTIFIER}|${WILDCARD_IDENTIFIER}`;
  * @param value The value to check
  * @returns True if its a valid semver number
  */ export function isValidNumber(value) {
-  return typeof value === "number" && !Number.isNaN(value) && (!Number.isFinite(value) || 0 <= value && value <= Number.MAX_SAFE_INTEGER);
+  return typeof value === "number" && !Number.isNaN(value) &&
+    (!Number.isFinite(value) || 0 <= value && value <= Number.MAX_SAFE_INTEGER);
 }
 export const MAX_LENGTH = 256;
 /**
@@ -98,11 +108,12 @@ export const MAX_LENGTH = 256;
  * @param value The value to check
  * @returns True if the value is a valid semver string.
  */ export function isValidString(value) {
-  return typeof value === "string" && value.length > 0 && value.length <= MAX_LENGTH && /[0-9A-Za-z-]+/.test(value);
+  return typeof value === "string" && value.length > 0 &&
+    value.length <= MAX_LENGTH && /[0-9A-Za-z-]+/.test(value);
 }
 const NUMERIC_IDENTIFIER_REGEXP = new RegExp(`^${NUMERIC_IDENTIFIER}$`);
 export function parsePrerelease(prerelease) {
-  return prerelease.split(".").filter(Boolean).map((id)=>{
+  return prerelease.split(".").filter(Boolean).map((id) => {
     if (NUMERIC_IDENTIFIER_REGEXP.test(id)) {
       const number = Number(id);
       if (isValidNumber(number)) return number;

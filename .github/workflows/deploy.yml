@@ -32,5 +32,3 @@ jobs:
           project: "pabloalvara-button-stud-57"
           entrypoint: "main.ts"
           root: "."
-          
-          

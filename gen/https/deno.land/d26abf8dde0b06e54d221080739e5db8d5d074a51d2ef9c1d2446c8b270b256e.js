@@ -133,7 +133,8 @@
  * snapshots locally.
  *
  * @module
- */ import { fromFileUrl } from "../path/from_file_url.ts";
+ */
+import { fromFileUrl } from "../path/from_file_url.ts";
 import { parse } from "../path/parse.ts";
 import { resolve } from "../path/resolve.ts";
 import { toFileUrl } from "../path/to_file_url.ts";
@@ -157,7 +158,7 @@ export function serialize(actual) {
     iterableLimit: Infinity,
     strAbbreviateSize: Infinity,
     breakLength: Infinity,
-    escapeSequences: false
+    escapeSequences: false,
   });
 }
 /**
@@ -178,7 +179,9 @@ let _mode;
   } else if (_mode) {
     return _mode;
   } else {
-    _mode = Deno.args.some((arg)=>arg === "--update" || arg === "-u") ? "update" : "assert";
+    _mode = Deno.args.some((arg) => arg === "--update" || arg === "-u")
+      ? "update"
+      : "assert";
     return _mode;
   }
 }
@@ -218,7 +221,7 @@ class AssertSnapshotContext {
   #snapshotsUpdated = new Array();
   #snapshotFileUrl;
   snapshotUpdateQueue = new Array();
-  constructor(snapshotFileUrl){
+  constructor(snapshotFileUrl) {
     this.#snapshotFileUrl = snapshotFileUrl;
   }
   /**
@@ -226,19 +229,24 @@ class AssertSnapshotContext {
    *
    * Should only be called when `this.#currentSnapshots` has already been initialized.
    */ #getCurrentSnapshotsInitialized() {
-    assert(this.#currentSnapshots, "Snapshot was not initialized. This is a bug in `assertSnapshot`.");
+    assert(
+      this.#currentSnapshots,
+      "Snapshot was not initialized. This is a bug in `assertSnapshot`.",
+    );
     return this.#currentSnapshots;
   }
   /**
    * Write updates to the snapshot file and log statistics.
-   */ #teardown = ()=>{
+   */ #teardown = () => {
     const buf = [
-      "export const snapshot = {};"
+      "export const snapshot = {};",
     ];
     const currentSnapshots = this.#getCurrentSnapshotsInitialized();
     const currentSnapshotNames = Array.from(currentSnapshots.keys());
-    const removedSnapshotNames = currentSnapshotNames.filter((name)=>!this.snapshotUpdateQueue.includes(name));
-    this.snapshotUpdateQueue.forEach((name)=>{
+    const removedSnapshotNames = currentSnapshotNames.filter((name) =>
+      !this.snapshotUpdateQueue.includes(name)
+    );
+    this.snapshotUpdateQueue.forEach((name) => {
       const updatedSnapshot = this.#updatedSnapshots.get(name);
       const currentSnapshot = currentSnapshots.get(name);
       let formattedSnapshot;
@@ -254,7 +262,9 @@ class AssertSnapshotContext {
         return;
       }
       formattedSnapshot = escapeStringForJs(formattedSnapshot);
-      formattedSnapshot = formattedSnapshot.includes("\n") ? `\n${formattedSnapshot}\n` : formattedSnapshot;
+      formattedSnapshot = formattedSnapshot.includes("\n")
+        ? `\n${formattedSnapshot}\n`
+        : formattedSnapshot;
       const formattedName = escapeStringForJs(name);
       buf.push(`\nsnapshot[\`${formattedName}\`] = \`${formattedSnapshot}\`;`);
     });
@@ -263,12 +273,28 @@ class AssertSnapshotContext {
     Deno.writeTextFileSync(snapshotFilePath, buf.join("\n") + "\n");
     const updated = this.getUpdatedCount();
     if (updated > 0) {
-      console.log(green(bold(`\n > ${updated} ${updated === 1 ? "snapshot" : "snapshots"} updated.`)));
+      console.log(
+        green(
+          bold(
+            `\n > ${updated} ${
+              updated === 1 ? "snapshot" : "snapshots"
+            } updated.`,
+          ),
+        ),
+      );
     }
     const removed = removedSnapshotNames.length;
     if (removed > 0) {
-      console.log(red(bold(`\n > ${removed} ${removed === 1 ? "snapshot" : "snapshots"} removed.`)));
-      for (const snapshotName of removedSnapshotNames){
+      console.log(
+        red(
+          bold(
+            `\n > ${removed} ${
+              removed === 1 ? "snapshot" : "snapshots"
+            } removed.`,
+          ),
+        ),
+      );
+      for (const snapshotName of removedSnapshotNames) {
         console.log(red(bold(`   • ${snapshotName}`)));
       }
     }
@@ -287,19 +313,33 @@ class AssertSnapshotContext {
     try {
       const snapshotFileUrl = this.#snapshotFileUrl.toString();
       const { snapshot } = await import(snapshotFileUrl);
-      this.#currentSnapshots = typeof snapshot === "undefined" ? new Map() : new Map(Object.entries(snapshot).map(([name, snapshot])=>{
-        if (typeof snapshot !== "string") {
-          throw new AssertionError(getErrorMessage(`Corrupt snapshot:\n\t(${name})\n\t${snapshotFileUrl}`, options));
-        }
-        return [
-          name,
-          snapshot.includes("\n") ? snapshot.slice(1, -1) : snapshot
-        ];
-      }));
+      this.#currentSnapshots = typeof snapshot === "undefined"
+        ? new Map()
+        : new Map(
+          Object.entries(snapshot).map(([name, snapshot]) => {
+            if (typeof snapshot !== "string") {
+              throw new AssertionError(
+                getErrorMessage(
+                  `Corrupt snapshot:\n\t(${name})\n\t${snapshotFileUrl}`,
+                  options,
+                ),
+              );
+            }
+            return [
+              name,
+              snapshot.includes("\n") ? snapshot.slice(1, -1) : snapshot,
+            ];
+          }),
+        );
       return this.#currentSnapshots;
     } catch (error) {
-      if (error instanceof TypeError && error.message.startsWith("Module not found")) {
-        throw new AssertionError(getErrorMessage("Missing snapshot file.", options));
+      if (
+        error instanceof TypeError &&
+        error.message.startsWith("Module not found")
+      ) {
+        throw new AssertionError(
+          getErrorMessage("Missing snapshot file.", options),
+        );
       }
       throw error;
     }
@@ -365,12 +405,17 @@ class AssertSnapshotContext {
   /**
    * Check if exist snapshot
    */ hasSnapshot(snapshotName) {
-    return this.#currentSnapshots ? this.#currentSnapshots.has(snapshotName) : false;
+    return this.#currentSnapshots
+      ? this.#currentSnapshots.has(snapshotName)
+      : false;
   }
 }
 export async function assertSnapshot(context, actual, msgOrOpts) {
   const options = getOptions();
-  const assertSnapshotContext = AssertSnapshotContext.fromOptions(context, options);
+  const assertSnapshotContext = AssertSnapshotContext.fromOptions(
+    context,
+    options,
+  );
   const testName = getTestName(context, options);
   const count = assertSnapshotContext.getCount(testName);
   const name = `${testName} ${count}`;
@@ -384,8 +429,13 @@ export async function assertSnapshot(context, actual, msgOrOpts) {
       assertSnapshotContext.updateSnapshot(name, _actual);
     }
   } else {
-    if (!assertSnapshotContext.hasSnapshot(name) || typeof snapshot === "undefined") {
-      throw new AssertionError(getErrorMessage(`Missing snapshot: ${name}`, options));
+    if (
+      !assertSnapshotContext.hasSnapshot(name) ||
+      typeof snapshot === "undefined"
+    ) {
+      throw new AssertionError(
+        getErrorMessage(`Missing snapshot: ${name}`, options),
+      );
     }
     if (equal(_actual, snapshot)) {
       return;
@@ -395,14 +445,17 @@ export async function assertSnapshot(context, actual, msgOrOpts) {
       const usesMultilineDiff = _actual.includes("\n");
       if (usesMultilineDiff) {
         assertEquals(true, false, undefined, {
-          formatter: (v)=>v ? _actual : snapshot
+          formatter: (v) => v ? _actual : snapshot,
         });
       } else {
         assertEquals(_actual, snapshot);
       }
     } catch (e) {
       if (e instanceof AssertionError) {
-        message = e.message.replace("Values are not equal.", "Snapshot does not match:");
+        message = e.message.replace(
+          "Values are not equal.",
+          "Snapshot does not match:",
+        );
       }
     }
     throw new AssertionError(getErrorMessage(message, options));
@@ -412,7 +465,7 @@ export async function assertSnapshot(context, actual, msgOrOpts) {
       return msgOrOpts;
     }
     return {
-      msg: msgOrOpts
+      msg: msgOrOpts,
     };
   }
   function getTestName(context, options) {
@@ -424,13 +477,18 @@ export async function assertSnapshot(context, actual, msgOrOpts) {
     return context.name;
   }
 }
-export function createAssertSnapshot(options, baseAssertSnapshot = assertSnapshot) {
+export function createAssertSnapshot(
+  options,
+  baseAssertSnapshot = assertSnapshot,
+) {
   return async function _assertSnapshot(context, actual, messageOrOptions) {
     const mergedOptions = {
       ...options,
-      ...typeof messageOrOptions === "string" ? {
-        msg: messageOrOptions
-      } : messageOrOptions
+      ...typeof messageOrOptions === "string"
+        ? {
+          msg: messageOrOptions,
+        }
+        : messageOrOptions,
     };
     await baseAssertSnapshot(context, actual, mergedOptions);
   };

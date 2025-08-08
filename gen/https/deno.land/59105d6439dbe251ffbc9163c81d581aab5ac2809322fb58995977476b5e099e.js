@@ -25,21 +25,29 @@ export const ASSET_CACHE_BUST_KEY = "__frsh_c";
   if (!path.startsWith("/") || path.startsWith("//")) return path;
   try {
     const url = new URL(path, "https://freshassetcache.local");
-    if (url.protocol !== "https:" || url.host !== "freshassetcache.local" || url.searchParams.has(ASSET_CACHE_BUST_KEY)) {
+    if (
+      url.protocol !== "https:" || url.host !== "freshassetcache.local" ||
+      url.searchParams.has(ASSET_CACHE_BUST_KEY)
+    ) {
       return path;
     }
     url.searchParams.set(ASSET_CACHE_BUST_KEY, BUILD_ID);
     return url.pathname + url.search + url.hash;
   } catch (err) {
-    console.warn(`Failed to create asset() URL, falling back to regular path ('${path}'):`, err);
+    console.warn(
+      `Failed to create asset() URL, falling back to regular path ('${path}'):`,
+      err,
+    );
     return path;
   }
 }
-/** Apply the `asset` function to urls in a `srcset` attribute. */ export function assetSrcSet(srcset) {
+/** Apply the `asset` function to urls in a `srcset` attribute. */ export function assetSrcSet(
+  srcset,
+) {
   if (srcset.includes("(")) return srcset; // Bail if the srcset contains complicated syntax.
   const parts = srcset.split(",");
   const constructed = [];
-  for (const part of parts){
+  for (const part of parts) {
     const trimmed = part.trimStart();
     const leadingWhitespace = part.length - trimmed.length;
     if (trimmed === "") return srcset; // Bail if the srcset is malformed.

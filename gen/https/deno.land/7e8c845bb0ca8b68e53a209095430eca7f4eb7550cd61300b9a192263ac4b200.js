@@ -6,23 +6,26 @@ import { join } from "../path/join.ts";
 import { normalize } from "../path/normalize.ts";
 import { toPathString } from "./_to_path_string.ts";
 import { createWalkEntry, createWalkEntrySync } from "./_create_walk_entry.ts";
-/** Error thrown in {@linkcode walk} or {@linkcode walkSync} during iteration. */ export class WalkError extends Error {
+/** Error thrown in {@linkcode walk} or {@linkcode walkSync} during iteration. */ export class WalkError
+  extends Error {
   /** File path of the root that's being walked. */ root;
-  /** Constructs a new instance. */ constructor(cause, root){
-    super(`${cause instanceof Error ? cause.message : cause} for path "${root}"`);
+  /** Constructs a new instance. */ constructor(cause, root) {
+    super(
+      `${cause instanceof Error ? cause.message : cause} for path "${root}"`,
+    );
     this.cause = cause;
     this.name = "WalkError";
     this.root = root;
   }
 }
 function include(path, exts, match, skip) {
-  if (exts && !exts.some((ext)=>path.endsWith(ext))) {
+  if (exts && !exts.some((ext) => path.endsWith(ext))) {
     return false;
   }
-  if (match && !match.some((pattern)=>!!path.match(pattern))) {
+  if (match && !match.some((pattern) => !!path.match(pattern))) {
     return false;
   }
-  if (skip && skip.some((pattern)=>!!path.match(pattern))) {
+  if (skip && skip.some((pattern) => !!path.match(pattern))) {
     return false;
   }
   return true;
@@ -45,7 +48,20 @@ function wrapErrorWithPath(err, root) {
  *   assert(entry.isFile);
  * }
  * ```
- */ export async function* walk(root, { maxDepth = Infinity, includeFiles = true, includeDirs = true, includeSymlinks = true, followSymlinks = false, canonicalize = true, exts = undefined, match = undefined, skip = undefined } = {}) {
+ */ export async function* walk(
+  root,
+  {
+    maxDepth = Infinity,
+    includeFiles = true,
+    includeDirs = true,
+    includeSymlinks = true,
+    followSymlinks = false,
+    canonicalize = true,
+    exts = undefined,
+    match = undefined,
+    skip = undefined,
+  } = {},
+) {
   if (maxDepth < 0) {
     return;
   }
@@ -57,7 +73,7 @@ function wrapErrorWithPath(err, root) {
     return;
   }
   try {
-    for await (const entry of Deno.readDir(root)){
+    for await (const entry of Deno.readDir(root)) {
       let path = join(root, entry.name);
       let { isSymlink, isDirectory } = entry;
       if (isSymlink) {
@@ -65,7 +81,7 @@ function wrapErrorWithPath(err, root) {
           if (includeSymlinks && include(path, exts, match, skip)) {
             yield {
               path,
-              ...entry
+              ...entry,
             };
           }
           continue;
@@ -88,12 +104,12 @@ function wrapErrorWithPath(err, root) {
           followSymlinks,
           exts,
           match,
-          skip
+          skip,
         });
       } else if (includeFiles && include(path, exts, match, skip)) {
         yield {
           path,
-          ...entry
+          ...entry,
         };
       }
     }
@@ -101,7 +117,20 @@ function wrapErrorWithPath(err, root) {
     throw wrapErrorWithPath(err, normalize(root));
   }
 }
-/** Same as {@linkcode walk} but uses synchronous ops */ export function* walkSync(root, { maxDepth = Infinity, includeFiles = true, includeDirs = true, includeSymlinks = true, followSymlinks = false, canonicalize = true, exts = undefined, match = undefined, skip = undefined } = {}) {
+/** Same as {@linkcode walk} but uses synchronous ops */ export function* walkSync(
+  root,
+  {
+    maxDepth = Infinity,
+    includeFiles = true,
+    includeDirs = true,
+    includeSymlinks = true,
+    followSymlinks = false,
+    canonicalize = true,
+    exts = undefined,
+    match = undefined,
+    skip = undefined,
+  } = {},
+) {
   root = toPathString(root);
   if (maxDepth < 0) {
     return;
@@ -118,7 +147,7 @@ function wrapErrorWithPath(err, root) {
   } catch (err) {
     throw wrapErrorWithPath(err, normalize(root));
   }
-  for (const entry of entries){
+  for (const entry of entries) {
     let path = join(root, entry.name);
     let { isSymlink, isDirectory } = entry;
     if (isSymlink) {
@@ -126,7 +155,7 @@ function wrapErrorWithPath(err, root) {
         if (includeSymlinks && include(path, exts, match, skip)) {
           yield {
             path,
-            ...entry
+            ...entry,
           };
         }
         continue;
@@ -149,12 +178,12 @@ function wrapErrorWithPath(err, root) {
         followSymlinks,
         exts,
         match,
-        skip
+        skip,
       });
     } else if (includeFiles && include(path, exts, match, skip)) {
       yield {
         path,
-        ...entry
+        ...entry,
       };
     }
   }

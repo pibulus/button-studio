@@ -1,20 +1,18 @@
 import { colors, join, lessThan, semverParse } from "./deps.ts";
 function getHomeDir() {
-  switch(Deno.build.os){
-    case "linux":
-      {
-        const xdg = Deno.env.get("XDG_CACHE_HOME");
-        if (xdg) return xdg;
-        const home = Deno.env.get("HOME");
-        if (home) return `${home}/.cache`;
-        break;
-      }
-    case "darwin":
-      {
-        const home = Deno.env.get("HOME");
-        if (home) return `${home}/Library/Caches`;
-        break;
-      }
+  switch (Deno.build.os) {
+    case "linux": {
+      const xdg = Deno.env.get("XDG_CACHE_HOME");
+      if (xdg) return xdg;
+      const home = Deno.env.get("HOME");
+      if (home) return `${home}/.cache`;
+      break;
+    }
+    case "darwin": {
+      const home = Deno.env.get("HOME");
+      if (home) return `${home}/Library/Caches`;
+      break;
+    }
     case "windows":
       return Deno.env.get("LOCALAPPDATA") ?? null;
   }
@@ -35,14 +33,23 @@ async function fetchLatestVersion() {
 async function readCurrentVersion() {
   const versions = (await import("../../versions.json", {
     with: {
-      type: "json"
-    }
+      type: "json",
+    },
   })).default;
   return versions[0];
 }
-export async function updateCheck(interval, getCacheDir = getFreshCacheDir, getLatestVersion = fetchLatestVersion, getCurrentVersion = readCurrentVersion) {
+export async function updateCheck(
+  interval,
+  getCacheDir = getFreshCacheDir,
+  getLatestVersion = fetchLatestVersion,
+  getCurrentVersion = readCurrentVersion,
+) {
   // Skip update checks on CI or Deno Deploy
-  if (Deno.env.get("CI") === "true" || Deno.env.get("FRESH_NO_UPDATE_CHECK") === "true" || Deno.env.get("DENO_DEPLOYMENT_ID")) {
+  if (
+    Deno.env.get("CI") === "true" ||
+    Deno.env.get("FRESH_NO_UPDATE_CHECK") === "true" ||
+    Deno.env.get("DENO_DEPLOYMENT_ID")
+  ) {
     return;
   }
   const home = getCacheDir();
@@ -50,7 +57,7 @@ export async function updateCheck(interval, getCacheDir = getFreshCacheDir, getL
   const filePath = join(home, "latest.json");
   try {
     await Deno.mkdir(home, {
-      recursive: true
+      recursive: true,
     });
   } catch (err) {
     if (!(err instanceof Deno.errors.AlreadyExists)) {
@@ -61,7 +68,7 @@ export async function updateCheck(interval, getCacheDir = getFreshCacheDir, getL
   let checkFile = {
     current_version: version,
     latest_version: version,
-    last_checked: new Date(0).toISOString()
+    last_checked: new Date(0).toISOString(),
   };
   try {
     const text = await Deno.readTextFile(filePath);
@@ -87,12 +94,18 @@ export async function updateCheck(interval, getCacheDir = getFreshCacheDir, getL
   // Only show update message if current version is smaller than latest
   const currentVersion = semverParse(checkFile.current_version);
   const latestVersion = semverParse(checkFile.latest_version);
-  if ((!checkFile.last_shown || Date.now() >= new Date(checkFile.last_shown).getTime() + interval) && lessThan(currentVersion, latestVersion)) {
+  if (
+    (!checkFile.last_shown ||
+      Date.now() >= new Date(checkFile.last_shown).getTime() + interval) &&
+    lessThan(currentVersion, latestVersion)
+  ) {
     checkFile.last_shown = new Date().toISOString();
     const current = colors.bold(colors.rgb8(checkFile.current_version, 208));
     const latest = colors.bold(colors.rgb8(checkFile.latest_version, 121));
     console.log(`    Fresh ${latest} is available. You're on ${current}`);
-    console.log(`    To upgrade, run: deno run -A -r https://fresh.deno.dev/update`);
+    console.log(
+      `    To upgrade, run: deno run -A -r https://fresh.deno.dev/update`,
+    );
     console.log();
   }
   // Migrate old format to current

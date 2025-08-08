@@ -35,7 +35,7 @@ import { copy } from "./copy.ts";
   }
   const repeated = new Uint8Array(source.length * count);
   let offset = 0;
-  while(offset < repeated.length){
+  while (offset < repeated.length) {
     offset += copy(source, repeated, offset);
   }
   return repeated;

@@ -1,9 +1,9 @@
 import { signal } from "@preact/signals";
+import { playSound } from "../utils/audio/soundMapping.ts";
 import {
   isSoundEnabled,
-  playSound,
   setSoundEnabled,
-} from "../utils/audio/soundMapping.ts";
+} from "../utils/audio/soundService.ts";
 import { hapticService } from "../utils/audio/hapticService.ts";
 
 // Simple state for audio settings

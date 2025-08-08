@@ -1,6 +1,7 @@
 // Copyright 2018-2024 the Deno authors. All rights reserved. MIT license.
 // This module is browser compatible.
-/** Options for {@linkcode delay}. */ /**
+/** Options for {@linkcode delay}. */
+/**
  * Resolve a {@linkcode Promise} after a given amount of milliseconds.
  *
  * @example
@@ -25,18 +26,18 @@
  */ export function delay(ms, options = {}) {
   const { signal, persistent } = options;
   if (signal?.aborted) return Promise.reject(signal.reason);
-  return new Promise((resolve, reject)=>{
-    const abort = ()=>{
+  return new Promise((resolve, reject) => {
+    const abort = () => {
       clearTimeout(i);
       reject(signal?.reason);
     };
-    const done = ()=>{
+    const done = () => {
       signal?.removeEventListener("abort", abort);
       resolve();
     };
     const i = setTimeout(done, ms);
     signal?.addEventListener("abort", abort, {
-      once: true
+      once: true,
     });
     if (persistent === false) {
       try {

@@ -1,12 +1,15 @@
 import { DENO_DEPLOYMENT_ID } from "./build_id.ts";
 import { colors } from "./deps.ts";
-const defaultOnListenFor = (getAddress)=>{
-  return (params)=>{
+const defaultOnListenFor = (getAddress) => {
+  return (params) => {
     const address = colors.cyan(getAddress(params));
     const localLabel = colors.bold("Local:");
     // Print more concise output for deploy logs
     if (DENO_DEPLOYMENT_ID) {
-      console.log(colors.bgRgb8(colors.rgb8(" 🍋 Fresh ready ", 0), 121), `${localLabel} ${address}`);
+      console.log(
+        colors.bgRgb8(colors.rgb8(" 🍋 Fresh ready ", 0), 121),
+        `${localLabel} ${address}`,
+      );
     } else {
       console.log();
       console.log(colors.bgRgb8(colors.rgb8(" 🍋 Fresh ready ", 0), 121));
@@ -16,19 +19,21 @@ const defaultOnListenFor = (getAddress)=>{
 };
 export async function startUnixServer(handler, opts) {
   if (!opts.onListen) {
-    opts.onListen = defaultOnListenFor((params)=>{
+    opts.onListen = defaultOnListenFor((params) => {
       return `socket://${params.path}`;
     });
     // @ts-ignore Ignore type error when type checking with Deno versions
     if (typeof Deno.serve === "function") {
       await Deno.serve(opts, handler).finished;
     }
-    throw new Error(`unix domain sockets are not supported in your current deno version.`);
+    throw new Error(
+      `unix domain sockets are not supported in your current deno version.`,
+    );
   }
 }
 export async function startServer(handler, opts) {
   if (!opts.onListen) {
-    opts.onListen = defaultOnListenFor((params)=>{
+    opts.onListen = defaultOnListenFor((params) => {
       const pathname = opts.basePath + "/";
       const https = !!(opts.key && opts.cert);
       const protocol = https ? "https:" : "http:";
@@ -47,11 +52,11 @@ export async function startServer(handler, opts) {
     // That way the user only needs to increment a number when running
     // multiple apps vs having to remember completely different ports.
     let firstError;
-    for(let port = 8000; port < 8020; port++){
+    for (let port = 8000; port < 8020; port++) {
       try {
         await bootServer(handler, {
           ...opts,
-          port
+          port,
         });
         firstError = undefined;
         break;
@@ -76,14 +81,15 @@ async function bootServer(handler, opts) {
   // @ts-ignore Ignore type error when type checking with Deno versions
   if (typeof Deno.serve === "function") {
     // @ts-ignore Ignore type error when type checking with Deno versions
-    await Deno.serve(opts, (r, info)=>handler(r, {
+    await Deno.serve(opts, (r, info) =>
+      handler(r, {
         ...info,
         remoteAddr: info.remoteAddr,
         localAddr: {
           transport: "tcp",
           hostname: opts.hostname ?? "localhost",
-          port: opts.port
-        }
+          port: opts.port,
+        },
       })).finished;
   } else {
     // @ts-ignore Deprecated std serve way

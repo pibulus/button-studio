@@ -6,17 +6,28 @@ const MIN_DENO_VERSION = "1.31.0";
 const TEST_FILE_PATTERN = /[._]test\.(?:[tj]sx?|[mc][tj]s)$/;
 export function ensureMinDenoVersion() {
   // Check that the minimum supported Deno version is being used.
-  if (!greaterOrEqual(semverParse(Deno.version.deno), semverParse(MIN_DENO_VERSION))) {
-    let message = `Deno version ${MIN_DENO_VERSION} or higher is required. Please update Deno.\n\n`;
+  if (
+    !greaterOrEqual(
+      semverParse(Deno.version.deno),
+      semverParse(MIN_DENO_VERSION),
+    )
+  ) {
+    let message =
+      `Deno version ${MIN_DENO_VERSION} or higher is required. Please update Deno.\n\n`;
     if (Deno.execPath().includes("homebrew")) {
-      message += "You seem to have installed Deno via homebrew. To update, run: `brew upgrade deno`\n";
+      message +=
+        "You seem to have installed Deno via homebrew. To update, run: `brew upgrade deno`\n";
     } else {
       message += "To update, run: `deno upgrade`\n";
     }
     error(message);
   }
 }
-async function collectDir(dir, callback, ignoreFilePattern = TEST_FILE_PATTERN) {
+async function collectDir(
+  dir,
+  callback,
+  ignoreFilePattern = TEST_FILE_PATTERN,
+) {
   // Check if provided path is a directory
   try {
     const stat = await Deno.stat(dir);
@@ -32,13 +43,13 @@ async function collectDir(dir, callback, ignoreFilePattern = TEST_FILE_PATTERN) 
       "tsx",
       "jsx",
       "ts",
-      "js"
+      "js",
     ],
     skip: [
-      ignoreFilePattern
-    ]
+      ignoreFilePattern,
+    ],
   });
-  for await (const entry of routesFolder){
+  for await (const entry of routesFolder) {
     callback(entry, dir);
   }
 }
@@ -48,7 +59,7 @@ export async function collect(directory, ignoreFilePattern) {
   const routes = [];
   const islands = [];
   await Promise.all([
-    collectDir(join(directory, "./routes"), (entry, dir)=>{
+    collectDir(join(directory, "./routes"), (entry, dir) => {
       const rel = join("routes", relative(dir, entry.path));
       const normalized = rel.slice(0, rel.lastIndexOf("."));
       // A `(_islands)` path segment is a local island folder.
@@ -62,21 +73,23 @@ export async function collect(directory, ignoreFilePattern) {
         return;
       }
       if (filePaths.has(normalized)) {
-        throw new Error(`Route conflict detected. Multiple files have the same name: ${dir}${normalized}`);
+        throw new Error(
+          `Route conflict detected. Multiple files have the same name: ${dir}${normalized}`,
+        );
       }
       filePaths.add(normalized);
       routes.push(rel);
     }, ignoreFilePattern),
-    collectDir(join(directory, "./islands"), (entry, dir)=>{
+    collectDir(join(directory, "./islands"), (entry, dir) => {
       const rel = join("islands", relative(dir, entry.path));
       islands.push(rel);
-    }, ignoreFilePattern)
+    }, ignoreFilePattern),
   ]);
   routes.sort();
   islands.sort();
   return {
     routes,
-    islands
+    islands,
   };
 }
 export async function manifest(path, ignoreFilePattern) {

@@ -14,7 +14,8 @@ import { AssertionError } from "./assertion_error.ts";
  */ export function assertNotMatch(actual, expected, msg) {
   if (expected.test(actual)) {
     const msgSuffix = msg ? `: ${msg}` : ".";
-    msg = `Expected actual: "${actual}" to not match: "${expected}"${msgSuffix}`;
+    msg =
+      `Expected actual: "${actual}" to not match: "${expected}"${msgSuffix}`;
     throw new AssertionError(msg);
   }
 }

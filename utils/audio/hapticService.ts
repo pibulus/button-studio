@@ -180,7 +180,7 @@ class HapticService {
     return this.enabled;
   }
 
-  isSupported(): boolean {
+  isHapticsSupported(): boolean {
     return this.isSupported;
   }
 

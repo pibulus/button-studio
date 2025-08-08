@@ -1,6 +1,6 @@
 import { colors, fromFileUrl } from "./deps.ts";
 function tabs2Spaces(str) {
-  return str.replace(/^\t+/, (tabs)=>"  ".repeat(tabs.length));
+  return str.replace(/^\t+/, (tabs) => "  ".repeat(tabs.length));
 }
 /**
  * Generate an excerpt of the location in the source around the
@@ -27,7 +27,7 @@ function tabs2Spaces(str) {
   // place.
   const spaceLines = [];
   let maxLineLen = 0;
-  for(let i = start; i < end; i++){
+  for (let i = start; i < end; i++) {
     const line = tabs2Spaces(lines[i]);
     spaceLines.push(line);
     if (line.length > maxLineLen) maxLineLen = line.length;
@@ -35,12 +35,17 @@ function tabs2Spaces(str) {
   const activeLine = spaceLines[lineNum - start];
   // Move marker into correct place by taking the amount of
   // normalized tabs into account
-  const count = Math.max(0, activeLine.length - lines[lineNum].length + columnNum);
+  const count = Math.max(
+    0,
+    activeLine.length - lines[lineNum].length + columnNum,
+  );
   const sep = colors.dim("|");
   let out = "";
-  for(let i = 0; i < spaceLines.length; i++){
+  for (let i = 0; i < spaceLines.length; i++) {
     const line = spaceLines[i];
-    const currentLine = colors.dim((padding + (i + start + 1)).slice(-maxLineNum));
+    const currentLine = colors.dim(
+      (padding + (i + start + 1)).slice(-maxLineNum),
+    );
     // Line where the error occurred
     if (i === lineNum - start) {
       out += colors.red(">") + ` ${currentLine} ${sep} ${line}\n`;
@@ -55,7 +60,7 @@ function tabs2Spaces(str) {
 const STACK_FRAME = /^\s*at\s+(?:(.*)\s+)?\((.*):(\d+):(\d+)\)$/;
 export function getFirstUserFile(stack) {
   const lines = stack.split("\n");
-  for(let i = 0; i < lines.length; i++){
+  for (let i = 0; i < lines.length; i++) {
     const match = lines[i].match(STACK_FRAME);
     if (match && match) {
       const fnName = match[1] ?? "";
@@ -67,7 +72,7 @@ export function getFirstUserFile(stack) {
           fnName,
           file,
           line,
-          column
+          column,
         };
       }
     }
@@ -81,8 +86,8 @@ export async function getCodeFrame(error) {
       const filePath = fromFileUrl(file.file);
       const text = await Deno.readTextFile(filePath);
       return createCodeFrame(text, file.line - 1, file.column - 1);
-    } catch  {
-    // Ignore
+    } catch {
+      // Ignore
     }
   }
 }

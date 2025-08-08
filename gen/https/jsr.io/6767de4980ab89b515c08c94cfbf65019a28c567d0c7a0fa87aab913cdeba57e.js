@@ -23,12 +23,14 @@ import { fromFileUrl } from "./from_file_url.ts";
   if (path instanceof URL) {
     path = fromFileUrl(path);
   }
-  paths = path ? [
-    path,
-    ...paths
-  ] : paths;
-  paths.forEach((path)=>assertPath(path));
-  paths = paths.filter((path)=>path.length > 0);
+  paths = path
+    ? [
+      path,
+      ...paths,
+    ]
+    : paths;
+  paths.forEach((path) => assertPath(path));
+  paths = paths.filter((path) => path.length > 0);
   if (paths.length === 0) return ".";
   // Make sure that the joined path doesn't start with two slashes, because
   // normalize() will mistake it for an UNC path then.
@@ -65,7 +67,7 @@ import { fromFileUrl } from "./from_file_url.ts";
   let joined = paths.join("\\");
   if (needsReplace) {
     // Find any more consecutive slashes we need to replace
-    for(; slashCount < joined.length; ++slashCount){
+    for (; slashCount < joined.length; ++slashCount) {
       if (!isPathSeparator(joined.charCodeAt(slashCount))) break;
     }
     // Replace the slashes if needed

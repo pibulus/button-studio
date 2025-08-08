@@ -2,11 +2,13 @@
 function isKeyedCollection(x) {
   return [
     Symbol.iterator,
-    "size"
-  ].every((k)=>k in x);
+    "size",
+  ].every((k) => k in x);
 }
 function constructorsEqual(a, b) {
-  return a.constructor === b.constructor || a.constructor === Object && !b.constructor || !a.constructor && b.constructor === Object;
+  return a.constructor === b.constructor ||
+    a.constructor === Object && !b.constructor ||
+    !a.constructor && b.constructor === Object;
 }
 /**
  * Deep equality comparison used in assertions
@@ -25,7 +27,11 @@ function constructorsEqual(a, b) {
   return function compare(a, b) {
     // Have to render RegExp & Date for string comparison
     // unless it's mistreated as object
-    if (a && b && (a instanceof RegExp && b instanceof RegExp || a instanceof URL && b instanceof URL)) {
+    if (
+      a && b &&
+      (a instanceof RegExp && b instanceof RegExp ||
+        a instanceof URL && b instanceof URL)
+    ) {
       return String(a) === String(b);
     }
     if (a instanceof Date && b instanceof Date) {
@@ -68,10 +74,13 @@ function constructorsEqual(a, b) {
           return false;
         }
         let unmatchedEntries = a.size;
-        for (const [aKey, aValue] of a.entries()){
-          for (const [bKey, bValue] of b.entries()){
+        for (const [aKey, aValue] of a.entries()) {
+          for (const [bKey, bValue] of b.entries()) {
             /* Given that Map keys can be references, we need
-             * to ensure that they are also deeply equal */ if (aKey === aValue && bKey === bValue && compare(aKey, bKey) || compare(aKey, bKey) && compare(aValue, bValue)) {
+             * to ensure that they are also deeply equal */ if (
+              aKey === aValue && bKey === bValue && compare(aKey, bKey) ||
+              compare(aKey, bKey) && compare(aValue, bValue)
+            ) {
               unmatchedEntries--;
               break;
             }
@@ -81,12 +90,14 @@ function constructorsEqual(a, b) {
       }
       const merged = {
         ...a,
-        ...b
+        ...b,
       };
-      for (const key of [
-        ...Object.getOwnPropertyNames(merged),
-        ...Object.getOwnPropertySymbols(merged)
-      ]){
+      for (
+        const key of [
+          ...Object.getOwnPropertyNames(merged),
+          ...Object.getOwnPropertySymbols(merged),
+        ]
+      ) {
         if (!compare(a && a[key], b && b[key])) {
           return false;
         }

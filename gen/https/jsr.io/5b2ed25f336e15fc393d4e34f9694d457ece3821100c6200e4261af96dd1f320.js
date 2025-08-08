@@ -39,7 +39,11 @@
  * ```
  * Defining a start index will begin the search at the specified index in the
  * source array.
- */ export function lastIndexOfNeedle(source, needle, start = source.length - 1) {
+ */ export function lastIndexOfNeedle(
+  source,
+  needle,
+  start = source.length - 1,
+) {
   if (start < 0) {
     return -1;
   }
@@ -47,11 +51,14 @@
     start = source.length - 1;
   }
   const e = needle[needle.length - 1];
-  for(let i = start; i >= 0; i--){
+  for (let i = start; i >= 0; i--) {
     if (source[i] !== e) continue;
     let matched = 1;
     let j = i;
-    while(matched < needle.length && source[--j] === needle[needle.length - 1 - (i - j)]){
+    while (
+      matched < needle.length &&
+      source[--j] === needle[needle.length - 1 - (i - j)]
+    ) {
       matched++;
     }
     if (matched === needle.length) {

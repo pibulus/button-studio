@@ -3,12 +3,12 @@
 export class VoiceButtonError extends Error {
   code;
   details;
-  constructor(message, code, details){
+  constructor(message, code, details) {
     super(message), this.code = code, this.details = details;
-    this.name = 'VoiceButtonError';
+    this.name = "VoiceButtonError";
   }
 }
-export var ErrorCode = /*#__PURE__*/ function(ErrorCode) {
+export var ErrorCode = /*#__PURE__*/ function (ErrorCode) {
   ErrorCode["MICROPHONE_PERMISSION_DENIED"] = "MICROPHONE_PERMISSION_DENIED";
   ErrorCode["MICROPHONE_NOT_AVAILABLE"] = "MICROPHONE_NOT_AVAILABLE";
   ErrorCode["RECORDING_FAILED"] = "RECORDING_FAILED";

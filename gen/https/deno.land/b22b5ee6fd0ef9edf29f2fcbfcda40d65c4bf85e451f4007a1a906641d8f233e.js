@@ -7,9 +7,9 @@ export function _common(paths, sep) {
   }
   const parts = first.split(sep);
   let endOfPrefix = parts.length;
-  for (const path of remaining){
+  for (const path of remaining) {
     const compare = path.split(sep);
-    for(let i = 0; i < endOfPrefix; i++){
+    for (let i = 0; i < endOfPrefix; i++) {
       if (compare[i] !== parts[i]) {
         endOfPrefix = i;
       }

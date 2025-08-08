@@ -4,14 +4,23 @@
  * process, or stringify data into a `.env` file format.
  *
  * @module
- */ import { parse } from "./parse.ts";
+ */
+import { parse } from "./parse.ts";
 export * from "./stringify.ts";
 export * from "./parse.ts";
-/** Works identically to {@linkcode load}, but synchronously. */ export function loadSync({ envPath = ".env", examplePath = ".env.example", defaultsPath = ".env.defaults", export: _export = false, allowEmptyValues = false } = {}) {
+/** Works identically to {@linkcode load}, but synchronously. */ export function loadSync(
+  {
+    envPath = ".env",
+    examplePath = ".env.example",
+    defaultsPath = ".env.defaults",
+    export: _export = false,
+    allowEmptyValues = false,
+  } = {},
+) {
   const conf = envPath ? parseFileSync(envPath) : {};
   if (defaultsPath) {
     const confDefaults = parseFileSync(defaultsPath);
-    for (const [key, value] of Object.entries(confDefaults)){
+    for (const [key, value] of Object.entries(confDefaults)) {
       if (!(key in conf)) {
         conf[key] = value;
       }
@@ -22,7 +31,7 @@ export * from "./parse.ts";
     assertSafe(conf, confExample, allowEmptyValues);
   }
   if (_export) {
-    for (const [key, value] of Object.entries(conf)){
+    for (const [key, value] of Object.entries(conf)) {
       if (Deno.env.get(key) !== undefined) continue;
       Deno.env.set(key, value);
     }
@@ -200,11 +209,19 @@ export * from "./parse.ts";
  *   `{ KEY: "default" }`. Also there is possible to do this case
  *   `KEY=${NO_SUCH_KEY:-${EXISTING_KEY:-default}}` which becomes
  *   `{ KEY: "<EXISTING_KEY_VALUE_FROM_ENV>" }`)
- */ export async function load({ envPath = ".env", examplePath = ".env.example", defaultsPath = ".env.defaults", export: _export = false, allowEmptyValues = false } = {}) {
+ */ export async function load(
+  {
+    envPath = ".env",
+    examplePath = ".env.example",
+    defaultsPath = ".env.defaults",
+    export: _export = false,
+    allowEmptyValues = false,
+  } = {},
+) {
   const conf = envPath ? await parseFile(envPath) : {};
   if (defaultsPath) {
     const confDefaults = await parseFile(defaultsPath);
-    for (const [key, value] of Object.entries(confDefaults)){
+    for (const [key, value] of Object.entries(confDefaults)) {
       if (!(key in conf)) {
         conf[key] = value;
       }
@@ -215,7 +232,7 @@ export * from "./parse.ts";
     assertSafe(conf, confExample, allowEmptyValues);
   }
   if (_export) {
-    for (const [key, value] of Object.entries(conf)){
+    for (const [key, value] of Object.entries(conf)) {
       if (Deno.env.get(key) !== undefined) continue;
       Deno.env.set(key, value);
     }
@@ -240,7 +257,7 @@ async function parseFile(filepath) {
 }
 function assertSafe(conf, confExample, allowEmptyValues) {
   const missingEnvVars = [];
-  for(const key in confExample){
+  for (const key in confExample) {
     if (key in conf) {
       if (!allowEmptyValues && conf[key] === "") {
         missingEnvVars.push(key);
@@ -255,11 +272,17 @@ function assertSafe(conf, confExample, allowEmptyValues) {
   }
   if (missingEnvVars.length > 0) {
     const errorMessages = [
-      `The following variables were defined in the example file but are not present in the environment:\n  ${missingEnvVars.join(", ")}`,
+      `The following variables were defined in the example file but are not present in the environment:\n  ${
+        missingEnvVars.join(", ")
+      }`,
       `Make sure to add them to your env file.`,
-      !allowEmptyValues && `If you expect any of these variables to be empty, you can set the allowEmptyValues option to true.`
+      !allowEmptyValues &&
+      `If you expect any of these variables to be empty, you can set the allowEmptyValues option to true.`,
     ];
-    throw new MissingEnvVarsError(errorMessages.filter(Boolean).join("\n\n"), missingEnvVars);
+    throw new MissingEnvVarsError(
+      errorMessages.filter(Boolean).join("\n\n"),
+      missingEnvVars,
+    );
   }
 }
 /**
@@ -267,7 +290,7 @@ function assertSafe(conf, confExample, allowEmptyValues) {
  * environment variables are missing.
  */ export class MissingEnvVarsError extends Error {
   /** The keys of the missing environment variables. */ missing;
-  /** Constructs a new instance. */ constructor(message, missing){
+  /** Constructs a new instance. */ constructor(message, missing) {
     super(message);
     this.name = "MissingEnvVarsError";
     this.missing = missing;

@@ -12,7 +12,10 @@ import { ALL, NONE } from "./constants.ts";
  * @param value The value to check if its a Comparator
  * @returns True if the object is a Comparator otherwise false
  */ export function isComparator(value) {
-  if (value === null || value === undefined || Array.isArray(value) || typeof value !== "object") return false;
+  if (
+    value === null || value === undefined || Array.isArray(value) ||
+    typeof value !== "object"
+  ) return false;
   if (value === NONE || value === ALL) return true;
   const { operator, semver } = value;
   return OPERATORS.includes(operator) && isSemVer(semver);

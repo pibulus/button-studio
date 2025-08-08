@@ -3,15 +3,23 @@ import { encodeBase32 } from "jsr:/@std/encoding@^1.0.5/base32";
 import { lastIndexOfNeedle } from "jsr:@std/bytes@^1.0.2";
 import * as deno from "./deno.ts";
 import { rootInfo } from "./deno.ts";
-import { mapContentType, mediaTypeFromSpecifier, mediaTypeToLoader, parseNpmSpecifier } from "./shared.ts";
+import {
+  mapContentType,
+  mediaTypeFromSpecifier,
+  mediaTypeToLoader,
+  parseNpmSpecifier,
+} from "./shared.ts";
 let ROOT_INFO_OUTPUT;
-export const DENO_CACHE_METADATA = new TextEncoder().encode("\n// denoCacheMetadata=");
+export const DENO_CACHE_METADATA = new TextEncoder().encode(
+  "\n// denoCacheMetadata=",
+);
 export class NativeLoader {
   #nodeModulesDirManual;
   #infoCache;
   #linkDirCache = new Map();
-  constructor(options){
-    this.#nodeModulesDirManual = options.infoOptions?.nodeModulesDir === "manual";
+  constructor(options) {
+    this.#nodeModulesDirManual =
+      options.infoOptions?.nodeModulesDir === "manual";
     this.#infoCache = new deno.InfoCache(options.infoOptions);
   }
   async resolve(specifier) {
@@ -22,15 +30,18 @@ export class NativeLoader {
         kind: "npm",
         packageId: "",
         packageName: npmSpecifier.name,
-        path: npmSpecifier.path ?? ""
+        path: npmSpecifier.path ?? "",
       };
     }
     const entry = await this.#infoCache.get(specifier.href);
     if ("error" in entry) {
-      if (specifier.protocol === "file:" && mediaTypeFromSpecifier(specifier) === "Unknown") {
+      if (
+        specifier.protocol === "file:" &&
+        mediaTypeFromSpecifier(specifier) === "Unknown"
+      ) {
         return {
           kind: "esm",
-          specifier: new URL(entry.specifier)
+          specifier: new URL(entry.specifier),
         };
       }
       throw new Error(entry.error);
@@ -42,17 +53,17 @@ export class NativeLoader {
         kind: "npm",
         packageId: entry.npmPackage,
         packageName: parsed.name,
-        path: parsed.path ?? ""
+        path: parsed.path ?? "",
       };
     } else if (entry.kind === "node") {
       return {
         kind: "node",
-        path: entry.specifier
+        path: entry.specifier,
       };
     }
     return {
       kind: "esm",
-      specifier: new URL(entry.specifier)
+      specifier: new URL(entry.specifier),
     };
   }
   async loadEsm(specifier) {
@@ -65,11 +76,14 @@ export class NativeLoader {
       if (loader === null) return undefined;
       return {
         contents,
-        loader
+        loader,
       };
     }
     const entry = await this.#infoCache.get(specifier.href);
-    if ("error" in entry && specifier.protocol !== "file:" && mediaTypeFromSpecifier(specifier) !== "Unknown") throw new Error(entry.error);
+    if (
+      "error" in entry && specifier.protocol !== "file:" &&
+      mediaTypeFromSpecifier(specifier) !== "Unknown"
+    ) throw new Error(entry.error);
     if (!("local" in entry)) {
       throw new Error("[unreachable] Not an ESM module.");
     }
@@ -83,11 +97,11 @@ export class NativeLoader {
     }
     const res = {
       contents,
-      loader
+      loader,
     };
     if (specifier.protocol === "file:") {
       res.watchFiles = [
-        fromFileUrl(specifier)
+        fromFileUrl(specifier),
       ];
     }
     return res;
@@ -97,7 +111,10 @@ export class NativeLoader {
     if (!npmPackage) throw new Error("NPM package not found.");
     let linkDir = this.#linkDirCache.get(npmPackageId);
     if (!linkDir) {
-      linkDir = await this.#nodeModulesDirForPackageInner(npmPackageId, npmPackage);
+      linkDir = await this.#nodeModulesDirForPackageInner(
+        npmPackageId,
+        npmPackage,
+      );
       this.#linkDirCache.set(npmPackageId, linkDir);
     }
     return linkDir;
@@ -116,8 +133,20 @@ export class NativeLoader {
     const { denoDir, npmCache } = ROOT_INFO_OUTPUT;
     const registryUrl = npmPackage.registryUrl ?? "https://registry.npmjs.org";
     const registry = new URL(registryUrl);
-    const packageDir = join(npmCache, registry.hostname, name, npmPackage.version);
-    const linkDir = join(denoDir, "deno_esbuild", registry.hostname, npmPackageId, "node_modules", name);
+    const packageDir = join(
+      npmCache,
+      registry.hostname,
+      name,
+      npmPackage.version,
+    );
+    const linkDir = join(
+      denoDir,
+      "deno_esbuild",
+      registry.hostname,
+      npmPackageId,
+      "node_modules",
+      name,
+    );
     const linkDirParent = dirname(linkDir);
     const tmpDirParent = join(denoDir, "deno_esbuild_tmp");
     // check if the package is already linked, if so, return the link and skip
@@ -126,28 +155,28 @@ export class NativeLoader {
       await Deno.stat(linkDir);
       this.#linkDirCache.set(npmPackageId, linkDir);
       return linkDir;
-    } catch  {
-    // directory does not yet exist
+    } catch {
+      // directory does not yet exist
     }
     // create a temporary directory, recursively hardlink the package contents
     // into it, and then rename it to the final location
     await Deno.mkdir(tmpDirParent, {
-      recursive: true
+      recursive: true,
     });
     const tmpDir = await Deno.makeTempDir({
-      dir: tmpDirParent
+      dir: tmpDirParent,
     });
     await linkRecursive(packageDir, tmpDir);
     try {
       await Deno.mkdir(linkDirParent, {
-        recursive: true
+        recursive: true,
       });
       await Deno.rename(tmpDir, linkDir);
     } catch (err) {
       // the directory may already have been created by someone else - check if so
       try {
         await Deno.stat(linkDir);
-      } catch  {
+      } catch {
         throw err;
       }
     }
@@ -157,7 +186,7 @@ export class NativeLoader {
     const parentPackage = this.#infoCache.getNpmPackage(parentPackageId);
     if (!parentPackage) throw new Error("NPM package not found.");
     if (parentPackage.name === name) return parentPackageId;
-    for (const dep of parentPackage.dependencies){
+    for (const dep of parentPackage.dependencies) {
       const depPackage = this.#infoCache.getNpmPackage(dep);
       if (!depPackage) throw new Error("NPM package not found.");
       if (depPackage.name === name) return dep;
@@ -169,9 +198,9 @@ async function linkRecursive(from, to) {
   const fromStat = await Deno.stat(from);
   if (fromStat.isDirectory) {
     await Deno.mkdir(to, {
-      recursive: true
+      recursive: true,
     });
-    for await (const entry of Deno.readDir(from)){
+    for await (const entry of Deno.readDir(from)) {
       await linkRecursive(join(from, entry.name), join(to, entry.name));
     }
   } else {

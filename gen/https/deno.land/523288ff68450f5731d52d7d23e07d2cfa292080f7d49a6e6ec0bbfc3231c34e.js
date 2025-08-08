@@ -17,7 +17,8 @@
  * {@link https://deno.land/std/cli/parse_args.ts} instead.
  *
  * @module
- */ import { assertExists } from "../assert/assert_exists.ts";
+ */
+import { assertExists } from "../assert/assert_exists.ts";
 const { hasOwn } = Object;
 function get(obj, key) {
   if (hasOwn(obj, key)) {
@@ -36,7 +37,7 @@ function isNumber(x) {
 }
 function hasKey(obj, keys) {
   let o = obj;
-  keys.slice(0, -1).forEach((key)=>{
+  keys.slice(0, -1).forEach((key) => {
     o = get(o, key) ?? {};
   });
   const key = keys.at(-1);
@@ -80,7 +81,20 @@ function hasKey(obj, keys) {
  * @deprecated (will be removed in 1.0.0) Use
  * {@linkcode https://deno.land/std/cli/parse_args.ts?s=parseArgs | parseArgs}
  * instead.
- */ export function parse(args, { "--": doubleDash = false, alias = {}, boolean = false, default: defaults = {}, stopEarly = false, string = [], collect = [], negatable = [], unknown = (i)=>i } = {}) {
+ */ export function parse(
+  args,
+  {
+    "--": doubleDash = false,
+    alias = {},
+    boolean = false,
+    default: defaults = {},
+    stopEarly = false,
+    string = [],
+    collect = [],
+    negatable = [],
+    unknown = (i) => i,
+  } = {},
+) {
   const aliases = {};
   const flags = {
     bools: {},
@@ -88,23 +102,23 @@ function hasKey(obj, keys) {
     unknownFn: unknown,
     allBools: false,
     collect: {},
-    negatable: {}
+    negatable: {},
   };
   if (alias !== undefined) {
-    for(const key in alias){
+    for (const key in alias) {
       const val = getForce(alias, key);
       if (typeof val === "string") {
         aliases[key] = [
-          val
+          val,
         ];
       } else {
         aliases[key] = val;
       }
       const aliasesForKey = getForce(aliases, key);
-      for (const alias of aliasesForKey){
+      for (const alias of aliasesForKey) {
         aliases[alias] = [
-          key
-        ].concat(aliasesForKey.filter((y)=>alias !== y));
+          key,
+        ].concat(aliasesForKey.filter((y) => alias !== y));
       }
     }
   }
@@ -112,14 +126,16 @@ function hasKey(obj, keys) {
     if (typeof boolean === "boolean") {
       flags.allBools = !!boolean;
     } else {
-      const booleanArgs = typeof boolean === "string" ? [
-        boolean
-      ] : boolean;
-      for (const key of booleanArgs.filter(Boolean)){
+      const booleanArgs = typeof boolean === "string"
+        ? [
+          boolean,
+        ]
+        : boolean;
+      for (const key of booleanArgs.filter(Boolean)) {
         flags.bools[key] = true;
         const alias = get(aliases, key);
         if (alias) {
-          for (const al of alias){
+          for (const al of alias) {
             flags.bools[al] = true;
           }
         }
@@ -127,57 +143,64 @@ function hasKey(obj, keys) {
     }
   }
   if (string !== undefined) {
-    const stringArgs = typeof string === "string" ? [
-      string
-    ] : string;
-    for (const key of stringArgs.filter(Boolean)){
+    const stringArgs = typeof string === "string"
+      ? [
+        string,
+      ]
+      : string;
+    for (const key of stringArgs.filter(Boolean)) {
       flags.strings[key] = true;
       const alias = get(aliases, key);
       if (alias) {
-        for (const al of alias){
+        for (const al of alias) {
           flags.strings[al] = true;
         }
       }
     }
   }
   if (collect !== undefined) {
-    const collectArgs = typeof collect === "string" ? [
-      collect
-    ] : collect;
-    for (const key of collectArgs.filter(Boolean)){
+    const collectArgs = typeof collect === "string"
+      ? [
+        collect,
+      ]
+      : collect;
+    for (const key of collectArgs.filter(Boolean)) {
       flags.collect[key] = true;
       const alias = get(aliases, key);
       if (alias) {
-        for (const al of alias){
+        for (const al of alias) {
           flags.collect[al] = true;
         }
       }
     }
   }
   if (negatable !== undefined) {
-    const negatableArgs = typeof negatable === "string" ? [
-      negatable
-    ] : negatable;
-    for (const key of negatableArgs.filter(Boolean)){
+    const negatableArgs = typeof negatable === "string"
+      ? [
+        negatable,
+      ]
+      : negatable;
+    for (const key of negatableArgs.filter(Boolean)) {
       flags.negatable[key] = true;
       const alias = get(aliases, key);
       if (alias) {
-        for (const al of alias){
+        for (const al of alias) {
           flags.negatable[al] = true;
         }
       }
     }
   }
   const argv = {
-    _: []
+    _: [],
   };
   function argDefined(key, arg) {
-    return flags.allBools && /^--[^=]+$/.test(arg) || get(flags.bools, key) || !!get(flags.strings, key) || !!get(aliases, key);
+    return flags.allBools && /^--[^=]+$/.test(arg) || get(flags.bools, key) ||
+      !!get(flags.strings, key) || !!get(aliases, key);
   }
   function setKey(obj, name, value, collect = true) {
     let o = obj;
     const keys = name.split(".");
-    keys.slice(0, -1).forEach(function(key) {
+    keys.slice(0, -1).forEach(function (key) {
       if (get(o, key) === undefined) {
         o[key] = {};
       }
@@ -189,14 +212,14 @@ function hasKey(obj, keys) {
       o[key] = value;
     } else if (get(o, key) === undefined) {
       o[key] = [
-        value
+        value,
       ];
     } else if (Array.isArray(get(o, key))) {
       o[key].push(value);
     } else {
       o[key] = [
         get(o, key),
-        value
+        value,
       ];
     }
   }
@@ -208,13 +231,15 @@ function hasKey(obj, keys) {
     setKey(argv, key, value, collect);
     const alias = get(aliases, key);
     if (alias) {
-      for (const x of alias){
+      for (const x of alias) {
         setKey(argv, x, value, collect);
       }
     }
   }
   function aliasIsBoolean(key) {
-    return getForce(aliases, key).some((x)=>typeof get(flags.bools, x) === "boolean");
+    return getForce(aliases, key).some((x) =>
+      typeof get(flags.bools, x) === "boolean"
+    );
   }
   let notFlags = [];
   // all args after "--" are not parsed
@@ -222,7 +247,7 @@ function hasKey(obj, keys) {
     notFlags = args.slice(args.indexOf("--") + 1);
     args = args.slice(0, args.indexOf("--"));
   }
-  for(let i = 0; i < args.length; i++){
+  for (let i = 0; i < args.length; i++) {
     const arg = args[i];
     assertExists(arg);
     if (/^--.+=/.test(arg)) {
@@ -236,7 +261,9 @@ function hasKey(obj, keys) {
       } else {
         setArg(key, value, arg);
       }
-    } else if (/^--no-.+/.test(arg) && get(flags.negatable, arg.replace(/^--no-/, ""))) {
+    } else if (
+      /^--no-.+/.test(arg) && get(flags.negatable, arg.replace(/^--no-/, ""))
+    ) {
       const m = arg.match(/^--no-(.+)/);
       assertExists(m);
       assertExists(m[1]);
@@ -247,7 +274,10 @@ function hasKey(obj, keys) {
       assertExists(m[1]);
       const [, key] = m;
       const next = args[i + 1];
-      if (next !== undefined && !/^-/.test(next) && !get(flags.bools, key) && !flags.allBools && (get(aliases, key) ? !aliasIsBoolean(key) : true)) {
+      if (
+        next !== undefined && !/^-/.test(next) && !get(flags.bools, key) &&
+        !flags.allBools && (get(aliases, key) ? !aliasIsBoolean(key) : true)
+      ) {
         setArg(key, next, arg);
         i++;
       } else if (next !== undefined && (next === "true" || next === "false")) {
@@ -259,7 +289,7 @@ function hasKey(obj, keys) {
     } else if (/^-[^-]+/.test(arg)) {
       const letters = arg.slice(1, -1).split("");
       let broken = false;
-      for (const [j, letter] of letters.entries()){
+      for (const [j, letter] of letters.entries()) {
         const next = arg.slice(j + 2);
         if (next === "-") {
           setArg(letter, next, arg);
@@ -286,7 +316,10 @@ function hasKey(obj, keys) {
       const key = arg.at(-1);
       if (!broken && key !== "-") {
         const nextArg = args[i + 1];
-        if (nextArg && !/^(-|--)[^-]/.test(nextArg) && !get(flags.bools, key) && (get(aliases, key) ? !aliasIsBoolean(key) : true)) {
+        if (
+          nextArg && !/^(-|--)[^-]/.test(nextArg) && !get(flags.bools, key) &&
+          (get(aliases, key) ? !aliasIsBoolean(key) : true)
+        ) {
           setArg(key, nextArg, arg);
           i++;
         } else if (nextArg && (nextArg === "true" || nextArg === "false")) {
@@ -306,35 +339,35 @@ function hasKey(obj, keys) {
       }
     }
   }
-  for (const [key, value] of Object.entries(defaults)){
+  for (const [key, value] of Object.entries(defaults)) {
     if (!hasKey(argv, key.split("."))) {
       setKey(argv, key, value, false);
       const alias = aliases[key];
       if (alias !== undefined) {
-        for (const x of alias){
+        for (const x of alias) {
           setKey(argv, x, value, false);
         }
       }
     }
   }
-  for (const key of Object.keys(flags.bools)){
+  for (const key of Object.keys(flags.bools)) {
     if (!hasKey(argv, key.split("."))) {
       const value = get(flags.collect, key) ? [] : false;
       setKey(argv, key, value, false);
     }
   }
-  for (const key of Object.keys(flags.strings)){
+  for (const key of Object.keys(flags.strings)) {
     if (!hasKey(argv, key.split(".")) && get(flags.collect, key)) {
       setKey(argv, key, [], false);
     }
   }
   if (doubleDash) {
     argv["--"] = [];
-    for (const key of notFlags){
+    for (const key of notFlags) {
       argv["--"].push(key);
     }
   } else {
-    for (const key of notFlags){
+    for (const key of notFlags) {
       argv._.push(key);
     }
   }

@@ -8,7 +8,7 @@ import { getServerContext } from "../server/context.ts";
 export async function dev(base, entrypoint, config) {
   ensureMinDenoVersion();
   // Run update check in background
-  updateCheck(DAY).catch(()=>{});
+  updateCheck(DAY).catch(() => {});
   const dir = dirname(fromFileUrl(base));
   let currentManifest;
   const prevManifest = Deno.env.get("FRSH_DEV_PREVIOUS_MANIFEST");
@@ -17,14 +17,17 @@ export async function dev(base, entrypoint, config) {
   } else {
     currentManifest = {
       islands: [],
-      routes: []
+      routes: [],
     };
   }
   const newManifest = await collect(dir, config?.router?.ignoreFilePattern);
   Deno.env.set("FRSH_DEV_PREVIOUS_MANIFEST", JSON.stringify(newManifest));
-  const manifestChanged = !arraysEqual(newManifest.routes, currentManifest.routes) || !arraysEqual(newManifest.islands, currentManifest.islands);
+  const manifestChanged =
+    !arraysEqual(newManifest.routes, currentManifest.routes) ||
+    !arraysEqual(newManifest.islands, currentManifest.islands);
   if (manifestChanged) await generate(dir, newManifest);
-  const manifest = (await import(toFileUrl(join(dir, "fresh.gen.ts")).href)).default;
+  const manifest =
+    (await import(toFileUrl(join(dir, "fresh.gen.ts")).href)).default;
   if (Deno.args.includes("build")) {
     const state = await getInternalFreshState(manifest, config ?? {});
     state.config.dev = false;
@@ -38,7 +41,7 @@ export async function dev(base, entrypoint, config) {
     const ctx = await getServerContext(state);
     await startServer(ctx.handler(), {
       ...state.config.server,
-      basePath: state.config.basePath
+      basePath: state.config.basePath,
     });
   } else {
     // Legacy entry point: Back then `dev.ts` would call `main.ts` but
@@ -51,7 +54,7 @@ export async function dev(base, entrypoint, config) {
 }
 function arraysEqual(a, b) {
   if (a.length !== b.length) return false;
-  for(let i = 0; i < a.length; ++i){
+  for (let i = 0; i < a.length; ++i) {
     if (a[i] !== b[i]) return false;
   }
   return true;

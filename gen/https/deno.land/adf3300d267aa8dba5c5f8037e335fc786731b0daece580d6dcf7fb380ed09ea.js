@@ -7,7 +7,11 @@ export function assertThrows(fn, errorClassOrMsg, msgIncludesOrMsg, msg) {
   let msgIncludes = undefined;
   let err;
   if (typeof errorClassOrMsg !== "string") {
-    if (errorClassOrMsg === undefined || errorClassOrMsg.prototype instanceof Error || errorClassOrMsg.prototype === Error.prototype) {
+    if (
+      errorClassOrMsg === undefined ||
+      errorClassOrMsg.prototype instanceof Error ||
+      errorClassOrMsg.prototype === Error.prototype
+    ) {
       // deno-lint-ignore no-explicit-any
       ErrorClass = errorClassOrMsg;
       msgIncludes = msgIncludesOrMsg;

@@ -1,10 +1,18 @@
 // Copyright 2018-2024 the Deno authors. All rights reserved. MIT license.
 // This module is browser compatible.
-import { bgGreen, bgRed, bold, gray, green, red, white } from "../fmt/colors.ts";
+import {
+  bgGreen,
+  bgRed,
+  bold,
+  gray,
+  green,
+  red,
+  white,
+} from "../fmt/colors.ts";
 export const DiffType = {
   removed: "removed",
   common: "common",
-  added: "added"
+  added: "added",
 };
 const REMOVED = 1;
 const COMMON = 2;
@@ -12,7 +20,7 @@ const ADDED = 3;
 function createCommon(A, B, reverse) {
   const common = [];
   if (A.length === 0 || B.length === 0) return [];
-  for(let i = 0; i < Math.min(A.length, B.length); i += 1){
+  for (let i = 0; i < Math.min(A.length, B.length); i += 1) {
     const a = reverse ? A[A.length - i - 1] : A[i];
     const b = reverse ? B[B.length - i - 1] : B[i];
     if (a !== undefined && a === b) {
@@ -35,45 +43,55 @@ function ensureDefined(item) {
  * @param B Expected value
  */ export function diff(A, B) {
   const prefixCommon = createCommon(A, B);
-  const suffixCommon = createCommon(A.slice(prefixCommon.length), B.slice(prefixCommon.length), true).reverse();
-  A = suffixCommon.length ? A.slice(prefixCommon.length, -suffixCommon.length) : A.slice(prefixCommon.length);
-  B = suffixCommon.length ? B.slice(prefixCommon.length, -suffixCommon.length) : B.slice(prefixCommon.length);
+  const suffixCommon = createCommon(
+    A.slice(prefixCommon.length),
+    B.slice(prefixCommon.length),
+    true,
+  ).reverse();
+  A = suffixCommon.length
+    ? A.slice(prefixCommon.length, -suffixCommon.length)
+    : A.slice(prefixCommon.length);
+  B = suffixCommon.length
+    ? B.slice(prefixCommon.length, -suffixCommon.length)
+    : B.slice(prefixCommon.length);
   const swapped = B.length > A.length;
-  [A, B] = swapped ? [
-    B,
-    A
-  ] : [
-    A,
-    B
-  ];
+  [A, B] = swapped
+    ? [
+      B,
+      A,
+    ]
+    : [
+      A,
+      B,
+    ];
   const M = A.length;
   const N = B.length;
   if (!M && !N && !suffixCommon.length && !prefixCommon.length) return [];
   if (!N) {
     return [
-      ...prefixCommon.map((c)=>({
-          type: DiffType.common,
-          value: c
-        })),
-      ...A.map((a)=>({
-          type: swapped ? DiffType.added : DiffType.removed,
-          value: a
-        })),
-      ...suffixCommon.map((c)=>({
-          type: DiffType.common,
-          value: c
-        }))
+      ...prefixCommon.map((c) => ({
+        type: DiffType.common,
+        value: c,
+      })),
+      ...A.map((a) => ({
+        type: swapped ? DiffType.added : DiffType.removed,
+        value: a,
+      })),
+      ...suffixCommon.map((c) => ({
+        type: DiffType.common,
+        value: c,
+      })),
     ];
   }
   const offset = N;
   const delta = M - N;
   const size = M + N + 1;
   const fp = Array.from({
-    length: size
-  }, ()=>({
-      y: -1,
-      id: -1
-    }));
+    length: size,
+  }, () => ({
+    y: -1,
+    id: -1,
+  }));
   /**
    * INFO:
    * This buffer is used to save memory and improve performance.
@@ -93,25 +111,25 @@ function ensureDefined(item) {
     let b = N - 1;
     let j = routes[current.id];
     let type = routes[current.id + diffTypesPtrOffset];
-    while(true){
+    while (true) {
       if (!j && !type) break;
       const prev = j;
       if (type === REMOVED) {
         result.unshift({
           type: swapped ? DiffType.removed : DiffType.added,
-          value: B[b]
+          value: B[b],
         });
         b -= 1;
       } else if (type === ADDED) {
         result.unshift({
           type: swapped ? DiffType.added : DiffType.removed,
-          value: A[a]
+          value: A[a],
         });
         a -= 1;
       } else {
         result.unshift({
           type: DiffType.common,
-          value: A[a]
+          value: A[a],
         });
         a -= 1;
         b -= 1;
@@ -125,10 +143,11 @@ function ensureDefined(item) {
     if (slide && slide.y === -1 && down && down.y === -1) {
       return {
         y: 0,
-        id: 0
+        id: 0,
       };
     }
-    const isAdding = down?.y === -1 || k === M || (slide?.y || 0) > (down?.y || 0) + 1;
+    const isAdding = down?.y === -1 || k === M ||
+      (slide?.y || 0) > (down?.y || 0) + 1;
     if (slide && isAdding) {
       const prev = slide.id;
       ptr++;
@@ -136,7 +155,7 @@ function ensureDefined(item) {
       routes[ptr + diffTypesPtrOffset] = ADDED;
       return {
         y: slide.y,
-        id: ptr
+        id: ptr,
       };
     } else if (down && !isAdding) {
       const prev = down.id;
@@ -145,7 +164,7 @@ function ensureDefined(item) {
       routes[ptr + diffTypesPtrOffset] = REMOVED;
       return {
         y: down.y + 1,
-        id: ptr
+        id: ptr,
       };
     } else {
       throw new Error("Unexpected missing FarthestPoint");
@@ -154,12 +173,14 @@ function ensureDefined(item) {
   function snake(k, slide, down, _offset, A, B) {
     const M = A.length;
     const N = B.length;
-    if (k < -N || M < k) return {
-      y: -1,
-      id: -1
-    };
+    if (k < -N || M < k) {
+      return {
+        y: -1,
+        id: -1,
+      };
+    }
     const fp = createFP(slide, down, k, M);
-    while(fp.y + k < M && fp.y < N && A[fp.y + k] === B[fp.y]){
+    while (fp.y + k < M && fp.y < N && A[fp.y + k] === B[fp.y]) {
       const prev = fp.id;
       ptr++;
       fp.id = ptr;
@@ -170,27 +191,48 @@ function ensureDefined(item) {
     return fp;
   }
   let currentFP = ensureDefined(fp[delta + offset]);
-  while(currentFP && currentFP.y < N){
+  while (currentFP && currentFP.y < N) {
     p = p + 1;
-    for(let k = -p; k < delta; ++k){
-      fp[k + offset] = snake(k, fp[k - 1 + offset], fp[k + 1 + offset], offset, A, B);
+    for (let k = -p; k < delta; ++k) {
+      fp[k + offset] = snake(
+        k,
+        fp[k - 1 + offset],
+        fp[k + 1 + offset],
+        offset,
+        A,
+        B,
+      );
     }
-    for(let k = delta + p; k > delta; --k){
-      fp[k + offset] = snake(k, fp[k - 1 + offset], fp[k + 1 + offset], offset, A, B);
+    for (let k = delta + p; k > delta; --k) {
+      fp[k + offset] = snake(
+        k,
+        fp[k - 1 + offset],
+        fp[k + 1 + offset],
+        offset,
+        A,
+        B,
+      );
     }
-    fp[delta + offset] = snake(delta, fp[delta - 1 + offset], fp[delta + 1 + offset], offset, A, B);
+    fp[delta + offset] = snake(
+      delta,
+      fp[delta - 1 + offset],
+      fp[delta + 1 + offset],
+      offset,
+      A,
+      B,
+    );
     currentFP = ensureDefined(fp[delta + offset]);
   }
   return [
-    ...prefixCommon.map((c)=>({
-        type: DiffType.common,
-        value: c
-      })),
+    ...prefixCommon.map((c) => ({
+      type: DiffType.common,
+      value: c,
+    })),
     ...backTrace(A, B, currentFP, swapped),
-    ...suffixCommon.map((c)=>({
-        type: DiffType.common,
-        value: c
-      }))
+    ...suffixCommon.map((c) => ({
+      type: DiffType.common,
+      value: c,
+    })),
   ];
 }
 /**
@@ -202,25 +244,35 @@ function ensureDefined(item) {
   function unescape(string) {
     // unescape invisible characters.
     // ref: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String#escape_sequences
-    return string.replaceAll("\b", "\\b").replaceAll("\f", "\\f").replaceAll("\t", "\\t").replaceAll("\v", "\\v").replaceAll(/\r\n|\r|\n/g, (str)=>str === "\r" ? "\\r" : str === "\n" ? "\\n\n" : "\\r\\n\r\n");
+    return string.replaceAll("\b", "\\b").replaceAll("\f", "\\f").replaceAll(
+      "\t",
+      "\\t",
+    ).replaceAll("\v", "\\v").replaceAll(
+      /\r\n|\r|\n/g,
+      (str) => str === "\r" ? "\\r" : str === "\n" ? "\\n\n" : "\\r\\n\r\n",
+    );
   }
   function tokenize(string, { wordDiff = false } = {}) {
     if (wordDiff) {
       // Split string on whitespace symbols
       const tokens = string.split(/([^\S\r\n]+|[()[\]{}'"\r\n]|\b)/);
       // Extended Latin character set
-      const words = /^[a-zA-Z\u{C0}-\u{FF}\u{D8}-\u{F6}\u{F8}-\u{2C6}\u{2C8}-\u{2D7}\u{2DE}-\u{2FF}\u{1E00}-\u{1EFF}]+$/u;
+      const words =
+        /^[a-zA-Z\u{C0}-\u{FF}\u{D8}-\u{F6}\u{F8}-\u{2C6}\u{2C8}-\u{2D7}\u{2DE}-\u{2FF}\u{1E00}-\u{1EFF}]+$/u;
       // Join boundary splits that we do not consider to be boundaries and merge empty strings surrounded by word chars
-      for(let i = 0; i < tokens.length - 1; i++){
+      for (let i = 0; i < tokens.length - 1; i++) {
         const token = tokens[i];
         const tokenPlusTwo = tokens[i + 2];
-        if (!tokens[i + 1] && token && tokenPlusTwo && words.test(token) && words.test(tokenPlusTwo)) {
+        if (
+          !tokens[i + 1] && token && tokenPlusTwo && words.test(token) &&
+          words.test(tokenPlusTwo)
+        ) {
           tokens[i] += tokenPlusTwo;
           tokens.splice(i + 1, 2);
           i--;
         }
       }
-      return tokens.filter((token)=>token);
+      return tokens.filter((token) => token);
     } else {
       // Split string on new lines symbols
       const tokens = [];
@@ -230,7 +282,7 @@ function ensureDefined(item) {
         lines.pop();
       }
       // Merge the content and line separators into single tokens
-      for (const [i, line] of lines.entries()){
+      for (const [i, line] of lines.entries()) {
         if (i % 2) {
           tokens[tokens.length - 1] += line;
         } else {
@@ -243,21 +295,29 @@ function ensureDefined(item) {
   // Create details by filtering relevant word-diff for current line
   // and merge "space-diff" if surrounded by word-diff for cleaner displays
   function createDetails(line, tokens) {
-    return tokens.filter(({ type })=>type === line.type || type === DiffType.common).map((result, i, t)=>{
+    return tokens.filter(({ type }) =>
+      type === line.type || type === DiffType.common
+    ).map((result, i, t) => {
       const token = t[i - 1];
-      if (result.type === DiffType.common && token && token.type === t[i + 1]?.type && /\s+/.test(result.value)) {
+      if (
+        result.type === DiffType.common && token &&
+        token.type === t[i + 1]?.type && /\s+/.test(result.value)
+      ) {
         return {
           ...result,
-          type: token.type
+          type: token.type,
         };
       }
       return result;
     });
   }
   // Compute multi-line diff
-  const diffResult = diff(tokenize(`${unescape(A)}\n`), tokenize(`${unescape(B)}\n`));
+  const diffResult = diff(
+    tokenize(`${unescape(A)}\n`),
+    tokenize(`${unescape(B)}\n`),
+  );
   const added = [], removed = [];
-  for (const result of diffResult){
+  for (const result of diffResult) {
     if (result.type === DiffType.added) {
       added.push(result);
     }
@@ -269,22 +329,26 @@ function ensureDefined(item) {
   const hasMoreRemovedLines = added.length < removed.length;
   const aLines = hasMoreRemovedLines ? added : removed;
   const bLines = hasMoreRemovedLines ? removed : added;
-  for (const a of aLines){
+  for (const a of aLines) {
     let tokens = [], b;
     // Search another diff line with at least one common token
-    while(bLines.length){
+    while (bLines.length) {
       b = bLines.shift();
       const tokenized = [
         tokenize(a.value, {
-          wordDiff: true
+          wordDiff: true,
         }),
         tokenize(b?.value ?? "", {
-          wordDiff: true
-        })
+          wordDiff: true,
+        }),
       ];
       if (hasMoreRemovedLines) tokenized.reverse();
       tokens = diff(tokenized[0], tokenized[1]);
-      if (tokens.some(({ type, value })=>type === DiffType.common && value.trim().length)) {
+      if (
+        tokens.some(({ type, value }) =>
+          type === DiffType.common && value.trim().length
+        )
+      ) {
         break;
       }
     }
@@ -304,11 +368,11 @@ function ensureDefined(item) {
   // true color terminals.
   // https://github.com/denoland/deno_std/issues/2575
   background = false;
-  switch(diffType){
+  switch (diffType) {
     case DiffType.added:
-      return (s)=>background ? bgGreen(white(s)) : green(bold(s));
+      return (s) => background ? bgGreen(white(s)) : green(bold(s));
     case DiffType.removed:
-      return (s)=>background ? bgRed(white(s)) : red(bold(s));
+      return (s) => background ? bgRed(white(s)) : red(bold(s));
     default:
       return white;
   }
@@ -317,7 +381,7 @@ function ensureDefined(item) {
  * Prefixes `+` or `-` in diff output
  * @param diffType Difference type, either added or removed
  */ function createSign(diffType) {
-  switch(diffType){
+  switch (diffType) {
     case DiffType.added:
       return "+   ";
     case DiffType.removed:
@@ -330,19 +394,31 @@ export function buildMessage(diffResult, { stringDiff = false } = {}) {
   const messages = [], diffMessages = [];
   messages.push("");
   messages.push("");
-  messages.push(`    ${gray(bold("[Diff]"))} ${red(bold("Actual"))} / ${green(bold("Expected"))}`);
+  messages.push(
+    `    ${gray(bold("[Diff]"))} ${red(bold("Actual"))} / ${
+      green(bold("Expected"))
+    }`,
+  );
   messages.push("");
   messages.push("");
-  diffResult.forEach((result)=>{
+  diffResult.forEach((result) => {
     const c = createColor(result.type);
-    const line = result.details?.map((detail)=>detail.type !== DiffType.common ? createColor(detail.type, {
-        background: true
-      })(detail.value) : detail.value).join("") ?? result.value;
+    const line = result.details?.map((detail) =>
+      detail.type !== DiffType.common
+        ? createColor(detail.type, {
+          background: true,
+        })(detail.value)
+        : detail.value
+    ).join("") ?? result.value;
     diffMessages.push(c(`${createSign(result.type)}${line}`));
   });
-  messages.push(...stringDiff ? [
-    diffMessages.join("")
-  ] : diffMessages);
+  messages.push(
+    ...stringDiff
+      ? [
+        diffMessages.join(""),
+      ]
+      : diffMessages,
+  );
   messages.push("");
   return messages;
 }

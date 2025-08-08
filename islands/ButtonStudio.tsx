@@ -55,9 +55,11 @@ export default function ButtonStudio() {
           'url("data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23f5ead6" fill-opacity="0.3"%3E%3Ccircle cx="7" cy="7" r="1.5"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
       }}
     >
-      {/* ===================================================================
+      {
+        /* ===================================================================
           TRANSCRIPT MODAL - Shows transcription results
-          =================================================================== */}
+          =================================================================== */
+      }
       {showTranscriptModal.value && (
         <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full mx-4 max-h-[80vh] overflow-auto border-4 border-black">
@@ -103,9 +105,11 @@ export default function ButtonStudio() {
         </div>
       )}
 
-      {/* ===================================================================
+      {
+        /* ===================================================================
           HEADER - Brutalist title with audio settings
-          =================================================================== */}
+          =================================================================== */
+      }
       <header class="pt-20 pb-12 px-6">
         <div class="max-w-5xl mx-auto text-center relative">
           <h1 class="text-7xl md:text-8xl font-black text-black tracking-tight leading-none mb-4">
@@ -132,9 +136,11 @@ export default function ButtonStudio() {
         </div>
       </header>
 
-      {/* ===================================================================
+      {
+        /* ===================================================================
           MAIN LAYOUT - Two-column responsive design
-          =================================================================== */}
+          =================================================================== */
+      }
       <section class="px-4 sm:px-6 pb-16">
         <div class="max-w-7xl mx-auto">
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">

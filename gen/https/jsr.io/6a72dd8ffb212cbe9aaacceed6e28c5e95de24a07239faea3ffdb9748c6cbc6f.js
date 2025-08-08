@@ -5,14 +5,14 @@ export async function rootInfo() {
       "info",
       "--json",
       "--no-config",
-      "--no-lock"
+      "--no-lock",
     ],
     cwd: tmpDir,
     env: {
-      DENO_NO_PACKAGE_JSON: "true"
+      DENO_NO_PACKAGE_JSON: "true",
     },
     stdout: "piped",
-    stderr: "inherit"
+    stderr: "inherit",
   };
   const output = await new Deno.Command(Deno.execPath(), opts).output();
   if (!output.success) {
@@ -25,7 +25,7 @@ let tmpDir;
 async function info(specifier, options) {
   const args = [
     "info",
-    "--json"
+    "--json",
   ];
   if (!Deno.version.deno.startsWith("1.")) {
     args.push("--allow-import");
@@ -34,10 +34,10 @@ async function info(specifier, options) {
     args,
     cwd: undefined,
     env: {
-      DENO_NO_PACKAGE_JSON: "true"
+      DENO_NO_PACKAGE_JSON: "true",
     },
     stdout: "piped",
-    stderr: "inherit"
+    stderr: "inherit",
   };
   if (typeof options.config === "string") {
     opts.args.push("--config", options.config);
@@ -83,7 +83,7 @@ export class InfoCache {
   #modules = new Map();
   #redirects = new Map();
   #npmPackages = new Map();
-  constructor(options = {}){
+  constructor(options = {}) {
     this.#options = options;
   }
   async get(specifier) {
@@ -102,7 +102,7 @@ export class InfoCache {
   #resolve(specifier) {
     const original = specifier;
     let counter = 0;
-    while(counter++ < 10){
+    while (counter++ < 10) {
       const redirect = this.#redirects.get(specifier);
       if (redirect === undefined) return specifier;
       specifier = redirect;
@@ -114,21 +114,21 @@ export class InfoCache {
     return this.#modules.get(specifier);
   }
   async #queueLoad(specifier) {
-    while(true){
+    while (true) {
       if (this.#pending === null) {
         this.#pending = {
           specifiers: new Set([
-            specifier
+            specifier,
           ]),
-          done: (async ()=>{
-            await new Promise((r)=>setTimeout(r, 5));
+          done: (async () => {
+            await new Promise((r) => setTimeout(r, 5));
             const specifiers = this.#pending.specifiers;
             this.#pending.specifiers = null;
             await this.#load([
-              ...specifiers
+              ...specifiers,
             ]);
             this.#pending = null;
-          })()
+          })(),
         };
         await this.#pending.done;
         return;
@@ -143,14 +143,14 @@ export class InfoCache {
   }
   async #load(specifiers) {
     await this.#populate(specifiers);
-    for (let specifier of specifiers){
+    for (let specifier of specifiers) {
       specifier = this.#resolve(specifier);
       const entry = this.#modules.get(specifier);
       if (entry === undefined && specifier.startsWith("npm:")) {
         // we hit https://github.com/denoland/deno/issues/18043, so we have to
         // perform another load to get the actual data of the redirected specifier
         await this.#populate([
-          specifier
+          specifier,
         ]);
       }
     }
@@ -160,18 +160,25 @@ export class InfoCache {
     if (specifiers.length === 1) {
       specifier = specifiers[0];
     } else {
-      specifier = `data:application/javascript,${encodeURIComponent(specifiers.map((s)=>`import ${JSON.stringify(s)};`).join(""))}`;
+      specifier = `data:application/javascript,${
+        encodeURIComponent(
+          specifiers.map((s) => `import ${JSON.stringify(s)};`).join(""),
+        )
+      }`;
     }
-    const { modules, redirects, npmPackages } = await info(specifier, this.#options);
-    for (const module of modules){
+    const { modules, redirects, npmPackages } = await info(
+      specifier,
+      this.#options,
+    );
+    for (const module of modules) {
       if (specifiers.length !== 1 && module.specifier === specifier) continue;
       this.#modules.set(module.specifier, module);
     }
-    for (const [from, to] of Object.entries(redirects)){
+    for (const [from, to] of Object.entries(redirects)) {
       this.#redirects.set(from, to);
     }
     if (npmPackages !== undefined) {
-      for (const [id, npmPackage] of Object.entries(npmPackages)){
+      for (const [id, npmPackage] of Object.entries(npmPackages)) {
         this.#npmPackages.set(id, npmPackage);
       }
     }

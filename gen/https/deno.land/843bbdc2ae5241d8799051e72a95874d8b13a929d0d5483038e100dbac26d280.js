@@ -15,7 +15,11 @@ import { getFileInfoType } from "./_get_file_info_type.ts";
   try {
     const fileInfo = await Deno.lstat(dir);
     if (!fileInfo.isDirectory) {
-      throw new Error(`Ensure path exists, expected 'dir', got '${getFileInfoType(fileInfo)}'`);
+      throw new Error(
+        `Ensure path exists, expected 'dir', got '${
+          getFileInfoType(fileInfo)
+        }'`,
+      );
     }
     return;
   } catch (err) {
@@ -27,7 +31,7 @@ import { getFileInfoType } from "./_get_file_info_type.ts";
   // This can be racy. So we catch AlreadyExists and check lstat again.
   try {
     await Deno.mkdir(dir, {
-      recursive: true
+      recursive: true,
     });
   } catch (err) {
     if (!(err instanceof Deno.errors.AlreadyExists)) {
@@ -35,7 +39,11 @@ import { getFileInfoType } from "./_get_file_info_type.ts";
     }
     const fileInfo = await Deno.lstat(dir);
     if (!fileInfo.isDirectory) {
-      throw new Error(`Ensure path exists, expected 'dir', got '${getFileInfoType(fileInfo)}'`);
+      throw new Error(
+        `Ensure path exists, expected 'dir', got '${
+          getFileInfoType(fileInfo)
+        }'`,
+      );
     }
   }
 }
@@ -54,7 +62,11 @@ import { getFileInfoType } from "./_get_file_info_type.ts";
   try {
     const fileInfo = Deno.lstatSync(dir);
     if (!fileInfo.isDirectory) {
-      throw new Error(`Ensure path exists, expected 'dir', got '${getFileInfoType(fileInfo)}'`);
+      throw new Error(
+        `Ensure path exists, expected 'dir', got '${
+          getFileInfoType(fileInfo)
+        }'`,
+      );
     }
     return;
   } catch (err) {
@@ -66,7 +78,7 @@ import { getFileInfoType } from "./_get_file_info_type.ts";
   // This can be racy. So we catch AlreadyExists and check lstat again.
   try {
     Deno.mkdirSync(dir, {
-      recursive: true
+      recursive: true,
     });
   } catch (err) {
     if (!(err instanceof Deno.errors.AlreadyExists)) {
@@ -74,7 +86,11 @@ import { getFileInfoType } from "./_get_file_info_type.ts";
     }
     const fileInfo = Deno.lstatSync(dir);
     if (!fileInfo.isDirectory) {
-      throw new Error(`Ensure path exists, expected 'dir', got '${getFileInfoType(fileInfo)}'`);
+      throw new Error(
+        `Ensure path exists, expected 'dir', got '${
+          getFileInfoType(fileInfo)
+        }'`,
+      );
     }
   }
 }

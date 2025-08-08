@@ -14,43 +14,53 @@ export function renderHtml(state) {
     let finalComp = h(routeComponent, state.routeOptions);
     // Skip page component
     let i = componentStack.length - 1;
-    while(i--){
+    while (i--) {
       const component = componentStack[i];
       const curComp = finalComp;
       finalComp = h(component, {
         ...state.routeOptions,
-        Component () {
+        Component() {
           return curComp;
-        }
+        },
       });
     }
-    const app = h(CSP_CONTEXT.Provider, // deno-lint-ignore no-explicit-any
-    {
-      value: state.csp
-    }, h(HEAD_CONTEXT.Provider, {
-      value: state.headVNodes,
-      children: finalComp
-    }));
+    const app = h(
+      CSP_CONTEXT.Provider, // deno-lint-ignore no-explicit-any
+      {
+        value: state.csp,
+      },
+      h(HEAD_CONTEXT.Provider, {
+        value: state.headVNodes,
+        children: finalComp,
+      }),
+    );
     let html = renderToString(app);
-    for (const [id, children] of state.slots.entries()){
+    for (const [id, children] of state.slots.entries()) {
       const slotHtml = renderToString(h(Fragment, null, children));
       const templateId = id.replace(/:/g, "-");
       html += `<template id="${templateId}">${slotHtml}</template>`;
     }
     return html;
-  } finally{
+  } finally {
     setRenderState(null);
   }
 }
 export function renderOuterDocument(state, opts) {
-  const { docHtml, docHead, renderedHtmlTag, docBody, docHeadNodes, headVNodes } = state;
+  const {
+    docHtml,
+    docHead,
+    renderedHtmlTag,
+    docBody,
+    docHeadNodes,
+    headVNodes,
+  } = state;
   let docTitle = state.docTitle;
   // Filter out duplicate head vnodes by "key" if set
   const filteredHeadNodes = [];
   if (headVNodes.length > 0) {
     const seen = new Map();
     const userChildren = toChildArray(headVNodes);
-    for(let i = 0; i < userChildren.length; i++){
+    for (let i = 0; i < userChildren.length; i++) {
       const child = userChildren[i];
       if (isValidElement(child)) {
         if (child.type === "title") {
@@ -66,30 +76,53 @@ export function renderOuterDocument(state, opts) {
       filteredHeadNodes.push(...seen.values());
     }
   }
-  const page = h("html", docHtml ?? {
-    lang: opts.lang
-  }, h("head", docHead, !renderedHtmlTag ? h("meta", {
-    charset: "utf-8"
-  }) : null, !renderedHtmlTag ? h("meta", {
-    name: "viewport",
-    content: "width=device-width, initial-scale=1.0"
-  }) : null, docTitle, docHeadNodes.map((node)=>h(node.type, node.props)), opts.preloads.map((src)=>h("link", {
-      rel: "modulepreload",
-      href: withBase(src, state.basePath)
-    })), opts.moduleScripts.map(([src, nonce])=>h("script", {
-      src: withBase(src, state.basePath),
-      nonce,
-      type: "module"
-    })), filteredHeadNodes), h("body", {
-    ...docBody,
-    dangerouslySetInnerHTML: {
-      __html: opts.bodyHtml
-    }
-  }));
+  const page = h(
+    "html",
+    docHtml ?? {
+      lang: opts.lang,
+    },
+    h(
+      "head",
+      docHead,
+      !renderedHtmlTag
+        ? h("meta", {
+          charset: "utf-8",
+        })
+        : null,
+      !renderedHtmlTag
+        ? h("meta", {
+          name: "viewport",
+          content: "width=device-width, initial-scale=1.0",
+        })
+        : null,
+      docTitle,
+      docHeadNodes.map((node) => h(node.type, node.props)),
+      opts.preloads.map((src) =>
+        h("link", {
+          rel: "modulepreload",
+          href: withBase(src, state.basePath),
+        })
+      ),
+      opts.moduleScripts.map(([src, nonce]) =>
+        h("script", {
+          src: withBase(src, state.basePath),
+          nonce,
+          type: "module",
+        })
+      ),
+      filteredHeadNodes,
+    ),
+    h("body", {
+      ...docBody,
+      dangerouslySetInnerHTML: {
+        __html: opts.bodyHtml,
+      },
+    }),
+  );
   try {
     setRenderState(state);
     return "<!DOCTYPE html>" + renderToString(page);
-  } finally{
+  } finally {
     setRenderState(null);
   }
 }

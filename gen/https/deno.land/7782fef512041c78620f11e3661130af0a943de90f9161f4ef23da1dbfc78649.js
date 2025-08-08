@@ -4,43 +4,44 @@
  *
  * @module
  * @private
- */ /** A map of extensions for a given media type. */ export const extensions = new Map();
+ */ /** A map of extensions for a given media type. */ export const extensions =
+  new Map();
 export function consumeToken(v) {
   const notPos = indexOf(v, isNotTokenChar);
   if (notPos === -1) {
     return [
       v,
-      ""
+      "",
     ];
   }
   if (notPos === 0) {
     return [
       "",
-      v
+      v,
     ];
   }
   return [
     v.slice(0, notPos),
-    v.slice(notPos)
+    v.slice(notPos),
   ];
 }
 export function consumeValue(v) {
   if (!v) {
     return [
       "",
-      v
+      v,
     ];
   }
   if (v[0] !== `"`) {
     return consumeToken(v);
   }
   let value = "";
-  for(let i = 1; i < v.length; i++){
+  for (let i = 1; i < v.length; i++) {
     const r = v[i];
     if (r === `"`) {
       return [
         value,
-        v.slice(i + 1)
+        v.slice(i + 1),
       ];
     }
     const next = v[i + 1];
@@ -52,14 +53,14 @@ export function consumeValue(v) {
     if (r === "\r" || r === "\n") {
       return [
         "",
-        v
+        v,
       ];
     }
     value += v[i];
   }
   return [
     "",
-    v
+    v,
   ];
 }
 export function consumeMediaParam(v) {
@@ -68,7 +69,7 @@ export function consumeMediaParam(v) {
     return [
       "",
       "",
-      v
+      v,
     ];
   }
   rest = rest.slice(1);
@@ -80,7 +81,7 @@ export function consumeMediaParam(v) {
     return [
       "",
       "",
-      v
+      v,
     ];
   }
   rest = rest.slice(1);
@@ -90,14 +91,14 @@ export function consumeMediaParam(v) {
     return [
       "",
       "",
-      v
+      v,
     ];
   }
   rest = rest2;
   return [
     param,
     value,
-    rest
+    rest,
   ];
 }
 export function decode2331Encoding(v) {
@@ -121,7 +122,7 @@ export function decode2331Encoding(v) {
 }
 function indexOf(s, fn) {
   let i = -1;
-  for (const v of s){
+  for (const v of s) {
     i++;
     if (fn(v)) {
       return i;
@@ -155,9 +156,11 @@ function isTSpecial(r) {
 const CHAR_CODE_SPACE = " ".charCodeAt(0);
 const CHAR_CODE_TILDE = "~".charCodeAt(0);
 export function needsEncoding(s) {
-  for (const b of s){
+  for (const b of s) {
     const charCode = b.charCodeAt(0);
-    if ((charCode < CHAR_CODE_SPACE || charCode > CHAR_CODE_TILDE) && b !== "\t") {
+    if (
+      (charCode < CHAR_CODE_SPACE || charCode > CHAR_CODE_TILDE) && b !== "\t"
+    ) {
       return true;
     }
   }

@@ -33,7 +33,7 @@ import { isIterator, isToken, needsEncoding } from "./_util.ts";
     param = isIterator(param) ? Object.fromEntries(param) : param;
     const attrs = Object.keys(param);
     attrs.sort();
-    for (const attribute of attrs){
+    for (const attribute of attrs) {
       if (!isToken(attribute)) {
         return "";
       }
@@ -52,7 +52,7 @@ import { isIterator, isToken, needsEncoding } from "./_util.ts";
         b += value;
         continue;
       }
-      b += `"${value.replace(/["\\]/gi, (m)=>`\\${m}`)}"`;
+      b += `"${value.replace(/["\\]/gi, (m) => `\\${m}`)}"`;
     }
   }
   return b;

@@ -43,7 +43,7 @@ import { fromFileUrl } from "./from_file_url.ts";
         let j = 2;
         let last = j;
         // Match 1 or more non-path separators
-        for(; j < len; ++j){
+        for (; j < len; ++j) {
           if (isPathSeparator(path.charCodeAt(j))) break;
         }
         if (j < len && j !== last) {
@@ -51,14 +51,14 @@ import { fromFileUrl } from "./from_file_url.ts";
           // Matched!
           last = j;
           // Match 1 or more path separators
-          for(; j < len; ++j){
+          for (; j < len; ++j) {
             if (!isPathSeparator(path.charCodeAt(j))) break;
           }
           if (j < len && j !== last) {
             // Matched!
             last = j;
             // Match 1 or more non-path separators
-            for(; j < len; ++j){
+            for (; j < len; ++j) {
               if (isPathSeparator(path.charCodeAt(j))) break;
             }
             if (j === len) {
@@ -98,7 +98,12 @@ import { fromFileUrl } from "./from_file_url.ts";
   }
   let tail;
   if (rootEnd < len) {
-    tail = normalizeString(path.slice(rootEnd), !isAbsolute, "\\", isPathSeparator);
+    tail = normalizeString(
+      path.slice(rootEnd),
+      !isAbsolute,
+      "\\",
+      isPathSeparator,
+    );
   } else {
     tail = "";
   }

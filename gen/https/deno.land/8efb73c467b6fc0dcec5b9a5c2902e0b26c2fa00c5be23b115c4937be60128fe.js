@@ -14,25 +14,32 @@ const regExpEscapeChars = [
   "\\",
   "^",
   "{",
-  "|"
+  "|",
 ];
 const rangeEscapeChars = [
   "-",
   "\\",
-  "]"
+  "]",
 ];
-export function _globToRegExp(c, glob, { extended = true, globstar: globstarOption = true, // os = osType,
-caseInsensitive = false } = {}) {
+export function _globToRegExp(
+  c,
+  glob,
+  {
+    extended = true,
+    globstar: globstarOption = true, // os = osType,
+    caseInsensitive = false,
+  } = {},
+) {
   if (glob === "") {
     return /(?!)/;
   }
   // Remove trailing separators.
   let newLength = glob.length;
-  for(; newLength > 1 && c.seps.includes(glob[newLength - 1]); newLength--);
+  for (; newLength > 1 && c.seps.includes(glob[newLength - 1]); newLength--);
   glob = glob.slice(0, newLength);
   let regExpString = "";
   // Terminates correctly. Trust that `j` is incremented every iteration.
-  for(let j = 0; j < glob.length;){
+  for (let j = 0; j < glob.length;) {
     let segment = "";
     const groupStack = [];
     let inRange = false;
@@ -40,7 +47,7 @@ caseInsensitive = false } = {}) {
     let endsWithSep = false;
     let i = j;
     // Terminates with `i` at the non-inclusive end of the current segment.
-    for(; i < glob.length && !c.seps.includes(glob[i]); i++){
+    for (; i < glob.length && !c.seps.includes(glob[i]); i++) {
       if (inEscape) {
         inEscape = false;
         const escapeChars = inRange ? rangeEscapeChars : regExpEscapeChars;
@@ -66,7 +73,7 @@ caseInsensitive = false } = {}) {
         } else if (glob[i + 1] === ":") {
           let k = i + 1;
           let value = "";
-          while(glob[k + 1] !== undefined && glob[k + 1] !== ":"){
+          while (glob[k + 1] !== undefined && glob[k + 1] !== ":") {
             value += glob[k + 1];
             k++;
           }
@@ -104,7 +111,10 @@ caseInsensitive = false } = {}) {
         }
         continue;
       }
-      if (glob[i] === ")" && groupStack.length > 0 && groupStack[groupStack.length - 1] !== "BRACE") {
+      if (
+        glob[i] === ")" && groupStack.length > 0 &&
+        groupStack[groupStack.length - 1] !== "BRACE"
+      ) {
         segment += ")";
         const type = groupStack.pop();
         if (type === "!") {
@@ -114,7 +124,10 @@ caseInsensitive = false } = {}) {
         }
         continue;
       }
-      if (glob[i] === "|" && groupStack.length > 0 && groupStack[groupStack.length - 1] !== "BRACE") {
+      if (
+        glob[i] === "|" && groupStack.length > 0 &&
+        groupStack[groupStack.length - 1] !== "BRACE"
+      ) {
         segment += "|";
         continue;
       }
@@ -168,18 +181,20 @@ caseInsensitive = false } = {}) {
         } else {
           const prevChar = glob[i - 1];
           let numStars = 1;
-          while(glob[i + 1] === "*"){
+          while (glob[i + 1] === "*") {
             i++;
             numStars++;
           }
           const nextChar = glob[i + 1];
-          if (globstarOption && numStars === 2 && [
-            ...c.seps,
-            undefined
-          ].includes(prevChar) && [
-            ...c.seps,
-            undefined
-          ].includes(nextChar)) {
+          if (
+            globstarOption && numStars === 2 && [
+              ...c.seps,
+              undefined,
+            ].includes(prevChar) && [
+              ...c.seps,
+              undefined,
+            ].includes(nextChar)
+          ) {
             segment += c.globstar;
             endsWithSep = true;
           } else {
@@ -194,7 +209,7 @@ caseInsensitive = false } = {}) {
     if (groupStack.length > 0 || inRange || inEscape) {
       // Parse failure. Take all characters from this segment literally.
       segment = "";
-      for (const c of glob.slice(j, i)){
+      for (const c of glob.slice(j, i)) {
         segment += regExpEscapeChars.includes(c) ? `\\${c}` : c;
         endsWithSep = false;
       }
@@ -205,7 +220,7 @@ caseInsensitive = false } = {}) {
       endsWithSep = true;
     }
     // Terminates with `i` at the start of the next segment.
-    while(c.seps.includes(glob[i]))i++;
+    while (c.seps.includes(glob[i])) i++;
     // Check that the next value of `j` is indeed higher than the current value.
     if (!(i > j)) {
       throw new Error("Assertion failure: i > j (potential infinite loop)");

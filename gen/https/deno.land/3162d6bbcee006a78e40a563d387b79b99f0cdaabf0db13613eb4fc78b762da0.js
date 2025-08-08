@@ -8,7 +8,8 @@
  * This module is browser compatible.
  *
  * @module
- */ import { assert } from "../assert/assert.ts";
+ */
+import { assert } from "../assert/assert.ts";
 /**
  * Converts a JSON with Comments (JSONC) string into an object.
  * If a syntax error is found, throw a {@linkcode SyntaxError}.
@@ -30,7 +31,7 @@
     throw new TypeError("parse is not a constructor");
   }
   return new JSONCParser(text, {
-    allowTrailingComma
+    allowTrailingComma,
   }).parse();
 }
 const originalJSONParse = globalThis.JSON.parse;
@@ -39,13 +40,13 @@ class JSONCParser {
   #whitespace = new Set(" \t\r\n");
   #numberEndToken = new Set([
     ..."[]{}:,/",
-    ...this.#whitespace
+    ...this.#whitespace,
   ]);
   #text;
   #length;
   #tokenized;
   #options;
-  constructor(text, options){
+  constructor(text, options) {
     this.#text = `${text}`;
     this.#length = this.#text.length;
     this.#tokenized = this.#tokenize();
@@ -69,7 +70,7 @@ class JSONCParser {
     return value;
   }
   /** Split the JSONC string into token units. Whitespace and comments are skipped. */ *#tokenize() {
-    for(let i = 0; i < this.#length; i++){
+    for (let i = 0; i < this.#length; i++) {
       // skip whitespace
       if (this.#whitespace.has(this.#text[i])) {
         continue;
@@ -78,7 +79,7 @@ class JSONCParser {
       if (this.#text[i] === "/" && this.#text[i + 1] === "*") {
         i += 2;
         let hasEndOfComment = false;
-        for(; i < this.#length; i++){
+        for (; i < this.#length; i++) {
           if (this.#text[i] === "*" && this.#text[i + 1] === "/") {
             hasEndOfComment = true;
             break;
@@ -93,93 +94,91 @@ class JSONCParser {
       // skip single line comment (`//...`)
       if (this.#text[i] === "/" && this.#text[i + 1] === "/") {
         i += 2;
-        for(; i < this.#length; i++){
+        for (; i < this.#length; i++) {
           if (this.#text[i] === "\n" || this.#text[i] === "\r") {
             break;
           }
         }
         continue;
       }
-      switch(this.#text[i]){
+      switch (this.#text[i]) {
         case "{":
           yield {
             type: "BeginObject",
-            position: i
+            position: i,
           };
           break;
         case "}":
           yield {
             type: "EndObject",
-            position: i
+            position: i,
           };
           break;
         case "[":
           yield {
             type: "BeginArray",
-            position: i
+            position: i,
           };
           break;
         case "]":
           yield {
             type: "EndArray",
-            position: i
+            position: i,
           };
           break;
         case ":":
           yield {
             type: "NameSeparator",
-            position: i
+            position: i,
           };
           break;
         case ",":
           yield {
             type: "ValueSeparator",
-            position: i
+            position: i,
           };
           break;
-        case '"':
-          {
-            const startIndex = i;
-            // Need to handle consecutive backslashes correctly
-            // '"\\""' => '"'
-            // '"\\\\"' => '\\'
-            // '"\\\\\\""' => '\\"'
-            // '"\\\\\\\\"' => '\\\\'
-            let shouldEscapeNext = false;
-            i++;
-            for(; i < this.#length; i++){
-              if (this.#text[i] === '"' && !shouldEscapeNext) {
-                break;
-              }
-              shouldEscapeNext = this.#text[i] === "\\" && !shouldEscapeNext;
+        case '"': {
+          const startIndex = i;
+          // Need to handle consecutive backslashes correctly
+          // '"\\""' => '"'
+          // '"\\\\"' => '\\'
+          // '"\\\\\\""' => '\\"'
+          // '"\\\\\\\\"' => '\\\\'
+          let shouldEscapeNext = false;
+          i++;
+          for (; i < this.#length; i++) {
+            if (this.#text[i] === '"' && !shouldEscapeNext) {
+              break;
             }
-            yield {
-              type: "String",
-              sourceText: this.#text.substring(startIndex, i + 1),
-              position: startIndex
-            };
-            break;
+            shouldEscapeNext = this.#text[i] === "\\" && !shouldEscapeNext;
           }
-        default:
-          {
-            const startIndex = i;
-            for(; i < this.#length; i++){
-              if (this.#numberEndToken.has(this.#text[i])) {
-                break;
-              }
+          yield {
+            type: "String",
+            sourceText: this.#text.substring(startIndex, i + 1),
+            position: startIndex,
+          };
+          break;
+        }
+        default: {
+          const startIndex = i;
+          for (; i < this.#length; i++) {
+            if (this.#numberEndToken.has(this.#text[i])) {
+              break;
             }
-            i--;
-            yield {
-              type: "NullOrTrueOrFalseOrNumber",
-              sourceText: this.#text.substring(startIndex, i + 1),
-              position: startIndex
-            };
           }
+          i--;
+          yield {
+            type: "NullOrTrueOrFalseOrNumber",
+            sourceText: this.#text.substring(startIndex, i + 1),
+            position: startIndex,
+          };
+        }
       }
     }
   }
   #parseJsonValue(value) {
-    switch(value.type){
+    switch (value.type) {
       case "BeginObject":
         return this.#parseObject();
       case "BeginArray":
@@ -216,9 +215,12 @@ class JSONCParser {
     //      │   │   │   │   │   │   ┌─────token3
     //      │   │   │   │   │   │   │   ┌─token4
     //  { "key" : value , "key" : value }
-    for(let isFirst = true;; isFirst = false){
+    for (let isFirst = true;; isFirst = false) {
       const token1 = this.#getNext();
-      if ((isFirst || this.#options.allowTrailingComma) && token1.type === "EndObject") {
+      if (
+        (isFirst || this.#options.allowTrailingComma) &&
+        token1.type === "EndObject"
+      ) {
         return target;
       }
       if (token1.type !== "String") {
@@ -234,7 +236,7 @@ class JSONCParser {
         value: this.#parseJsonValue(token3),
         writable: true,
         enumerable: true,
-        configurable: true
+        configurable: true,
       });
       const token4 = this.#getNext();
       if (token4.type === "EndObject") {
@@ -261,9 +263,12 @@ class JSONCParser {
     //      │   │   ┌─────token1
     //      │   │   │   ┌─token2
     //  [ value , value ]
-    for(let isFirst = true;; isFirst = false){
+    for (let isFirst = true;; isFirst = false) {
       const token1 = this.#getNext();
-      if ((isFirst || this.#options.allowTrailingComma) && token1.type === "EndArray") {
+      if (
+        (isFirst || this.#options.allowTrailingComma) &&
+        token1.type === "EndArray"
+      ) {
         return target;
       }
       target.push(this.#parseJsonValue(token1));
@@ -281,7 +286,7 @@ class JSONCParser {
     try {
       // Use JSON.parse to handle `\u0000` etc. correctly.
       parsed = originalJSONParse(value.sourceText);
-    } catch  {
+    } catch {
       throw new SyntaxError(buildErrorMessage(value));
     }
     assert(typeof parsed === "string");
@@ -301,7 +306,7 @@ class JSONCParser {
     try {
       // Use JSON.parse to handle `+100`, `Infinity` etc. correctly.
       parsed = originalJSONParse(value.sourceText);
-    } catch  {
+    } catch {
       throw new SyntaxError(buildErrorMessage(value));
     }
     assert(typeof parsed === "number");
@@ -310,7 +315,7 @@ class JSONCParser {
 }
 function buildErrorMessage({ type, sourceText, position }) {
   let token = "";
-  switch(type){
+  switch (type) {
     case "BeginObject":
       token = "{";
       break;
@@ -332,7 +337,9 @@ function buildErrorMessage({ type, sourceText, position }) {
     case "NullOrTrueOrFalseOrNumber":
     case "String":
       // Truncate the string so that it is within 30 lengths.
-      token = 30 < sourceText.length ? `${sourceText.slice(0, 30)}...` : sourceText;
+      token = 30 < sourceText.length
+        ? `${sourceText.slice(0, 30)}...`
+        : sourceText;
       break;
     default:
       throw new Error("unreachable");

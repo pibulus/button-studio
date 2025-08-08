@@ -2,13 +2,17 @@ import { denoPlugins, fromFileUrl, regexpEscape, relative } from "./deps.ts";
 let esbuild;
 export async function initializeEsbuild() {
   esbuild = // deno-lint-ignore no-deprecated-deno-api
-  Deno.run === undefined || Deno.env.get("FRESH_ESBUILD_LOADER") === "portable" ? await import("https://deno.land/x/esbuild@v0.20.2/wasm.js") : await import("https://deno.land/x/esbuild@v0.20.2/mod.js");
-  const esbuildWasmURL = new URL("./esbuild_v0.20.2.wasm", import.meta.url).href;
+    Deno.run === undefined ||
+      Deno.env.get("FRESH_ESBUILD_LOADER") === "portable"
+      ? await import("https://deno.land/x/esbuild@v0.20.2/wasm.js")
+      : await import("https://deno.land/x/esbuild@v0.20.2/mod.js");
+  const esbuildWasmURL =
+    new URL("./esbuild_v0.20.2.wasm", import.meta.url).href;
   // deno-lint-ignore no-deprecated-deno-api
   if (Deno.run === undefined) {
     await esbuild.initialize({
       wasmURL: esbuildWasmURL,
-      worker: false
+      worker: false,
     });
   } else {
     await esbuild.initialize({});
@@ -17,7 +21,7 @@ export async function initializeEsbuild() {
 }
 export class EsbuildBuilder {
   #options;
-  constructor(options){
+  constructor(options) {
     this.#options = options;
   }
   async build() {
@@ -28,13 +32,15 @@ export class EsbuildBuilder {
       const absWorkingDir = opts.absoluteWorkingDir;
       // In dev-mode we skip identifier minification to be able to show proper
       // component names in Preact DevTools instead of single characters.
-      const minifyOptions = opts.dev ? {
-        minifyIdentifiers: false,
-        minifySyntax: true,
-        minifyWhitespace: true
-      } : {
-        minify: true
-      };
+      const minifyOptions = opts.dev
+        ? {
+          minifyIdentifiers: false,
+          minifySyntax: true,
+          minifyWhitespace: true,
+        }
+        : {
+          minify: true,
+        };
       const bundle = await esbuild.build({
         entryPoints: opts.entrypoints,
         platform: "browser",
@@ -45,7 +51,13 @@ export class EsbuildBuilder {
         treeShaking: true,
         sourcemap: opts.dev ? "linked" : false,
         ...minifyOptions,
-        jsx: opts.jsx === "react" ? "transform" : opts.jsx === "react-native" || opts.jsx === "preserve" ? "preserve" : !opts.jsxImportSource ? "transform" : "automatic",
+        jsx: opts.jsx === "react"
+          ? "transform"
+          : opts.jsx === "react-native" || opts.jsx === "preserve"
+          ? "preserve"
+          : !opts.jsxImportSource
+          ? "transform"
+          : "automatic",
         jsxImportSource: opts.jsxImportSource ?? "preact",
         absWorkingDir,
         outdir: ".",
@@ -55,28 +67,33 @@ export class EsbuildBuilder {
           devClientUrlPlugin(opts.basePath),
           buildIdPlugin(opts.buildID),
           ...denoPlugins({
-            configPath: opts.configPath
-          })
-        ]
+            configPath: opts.configPath,
+          }),
+        ],
       });
       const files = new Map();
       const dependencies = new Map();
       if (bundle.outputFiles) {
-        for (const file of bundle.outputFiles){
+        for (const file of bundle.outputFiles) {
           const path = relative(absWorkingDir, file.path);
           files.set(path, file.contents);
         }
       }
-      files.set("metafile.json", new TextEncoder().encode(JSON.stringify(bundle.metafile)));
+      files.set(
+        "metafile.json",
+        new TextEncoder().encode(JSON.stringify(bundle.metafile)),
+      );
       if (bundle.metafile) {
         const metaOutputs = new Map(Object.entries(bundle.metafile.outputs));
-        for (const [path, entry] of metaOutputs.entries()){
-          const imports = entry.imports.filter(({ kind })=>kind === "import-statement").map(({ path })=>path);
+        for (const [path, entry] of metaOutputs.entries()) {
+          const imports = entry.imports.filter(({ kind }) =>
+            kind === "import-statement"
+          ).map(({ path }) => path);
           dependencies.set(path, imports);
         }
       }
       return new EsbuildSnapshot(files, dependencies);
-    } finally{
+    } finally {
       await esbuild.stop();
     }
   }
@@ -84,21 +101,24 @@ export class EsbuildBuilder {
 function devClientUrlPlugin(basePath) {
   return {
     name: "dev-client-url",
-    setup (build) {
+    setup(build) {
       build.onLoad({
         filter: /client\.ts$/,
-        namespace: "file"
-      }, async (args)=>{
+        namespace: "file",
+      }, async (args) => {
         // Load the original script
         const contents = await Deno.readTextFile(args.path);
         // Replace the URL
-        const modifiedContents = contents.replace("/_frsh/alive", `${basePath}/_frsh/alive`);
+        const modifiedContents = contents.replace(
+          "/_frsh/alive",
+          `${basePath}/_frsh/alive`,
+        );
         return {
           contents: modifiedContents,
-          loader: "ts"
+          loader: "ts",
         };
       });
-    }
+    },
   };
 }
 function buildIdPlugin(buildId) {
@@ -110,7 +130,7 @@ function buildIdPlugin(buildId) {
     const filter = new RegExp(`^${regexpEscape(path)}$`);
     options = {
       filter,
-      namespace: "file"
+      namespace: "file",
     };
   } else {
     const namespace = url.protocol.slice(0, -1);
@@ -118,22 +138,22 @@ function buildIdPlugin(buildId) {
     const filter = new RegExp(`^${regexpEscape(path)}$`);
     options = {
       filter,
-      namespace
+      namespace,
     };
   }
   return {
     name: "fresh-build-id",
-    setup (build) {
-      build.onLoad(options, ()=>({
-          contents: `export const BUILD_ID = "${buildId}";`
-        }));
-    }
+    setup(build) {
+      build.onLoad(options, () => ({
+        contents: `export const BUILD_ID = "${buildId}";`,
+      }));
+    },
   };
 }
 export class EsbuildSnapshot {
   #files;
   #dependencies;
-  constructor(files, dependencies){
+  constructor(files, dependencies) {
     this.#files = files;
     this.#dependencies = dependencies;
   }

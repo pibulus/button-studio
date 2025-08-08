@@ -24,9 +24,11 @@ function resolveSymlinkTarget(target, linkName) {
   const srcStatInfo = await Deno.lstat(targetRealPath);
   const srcFilePathType = getFileInfoType(srcStatInfo);
   await ensureDir(dirname(toPathString(linkName)));
-  const options = isWindows ? {
-    type: srcFilePathType === "dir" ? "dir" : "file"
-  } : undefined;
+  const options = isWindows
+    ? {
+      type: srcFilePathType === "dir" ? "dir" : "file",
+    }
+    : undefined;
   try {
     await Deno.symlink(target, linkName, options);
   } catch (error) {
@@ -46,9 +48,11 @@ function resolveSymlinkTarget(target, linkName) {
   const srcStatInfo = Deno.lstatSync(targetRealPath);
   const srcFilePathType = getFileInfoType(srcStatInfo);
   ensureDirSync(dirname(toPathString(linkName)));
-  const options = isWindows ? {
-    type: srcFilePathType === "dir" ? "dir" : "file"
-  } : undefined;
+  const options = isWindows
+    ? {
+      type: srcFilePathType === "dir" ? "dir" : "file",
+    }
+    : undefined;
   try {
     Deno.symlinkSync(target, linkName, options);
   } catch (error) {

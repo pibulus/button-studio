@@ -7,7 +7,7 @@ const newlineRegex = /(\r?\n)/g;
     throw new Error(`Specified char must be one character long.`);
   }
   let result = "";
-  for(let i = 0; i < str.length; i++){
+  for (let i = 0; i < str.length; i++) {
     if (str[i] === char) {
       result += "\\";
     }

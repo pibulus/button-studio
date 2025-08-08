@@ -2,23 +2,25 @@ import { dirname, fromFileUrl, isAbsolute, join, JSONC } from "./deps.ts";
 import { DEFAULT_RENDER_FN } from "./render.ts";
 export async function readDenoConfig(directory) {
   let dir = directory;
-  while(true){
-    for (const name of [
-      "deno.json",
-      "deno.jsonc"
-    ]){
+  while (true) {
+    for (
+      const name of [
+        "deno.json",
+        "deno.jsonc",
+      ]
+    ) {
       const path = join(dir, name);
       try {
         const file = await Deno.readTextFile(path);
         if (name.endsWith(".jsonc")) {
           return {
             config: JSONC.parse(file),
-            path
+            path,
           };
         } else {
           return {
             config: JSON.parse(file),
-            path
+            path,
           };
         }
       } catch (err) {
@@ -29,7 +31,9 @@ export async function readDenoConfig(directory) {
     }
     const parent = dirname(dir);
     if (parent === dir) {
-      throw new Error(`Could not find a deno.json file in the current directory or any parent directory.`);
+      throw new Error(
+        `Could not find a deno.json file in the current directory or any parent directory.`,
+      );
     }
     dir = parent;
   }
@@ -41,7 +45,9 @@ export async function getInternalFreshState(manifest, config) {
   const base = dirname(fromFileUrl(manifest.baseUrl));
   const { config: denoJson, path: denoJsonPath } = await readDenoConfig(base);
   if (typeof denoJson.importMap !== "string" && !isObject(denoJson.imports)) {
-    throw new Error("deno.json must contain an 'importMap' or 'imports' property.");
+    throw new Error(
+      "deno.json must contain an 'importMap' or 'imports' property.",
+    );
   }
   const isLegacyDev = Deno.env.get("__FRSH_LEGACY_DEV") === "true";
   /**
@@ -52,28 +58,36 @@ export async function getInternalFreshState(manifest, config) {
   if (config.router?.basePath) {
     basePath = config.router?.basePath;
     if (!basePath.startsWith("/")) {
-      throw new TypeError(`"basePath" option must start with "/". Received: "${basePath}"`);
+      throw new TypeError(
+        `"basePath" option must start with "/". Received: "${basePath}"`,
+      );
     }
     if (basePath.endsWith("/")) {
-      throw new TypeError(`"basePath" option must not end with "/". Received: "${basePath}"`);
+      throw new TypeError(
+        `"basePath" option must not end with "/". Received: "${basePath}"`,
+      );
     }
   }
   const internalConfig = {
     dev: isLegacyDev || Boolean(config.dev),
     build: {
-      outDir: config.build?.outDir ? parseFileOrUrl(config.build.outDir, base) : join(base, "_fresh"),
+      outDir: config.build?.outDir
+        ? parseFileOrUrl(config.build.outDir, base)
+        : join(base, "_fresh"),
       target: config.build?.target ?? [
         "chrome99",
         "firefox99",
-        "safari15"
-      ]
+        "safari15",
+      ],
     },
     plugins: config.plugins ?? [],
-    staticDir: config.staticDir ? parseFileOrUrl(config.staticDir, base) : join(base, "static"),
+    staticDir: config.staticDir
+      ? parseFileOrUrl(config.staticDir, base)
+      : join(base, "static"),
     render: config.render ?? DEFAULT_RENDER_FN,
     router: config.router,
     server: config.server ?? {},
-    basePath
+    basePath,
   };
   if (config.cert) {
     internalConfig.server.cert = config.cert;
@@ -106,7 +120,7 @@ export async function getInternalFreshState(manifest, config) {
     didLoadSnapshot: false,
     denoJsonPath,
     denoJson,
-    build: false
+    build: false,
   };
 }
 function parseFileOrUrl(input, base) {

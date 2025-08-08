@@ -9,7 +9,7 @@ import { parseRange } from "./parse_range.ts";
     // Return '*' instead of '' so that truthiness works.
     // This will throw if it's invalid anyway
     return parseRange(range);
-  } catch  {
+  } catch {
     return undefined;
   }
 }

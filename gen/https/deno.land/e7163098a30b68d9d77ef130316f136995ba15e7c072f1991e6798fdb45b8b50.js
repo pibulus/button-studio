@@ -19,7 +19,9 @@ async function ensureValidCopy(src, dest, options) {
     throw err;
   }
   if (options.isFolder && !destStat.isDirectory) {
-    throw new Error(`Cannot overwrite non-directory '${dest}' with directory '${src}'.`);
+    throw new Error(
+      `Cannot overwrite non-directory '${dest}' with directory '${src}'.`,
+    );
   }
   if (!options.overwrite) {
     throw new Deno.errors.AlreadyExists(`'${dest}' already exists.`);
@@ -37,7 +39,9 @@ function ensureValidCopySync(src, dest, options) {
     throw err;
   }
   if (options.isFolder && !destStat.isDirectory) {
-    throw new Error(`Cannot overwrite non-directory '${dest}' with directory '${src}'.`);
+    throw new Error(
+      `Cannot overwrite non-directory '${dest}' with directory '${src}'.`,
+    );
   }
   if (!options.overwrite) {
     throw new Deno.errors.AlreadyExists(`'${dest}' already exists.`);
@@ -54,7 +58,11 @@ function ensureValidCopySync(src, dest, options) {
     await Deno.utime(dest, statInfo.atime, statInfo.mtime);
   }
 }
-/* copy file to dest synchronously */ function copyFileSync(src, dest, options) {
+/* copy file to dest synchronously */ function copyFileSync(
+  src,
+  dest,
+  options,
+) {
   ensureValidCopySync(src, dest, options);
   Deno.copyFileSync(src, dest);
   if (options.preserveTimestamps) {
@@ -70,7 +78,7 @@ function ensureValidCopySync(src, dest, options) {
   const type = getFileInfoType(await Deno.lstat(src));
   if (isWindows) {
     await Deno.symlink(originSrcFilePath, dest, {
-      type: type === "dir" ? "dir" : "file"
+      type: type === "dir" ? "dir" : "file",
     });
   } else {
     await Deno.symlink(originSrcFilePath, dest);
@@ -82,13 +90,17 @@ function ensureValidCopySync(src, dest, options) {
     await Deno.utime(dest, statInfo.atime, statInfo.mtime);
   }
 }
-/* copy symlink to dest synchronously */ function copySymlinkSync(src, dest, options) {
+/* copy symlink to dest synchronously */ function copySymlinkSync(
+  src,
+  dest,
+  options,
+) {
   ensureValidCopySync(src, dest, options);
   const originSrcFilePath = Deno.readLinkSync(src);
   const type = getFileInfoType(Deno.lstatSync(src));
   if (isWindows) {
     Deno.symlinkSync(originSrcFilePath, dest, {
-      type: type === "dir" ? "dir" : "file"
+      type: type === "dir" ? "dir" : "file",
     });
   } else {
     Deno.symlinkSync(originSrcFilePath, dest);
@@ -103,7 +115,7 @@ function ensureValidCopySync(src, dest, options) {
 /* copy folder from src to dest. */ async function copyDir(src, dest, options) {
   const destStat = await ensureValidCopy(src, dest, {
     ...options,
-    isFolder: true
+    isFolder: true,
   });
   if (!destStat) {
     await ensureDir(dest);
@@ -117,7 +129,7 @@ function ensureValidCopySync(src, dest, options) {
   src = toPathString(src);
   dest = toPathString(dest);
   const promises = [];
-  for await (const entry of Deno.readDir(src)){
+  for await (const entry of Deno.readDir(src)) {
     const srcPath = join(src, entry.name);
     const destPath = join(dest, basename(srcPath));
     if (entry.isSymlink) {
@@ -130,10 +142,14 @@ function ensureValidCopySync(src, dest, options) {
   }
   await Promise.all(promises);
 }
-/* copy folder from src to dest synchronously */ function copyDirSync(src, dest, options) {
+/* copy folder from src to dest synchronously */ function copyDirSync(
+  src,
+  dest,
+  options,
+) {
   const destStat = ensureValidCopySync(src, dest, {
     ...options,
-    isFolder: true
+    isFolder: true,
   });
   if (!destStat) {
     ensureDirSync(dest);
@@ -146,7 +162,7 @@ function ensureValidCopySync(src, dest, options) {
   }
   src = toPathString(src);
   dest = toPathString(dest);
-  for (const entry of Deno.readDirSync(src)){
+  for (const entry of Deno.readDirSync(src)) {
     const srcPath = join(src, entry.name);
     const destPath = join(dest, basename(srcPath));
     if (entry.isSymlink) {
@@ -182,7 +198,9 @@ function ensureValidCopySync(src, dest, options) {
   }
   const srcStat = await Deno.lstat(src);
   if (srcStat.isDirectory && isSubdir(src, dest)) {
-    throw new Error(`Cannot copy '${src}' to a subdirectory of itself, '${dest}'.`);
+    throw new Error(
+      `Cannot copy '${src}' to a subdirectory of itself, '${dest}'.`,
+    );
   }
   if (srcStat.isSymlink) {
     await copySymLink(src, dest, options);
@@ -215,7 +233,9 @@ function ensureValidCopySync(src, dest, options) {
   }
   const srcStat = Deno.lstatSync(src);
   if (srcStat.isDirectory && isSubdir(src, dest)) {
-    throw new Error(`Cannot copy '${src}' to a subdirectory of itself, '${dest}'.`);
+    throw new Error(
+      `Cannot copy '${src}' to a subdirectory of itself, '${dest}'.`,
+    );
   }
   if (srcStat.isSymlink) {
     copySymlinkSync(src, dest, options);

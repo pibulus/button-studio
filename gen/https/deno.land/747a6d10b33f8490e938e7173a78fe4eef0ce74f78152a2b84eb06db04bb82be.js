@@ -16,7 +16,9 @@ function parseHyphenRange(range) {
   const hyphenMatch = range.slice(leftLength).match(/^\s+-\s+/);
   if (!hyphenMatch) return range.split(/\s+/);
   const hyphenLength = hyphenMatch[0].length;
-  const rightMatch = range.slice(leftLength + hyphenLength).match(new RegExp(`^${XRANGE}\\s*$`));
+  const rightMatch = range.slice(leftLength + hyphenLength).match(
+    new RegExp(`^${XRANGE}\\s*$`),
+  );
   const rightGroups = rightMatch?.groups;
   if (!rightGroups) return range.split(/\s+/);
   let from = leftMatch[0];
@@ -37,13 +39,14 @@ function parseHyphenRange(range) {
   } else if (isWildcard(rightGroups.patch)) {
     to = `<${rightGroups.major}.${+rightGroups.minor + 1}.0`;
   } else if (rightGroups.prerelease) {
-    to = `<=${rightGroups.major}.${rightGroups.minor}.${rightGroups.patch}-${rightGroups.prerelease}`;
+    to =
+      `<=${rightGroups.major}.${rightGroups.minor}.${rightGroups.patch}-${rightGroups.prerelease}`;
   } else {
     to = `<=${to}`;
   }
   return [
     from,
-    to
+    to,
   ];
 }
 function handleCaretOperator(groups) {
@@ -53,23 +56,25 @@ function handleCaretOperator(groups) {
   const major = +groups.major;
   const minor = +groups.minor;
   const patch = +groups.patch;
-  if (majorIsWildcard) return [
-    ALL
-  ];
+  if (majorIsWildcard) {
+    return [
+      ALL,
+    ];
+  }
   if (minorIsWildcard) {
     return [
       {
         operator: ">=",
         major,
         minor: 0,
-        patch: 0
+        patch: 0,
       },
       {
         operator: "<",
         major: major + 1,
         minor: 0,
-        patch: 0
-      }
+        patch: 0,
+      },
     ];
   }
   if (patchIsWildcard) {
@@ -79,14 +84,14 @@ function handleCaretOperator(groups) {
           operator: ">=",
           major,
           minor,
-          patch: 0
+          patch: 0,
         },
         {
           operator: "<",
           major,
           minor: minor + 1,
-          patch: 0
-        }
+          patch: 0,
+        },
       ];
     }
     return [
@@ -94,14 +99,14 @@ function handleCaretOperator(groups) {
         operator: ">=",
         major,
         minor,
-        patch: 0
+        patch: 0,
       },
       {
         operator: "<",
         major: major + 1,
         minor: 0,
-        patch: 0
-      }
+        patch: 0,
+      },
     ];
   }
   const prerelease = parsePrerelease(groups.prerelease ?? "");
@@ -113,14 +118,14 @@ function handleCaretOperator(groups) {
           major,
           minor,
           patch,
-          prerelease
+          prerelease,
         },
         {
           operator: "<",
           major,
           minor,
-          patch: patch + 1
-        }
+          patch: patch + 1,
+        },
       ];
     }
     return [
@@ -129,14 +134,14 @@ function handleCaretOperator(groups) {
         major,
         minor,
         patch,
-        prerelease
+        prerelease,
       },
       {
         operator: "<",
         major,
         minor: minor + 1,
-        patch: 0
-      }
+        patch: 0,
+      },
     ];
   }
   return [
@@ -145,14 +150,14 @@ function handleCaretOperator(groups) {
       major,
       minor,
       patch,
-      prerelease
+      prerelease,
     },
     {
       operator: "<",
       major: major + 1,
       minor: 0,
-      patch: 0
-    }
+      patch: 0,
+    },
   ];
 }
 function handleTildeOperator(groups) {
@@ -162,23 +167,25 @@ function handleTildeOperator(groups) {
   const major = +groups.major;
   const minor = +groups.minor;
   const patch = +groups.patch;
-  if (majorIsWildcard) return [
-    ALL
-  ];
+  if (majorIsWildcard) {
+    return [
+      ALL,
+    ];
+  }
   if (minorIsWildcard) {
     return [
       {
         operator: ">=",
         major,
         minor: 0,
-        patch: 0
+        patch: 0,
       },
       {
         operator: "<",
         major: major + 1,
         minor: 0,
-        patch: 0
-      }
+        patch: 0,
+      },
     ];
   }
   if (patchIsWildcard) {
@@ -187,14 +194,14 @@ function handleTildeOperator(groups) {
         operator: ">=",
         major,
         minor,
-        patch: 0
+        patch: 0,
       },
       {
         operator: "<",
         major,
         minor: minor + 1,
-        patch: 0
-      }
+        patch: 0,
+      },
     ];
   }
   const prerelease = parsePrerelease(groups.prerelease ?? "");
@@ -204,14 +211,14 @@ function handleTildeOperator(groups) {
       major,
       minor,
       patch,
-      prerelease
+      prerelease,
     },
     {
       operator: "<",
       major,
       minor: minor + 1,
-      patch: 0
-    }
+      patch: 0,
+    },
   ];
 }
 function handleLessThanOperator(groups) {
@@ -221,40 +228,46 @@ function handleLessThanOperator(groups) {
   const major = +groups.major;
   const minor = +groups.minor;
   const patch = +groups.patch;
-  if (majorIsWildcard) return [
-    {
-      operator: "<",
-      major: 0,
-      minor: 0,
-      patch: 0
-    }
-  ];
-  if (minorIsWildcard) {
-    if (patchIsWildcard) return [
+  if (majorIsWildcard) {
+    return [
       {
         operator: "<",
-        major,
+        major: 0,
         minor: 0,
-        patch: 0
-      }
+        patch: 0,
+      },
     ];
+  }
+  if (minorIsWildcard) {
+    if (patchIsWildcard) {
+      return [
+        {
+          operator: "<",
+          major,
+          minor: 0,
+          patch: 0,
+        },
+      ];
+    }
     return [
       {
         operator: "<",
         major,
         minor,
-        patch: 0
-      }
+        patch: 0,
+      },
     ];
   }
-  if (patchIsWildcard) return [
-    {
-      operator: "<",
-      major,
-      minor,
-      patch: 0
-    }
-  ];
+  if (patchIsWildcard) {
+    return [
+      {
+        operator: "<",
+        major,
+        minor,
+        patch: 0,
+      },
+    ];
+  }
   const prerelease = parsePrerelease(groups.prerelease ?? "");
   const build = parseBuild(groups.build ?? "");
   return [
@@ -264,8 +277,8 @@ function handleLessThanOperator(groups) {
       minor,
       patch,
       prerelease,
-      build
-    }
+      build,
+    },
   ];
 }
 function handleLessThanOrEqualOperator(groups) {
@@ -281,8 +294,8 @@ function handleLessThanOrEqualOperator(groups) {
           operator: "<",
           major: major + 1,
           minor: 0,
-          patch: 0
-        }
+          patch: 0,
+        },
       ];
     }
     return [
@@ -290,8 +303,8 @@ function handleLessThanOrEqualOperator(groups) {
         operator: "<",
         major,
         minor: minor + 1,
-        patch: 0
-      }
+        patch: 0,
+      },
     ];
   }
   if (patchIsWildcard) {
@@ -300,8 +313,8 @@ function handleLessThanOrEqualOperator(groups) {
         operator: "<",
         major,
         minor: minor + 1,
-        patch: 0
-      }
+        patch: 0,
+      },
     ];
   }
   const prerelease = parsePrerelease(groups.prerelease ?? "");
@@ -313,8 +326,8 @@ function handleLessThanOrEqualOperator(groups) {
       minor,
       patch,
       prerelease,
-      build
-    }
+      build,
+    },
   ];
 }
 function handleGreaterThanOperator(groups) {
@@ -324,14 +337,16 @@ function handleGreaterThanOperator(groups) {
   const major = +groups.major;
   const minor = +groups.minor;
   const patch = +groups.patch;
-  if (majorIsWildcard) return [
-    {
-      operator: "<",
-      major: 0,
-      minor: 0,
-      patch: 0
-    }
-  ];
+  if (majorIsWildcard) {
+    return [
+      {
+        operator: "<",
+        major: 0,
+        minor: 0,
+        patch: 0,
+      },
+    ];
+  }
   if (minorIsWildcard) {
     if (patchIsWildcard) {
       return [
@@ -339,8 +354,8 @@ function handleGreaterThanOperator(groups) {
           operator: ">=",
           major: major + 1,
           minor: 0,
-          patch: 0
-        }
+          patch: 0,
+        },
       ];
     }
     return [
@@ -348,8 +363,8 @@ function handleGreaterThanOperator(groups) {
         operator: ">",
         major: major + 1,
         minor: 0,
-        patch: 0
-      }
+        patch: 0,
+      },
     ];
   }
   if (patchIsWildcard) {
@@ -358,8 +373,8 @@ function handleGreaterThanOperator(groups) {
         operator: ">",
         major: major + 1,
         minor: 0,
-        patch: 0
-      }
+        patch: 0,
+      },
     ];
   }
   const prerelease = parsePrerelease(groups.prerelease ?? "");
@@ -371,8 +386,8 @@ function handleGreaterThanOperator(groups) {
       minor,
       patch,
       prerelease,
-      build
-    }
+      build,
+    },
   ];
 }
 function handleGreaterOrEqualOperator(groups) {
@@ -382,35 +397,41 @@ function handleGreaterOrEqualOperator(groups) {
   const major = +groups.major;
   const minor = +groups.minor;
   const patch = +groups.patch;
-  if (majorIsWildcard) return [
-    ALL
-  ];
-  if (minorIsWildcard) {
-    if (patchIsWildcard) return [
-      {
-        operator: ">=",
-        major,
-        minor: 0,
-        patch: 0
-      }
+  if (majorIsWildcard) {
+    return [
+      ALL,
     ];
+  }
+  if (minorIsWildcard) {
+    if (patchIsWildcard) {
+      return [
+        {
+          operator: ">=",
+          major,
+          minor: 0,
+          patch: 0,
+        },
+      ];
+    }
     return [
       {
         operator: ">=",
         major,
         minor,
-        patch: 0
-      }
+        patch: 0,
+      },
     ];
   }
-  if (patchIsWildcard) return [
-    {
-      operator: ">=",
-      major,
-      minor,
-      patch: 0
-    }
-  ];
+  if (patchIsWildcard) {
+    return [
+      {
+        operator: ">=",
+        major,
+        minor,
+        patch: 0,
+      },
+    ];
+  }
   const prerelease = parsePrerelease(groups.prerelease ?? "");
   const build = parseBuild(groups.build ?? "");
   return [
@@ -420,8 +441,8 @@ function handleGreaterOrEqualOperator(groups) {
       minor,
       patch,
       prerelease,
-      build
-    }
+      build,
+    },
   ];
 }
 function handleEqualOperator(groups) {
@@ -431,23 +452,25 @@ function handleEqualOperator(groups) {
   const major = +groups.major;
   const minor = +groups.minor;
   const patch = +groups.patch;
-  if (majorIsWildcard) return [
-    ALL
-  ];
+  if (majorIsWildcard) {
+    return [
+      ALL,
+    ];
+  }
   if (minorIsWildcard) {
     return [
       {
         operator: ">=",
         major,
         minor: 0,
-        patch: 0
+        patch: 0,
       },
       {
         operator: "<",
         major: major + 1,
         minor: 0,
-        patch: 0
-      }
+        patch: 0,
+      },
     ];
   }
   if (patchIsWildcard) {
@@ -456,14 +479,14 @@ function handleEqualOperator(groups) {
         operator: ">=",
         major,
         minor,
-        patch: 0
+        patch: 0,
       },
       {
         operator: "<",
         major,
         minor: minor + 1,
-        patch: 0
-      }
+        patch: 0,
+      },
     ];
   }
   const prerelease = parsePrerelease(groups.prerelease ?? "");
@@ -475,14 +498,14 @@ function handleEqualOperator(groups) {
       minor,
       patch,
       prerelease,
-      build
-    }
+      build,
+    },
   ];
 }
 function parseRangeString(string) {
   const groups = string.match(OPERATOR_XRANGE_REGEXP)?.groups;
   if (!groups) return parseComparator(string);
-  switch(groups.operator){
+  switch (groups.operator) {
     case "^":
       return handleCaretOperator(groups);
     case "~":
@@ -508,9 +531,11 @@ function parseRangeString(string) {
  * @param range The range set string
  * @returns A valid semantic range
  */ export function parseRange(range) {
-  const ranges = range.split(/\s*\|\|\s*/).map((range)=>parseHyphenRange(range).flatMap(parseRangeString));
+  const ranges = range.split(/\s*\|\|\s*/).map((range) =>
+    parseHyphenRange(range).flatMap(parseRangeString)
+  );
   Object.defineProperty(ranges, "ranges", {
-    value: ranges
+    value: ranges,
   });
   return ranges;
 }

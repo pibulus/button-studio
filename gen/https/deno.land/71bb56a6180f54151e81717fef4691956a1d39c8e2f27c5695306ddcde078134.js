@@ -19,7 +19,8 @@
  * This module is browser compatible.
  *
  * @module
- */ export * from "./basename.ts";
+ */
+export * from "./basename.ts";
 export * from "./constants.ts";
 export * from "./dirname.ts";
 export * from "./extname.ts";

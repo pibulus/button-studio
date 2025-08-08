@@ -5,7 +5,7 @@ export const CLIENT_NAV_ATTR = "f-client-nav";
 export const DATA_KEY_ATTR = "data-fresh-key";
 export const DATA_CURRENT = "data-current";
 export const DATA_ANCESTOR = "data-ancestor";
-export var PartialMode = /*#__PURE__*/ function(PartialMode) {
+export var PartialMode = /*#__PURE__*/ function (PartialMode) {
   PartialMode[PartialMode["REPLACE"] = 0] = "REPLACE";
   PartialMode[PartialMode["APPEND"] = 1] = "APPEND";
   PartialMode[PartialMode["PREPEND"] = 2] = "PREPEND";

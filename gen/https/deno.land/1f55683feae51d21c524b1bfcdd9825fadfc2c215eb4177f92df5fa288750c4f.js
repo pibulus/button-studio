@@ -29,17 +29,25 @@ import { red } from "../fmt/colors.ts";
   const actualString = format(actual);
   const expectedString = format(expected);
   if (actualString === expectedString) {
-    const withOffset = actualString.split("\n").map((l)=>`    ${l}`).join("\n");
-    message = `Values have the same structure but are not reference-equal${msgSuffix}\n\n${red(withOffset)}\n`;
+    const withOffset = actualString.split("\n").map((l) => `    ${l}`).join(
+      "\n",
+    );
+    message =
+      `Values have the same structure but are not reference-equal${msgSuffix}\n\n${
+        red(withOffset)
+      }\n`;
   } else {
     try {
-      const stringDiff = typeof actual === "string" && typeof expected === "string";
-      const diffResult = stringDiff ? diffstr(actual, expected) : diff(actualString.split("\n"), expectedString.split("\n"));
+      const stringDiff = typeof actual === "string" &&
+        typeof expected === "string";
+      const diffResult = stringDiff
+        ? diffstr(actual, expected)
+        : diff(actualString.split("\n"), expectedString.split("\n"));
       const diffMsg = buildMessage(diffResult, {
-        stringDiff
+        stringDiff,
       }).join("\n");
       message = `Values are not strictly equal${msgSuffix}\n${diffMsg}`;
-    } catch  {
+    } catch {
       message = `\n${red(CAN_NOT_DISPLAY)} + \n\n`;
     }
   }

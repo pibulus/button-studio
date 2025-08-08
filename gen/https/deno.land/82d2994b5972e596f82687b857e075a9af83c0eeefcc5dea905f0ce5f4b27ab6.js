@@ -26,7 +26,8 @@
  * ```
  *
  * @module
- */ import { validateBinaryLike } from "./_util.ts";
+ */
+import { validateBinaryLike } from "./_util.ts";
 const hexTable = new TextEncoder().encode("0123456789abcdef");
 const textEncoder = new TextEncoder();
 const textDecoder = new TextDecoder();
@@ -57,7 +58,7 @@ function errLength() {
  */ export function encodeHex(src) {
   const u8 = validateBinaryLike(src);
   const dst = new Uint8Array(u8.length * 2);
-  for(let i = 0; i < dst.length; i++){
+  for (let i = 0; i < dst.length; i++) {
     const v = u8[i];
     dst[i * 2] = hexTable[v >> 4];
     dst[i * 2 + 1] = hexTable[v & 0x0f];
@@ -77,7 +78,7 @@ function errLength() {
  */ export function decodeHex(src) {
   const u8 = textEncoder.encode(src);
   const dst = new Uint8Array(u8.length / 2);
-  for(let i = 0; i < dst.length; i++){
+  for (let i = 0; i < dst.length; i++) {
     const a = fromHexChar(u8[i * 2]);
     const b = fromHexChar(u8[i * 2 + 1]);
     dst[i] = a << 4 | b;

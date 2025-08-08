@@ -1,26 +1,36 @@
 // Copyright 2018-2024 the Deno authors. All rights reserved. MIT license.
-const RE_KeyValue = /^\s*(?:export\s+)?(?<key>[a-zA-Z_]+[a-zA-Z0-9_]*?)\s*=[\ \t]*('\n?(?<notInterpolated>(.|\n)*?)\n?'|"\n?(?<interpolated>(.|\n)*?)\n?"|(?<unquoted>[^\n#]*)) *#*.*$/gm;
-const RE_ExpandValue = /(\${(?<inBrackets>.+?)(\:-(?<inBracketsDefault>.+))?}|(?<!\\)\$(?<notInBrackets>\w+)(\:-(?<notInBracketsDefault>.+))?)/g;
+const RE_KeyValue =
+  /^\s*(?:export\s+)?(?<key>[a-zA-Z_]+[a-zA-Z0-9_]*?)\s*=[\ \t]*('\n?(?<notInterpolated>(.|\n)*?)\n?'|"\n?(?<interpolated>(.|\n)*?)\n?"|(?<unquoted>[^\n#]*)) *#*.*$/gm;
+const RE_ExpandValue =
+  /(\${(?<inBrackets>.+?)(\:-(?<inBracketsDefault>.+))?}|(?<!\\)\$(?<notInBrackets>\w+)(\:-(?<notInBracketsDefault>.+))?)/g;
 function expandCharacters(str) {
   const charactersMap = {
     "\\n": "\n",
     "\\r": "\r",
-    "\\t": "\t"
+    "\\t": "\t",
   };
-  return str.replace(/\\([nrt])/g, ($1)=>charactersMap[$1] || "");
+  return str.replace(/\\([nrt])/g, ($1) => charactersMap[$1] || "");
 }
 function expand(str, variablesMap) {
   if (RE_ExpandValue.test(str)) {
-    return expand(str.replace(RE_ExpandValue, function(...params) {
-      const { inBrackets, inBracketsDefault, notInBrackets, notInBracketsDefault } = params[params.length - 1];
-      const expandValue = inBrackets || notInBrackets;
-      const defaultValue = inBracketsDefault || notInBracketsDefault;
-      let value = variablesMap[expandValue];
-      if (value === undefined) {
-        value = Deno.env.get(expandValue);
-      }
-      return value === undefined ? expand(defaultValue, variablesMap) : value;
-    }), variablesMap);
+    return expand(
+      str.replace(RE_ExpandValue, function (...params) {
+        const {
+          inBrackets,
+          inBracketsDefault,
+          notInBrackets,
+          notInBracketsDefault,
+        } = params[params.length - 1];
+        const expandValue = inBrackets || notInBrackets;
+        const defaultValue = inBracketsDefault || notInBracketsDefault;
+        let value = variablesMap[expandValue];
+        if (value === undefined) {
+          value = Deno.env.get(expandValue);
+        }
+        return value === undefined ? expand(defaultValue, variablesMap) : value;
+      }),
+      variablesMap,
+    );
   } else {
     return str;
   }
@@ -39,18 +49,22 @@ function expand(str, variablesMap) {
   const env = {};
   let match;
   const keysForExpandCheck = [];
-  while((match = RE_KeyValue.exec(rawDotenv)) !== null){
+  while ((match = RE_KeyValue.exec(rawDotenv)) !== null) {
     const { key, interpolated, notInterpolated, unquoted } = match?.groups;
     if (unquoted) {
       keysForExpandCheck.push(key);
     }
-    env[key] = typeof notInterpolated === "string" ? notInterpolated : typeof interpolated === "string" ? expandCharacters(interpolated) : unquoted.trim();
+    env[key] = typeof notInterpolated === "string"
+      ? notInterpolated
+      : typeof interpolated === "string"
+      ? expandCharacters(interpolated)
+      : unquoted.trim();
   }
   //https://github.com/motdotla/dotenv-expand/blob/ed5fea5bf517a09fd743ce2c63150e88c8a5f6d1/lib/main.js#L23
   const variablesMap = {
-    ...env
+    ...env,
   };
-  keysForExpandCheck.forEach((key)=>{
+  keysForExpandCheck.forEach((key) => {
     env[key] = expand(env[key], variablesMap);
   });
   return env;

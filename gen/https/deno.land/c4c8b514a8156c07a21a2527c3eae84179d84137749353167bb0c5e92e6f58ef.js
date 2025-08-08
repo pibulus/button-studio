@@ -6,7 +6,7 @@ const EXISTS_ERROR = new Deno.errors.AlreadyExists("dest already exists.");
  * Error thrown in {@linkcode move} or {@linkcode moveSync} when the
  * destination is a subdirectory of the source.
  */ export class SubdirectoryMoveError extends Error {
-  /** Constructs a new instance. */ constructor(src, dest){
+  /** Constructs a new instance. */ constructor(src, dest) {
     super(`Cannot move '${src}' to a subdirectory of itself, '${dest}'.`);
   }
 }
@@ -28,7 +28,7 @@ const EXISTS_ERROR = new Deno.errors.AlreadyExists("dest already exists.");
     if (isSamePath(src, dest)) return;
     try {
       await Deno.remove(dest, {
-        recursive: true
+        recursive: true,
       });
     } catch (error) {
       if (!(error instanceof Deno.errors.NotFound)) {
@@ -39,8 +39,8 @@ const EXISTS_ERROR = new Deno.errors.AlreadyExists("dest already exists.");
     try {
       await Deno.lstat(dest);
       return Promise.reject(EXISTS_ERROR);
-    } catch  {
-    // Do nothing...
+    } catch {
+      // Do nothing...
     }
   }
   await Deno.rename(src, dest);
@@ -63,7 +63,7 @@ const EXISTS_ERROR = new Deno.errors.AlreadyExists("dest already exists.");
     if (isSamePath(src, dest)) return;
     try {
       Deno.removeSync(dest, {
-        recursive: true
+        recursive: true,
       });
     } catch (error) {
       if (!(error instanceof Deno.errors.NotFound)) {

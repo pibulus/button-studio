@@ -1,5 +1,5 @@
 import { DATA_ANCESTOR, DATA_CURRENT } from "../constants.ts";
-export var UrlMatchKind = /*#__PURE__*/ function(UrlMatchKind) {
+export var UrlMatchKind = /*#__PURE__*/ function (UrlMatchKind) {
   UrlMatchKind[UrlMatchKind["None"] = 0] = "None";
   UrlMatchKind[UrlMatchKind["Ancestor"] = 1] = "Ancestor";
   UrlMatchKind[UrlMatchKind["Current"] = 2] = "Current";

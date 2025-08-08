@@ -9,8 +9,13 @@ import { comparatorMax } from "./_comparator_max.ts";
  * @param range The range to check
  * @returns true if the version is in the range
  */ export function testRange(version, range) {
-  for (const r of range){
-    if (r.every((c)=>greaterOrEqual(version, comparatorMin(c)) && lessOrEqual(version, comparatorMax(c)))) {
+  for (const r of range) {
+    if (
+      r.every((c) =>
+        greaterOrEqual(version, comparatorMin(c)) &&
+        lessOrEqual(version, comparatorMax(c))
+      )
+    ) {
       return true;
     }
   }

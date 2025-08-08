@@ -6,42 +6,44 @@ export const knownMethods = [
   "PUT",
   "DELETE",
   "OPTIONS",
-  "PATCH"
+  "PATCH",
 ];
 export function defaultOtherHandler(_req) {
   return new Response(null, {
-    status: 404
+    status: 404,
   });
 }
 export function defaultErrorHandler(_req, ctx) {
   console.error(ctx.error);
   return new Response(null, {
-    status: 500
+    status: 500,
   });
 }
 export function defaultUnknownMethodHandler(_req, _ctx, knownMethods) {
   return new Response(null, {
     status: 405,
     headers: {
-      Accept: knownMethods.join(", ")
-    }
+      Accept: knownMethods.join(", "),
+    },
   });
 }
 export const IS_PATTERN = /[*:{}+?()]/;
 function processRoutes(processedRoutes, routes, destination) {
-  for (const [path, def] of Object.entries(routes)){
-    const pattern = destination === "static" || !IS_PATTERN.test(path) ? path : new URLPattern({
-      pathname: path
-    });
+  for (const [path, def] of Object.entries(routes)) {
+    const pattern = destination === "static" || !IS_PATTERN.test(path)
+      ? path
+      : new URLPattern({
+        pathname: path,
+      });
     const entry = {
       baseRoute: def.baseRoute,
       pattern,
       originalPattern: path,
       methods: {},
       default: undefined,
-      destination
+      destination,
     };
-    for (const [method, handler] of Object.entries(def.methods)){
+    for (const [method, handler] of Object.entries(def.methods)) {
       if (method === "default") {
         entry.default = handler;
       } else if (knownMethods.includes(method)) {
@@ -57,7 +59,7 @@ export function getParamsAndRoute({ internalRoutes, staticRoutes, routes }) {
   processRoutes(processedRoutes, staticRoutes, "static");
   processRoutes(processedRoutes, routes, "route");
   const statics = new Map();
-  return (url)=>{
+  return (url) => {
     const isPartial = url.searchParams.has(PARTIAL_SEARCH_PARAM);
     const pathname = url.pathname;
     const cached = statics.get(pathname);
@@ -65,7 +67,7 @@ export function getParamsAndRoute({ internalRoutes, staticRoutes, routes }) {
       cached.isPartial = isPartial;
       return cached;
     }
-    for(let i = 0; i < processedRoutes.length; i++){
+    for (let i = 0; i < processedRoutes.length; i++) {
       const route = processedRoutes[i];
       if (route === null) continue;
       // Static routes where the full pattern contains no dynamic
@@ -77,7 +79,7 @@ export function getParamsAndRoute({ internalRoutes, staticRoutes, routes }) {
           const res = {
             route: route,
             params: {},
-            isPartial
+            isPartial,
           };
           statics.set(route.pattern, res);
           return res;
@@ -87,57 +89,58 @@ export function getParamsAndRoute({ internalRoutes, staticRoutes, routes }) {
       const res = route.pattern.exec(url);
       if (res !== null) {
         const params = {};
-        for (const [key, value] of Object.entries(res.pathname.groups)){
+        for (const [key, value] of Object.entries(res.pathname.groups)) {
           params[key] = value === undefined ? "" : value;
         }
         return {
           route: route,
           params,
-          isPartial
+          isPartial,
         };
       }
     }
     return {
       route: undefined,
       params: {},
-      isPartial
+      isPartial,
     };
   };
 }
 export function router({ otherHandler, unknownMethodHandler }) {
   unknownMethodHandler ??= defaultUnknownMethodHandler;
-  return (req, ctx, route)=>{
+  return (req, ctx, route) => {
     if (route) {
       // If not overridden, HEAD requests should be handled as GET requests but without the body.
       if (req.method === "HEAD" && !route.methods["HEAD"]) {
         req = new Request(req.url, {
           method: "GET",
-          headers: req.headers
+          headers: req.headers,
         });
       }
-      for (const [method, handler] of Object.entries(route.methods)){
+      for (const [method, handler] of Object.entries(route.methods)) {
         if (req.method === method) {
           return {
             destination: route.destination,
-            handler: ()=>handler(req, ctx)
+            handler: () => handler(req, ctx),
           };
         }
       }
       if (route.default) {
         return {
           destination: route.destination,
-          handler: ()=>route.default(req, ctx)
+          handler: () => route.default(req, ctx),
         };
       } else {
         return {
           destination: route.destination,
-          handler: ()=>unknownMethodHandler(req, ctx, Object.keys(route.methods))
+          handler: () =>
+            unknownMethodHandler(req, ctx, Object.keys(route.methods)),
         };
       }
     }
     return {
       destination: "notFound",
-      handler: ()=>otherHandler(req, ctx)
+      handler: () => otherHandler(req, ctx),
     };
   };
 }

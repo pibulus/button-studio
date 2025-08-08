@@ -1,10 +1,13 @@
 // Copyright 2018-2024 the Deno authors. All rights reserved. MIT license.
 import { delay } from "../async/delay.ts";
-/** Thrown by Server after it has been closed. */ const ERROR_SERVER_CLOSED = "Server closed";
+/** Thrown by Server after it has been closed. */ const ERROR_SERVER_CLOSED =
+  "Server closed";
 /** Default port for serving HTTP. */ const HTTP_PORT = 80;
 /** Default port for serving HTTPS. */ const HTTPS_PORT = 443;
-/** Initial backoff delay of 5ms following a temporary accept failure. */ const INITIAL_ACCEPT_BACKOFF_DELAY = 5;
-/** Max backoff delay of 1s following a temporary accept failure. */ const MAX_ACCEPT_BACKOFF_DELAY = 1000;
+/** Initial backoff delay of 5ms following a temporary accept failure. */ const INITIAL_ACCEPT_BACKOFF_DELAY =
+  5;
+/** Max backoff delay of 1s following a temporary accept failure. */ const MAX_ACCEPT_BACKOFF_DELAY =
+  1000;
 /**
  * Used to construct an HTTP server.
  *
@@ -37,14 +40,14 @@ import { delay } from "../async/delay.ts";
    * ```
    *
    * @param serverInit Options for running an HTTP server.
-   */ constructor(serverInit){
+   */ constructor(serverInit) {
     this.#port = serverInit.port;
     this.#host = serverInit.hostname;
     this.#handler = serverInit.handler;
-    this.#onError = serverInit.onError ?? function(error) {
+    this.#onError = serverInit.onError ?? function (error) {
       console.error(error);
       return new Response("Internal Server Error", {
-        status: 500
+        status: 500,
       });
     };
   }
@@ -86,12 +89,12 @@ import { delay } from "../async/delay.ts";
     this.#trackListener(listener);
     try {
       return await this.#accept(listener);
-    } finally{
+    } finally {
       this.#untrackListener(listener);
       try {
         listener.close();
-      } catch  {
-      // Listener has already been closed.
+      } catch {
+        // Listener has already been closed.
       }
     }
   }
@@ -131,7 +134,7 @@ import { delay } from "../async/delay.ts";
     const listener = Deno.listen({
       port: this.#port ?? HTTP_PORT,
       hostname: this.#host ?? "0.0.0.0",
-      transport: "tcp"
+      transport: "tcp",
     });
     return await this.serve(listener);
   }
@@ -179,7 +182,7 @@ import { delay } from "../async/delay.ts";
       hostname: this.#host ?? "0.0.0.0",
       certFile,
       keyFile,
-      transport: "tcp"
+      transport: "tcp",
     });
     return await this.serve(listener);
   }
@@ -192,16 +195,16 @@ import { delay } from "../async/delay.ts";
       throw new Deno.errors.Http(ERROR_SERVER_CLOSED);
     }
     this.#closed = true;
-    for (const listener of this.#listeners){
+    for (const listener of this.#listeners) {
       try {
         listener.close();
-      } catch  {
-      // Listener has already been closed.
+      } catch {
+        // Listener has already been closed.
       }
     }
     this.#listeners.clear();
     this.#acceptBackoffDelayAbortController.abort();
-    for (const httpConn of this.#httpConnections){
+    for (const httpConn of this.#httpConnections) {
       this.#closeHttpConn(httpConn);
     }
     this.#httpConnections.clear();
@@ -210,7 +213,7 @@ import { delay } from "../async/delay.ts";
     return this.#closed;
   }
   /** Get the list of network addresses the server is listening on. */ get addrs() {
-    return Array.from(this.#listeners).map((listener)=>listener.addr);
+    return Array.from(this.#listeners).map((listener) => listener.addr);
   }
   /**
    * Responds to an HTTP request.
@@ -232,12 +235,12 @@ import { delay } from "../async/delay.ts";
     try {
       // Send the response.
       await requestEvent.respondWith(response);
-    } catch  {
-    // `respondWith()` can throw for various reasons, including downstream and
-    // upstream connection errors, as well as errors thrown during streaming
-    // of the response content.  In order to avoid false negatives, we ignore
-    // the error here and let `serveHttp` close the connection on the
-    // following iteration if it is in fact a downstream connection error.
+    } catch {
+      // `respondWith()` can throw for various reasons, including downstream and
+      // upstream connection errors, as well as errors thrown during streaming
+      // of the response content.  In order to avoid false negatives, we ignore
+      // the error here and let `serveHttp` close the connection on the
+      // following iteration if it is in fact a downstream connection error.
     }
   }
   /**
@@ -246,12 +249,12 @@ import { delay } from "../async/delay.ts";
    * @param httpConn The HTTP connection to yield requests from.
    * @param connInfo Information about the underlying connection.
    */ async #serveHttp(httpConn, connInfo) {
-    while(!this.#closed){
+    while (!this.#closed) {
       let requestEvent;
       try {
         // Yield the new HTTP request on the connection.
         requestEvent = await httpConn.nextRequest();
-      } catch  {
+      } catch {
         break;
       }
       if (requestEvent === null) {
@@ -269,15 +272,20 @@ import { delay } from "../async/delay.ts";
    * @param listener The listener to accept connections from.
    */ async #accept(listener) {
     let acceptBackoffDelay;
-    while(!this.#closed){
+    while (!this.#closed) {
       let conn;
       try {
         // Wait for a new connection.
         conn = await listener.accept();
       } catch (error) {
-        if (// The listener is closed.
-        error instanceof Deno.errors.BadResource || // TLS handshake errors.
-        error instanceof Deno.errors.InvalidData || error instanceof Deno.errors.UnexpectedEof || error instanceof Deno.errors.ConnectionReset || error instanceof Deno.errors.NotConnected) {
+        if (
+          // The listener is closed.
+          error instanceof Deno.errors.BadResource || // TLS handshake errors.
+          error instanceof Deno.errors.InvalidData ||
+          error instanceof Deno.errors.UnexpectedEof ||
+          error instanceof Deno.errors.ConnectionReset ||
+          error instanceof Deno.errors.NotConnected
+        ) {
           // Backoff after transient errors to allow time for the system to
           // recover, and avoid blocking up the event loop with a continuously
           // running loop.
@@ -291,7 +299,7 @@ import { delay } from "../async/delay.ts";
           }
           try {
             await delay(acceptBackoffDelay, {
-              signal: this.#acceptBackoffDelayAbortController.signal
+              signal: this.#acceptBackoffDelayAbortController.signal,
             });
           } catch (err) {
             // The backoff delay timer is aborted when closing the server.
@@ -309,7 +317,7 @@ import { delay } from "../async/delay.ts";
       try {
         // deno-lint-ignore no-deprecated-deno-api
         httpConn = Deno.serveHttp(conn);
-      } catch  {
+      } catch {
         continue;
       }
       // Closing the underlying listener will not close HTTP connections, so we
@@ -317,7 +325,7 @@ import { delay } from "../async/delay.ts";
       this.#trackHttpConnection(httpConn);
       const connInfo = {
         localAddr: conn.localAddr,
-        remoteAddr: conn.remoteAddr
+        remoteAddr: conn.remoteAddr,
       };
       // Serve the requests that arrive on the just-accepted connection. Note
       // we do not await this async method to allow the server to accept new
@@ -333,8 +341,8 @@ import { delay } from "../async/delay.ts";
     this.#untrackHttpConnection(httpConn);
     try {
       httpConn.close();
-    } catch  {
-    // Connection has already been closed.
+    } catch {
+      // Connection has already been closed.
     }
   }
   /**
@@ -394,10 +402,10 @@ import { delay } from "../async/delay.ts";
  */ export async function serveListener(listener, handler, options) {
   const server = new Server({
     handler,
-    onError: options?.onError
+    onError: options?.onError,
   });
-  options?.signal?.addEventListener("abort", ()=>server.close(), {
-    once: true
+  options?.signal?.addEventListener("abort", () => server.close(), {
+    once: true,
   });
   return await server.serve(listener);
 }
@@ -463,22 +471,22 @@ function hostnameForDisplay(hostname) {
     port,
     hostname,
     handler,
-    onError: options.onError
+    onError: options.onError,
   });
-  options?.signal?.addEventListener("abort", ()=>server.close(), {
-    once: true
+  options?.signal?.addEventListener("abort", () => server.close(), {
+    once: true,
   });
   const listener = Deno.listen({
     port,
     hostname,
-    transport: "tcp"
+    transport: "tcp",
   });
   const s = server.serve(listener);
   port = server.addrs[0].port;
   if ("onListen" in options) {
     options.onListen?.({
       port,
-      hostname
+      hostname,
     });
   } else {
     console.log(`Listening on http://${hostnameForDisplay(hostname)}:${port}/`);
@@ -561,10 +569,10 @@ function hostnameForDisplay(hostname) {
     port,
     hostname,
     handler,
-    onError: options.onError
+    onError: options.onError,
   });
-  options?.signal?.addEventListener("abort", ()=>server.close(), {
-    once: true
+  options?.signal?.addEventListener("abort", () => server.close(), {
+    once: true,
   });
   const key = options.key || Deno.readTextFileSync(options.keyFile);
   const cert = options.cert || Deno.readTextFileSync(options.certFile);
@@ -573,17 +581,19 @@ function hostnameForDisplay(hostname) {
     hostname,
     cert,
     key,
-    transport: "tcp"
+    transport: "tcp",
   });
   const s = server.serve(listener);
   port = server.addrs[0].port;
   if ("onListen" in options) {
     options.onListen?.({
       port,
-      hostname
+      hostname,
     });
   } else {
-    console.log(`Listening on https://${hostnameForDisplay(hostname)}:${port}/`);
+    console.log(
+      `Listening on https://${hostnameForDisplay(hostname)}:${port}/`,
+    );
   }
   return await s;
 }

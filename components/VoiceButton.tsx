@@ -207,7 +207,6 @@ export default function VoiceButton({
           triggerHapticFeedback([30]);
         }
       }, 1000);
-
     } catch (error) {
       buttonState.value = "error";
 
@@ -247,7 +246,6 @@ export default function VoiceButton({
       const recorder = recorderRef.current!;
       const audioBlob = await recorder.stopRecording();
 
-
       // Use real Gemini transcription with hardcoded API key
       const { GeminiTranscriptionPlugin } = await import(
         "../plugins/transcription/gemini.ts"
@@ -277,7 +275,6 @@ export default function VoiceButton({
           buttonState.value = "idle";
         }
       }, 2000);
-
     } catch (error) {
       buttonState.value = "error";
 

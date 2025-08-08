@@ -11,7 +11,7 @@ import { normalize } from "./normalize.ts";
   if (paths.length === 0) return ".";
   let joined;
   let firstPart = null;
-  for(let i = 0; i < paths.length; ++i){
+  for (let i = 0; i < paths.length; ++i) {
     const path = paths[i];
     assertPath(path);
     if (path.length > 0) {
@@ -54,7 +54,7 @@ import { normalize } from "./normalize.ts";
   }
   if (needsReplace) {
     // Find any more consecutive slashes we need to replace
-    for(; slashCount < joined.length; ++slashCount){
+    for (; slashCount < joined.length; ++slashCount) {
       if (!isPathSeparator(joined.charCodeAt(slashCount))) break;
     }
     // Replace the slashes if needed

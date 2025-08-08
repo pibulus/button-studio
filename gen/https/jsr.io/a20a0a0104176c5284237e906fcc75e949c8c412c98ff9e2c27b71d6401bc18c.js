@@ -26,7 +26,7 @@
   if (diff < 0) {
     return false;
   }
-  for(let i = suffix.length - 1; i >= 0; i--){
+  for (let i = suffix.length - 1; i >= 0; i--) {
     if (source[diff + i] !== suffix[i]) {
       return false;
     }

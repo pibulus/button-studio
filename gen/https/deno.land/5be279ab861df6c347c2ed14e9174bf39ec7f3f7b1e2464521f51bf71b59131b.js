@@ -23,7 +23,7 @@ import { basename, normalize } from "../path/mod.ts";
   const srcArray = src.split(sep);
   dest = toPathString(dest);
   const destArray = dest.split(sep);
-  return srcArray.every((current, i)=>destArray[i] === current);
+  return srcArray.every((current, i) => destArray[i] === current);
 }
 /**
  * Get a human readable file type string.
@@ -31,9 +31,17 @@ import { basename, normalize } from "../path/mod.ts";
  * @param fileInfo A FileInfo describes a file and is returned by `stat`,
  *                 `lstat`
  */ export function getFileInfoType(fileInfo) {
-  return fileInfo.isFile ? "file" : fileInfo.isDirectory ? "dir" : fileInfo.isSymlink ? "symlink" : undefined;
+  return fileInfo.isFile
+    ? "file"
+    : fileInfo.isDirectory
+    ? "dir"
+    : fileInfo.isSymlink
+    ? "symlink"
+    : undefined;
 }
-/** Create WalkEntry for the `path` synchronously */ export function createWalkEntrySync(path) {
+/** Create WalkEntry for the `path` synchronously */ export function createWalkEntrySync(
+  path,
+) {
   path = toPathString(path);
   path = normalize(path);
   const name = basename(path);
@@ -43,10 +51,12 @@ import { basename, normalize } from "../path/mod.ts";
     name,
     isFile: info.isFile,
     isDirectory: info.isDirectory,
-    isSymlink: info.isSymlink
+    isSymlink: info.isSymlink,
   };
 }
-/** Create WalkEntry for the `path` asynchronously */ export async function createWalkEntry(path) {
+/** Create WalkEntry for the `path` asynchronously */ export async function createWalkEntry(
+  path,
+) {
   path = toPathString(path);
   path = normalize(path);
   const name = basename(path);
@@ -56,7 +66,7 @@ import { basename, normalize } from "../path/mod.ts";
     name,
     isFile: info.isFile,
     isDirectory: info.isDirectory,
-    isSymlink: info.isSymlink
+    isSymlink: info.isSymlink,
   };
 }
 /**

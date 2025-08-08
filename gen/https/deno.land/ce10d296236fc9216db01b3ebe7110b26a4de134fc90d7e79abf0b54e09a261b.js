@@ -28,8 +28,8 @@ import { db } from "./_db.ts";
     if (mediaType.startsWith("text/")) {
       return "UTF-8";
     }
-  } catch  {
-  // just swallow errors, returning undefined
+  } catch {
+    // just swallow errors, returning undefined
   }
   return undefined;
 }

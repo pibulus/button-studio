@@ -60,9 +60,12 @@ deno task update
 4. **EmojiPicker** (`components/EmojiPicker.tsx`): Custom emoji/text selection
    interface
 5. **Toast** (`components/Toast.tsx`): Notification system for user feedback
-6. **AudioSettings** (`components/AudioSettings.tsx`): Global audio/haptic toggle controls
-7. **SoundPicker** (`components/SoundPicker.tsx`): Sound theme selection interface  
-8. **SoundDesigner** (`islands/SoundDesigner.tsx`): Advanced sound customization studio
+6. **AudioSettings** (`components/AudioSettings.tsx`): Global audio/haptic
+   toggle controls
+7. **SoundPicker** (`components/SoundPicker.tsx`): Sound theme selection
+   interface
+8. **SoundDesigner** (`islands/SoundDesigner.tsx`): Advanced sound customization
+   studio
 
 ### State Management Pattern
 
@@ -85,12 +88,15 @@ Uses Preact signals for reactive state management:
 
 The app uses a unified audio system with three main components:
 
-- **`soundMapping.ts`**: Universal sound mapping that connects audio config to playback
+- **`soundMapping.ts`**: Universal sound mapping that connects audio config to
+  playback
 - **`soundConfig.ts`**: Centralized configuration for all UI sound categories
 - **`soundService.ts`**: Low-level audio playback engine with Web Audio API
 
 #### Unified playSound API
-All components use the standardized `playSound` API for consistent audio feedback:
+
+All components use the standardized `playSound` API for consistent audio
+feedback:
 
 ```typescript
 import { playSound } from '../utils/audio/soundMapping.ts'
@@ -103,9 +109,13 @@ onToggle={() => playSound.panelOpen()}
 ```
 
 #### Audio Components
-- **AudioSettings** (`components/AudioSettings.tsx`): Global audio/haptic toggle controls
-- **SoundPicker** (`components/SoundPicker.tsx`): Sound theme selection interface  
-- **SoundDesigner** (`islands/SoundDesigner.tsx`): Advanced sound customization studio
+
+- **AudioSettings** (`components/AudioSettings.tsx`): Global audio/haptic toggle
+  controls
+- **SoundPicker** (`components/SoundPicker.tsx`): Sound theme selection
+  interface
+- **SoundDesigner** (`islands/SoundDesigner.tsx`): Advanced sound customization
+  studio
 
 ### Design System ("Soft Stack")
 

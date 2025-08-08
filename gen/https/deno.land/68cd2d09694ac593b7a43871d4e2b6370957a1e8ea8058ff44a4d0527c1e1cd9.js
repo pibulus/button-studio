@@ -9,8 +9,8 @@ import { lessThan } from "./less_than.ts";
  * @returns A valid SemVer or INVALID
  */ export function rangeMin(range) {
   let min;
-  for (const comparators of range){
-    for (const comparator of comparators){
+  for (const comparators of range) {
+    for (const comparator of comparators) {
       const candidate = comparatorMin(comparator);
       if (!testRange(candidate, range)) continue;
       min = min && lessThan(min, candidate) ? min : candidate;

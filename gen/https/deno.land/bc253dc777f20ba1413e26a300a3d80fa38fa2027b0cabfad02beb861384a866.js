@@ -10,7 +10,7 @@ import { parse } from "./parse.ts";
   }
   try {
     return parse(version);
-  } catch  {
+  } catch {
     return undefined;
   }
 }

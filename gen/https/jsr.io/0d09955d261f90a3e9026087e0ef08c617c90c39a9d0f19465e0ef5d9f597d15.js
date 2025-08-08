@@ -25,7 +25,7 @@
   if (prefix.length > source.length) {
     return false;
   }
-  for(let i = 0; i < prefix.length; i++){
+  for (let i = 0; i < prefix.length; i++) {
     if (source[i] !== prefix[i]) return false;
   }
   return true;

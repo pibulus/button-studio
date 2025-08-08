@@ -1,4 +1,4 @@
-import { signal } from "@preact/signals";
+// import { signal } from "@preact/signals";
 
 // Access the existing button state from VoiceButton
 declare global {
