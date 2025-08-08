@@ -13,6 +13,8 @@ export function generateStandaloneHTML(
     customBranding?: boolean;
     autoStart?: boolean;
     autoCopy?: boolean;
+    autoStopOnSilence?: boolean;
+    silenceDuration?: number;
   } = {},
 ): string {
   const buttonStyles = generateButtonStyles(customization);
@@ -113,6 +115,16 @@ export function generateStandaloneHTML(
         let isRecording = false;
         let currentTranscript = '';
         
+        ${options.autoStopOnSilence ? `
+        // Silence Detection Variables
+        let audioContext = null;
+        let analyser = null;
+        let silenceTimeout = null;
+        let lastAudioTime = Date.now();
+        const silenceDuration = ${options.silenceDuration || 3} * 1000; // Convert to milliseconds
+        const silenceThreshold = -50; // dB threshold for silence
+        ` : ''}
+        
         const button = document.getElementById('${buttonId}');
         const status = document.getElementById('status');
         const transcriptDiv = document.getElementById('transcript');
@@ -152,8 +164,26 @@ export function generateStandaloneHTML(
                 audioChunks = [];
                 isRecording = true;
                 
+                ${options.autoStopOnSilence ? `
+                // Set up silence detection
+                try {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    const source = audioContext.createMediaStreamSource(stream);
+                    analyser = audioContext.createAnalyser();
+                    analyser.fftSize = 256;
+                    analyser.minDecibels = -90;
+                    analyser.maxDecibels = -10;
+                    source.connect(analyser);
+                    
+                    // Start monitoring audio levels
+                    monitorAudioLevels();
+                } catch (error) {
+                    console.warn('Could not set up silence detection:', error);
+                }
+                ` : ''}
+                
                 // Update UI
-                status.textContent = 'Recording... Click to stop';
+                status.textContent = '${options.autoStopOnSilence ? 'Recording... (Auto-stops on silence)' : 'Recording... Click to stop'}';
                 button.classList.add('recording');
                 
                 // Handle recorded data
@@ -165,6 +195,19 @@ export function generateStandaloneHTML(
                 
                 // Handle recording stop
                 mediaRecorder.onstop = async () => {
+                    ${options.autoStopOnSilence ? `
+                    // Clean up silence detection
+                    if (silenceTimeout) {
+                        clearTimeout(silenceTimeout);
+                        silenceTimeout = null;
+                    }
+                    if (audioContext) {
+                        audioContext.close();
+                        audioContext = null;
+                        analyser = null;
+                    }
+                    ` : ''}
+                    
                     const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
                     await processAudio(audioBlob);
                 };
@@ -287,6 +330,55 @@ export function generateStandaloneHTML(
                 reader.readAsDataURL(blob);
             });
         }
+        
+        ${options.autoStopOnSilence ? `
+        // Monitor audio levels for silence detection
+        function monitorAudioLevels() {
+            if (!analyser || !isRecording) return;
+            
+            const bufferLength = analyser.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+            analyser.getByteFrequencyData(dataArray);
+            
+            // Calculate RMS (Root Mean Square) for volume level
+            let sum = 0;
+            for (let i = 0; i < bufferLength; i++) {
+                sum += dataArray[i] * dataArray[i];
+            }
+            const rms = Math.sqrt(sum / bufferLength);
+            
+            // Convert to dB (approximate)
+            const db = 20 * Math.log10(rms / 255);
+            
+            // Check if audio level is above silence threshold
+            if (db > silenceThreshold) {
+                // Audio detected - reset silence timer
+                lastAudioTime = Date.now();
+                if (silenceTimeout) {
+                    clearTimeout(silenceTimeout);
+                    silenceTimeout = null;
+                }
+            } else {
+                // Silence detected - start/continue silence timer
+                if (!silenceTimeout) {
+                    const timeSinceLastAudio = Date.now() - lastAudioTime;
+                    if (timeSinceLastAudio > 500) { // Grace period for brief pauses
+                        silenceTimeout = setTimeout(() => {
+                            if (isRecording) {
+                                status.textContent = 'Auto-stopping due to silence...';
+                                stopRecording();
+                            }
+                        }, Math.max(0, silenceDuration - timeSinceLastAudio));
+                    }
+                }
+            }
+            
+            // Continue monitoring
+            if (isRecording) {
+                requestAnimationFrame(monitorAudioLevels);
+            }
+        }
+        ` : ''}
         
         ${options.autoStart ? `
         // Auto-start recording when page loads

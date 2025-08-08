@@ -206,44 +206,105 @@ organization:
 - **Vibration API**: For haptic feedback on mobile devices
 - **Google Gemini API**: For speech transcription (API key required)
 
-## Export System (NEW!)
+## 🚀 Complete Export System
 
-ButtonStudio now includes a comprehensive export system that completes the user
-journey:
+ButtonStudio transforms from a design tool into a **complete platform** with full export capabilities. Users can design beautiful voice buttons and deploy them anywhere.
 
 ### Export Architecture
 
-- **`ButtonExporter`** (`utils/export/ButtonExporter.ts`): Main export engine
-- **Templates** (`utils/export/templates/`): HTML, PWA, and mobile app
-  generators
-- **Share Links** (`utils/export/shareLink.ts`): URL encoding/decoding system
-- **Export UI** (integrated in `CustomizationPanel.tsx`): User-friendly export
-  interface
+- **`ButtonExporter`** (`utils/export/ButtonExporter.ts`): Main export engine with Unicode support
+- **Templates** (`utils/export/templates/`): Self-contained HTML, PWA, and mobile app generators  
+- **Share Links** (`utils/export/shareLink.ts`): URL-safe encoding/decoding with compression
+- **Export UI** (integrated in `CustomizationPanel.tsx`): Brutalist design with power user options
 
 ### Export Formats
 
-1. **HTML Standalone** - Self-contained files with embedded functionality
-2. **PWA Generator** - Progressive Web App with custom manifest
-3. **Share Links** - URL-encoded button configurations for instant sharing
-4. **Mobile Templates** - React Native and Capacitor ready-to-build projects
+1. **📄 HTML Standalone** - Self-contained files with embedded Gemini AI transcription
+2. **📱 PWA Generator** - Progressive Web Apps with iOS home screen support  
+3. **🔗 Share Links** - URL-encoded configurations for instant sharing (Unicode-safe)
+4. **🎯 Embed Code** - Responsive iframe code for website integration
+5. **📦 Mobile Templates** - React Native and Capacitor projects (Premium)
 
-### Export Flow
+### ⚡ Power User Features
+
+Export system includes advanced automation options:
 
 ```typescript
-// Export a button design
-const exporter = new ButtonExporter(customization.value, apiKey);
-const htmlFile = exporter.generateHTML(); // Standalone HTML
-const pwaPackage = exporter.generatePWA(); // PWA with manifest
-const shareUrl = exporter.generateShareLink(); // Shareable URL
+// Export with power features
+const result = exporter.generatePWA({
+  includeAI: true,        // Gemini transcription
+  autoStart: true,        // Auto-record on app load  
+  autoCopy: true,         // Auto-copy transcript to clipboard
+  customBranding: false   // Keep ButtonStudio attribution
+});
 ```
 
-### Premium Export Features
+**Auto-Start Flow**: PWA opens → 3-2-1 countdown → recording begins automatically  
+**Auto-Copy Flow**: Transcription completes → clipboard copy → visual feedback ✅
 
-- Advanced mobile app templates
-- Custom branding removal
-- Advanced PWA features (offline, notifications)
-- Analytics integration
-- Team collaboration exports
+### 📱 PWA Deployment Workflow
+
+Perfect iPhone home screen installation:
+
+1. **Design** custom button with full personalization
+2. **Export** as PWA with enhanced iOS manifest  
+3. **Upload** files to any HTTPS server
+4. **Visit** URL in Safari on iPhone
+5. **Install** via "Add to Home Screen"
+6. **Result**: Native-looking voice app with custom icon
+
+### Technical Features
+
+- **Unicode Support**: Full emoji and international character support in icons/text
+- **iOS Optimized**: Maskable icons, apple-touch-icon, proper display modes
+- **Offline Ready**: Service worker with caching for PWA functionality  
+- **Custom Icons**: Dynamic SVG generation matching button appearance
+- **Smart Encoding**: Base64 with UTF-8 encoding for reliable sharing
+
+## 💰 Monetization Strategy
+
+### SoftStack Model: $1 Per-Button-Feature Unlocks
+
+**Philosophy**: Low-friction impulse purchases with high user value
+
+### Revenue Structure
+
+- **🆓 Free Tier**: Complete button creation and basic export
+- **💎 $1 Unlocks**: Premium features purchased per-button
+- **🔄 Scaling**: Users typically create multiple buttons = higher LTV
+
+### $1 Feature Categories
+
+**📊 Data & History**
+- Transcript history (last 100 recordings per button)
+- Export transcripts as CSV/PDF
+- Usage analytics dashboard
+- Cloud sync for transcripts
+
+**🎨 Visual & Audio**  
+- Premium theme packs (neon, glass, retro)
+- Custom animations (sparkles, ripples, glow)
+- Professional sound packs
+- Advanced styling options
+
+**⚡ Power Features**
+- Advanced PWA capabilities (offline mode, notifications)  
+- AI transcript enhancement (grammar correction, formatting)
+- Custom voice commands integration
+- Advanced sharing and collaboration
+
+### Psychology & UX
+
+- **Emotional Attachment**: Users invest time customizing buttons
+- **Per-Button Value**: Each button becomes valuable through use and history
+- **Low Friction**: $1 feels insignificant for immediate value
+- **Impulse Friendly**: "Just $1 to unlock history for this button"
+
+### Revenue Projections
+
+- **Average User**: 3-5 buttons with 2-3 unlocks each = $6-15 LTV
+- **Power Users**: 10+ buttons with multiple unlocks = $30+ LTV  
+- **Market**: Voice-to-text is massive and growing exponentially
 
 ## Development Notes
 

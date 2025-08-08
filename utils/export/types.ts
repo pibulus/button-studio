@@ -10,6 +10,8 @@ export interface ExportOptions {
   analyticsEnabled?: boolean;
   autoStart?: boolean;
   autoCopy?: boolean;
+  autoStopOnSilence?: boolean;
+  silenceDuration?: number; // seconds of silence before auto-stop (default: 3)
 }
 
 export interface ExportResult {

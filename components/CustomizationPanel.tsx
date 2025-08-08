@@ -166,6 +166,7 @@ export default function CustomizationPanel(
 
       // Get power user options from checkboxes
       const autoStartChecked = (document.getElementById("auto-start-export") as HTMLInputElement)?.checked || false;
+      const autoStopChecked = (document.getElementById("auto-stop-export") as HTMLInputElement)?.checked || false;
       const autoCopyChecked = (document.getElementById("auto-copy-export") as HTMLInputElement)?.checked || false;
 
       // Create exporter
@@ -179,7 +180,9 @@ export default function CustomizationPanel(
             includeAI: !!apiKey,
             customBranding: false,
             autoStart: autoStartChecked,
+            autoStopOnSilence: autoStopChecked,
             autoCopy: autoCopyChecked,
+            silenceDuration: 3, // 3 seconds of silence
           });
           if (result.success && result.data) {
             downloadFile(
@@ -196,7 +199,9 @@ export default function CustomizationPanel(
             includeAI: !!apiKey,
             customBranding: false,
             autoStart: autoStartChecked,
+            autoStopOnSilence: autoStopChecked,
             autoCopy: autoCopyChecked,
+            silenceDuration: 3, // 3 seconds of silence
           });
           if (result.success && result.data) {
             // For now, just download the main HTML - would need zip library for full PWA
@@ -1847,6 +1852,18 @@ function handleButtonClick() {
                   <div>
                     <div class="text-sm font-bold text-gray-900">🚀 Auto-start recording</div>
                     <div class="text-xs text-gray-600">Start recording automatically when PWA/HTML loads</div>
+                  </div>
+                </label>
+                <label class="flex items-center gap-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    id="auto-stop-export"
+                    class="w-4 h-4 border-2 border-black rounded"
+                    checked
+                  />
+                  <div>
+                    <div class="text-sm font-bold text-gray-900">🔇 Auto-stop on silence</div>
+                    <div class="text-xs text-gray-600">Automatically stop recording after 3 seconds of silence</div>
                   </div>
                 </label>
                 <label class="flex items-center gap-3 cursor-pointer">
