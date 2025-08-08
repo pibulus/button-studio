@@ -153,8 +153,11 @@ export default function CustomizationPanel(
   };
 
   // ===================================================================
-  // SURPRISE ME FEATURE - Curated random button generation
+  // 🎲 SURPRISE ME FEATURE - Intelligent random button generation
   // ===================================================================
+  // This creates tasteful, design-system-compliant random buttons instead of
+  // pure chaos. Uses weighted randomness to favor good combinations while
+  // still providing delightful surprises. The 80/20 of randomization! ✨
 
   // Succulent-inspired color palette
   const succulentColors = [
@@ -936,50 +939,6 @@ function handleButtonClick() {
                     </svg>
                   ),
                 },
-                {
-                  value: "dotted",
-                  label: "Dotted",
-                  preview: (
-                    <svg class="w-10 h-4" viewBox="0 0 40 16" fill="none">
-                      <line
-                        x1="6"
-                        y1="8"
-                        x2="34"
-                        y2="8"
-                        stroke="#374151"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-dasharray="1 3"
-                      />
-                    </svg>
-                  ),
-                },
-                {
-                  value: "double",
-                  label: "Double",
-                  preview: (
-                    <svg class="w-10 h-4" viewBox="0 0 40 16" fill="none">
-                      <line
-                        x1="6"
-                        y1="6"
-                        x2="34"
-                        y2="6"
-                        stroke="#374151"
-                        stroke-width="1.5"
-                        stroke-linecap="round"
-                      />
-                      <line
-                        x1="6"
-                        y1="10"
-                        x2="34"
-                        y2="10"
-                        stroke="#374151"
-                        stroke-width="1.5"
-                        stroke-linecap="round"
-                      />
-                    </svg>
-                  ),
-                },
               ].map(({ value, label, preview }) => (
                 <button
                   key={value}
@@ -1022,18 +981,27 @@ function handleButtonClick() {
               </span>
               Effects
             </h4>
-            <div class="grid grid-cols-3 gap-4">
+            <div class="grid grid-cols-2 gap-4">
               {[
                 {
                   key: "breathing",
                   label: "Breathe",
                   demoClass: "effect-breathe",
+                  description: "Gentle scaling animation",
                 },
-                { key: "bounce", label: "Bounce", demoClass: "effect-bounce" },
-                { key: "wiggle", label: "Wiggle", demoClass: "effect-wiggle" },
-                { key: "glow", label: "Glow", demoClass: "" }, // No demo class - handled via inline styles
-                { key: "pulse", label: "Pulse", demoClass: "effect-pulse" },
-              ].map(({ key, label, demoClass }) => {
+                {
+                  key: "bounce",
+                  label: "Bounce",
+                  demoClass: "effect-bounce",
+                  description: "Playful bouncing motion",
+                },
+                {
+                  key: "glow",
+                  label: "Glow",
+                  demoClass: "",
+                  description: "Subtle glow effect",
+                },
+              ].map(({ key, label, demoClass, description }) => {
                 const isActive = customization
                   .effects[key as keyof ButtonCustomization["effects"]];
                 return (
@@ -1070,47 +1038,6 @@ function handleButtonClick() {
                   </button>
                 );
               })}
-
-              {/* Rainbow Border - 6th effect */}
-              {customization.effects.rainbowGlow
-                ? (
-                  <button
-                    onClick={() => {
-                      updateEffect("rainbowGlow", false);
-                      playSound.selectionDeselect();
-                      hapticService.buttonPress();
-                    }}
-                    onMouseEnter={() => playSound.hover()}
-                    class="px-6 py-4 rounded-2xl border-3 border-black font-black transition-all duration-300 ease-out shadow-xl scale-105 -translate-y-1 bg-gradient-to-r from-pink-200 via-purple-200 to-blue-200 hover:from-pink-300 hover:via-purple-300 hover:to-blue-300 text-black flex items-center justify-center"
-                    style={{
-                      boxShadow:
-                        "4px 6px 0px #000000, 0 8px 25px rgba(168, 85, 247, 0.2)",
-                      transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
-                    }}
-                  >
-                    <span class="text-sm">Rainbow</span>
-                  </button>
-                )
-                : (
-                  <div class="rainbow-border">
-                    <button
-                      onClick={() => {
-                        updateEffect("rainbowGlow", true);
-                        playSound.selectionSelect();
-                        hapticService.buttonPress();
-                      }}
-                      onMouseEnter={() => playSound.hover()}
-                      class="rainbow-content px-6 py-4 border-3 border-black font-black transition-all duration-300 ease-out shadow-lg hover:shadow-xl active:scale-95 transform hover:scale-105 hover:-translate-y-1 bg-white text-black hover:bg-green-50 flex items-center justify-center w-full h-full"
-                      style={{
-                        boxShadow: "2px 3px 0px #000000",
-                        transition:
-                          "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
-                      }}
-                    >
-                      <span class="text-sm">Rainbow</span>
-                    </button>
-                  </div>
-                )}
             </div>
           </div>
 
@@ -1535,26 +1462,15 @@ function handleButtonClick() {
                       prompt: "Translate to Spanish",
                     },
                     {
-                      emoji: "🔥",
-                      text: "Spice Up",
-                      prompt: "Make this sound more exciting and energetic",
-                    },
-                    {
                       emoji: "📝",
                       text: "Bullets",
                       prompt: "Format as bullet points",
                     },
                     {
-                      emoji: "🎭",
-                      text: "Dramatic",
-                      prompt: "Rewrite in a dramatic, theatrical style",
+                      emoji: "🔥",
+                      text: "Spice Up",
+                      prompt: "Make this sound more exciting and energetic",
                     },
-                    {
-                      emoji: "🤖",
-                      text: "Tech",
-                      prompt: "Convert to technical documentation",
-                    },
-                    { emoji: "✨", text: "Surprise!", prompt: "surprise" },
                   ].map(({ emoji, text, prompt }) => (
                     <button
                       key={text}
@@ -1563,23 +1479,7 @@ function handleButtonClick() {
                           "textarea",
                         ) as HTMLTextAreaElement;
                         if (textarea) {
-                          if (prompt === "surprise") {
-                            const surprisePrompts = [
-                              "Turn this into a pirate shanty",
-                              "Explain like I'm a golden retriever",
-                              "Write as a noir detective story",
-                              "Convert to emoji-only communication",
-                              "Make it sound like a cooking recipe",
-                              "Transform into a haiku",
-                            ];
-                            textarea.value = surprisePrompts[
-                              Math.floor(
-                                Math.random() * surprisePrompts.length,
-                              )
-                            ];
-                          } else {
-                            textarea.value = prompt;
-                          }
+                          textarea.value = prompt;
                           textarea.focus();
                         }
                         playSound.secondaryClick();
@@ -1626,11 +1526,19 @@ function handleButtonClick() {
               </h5>
               <div class="grid grid-cols-2 gap-3">
                 {[
-                  { value: "timer", label: "Timer", icon: "⏱️" },
-                  { value: "pulse", label: "Pulse", icon: "💓" },
-                  { value: "glow", label: "Glow", icon: "✨" },
-                  { value: "ring", label: "Ring", icon: "⭕" },
-                ].map(({ value, label, icon }) => (
+                  {
+                    value: "timer",
+                    label: "Timer",
+                    icon: "⏱️",
+                    description: "Show recording duration",
+                  },
+                  {
+                    value: "pulse",
+                    label: "Pulse",
+                    icon: "💓",
+                    description: "Gentle pulsing effect",
+                  },
+                ].map(({ value, label, icon, description }) => (
                   <button
                     key={value}
                     onClick={() => {

@@ -18,7 +18,11 @@
       "Bash(mkdir:*)",
       "Bash(cp:*)",
       "Bash(deno fmt:*)",
-      "Bash(git fetch:*)"
+      "Bash(git fetch:*)",
+      "mcp__puppeteer__puppeteer_navigate",
+      "Bash(curl:*)",
+      "mcp__sequential-thinking__sequentialthinking_tools",
+      "Bash(git commit:*)"
     ],
     "deny": []
   }

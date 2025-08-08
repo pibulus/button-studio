@@ -150,7 +150,9 @@ export default function VoiceButton({
     onStateChange?.(buttonState.value);
   }, [buttonState.value]);
 
-  // Auto-clipboard copy (Pablo's brilliant UX pattern)
+  // 📋 AUTO-CLIPBOARD MAGIC - The secret sauce of great UX!
+  // Automatically copies transcription results so users can immediately paste anywhere.
+  // This eliminates the extra click and makes voice transcription feel instantaneous.
   useEffect(() => {
     if (transcript.value) {
       copyToClipboard(transcript.value).then((success) => {
@@ -246,14 +248,18 @@ export default function VoiceButton({
       const recorder = recorderRef.current!;
       const audioBlob = await recorder.stopRecording();
 
-      // Use real Gemini transcription with hardcoded API key
+      // 🤖 GEMINI AI TRANSCRIPTION - The magic happens here!
+      // This connects to Google's latest Gemini 2.0 Flash model for speech-to-text
       const { GeminiTranscriptionPlugin } = await import(
         "../plugins/transcription/gemini.ts"
       );
       const geminiPlugin = new GeminiTranscriptionPlugin();
 
-      // Configure and transcribe
-      await geminiPlugin.configure({ apiKey: "hardcoded" }); // API key is hardcoded in plugin
+      // Configure with user's API key (from UI input or environment variable)
+      // The plugin automatically checks environment vars as fallback
+      await geminiPlugin.configure({ apiKey: "hardcoded" }); // Will use GEMINI_API_KEY env var or user input
+
+      // Transform speech into clean, filler-free text ✨
       const result = await geminiPlugin.transcribe(audioBlob);
       transcript.value = result.text;
 

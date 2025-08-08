@@ -206,6 +206,42 @@ organization:
 - **Vibration API**: For haptic feedback on mobile devices
 - **Google Gemini API**: For speech transcription (API key required)
 
+## Export System (NEW!)
+
+ButtonStudio now includes a comprehensive export system that completes the user journey:
+
+### Export Architecture
+
+- **`ButtonExporter`** (`utils/export/ButtonExporter.ts`): Main export engine
+- **Templates** (`utils/export/templates/`): HTML, PWA, and mobile app generators
+- **Share Links** (`utils/export/shareLink.ts`): URL encoding/decoding system
+- **Export UI** (integrated in `CustomizationPanel.tsx`): User-friendly export interface
+
+### Export Formats
+
+1. **HTML Standalone** - Self-contained files with embedded functionality
+2. **PWA Generator** - Progressive Web App with custom manifest
+3. **Share Links** - URL-encoded button configurations for instant sharing
+4. **Mobile Templates** - React Native and Capacitor ready-to-build projects
+
+### Export Flow
+
+```typescript
+// Export a button design
+const exporter = new ButtonExporter(customization.value, apiKey);
+const htmlFile = exporter.generateHTML(); // Standalone HTML
+const pwaPackage = exporter.generatePWA(); // PWA with manifest
+const shareUrl = exporter.generateShareLink(); // Shareable URL
+```
+
+### Premium Export Features
+
+- Advanced mobile app templates
+- Custom branding removal  
+- Advanced PWA features (offline, notifications)
+- Analytics integration
+- Team collaboration exports
+
 ## Development Notes
 
 - The app uses Deno's permission system - audio recording requires microphone
@@ -214,3 +250,5 @@ organization:
 - The design studio provides real-time preview of button configurations
 - Audio settings are optimized for speech recognition (16kHz, noise suppression,
   echo cancellation)
+- **Export system completes the user journey** - users can now save, share, and deploy their creations
+- Export UI integrates with existing brutalist design system and sound feedback

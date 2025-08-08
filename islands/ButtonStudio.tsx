@@ -174,67 +174,130 @@ export default function ButtonStudio() {
                   />
                 </div>
 
-                {/* 🎲 JUICY Dice Shuffle Button - MAXIMUM JUICE! */}
+                {/* 🎲 MAGICAL Dice Shuffle Button - ULTIMATE SPARKLE EDITION! */}
                 <button
                   onClick={(e) => {
-                    // Sound and haptic feedback first!
+                    // Epic sound and haptic feedback first!
                     soundService.playDiceRoll();
                     hapticService.diceRoll();
 
-                    // MAXIMUM JUICE CLICK ANIMATION
                     const btn = e.currentTarget;
+                    const sparkleContainer = btn.querySelector(
+                      ".sparkle-container",
+                    );
 
-                    // Stage 1: Deep squish (80ms)
+                    // Create dynamic sparkle burst!
+                    for (let i = 0; i < 12; i++) {
+                      const sparkle = document.createElement("div");
+                      sparkle.className =
+                        "absolute w-2 h-2 bg-yellow-400 rounded-full animate-ping pointer-events-none";
+                      sparkle.style.left = Math.random() * 100 + "%";
+                      sparkle.style.top = Math.random() * 100 + "%";
+                      sparkle.style.animationDelay = Math.random() * 300 + "ms";
+                      sparkle.style.animationDuration =
+                        (Math.random() * 500 + 400) + "ms";
+                      sparkleContainer.appendChild(sparkle);
+
+                      // Clean up sparkle after animation
+                      setTimeout(() => sparkle.remove(), 1000);
+                    }
+
+                    // ULTIMATE JUICE SEQUENCE - Enhanced with more stages!
+                    // Stage 1: Initial squish with color burst (60ms)
                     btn.style.transform =
-                      "scale(0.85) rotate(-5deg) translate(2px, 2px)";
+                      "scale(0.8) rotate(-8deg) translate(2px, 3px)";
                     btn.style.boxShadow = "1px 1px 0px #000000";
-                    btn.style.backgroundColor = "#fbbf24"; // Yellow burst
+                    btn.style.backgroundColor = "#fbbf24";
+                    btn.style.filter = "brightness(1.3) saturate(1.5)";
 
-                    // Stage 2: Bounce back bigger (120ms)
+                    // Stage 2: Quick bounce with rotation (90ms)
                     setTimeout(() => {
                       btn.style.transform =
-                        "scale(1.15) rotate(5deg) translate(-1px, -1px)";
-                      btn.style.boxShadow = "5px 5px 0px #000000";
+                        "scale(1.2) rotate(8deg) translate(-2px, -2px)";
+                      btn.style.boxShadow = "6px 6px 0px #000000";
                       btn.style.backgroundColor = "#f59e0b";
-                    }, 80);
+                      btn.style.filter =
+                        "brightness(1.4) saturate(1.8) drop-shadow(0 0 10px #fbbf24)";
+                    }, 60);
 
-                    // Stage 3: Wiggle shake (200ms)
+                    // Stage 3: Wild shake with rainbow glow (120ms)
                     setTimeout(() => {
                       btn.style.transform =
-                        "scale(1.05) rotate(-2deg) translate(1px, 0px)";
-                      btn.style.boxShadow = "4px 4px 0px #000000";
+                        "scale(1.1) rotate(-5deg) translate(1px, -1px)";
+                      btn.style.boxShadow =
+                        "5px 5px 0px #000000, 0 0 15px #ff6b9d";
                       btn.style.backgroundColor = "#fbbf24";
-                    }, 200);
+                      btn.style.filter =
+                        "brightness(1.5) saturate(2) hue-rotate(30deg) drop-shadow(0 0 15px #ff6b9d)";
+                    }, 150);
 
-                    // Stage 4: Final settle (150ms)
+                    // Stage 4: Celebration bounce (100ms)
+                    setTimeout(() => {
+                      btn.style.transform =
+                        "scale(1.15) rotate(3deg) translate(-1px, 0px)";
+                      btn.style.boxShadow =
+                        "4px 4px 0px #000000, 0 0 20px #10b981";
+                      btn.style.backgroundColor = "#fcd34d";
+                      btn.style.filter =
+                        "brightness(1.3) saturate(1.6) drop-shadow(0 0 12px #10b981)";
+                    }, 270);
+
+                    // Stage 5: Final magical settle (200ms)
                     setTimeout(() => {
                       btn.style.transform =
                         "scale(1) rotate(0deg) translate(0px, 0px)";
-                      btn.style.boxShadow = "3px 3px 0px #000000";
+                      btn.style.boxShadow =
+                        "3px 3px 0px #000000, 0 0 8px rgba(251, 191, 36, 0.3)";
                       btn.style.backgroundColor = "#fef3c7";
-                    }, 350);
+                      btn.style.filter = "brightness(1.1) saturate(1.2)";
+                    }, 370);
+
+                    // Final cleanup - reset all effects (300ms later)
+                    setTimeout(() => {
+                      btn.style.filter = "brightness(1) saturate(1)";
+                      btn.style.boxShadow = "3px 3px 0px #000000";
+                    }, 670);
 
                     // Trigger the surprise function
                     const event = new CustomEvent("surpriseMe");
                     document.dispatchEvent(event);
                   }}
                   onMouseEnter={(e) => {
-                    // Sound feedback on hover
+                    // Enhanced sound feedback on hover
                     soundService.playButtonHover();
 
-                    // Enhanced hover with sparkle
+                    // Magical hover animation with gentle sparkle
                     e.currentTarget.style.transform =
-                      "scale(1.05) rotate(2deg)";
-                    e.currentTarget.style.boxShadow = "4px 4px 0px #000000";
+                      "scale(1.08) rotate(3deg)";
+                    e.currentTarget.style.boxShadow =
+                      "4px 4px 0px #000000, 0 0 12px rgba(251, 191, 36, 0.4)";
                     e.currentTarget.style.backgroundColor = "#fef3c7";
-                    e.currentTarget.style.filter = "brightness(1.1)";
+                    e.currentTarget.style.filter =
+                      "brightness(1.15) saturate(1.1) drop-shadow(0 0 6px #fbbf24)";
+
+                    // Add a gentle sparkle on hover
+                    const sparkleContainer = e.currentTarget.querySelector(
+                      ".sparkle-container",
+                    );
+                    const hoverSparkle = document.createElement("div");
+                    hoverSparkle.className =
+                      "absolute w-1 h-1 bg-yellow-300 rounded-full animate-pulse pointer-events-none hover-sparkle";
+                    hoverSparkle.style.left = "70%";
+                    hoverSparkle.style.top = "25%";
+                    sparkleContainer.appendChild(hoverSparkle);
                   }}
                   onMouseLeave={(e) => {
-                    // Smooth return to normal
+                    // Smooth return to normal with cleanup
                     e.currentTarget.style.transform = "scale(1) rotate(0deg)";
                     e.currentTarget.style.boxShadow = "3px 3px 0px #000000";
                     e.currentTarget.style.backgroundColor = "#ffffff";
-                    e.currentTarget.style.filter = "brightness(1)";
+                    e.currentTarget.style.filter = "brightness(1) saturate(1)";
+
+                    // Clean up hover sparkles
+                    const hoverSparkles = e.currentTarget.querySelectorAll(
+                      ".hover-sparkle",
+                    );
+                    hoverSparkles.forEach((s) => s.remove());
                   }}
                   class="absolute top-4 right-4 w-12 h-12 sm:w-14 sm:h-14 bg-white border-3 border-black rounded-xl flex items-center justify-center group transition-all duration-200 ease-out cursor-pointer touch-manipulation"
                   title="Surprise me! 🎲"
@@ -244,44 +307,108 @@ export default function ButtonStudio() {
                       "transform, box-shadow, background-color, filter",
                   }}
                 >
-                  {/* 🎲 Dice Icon with enhanced animations */}
+                  {/* Sparkle container for dynamic sparkles */}
+                  <div class="sparkle-container absolute inset-0 overflow-hidden rounded-xl pointer-events-none">
+                  </div>
+
+                  {/* 🎲 Enhanced Dice Icon with magical animations */}
                   <svg
-                    class="w-6 h-6 sm:w-7 sm:h-7 text-amber-800 group-hover:text-amber-900 transition-all duration-300 group-hover:rotate-12 group-hover:scale-110"
+                    class="relative z-10 w-6 h-6 sm:w-7 sm:h-7 text-amber-800 group-hover:text-amber-900 transition-all duration-300 group-hover:rotate-[15deg] group-hover:scale-110 drop-shadow-sm"
                     fill="currentColor"
                     viewBox="0 0 24 24"
                   >
                     <path d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zM7.5 6a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm9 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zM12 10.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zM7.5 15a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm9 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z" />
                   </svg>
 
-                  {/* Enhanced sparkle effects */}
-                  <div class="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-opacity duration-300">
+                  {/* ULTIMATE SPARKLE SYSTEM - Static sparkles that animate on hover */}
+                  <div class="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-r from-yellow-400 to-amber-400 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-all duration-300 shadow-lg">
                   </div>
-                  <div class="absolute -bottom-1 -left-1 w-2 h-2 bg-orange-400 rounded-full opacity-0 group-hover:opacity-80 group-hover:animate-pulse transition-opacity duration-500">
+                  <div class="absolute -bottom-1 -left-1 w-2 h-2 bg-gradient-to-r from-orange-400 to-red-400 rounded-full opacity-0 group-hover:opacity-90 group-hover:animate-pulse transition-all duration-500 shadow-md">
+                  </div>
+                  <div class="absolute top-1 left-1 w-1.5 h-1.5 bg-gradient-to-r from-pink-300 to-purple-300 rounded-full opacity-0 group-hover:opacity-80 group-hover:animate-bounce transition-all duration-700 delay-100">
+                  </div>
+                  <div class="absolute bottom-2 right-2 w-1 h-1 bg-gradient-to-r from-green-400 to-blue-400 rounded-full opacity-0 group-hover:opacity-70 group-hover:animate-ping transition-all duration-400 delay-200">
                   </div>
 
-                  {/* Glow effect on hover */}
-                  <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-yellow-200 to-orange-200 opacity-0 group-hover:opacity-30 transition-opacity duration-300 -z-10">
+                  {/* Enhanced magical glow effect */}
+                  <div class="absolute inset-0 rounded-xl bg-gradient-to-br from-yellow-200/20 via-amber-200/20 to-orange-200/20 opacity-0 group-hover:opacity-50 transition-opacity duration-400 -z-10 blur-sm">
+                  </div>
+
+                  {/* Subtle inner glow */}
+                  <div class="absolute inset-1 rounded-lg bg-gradient-to-r from-yellow-100/30 to-amber-100/30 opacity-0 group-hover:opacity-40 transition-opacity duration-300 -z-10">
                   </div>
                 </button>
 
-                {/* Add some CSS for the juice animations */}
+                {/* ✨ ULTIMATE MAGICAL ANIMATION SYSTEM */}
                 <style jsx>
                   {`
-                  @keyframes dice-roll {
-                    0% { transform: rotate(0deg); }
-                    25% { transform: rotate(-10deg) scale(1.1); }
-                    50% { transform: rotate(10deg) scale(0.95); }
-                    75% { transform: rotate(-5deg) scale(1.05); }
-                    100% { transform: rotate(0deg) scale(1); }
+                  @keyframes dice-roll-ultimate {
+                    0% { 
+                      transform: rotate(0deg) scale(1); 
+                      filter: brightness(1);
+                    }
+                    15% { 
+                      transform: rotate(-15deg) scale(1.1); 
+                      filter: brightness(1.2) saturate(1.3);
+                    }
+                    30% { 
+                      transform: rotate(12deg) scale(0.9); 
+                      filter: brightness(1.4) saturate(1.5) hue-rotate(20deg);
+                    }
+                    50% { 
+                      transform: rotate(-8deg) scale(1.15); 
+                      filter: brightness(1.3) saturate(1.6) hue-rotate(-10deg);
+                    }
+                    70% { 
+                      transform: rotate(5deg) scale(1.05); 
+                      filter: brightness(1.1) saturate(1.2);
+                    }
+                    100% { 
+                      transform: rotate(0deg) scale(1); 
+                      filter: brightness(1) saturate(1);
+                    }
                   }
                   
-                  .dice-button:active {
-                    animation: dice-roll 0.5s ease-out;
+                  @keyframes magical-sparkle {
+                    0%, 100% { 
+                      opacity: 0; 
+                      transform: scale(0) rotate(0deg); 
+                      filter: blur(2px);
+                    }
+                    50% { 
+                      opacity: 1; 
+                      transform: scale(1.2) rotate(180deg); 
+                      filter: blur(0px) brightness(1.5);
+                    }
                   }
                   
-                  @keyframes sparkle {
-                    0%, 100% { opacity: 0; transform: scale(0) rotate(0deg); }
-                    50% { opacity: 1; transform: scale(1) rotate(180deg); }
+                  @keyframes rainbow-pulse {
+                    0% { filter: hue-rotate(0deg) brightness(1); }
+                    25% { filter: hue-rotate(90deg) brightness(1.1); }
+                    50% { filter: hue-rotate(180deg) brightness(1.2); }
+                    75% { filter: hue-rotate(270deg) brightness(1.1); }
+                    100% { filter: hue-rotate(360deg) brightness(1); }
+                  }
+                  
+                  /* Dynamic sparkle burst animation */
+                  @keyframes sparkle-burst {
+                    0% {
+                      opacity: 0;
+                      transform: scale(0) translate(0, 0);
+                    }
+                    20% {
+                      opacity: 1;
+                      transform: scale(1.5) translate(var(--x, 0), var(--y, 0));
+                    }
+                    100% {
+                      opacity: 0;
+                      transform: scale(0.5) translate(calc(var(--x, 0) * 2), calc(var(--y, 0) * 2));
+                    }
+                  }
+                  
+                  /* Enhanced hover glow */
+                  .dice-button:hover {
+                    animation: rainbow-pulse 2s ease-in-out infinite;
                   }
                 `}
                 </style>

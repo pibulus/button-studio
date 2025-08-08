@@ -161,6 +161,14 @@ export const buttonStudioSounds = {
   // Color picker
   playColorSelect: () => playSound("colorSelect"),
 
+  // Selection sounds (for customization options)
+  playSelectionSelect: () => playSound("buttonSuccess", { volume: 0.3 }),
+  playSelectionDeselect: () => playSound("sliderStep", { volume: 0.2 }),
+
+  // Action sounds
+  playCopyCode: () => playSound("copy"),
+  playExport: () => playSound("success", { volume: 0.4 }),
+
   // General interactions
   playCopy: () => playSound("copy"),
   playUndo: () => playSound("undo"),
