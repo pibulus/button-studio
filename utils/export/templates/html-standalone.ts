@@ -87,6 +87,43 @@ export function generateStandaloneHTML(
             ${options.autoStart ? 'Ready to auto-record...' : 'Click to record'}
         </div>
         
+        <!-- API Key Setup (shown when no key) -->
+        <div id="api-setup" class="mt-4 max-w-lg mx-auto p-6 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border-2 border-dashed border-blue-200 ${options.apiKey ? 'hidden' : ''}">
+            <h3 class="text-xl font-bold mb-3 text-center">🚀 Enable AI Transcription</h3>
+            <p class="text-gray-600 mb-4 text-center">Get a free Gemini API key in 2 minutes:</p>
+            
+            <div class="space-y-3 text-sm">
+                <div class="flex items-center space-x-3">
+                    <span class="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold text-xs">1</span>
+                    <span>Visit <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-blue-600 underline font-medium">Google AI Studio</a></span>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <span class="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold text-xs">2</span>
+                    <span>Click "Create API key" → "Create API key in new project"</span>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <span class="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold text-xs">3</span>
+                    <span>Copy your key and paste below:</span>
+                </div>
+            </div>
+            
+            <div class="mt-4 space-y-3">
+                <input 
+                    type="password" 
+                    id="api-key-input" 
+                    placeholder="Paste your Gemini API key here..." 
+                    class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none font-mono text-sm"
+                >
+                <button onclick="saveApiKey()" class="w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white py-3 px-4 rounded-lg font-bold hover:from-blue-600 hover:to-purple-600 transition-all">
+                    ✨ Save & Start Transcribing
+                </button>
+            </div>
+            
+            <p class="text-xs text-gray-500 mt-3 text-center">
+                🔒 Your API key stays private in your browser only
+            </p>
+        </div>
+
         <!-- Transcript Display -->
         <div id="transcript" class="mt-4 max-w-lg mx-auto p-4 bg-white rounded-lg shadow-md hidden">
             <h3 class="text-lg font-bold mb-2">Transcript:</h3>
@@ -114,6 +151,47 @@ export function generateStandaloneHTML(
         let audioChunks = [];
         let isRecording = false;
         let currentTranscript = '';
+        let userApiKey = ${options.apiKey ? `'${options.apiKey}'` : 'localStorage.getItem("gemini-api-key") || null'};
+        
+        // API Key Management
+        function saveApiKey() {
+            const input = document.getElementById('api-key-input');
+            const apiKey = input.value.trim();
+            
+            if (!apiKey) {
+                alert('Please enter your API key');
+                return;
+            }
+            
+            if (!apiKey.startsWith('AIza')) {
+                alert('Invalid API key format. Gemini API keys start with "AIza"');
+                return;
+            }
+            
+            // Save to localStorage
+            localStorage.setItem('gemini-api-key', apiKey);
+            userApiKey = apiKey;
+            
+            // Hide API setup, show ready state
+            document.getElementById('api-setup').classList.add('hidden');
+            document.getElementById('status').textContent = '🎉 AI Transcription enabled! Click to record';
+            
+            // Show success feedback
+            const button = document.querySelector('#api-setup button');
+            const originalText = button.textContent;
+            button.textContent = '✅ Saved!';
+            setTimeout(() => {
+                button.textContent = originalText;
+            }, 2000);
+        }
+        
+        // Check API key on load
+        window.addEventListener('load', () => {
+            if (userApiKey && !${options.apiKey ? 'true' : 'false'}) {
+                document.getElementById('api-setup').classList.add('hidden');
+                document.getElementById('status').textContent = 'Click to record';
+            }
+        });
         
         ${options.autoStopOnSilence ? `
         // Silence Detection Variables
@@ -241,8 +319,14 @@ export function generateStandaloneHTML(
                 const base64Audio = await blobToBase64(audioBlob);
                 
                 // Call Gemini API for transcription
+                const apiKey = userApiKey || '${options.apiKey || ''}';
+                if (!apiKey) {
+                    status.textContent = 'Please set up your API key first';
+                    return;
+                }
+                
                 const response = await fetch(
-                    \`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${options.apiKey}\`,
+                    \`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=\${apiKey}\`,
                     {
                         method: 'POST',
                         headers: {
@@ -281,8 +365,9 @@ export function generateStandaloneHTML(
             }
             `
       : `
-            // No AI transcription - just show recording completed
-            status.textContent = 'Recording completed! (Add Gemini API key for transcription)';
+            // No AI transcription - show API setup prompt
+            status.textContent = 'Recording saved! Set up API key above for transcription ⬆️';
+            document.getElementById('api-setup').classList.remove('hidden');
             `
   }
         }
