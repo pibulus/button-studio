@@ -345,8 +345,7 @@ self.addEventListener('fetch', (event) => {
   private generateIcon(size: number): string {
     // For now, return a data URL for a simple icon
     // In a real implementation, this would generate actual PNG data
-    return `data:image/svg+xml;base64,${
-      btoa(`
+    const svgContent = `
       <svg width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg">
         <circle cx="${size / 2}" cy="${size / 2}" r="${size / 2 - 10}" 
                 fill="${
@@ -360,8 +359,14 @@ self.addEventListener('fetch', (event) => {
           ${this.customization.content.value}
         </text>
       </svg>
-    `)
-    }`;
+    `;
+
+    // Fix for Unicode characters in SVG
+    const utf8Bytes = new TextEncoder().encode(svgContent);
+    const binaryString = Array.from(utf8Bytes, (byte) => String.fromCharCode(byte)).join('');
+    const encoded = btoa(binaryString);
+
+    return `data:image/svg+xml;base64,${encoded}`;
   }
 
   private generateReactNativeFiles(config: MobileTemplateConfig) {

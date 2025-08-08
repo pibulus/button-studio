@@ -22,7 +22,8 @@
       "mcp__puppeteer__puppeteer_navigate",
       "Bash(curl:*)",
       "mcp__sequential-thinking__sequentialthinking_tools",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(deno run:*)"
     ],
     "deny": []
   }
