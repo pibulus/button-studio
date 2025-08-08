@@ -23,7 +23,10 @@
       "Bash(curl:*)",
       "mcp__sequential-thinking__sequentialthinking_tools",
       "Bash(git commit:*)",
-      "Bash(deno run:*)"
+      "Bash(deno run:*)",
+      "Bash(osascript:*)",
+      "Bash(open quick_test.html)",
+      "Bash(open http://localhost:8000)"
     ],
     "deny": []
   }

@@ -8,6 +8,8 @@ export interface ExportOptions {
   includeAI?: boolean;
   customBranding?: boolean;
   analyticsEnabled?: boolean;
+  autoStart?: boolean;
+  autoCopy?: boolean;
 }
 
 export interface ExportResult {
@@ -57,18 +59,23 @@ export interface PWAManifest {
   short_name: string;
   description: string;
   start_url: string;
+  scope?: string;
   display: "standalone" | "fullscreen" | "minimal-ui";
+  display_override?: string[];
   background_color: string;
   theme_color: string;
   icons: PWAIcon[];
-  orientation?: "portrait" | "landscape" | "any";
+  orientation?: string;
+  categories?: string[];
+  lang?: string;
+  dir?: string;
 }
 
 export interface PWAIcon {
   src: string;
   sizes: string;
   type: string;
-  purpose?: "any" | "maskable" | "monochrome";
+  purpose?: string;
 }
 
 export interface MobileTemplateConfig {

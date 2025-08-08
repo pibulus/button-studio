@@ -11,6 +11,8 @@ export function generateStandaloneHTML(
     includeAI?: boolean;
     apiKey?: string;
     customBranding?: boolean;
+    autoStart?: boolean;
+    autoCopy?: boolean;
   } = {},
 ): string {
   const buttonStyles = generateButtonStyles(customization);
@@ -80,7 +82,7 @@ export function generateStandaloneHTML(
         
         <!-- Status Display -->
         <div id="status" class="mt-6 text-lg font-medium text-gray-600">
-            Click to record
+            ${options.autoStart ? 'Ready to auto-record...' : 'Click to record'}
         </div>
         
         <!-- Transcript Display -->
@@ -246,7 +248,17 @@ export function generateStandaloneHTML(
             currentTranscript = transcript;
             transcriptText.textContent = transcript;
             transcriptDiv.classList.remove('hidden');
+            
+            ${options.autoCopy ? `
+            // Auto-copy transcript to clipboard
+            navigator.clipboard.writeText(transcript).then(() => {
+                status.textContent = 'Transcription complete! Auto-copied to clipboard ✅';
+            }).catch(() => {
+                status.textContent = 'Transcription complete! (Auto-copy failed)';
+            });
+            ` : `
             status.textContent = 'Transcription complete!';
+            `}
         }
         
         function copyTranscript() {
@@ -275,6 +287,25 @@ export function generateStandaloneHTML(
                 reader.readAsDataURL(blob);
             });
         }
+        
+        ${options.autoStart ? `
+        // Auto-start recording when page loads
+        window.addEventListener('load', () => {
+            // Add a small delay for user awareness
+            setTimeout(() => {
+                status.textContent = 'Auto-starting recording in 3...';
+                setTimeout(() => {
+                    status.textContent = 'Auto-starting recording in 2...';
+                    setTimeout(() => {
+                        status.textContent = 'Auto-starting recording in 1...';
+                        setTimeout(() => {
+                            startRecording();
+                        }, 1000);
+                    }, 1000);
+                }, 1000);
+            }, 1000);
+        });
+        ` : ''}
     </script>
 </body>
 </html>`;

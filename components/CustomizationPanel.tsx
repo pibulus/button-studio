@@ -164,6 +164,10 @@ export default function CustomizationPanel(
       ) as HTMLInputElement;
       const apiKey = apiKeyInput?.value || undefined;
 
+      // Get power user options from checkboxes
+      const autoStartChecked = (document.getElementById("auto-start-export") as HTMLInputElement)?.checked || false;
+      const autoCopyChecked = (document.getElementById("auto-copy-export") as HTMLInputElement)?.checked || false;
+
       // Create exporter
       const exporter = new ButtonExporter(customization, apiKey);
 
@@ -174,6 +178,8 @@ export default function CustomizationPanel(
           result = exporter.generateHTML({
             includeAI: !!apiKey,
             customBranding: false,
+            autoStart: autoStartChecked,
+            autoCopy: autoCopyChecked,
           });
           if (result.success && result.data) {
             downloadFile(
@@ -189,6 +195,8 @@ export default function CustomizationPanel(
           result = exporter.generatePWA({
             includeAI: !!apiKey,
             customBranding: false,
+            autoStart: autoStartChecked,
+            autoCopy: autoCopyChecked,
           });
           if (result.success && result.data) {
             // For now, just download the main HTML - would need zip library for full PWA
@@ -1825,6 +1833,35 @@ function handleButtonClick() {
               </span>
               Save & Share Your Creation
             </h4>
+
+            {/* Power User Options */}
+            <div class="bg-gray-50 border-2 border-gray-200 rounded-xl p-4 mb-4">
+              <h5 class="font-black text-gray-900 mb-3 text-sm">⚡ Power Features</h5>
+              <div class="flex flex-col gap-3">
+                <label class="flex items-center gap-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    id="auto-start-export"
+                    class="w-4 h-4 border-2 border-black rounded"
+                  />
+                  <div>
+                    <div class="text-sm font-bold text-gray-900">🚀 Auto-start recording</div>
+                    <div class="text-xs text-gray-600">Start recording automatically when PWA/HTML loads</div>
+                  </div>
+                </label>
+                <label class="flex items-center gap-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    id="auto-copy-export"
+                    class="w-4 h-4 border-2 border-black rounded"
+                  />
+                  <div>
+                    <div class="text-sm font-bold text-gray-900">📋 Auto-copy output</div>
+                    <div class="text-xs text-gray-600">Automatically copy transcript to clipboard</div>
+                  </div>
+                </label>
+              </div>
+            </div>
 
             <div class="grid grid-cols-2 gap-4">
               {/* HTML Export */}

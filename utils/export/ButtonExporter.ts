@@ -259,19 +259,33 @@ export class ButtonExporter {
       short_name: appName.slice(0, 12),
       description: `Voice recording button: ${appName}`,
       start_url: "./",
+      scope: "./",
       display: "standalone",
+      display_override: ["window-controls-overlay", "standalone", "minimal-ui"],
       background_color: "#ffffff",
       theme_color: themeColor,
+      orientation: "portrait-primary",
+      categories: ["productivity", "utilities"],
+      lang: "en-US",
+      dir: "ltr",
       icons: [
         {
           src: "icon-192.png",
           sizes: "192x192",
           type: "image/png",
+          purpose: "maskable any",
         },
         {
-          src: "icon-512.png",
+          src: "icon-512.png", 
           sizes: "512x512",
           type: "image/png",
+          purpose: "maskable any",
+        },
+        {
+          src: "icon-192.png",
+          sizes: "192x192", 
+          type: "image/png",
+          purpose: "apple-touch-icon",
         },
       ],
     };
@@ -349,10 +363,10 @@ self.addEventListener('fetch', (event) => {
       <svg width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg">
         <circle cx="${size / 2}" cy="${size / 2}" r="${size / 2 - 10}" 
                 fill="${
-        this.customization.appearance.fillType === "solid"
-          ? this.customization.appearance.solidColor
-          : this.customization.appearance.gradient.start
-      }" 
+      this.customization.appearance.fillType === "solid"
+        ? this.customization.appearance.solidColor
+        : this.customization.appearance.gradient.start
+    }" 
                 stroke="#000" stroke-width="4"/>
         <text x="${size / 2}" y="${size / 2}" text-anchor="middle" dy="0.35em" 
               font-size="${size / 3}" font-family="Arial">
@@ -363,7 +377,10 @@ self.addEventListener('fetch', (event) => {
 
     // Fix for Unicode characters in SVG
     const utf8Bytes = new TextEncoder().encode(svgContent);
-    const binaryString = Array.from(utf8Bytes, (byte) => String.fromCharCode(byte)).join('');
+    const binaryString = Array.from(
+      utf8Bytes,
+      (byte) => String.fromCharCode(byte),
+    ).join("");
     const encoded = btoa(binaryString);
 
     return `data:image/svg+xml;base64,${encoded}`;

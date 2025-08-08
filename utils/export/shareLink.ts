@@ -32,10 +32,13 @@ export function generateShareLink(
     // Serialize and compress
     const jsonString = JSON.stringify(shareData);
     const compressed = compressString(jsonString);
-    
+
     // Fix for Unicode characters - encode to UTF-8 first
     const utf8Bytes = new TextEncoder().encode(compressed);
-    const binaryString = Array.from(utf8Bytes, (byte) => String.fromCharCode(byte)).join('');
+    const binaryString = Array.from(
+      utf8Bytes,
+      (byte) => String.fromCharCode(byte),
+    ).join("");
     const encoded = btoa(binaryString);
 
     // Clean up for URL safety
@@ -65,7 +68,9 @@ export function parseShareLink(shareLink: string): ShareLinkData | null {
 
     // Decode from base64 and handle UTF-8
     const binaryString = atob(base64);
-    const utf8Bytes = new Uint8Array(Array.from(binaryString, char => char.charCodeAt(0)));
+    const utf8Bytes = new Uint8Array(
+      Array.from(binaryString, (char) => char.charCodeAt(0)),
+    );
     const compressed = new TextDecoder().decode(utf8Bytes);
     const jsonString = decompressString(compressed);
     const shareData: ShareLinkData = JSON.parse(jsonString);

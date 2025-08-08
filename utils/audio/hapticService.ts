@@ -46,7 +46,8 @@ class HapticService {
   private enabled: boolean;
 
   constructor() {
-    this.isMobile = typeof window !== "undefined" && globalThis.innerWidth <= 768;
+    this.isMobile = typeof window !== "undefined" &&
+      globalThis.innerWidth <= 768;
     this.isSupported = typeof navigator !== "undefined" &&
       "vibrate" in navigator;
     this.enabled = true;
