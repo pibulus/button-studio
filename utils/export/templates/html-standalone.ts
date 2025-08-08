@@ -90,7 +90,7 @@ export function generateStandaloneHTML(
         <!-- Transcript Display -->
         <div id="transcript" class="mt-4 max-w-lg mx-auto p-4 bg-white rounded-lg shadow-md hidden">
             <h3 class="text-lg font-bold mb-2">Transcript:</h3>
-            <p id="transcript-text" class="text-gray-800"></p>
+            <p id="transcript-text" class="text-gray-800 font-mono text-sm bg-gray-50 p-3 rounded border"></p>
             <button onclick="copyTranscript()" class="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
                 Copy to Clipboard
             </button>
