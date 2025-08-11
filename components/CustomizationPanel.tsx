@@ -30,8 +30,8 @@ const expandedPanels = signal<Record<string, boolean>>({
   export: false,
 });
 
-// Color mode state - Smart color palette switching
-const colorMode = signal<"pastel" | "neon" | "classic">("pastel");
+// Color mode state - Smart unified color system
+const colorMode = signal<"pastel" | "neon" | "classic" | "gradient">("pastel");
 
 export default function CustomizationPanel(
   { customization, onChange, voiceEnabled = false, onVoiceToggle, mode }:
@@ -343,53 +343,46 @@ export default function CustomizationPanel(
   // pure chaos. Uses weighted randomness to favor good combinations while
   // still providing delightful surprises. The 80/20 of randomization! ✨
 
-  // Smart curated color palettes
-  const colorPalettes = {
-    pastel: [
-      "#ff9eb5", // Pink succulent tip
-      "#ffb3d1", // Soft rose
-      "#e6a8d6", // Lavender pink
-      "#d1c4e0", // Soft purple
-      "#b8d8e0", // Powder blue
-      "#a8d8d1", // Sage green
-      "#c8e6c9", // Mint green
-      "#fff3b8", // Cream yellow
-      "#ffd4a3", // Peach
-      "#ffb08a", // Coral
-      "#ffc4e1", // Baby pink
-      "#ff9a8b", // Warm coral
-    ],
-    neon: [
-      "#ff1493", // Hot pink
-      "#00ff7f", // Spring green
-      "#1e90ff", // Dodger blue
-      "#ff4500", // Orange red
-      "#ff00ff", // Magenta
-      "#00ffff", // Cyan
-      "#ffff00", // Yellow
-      "#ff6347", // Tomato
-      "#7fff00", // Chartreuse
-      "#00fa9a", // Spring green
-      "#ffd700", // Gold
-      "#ff69b4", // Hot pink variant
-    ],
-    classic: [
-      "#f87171", // Red-400
-      "#fb923c", // Orange-400  
-      "#fbbf24", // Amber-400
-      "#facc15", // Yellow-400
-      "#a3e635", // Lime-400
-      "#4ade80", // Green-400
-      "#22d3ee", // Cyan-400
-      "#60a5fa", // Blue-400
-      "#818cf8", // Indigo-400
-      "#a78bfa", // Violet-400
-      "#e879f9", // Fuchsia-400
-      "#f472b6", // Pink-400
-    ],
+  // Smart unified color system - each mode has its own color palette and style
+  const colorModes = {
+    pastel: {
+      name: "Pastel",
+      fillType: "solid" as const,
+      colors: [
+        "#ff9eb5", "#ffb08a", "#ffd4a3", "#fff3b8", "#c8e6c9", "#a8d8d1",
+        "#b8d8e0", "#d1c4e0", "#e6a8d6", "#ffb3d1", "#ffc4e1", "#ff9a8b"
+      ]
+    },
+    neon: {
+      name: "Neon", 
+      fillType: "solid" as const,
+      colors: [
+        "#ff1493", "#ff4500", "#ffff00", "#7fff00", "#00ff7f", "#00ffff",
+        "#1e90ff", "#ff00ff", "#ff6347", "#ffd700", "#00fa9a", "#ff69b4"
+      ]
+    },
+    classic: {
+      name: "Classic",
+      fillType: "solid" as const, 
+      colors: [
+        "#f87171", "#fb923c", "#fbbf24", "#a3e635", "#4ade80", "#22d3ee",
+        "#60a5fa", "#818cf8", "#a78bfa", "#e879f9", "#f472b6", "#facc15"
+      ]
+    },
+    gradient: {
+      name: "Gradient",
+      fillType: "gradient" as const,
+      colors: [
+        ["#ff9a9e", "#fecfef"], ["#ffecd2", "#fcb69f"], ["#a8edea", "#fed6e3"], 
+        ["#8fd3f4", "#84fab0"], ["#a1c4fd", "#c2e9fb"], ["#4facfe", "#00f2fe"],
+        ["#fbc2eb", "#a6c1ee"], ["#667eea", "#764ba2"], ["#f093fb", "#f5576c"], 
+        ["#ff8a80", "#ff80ab"], ["#fdcbf1", "#e6dee9"], ["#cbb4d4", "#ddd6fe"]
+      ]
+    }
   };
 
-  const currentColors = colorPalettes[colorMode.value];
+  const currentMode = colorModes[colorMode.value];
+  const currentColors = currentMode.colors;
 
   // Generate tasteful random button (weighted toward good combinations)
   const surpriseMe = () => {
@@ -428,11 +421,10 @@ export default function CustomizationPanel(
       },
       appearance: {
         ...customization.appearance,
-        fillType: Math.random() > 0.3
-          ? "gradient"
-          : "solid" as "gradient" | "solid", // Prefer gradients
-        solidColor:
-          currentColors[Math.floor(Math.random() * currentColors.length)],
+        fillType: currentMode.fillType,
+        solidColor: currentMode.fillType === "solid" 
+          ? currentColors[Math.floor(Math.random() * currentColors.length)]
+          : customization.appearance.solidColor,
         shape: randomShape,
         scale: 0.8 + Math.random() * 0.6, // Constrained size range (0.8-1.4x)
         roundness: Math.random() * 25, // Less extreme roundness
@@ -446,13 +438,13 @@ export default function CustomizationPanel(
           "solid",
           "dashed",
         ][Math.floor(Math.random() * 4)] as any, // Mostly solid
-        gradient: {
-          ...customization.appearance.gradient,
-          start:
-            currentColors[Math.floor(Math.random() * currentColors.length)],
-          end:
-            currentColors[Math.floor(Math.random() * currentColors.length)],
-        },
+        gradient: currentMode.fillType === "gradient" 
+          ? {
+              ...customization.appearance.gradient,
+              start: (currentColors[Math.floor(Math.random() * currentColors.length)] as string[])[0],
+              end: (currentColors[Math.floor(Math.random() * currentColors.length)] as string[])[1],
+            }
+          : customization.appearance.gradient,
       },
       interactions: {
         hoverEffect: "lift", // Always use lift - it's reliable
@@ -799,67 +791,27 @@ function handleButtonClick() {
           </div>
         </div>
 
-        {/* 🎨 Colors & Fill Style */}
+        {/* 🎨 Colors */}
         <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-lg border-4 border-black">
           <div class="space-y-6">
-            {/* Fill Type Toggle - Redesigned */}
-            <div>
-              <h3 class="text-lg font-black text-gray-900 mb-4">Fill Style</h3>
-              <div class="flex gap-4">
-                <button
-                  onClick={() => {
-                    updateAppearance("fillType", "solid");
-                    playSound.selectionSelect();
-                    hapticService.buttonPress();
-                  }}
-                  onMouseEnter={() => playSound.hover()}
-                  class={`flex-1 px-6 py-4 rounded-2xl border-3 border-black font-black transition-all h-14 shadow-sm hover:shadow-md active:scale-95 ${
-                    customization.appearance.fillType === "solid"
-                      ? "bg-orange-200 hover:bg-orange-300 text-black shadow-md scale-105"
-                      : "bg-white hover:bg-orange-50 text-black"
-                  }`}
-                  style={{
-                    boxShadow: customization.appearance.fillType === "solid"
-                      ? "3px 3px 0px #000000"
-                      : "2px 2px 0px #000000",
-                  }}
-                >
-                  Solid Color
-                </button>
-                <button
-                  onClick={() => {
-                    updateAppearance("fillType", "gradient");
-                    playSound.selectionSelect();
-                    hapticService.buttonPress();
-                  }}
-                  onMouseEnter={() => playSound.hover()}
-                  class={`flex-1 px-6 py-4 rounded-2xl border-3 border-black font-black transition-all h-14 shadow-sm hover:shadow-md active:scale-95 ${
-                    customization.appearance.fillType === "gradient"
-                      ? "bg-orange-200 hover:bg-orange-300 text-black shadow-md scale-105"
-                      : "bg-white hover:bg-orange-50 text-black"
-                  }`}
-                  style={{
-                    boxShadow: customization.appearance.fillType === "gradient"
-                      ? "3px 3px 0px #000000"
-                      : "2px 2px 0px #000000",
-                  }}
-                >
-                  Gradient
-                </button>
-              </div>
-            </div>
 
-            {/* Color Mode Toggle */}
+            {/* Unified Color System */}
             <div>
-              <h3 class="text-lg font-black text-gray-900 mb-4">
-                Color Mode
-              </h3>
-              <div class="flex gap-3 mb-4">
-                {(["pastel", "neon", "classic"] as const).map((mode) => (
+              <div class="grid grid-cols-2 gap-3 mb-6">
+                {(["pastel", "neon", "classic", "gradient"] as const).map((mode) => (
                   <button
                     key={mode}
                     onClick={() => {
                       colorMode.value = mode;
+                      // Update customization to match the selected mode
+                      const modeConfig = colorModes[mode];
+                      onChange({
+                        ...customization,
+                        appearance: {
+                          ...customization.appearance,
+                          fillType: modeConfig.fillType,
+                        },
+                      });
                       playSound.selectionSelect();
                       hapticService.buttonPress();
                     }}
@@ -875,75 +827,56 @@ function handleButtonClick() {
                         : "2px 2px 0px #000000",
                     }}
                   >
-                    {mode}
+                    {colorModes[mode].name}
                   </button>
                 ))}
               </div>
-            </div>
 
-            {/* Text Color Control */}
-            <div>
-              <h3 class="text-lg font-black text-gray-900 mb-4">
-                Text Color
-              </h3>
-              <div class="flex gap-3">
-                {(["auto", "black", "white"] as const).map((textColor) => (
-                  <button
-                    key={textColor}
-                    onClick={() => {
-                      onChange({
-                        ...customization,
-                        appearance: {
-                          ...customization.appearance,
-                          textColor,
-                        },
-                      });
-                      playSound.selectionSelect();
-                      hapticService.buttonPress();
-                    }}
-                    onMouseEnter={() => playSound.hover()}
-                    class={`px-4 py-2 rounded-xl border-3 border-black font-black transition-all capitalize text-sm ${
-                      customization.appearance.textColor === textColor
-                        ? "bg-cyan-200 hover:bg-cyan-300 text-black shadow-md scale-105"
-                        : "bg-white hover:bg-cyan-50 text-black"
-                    }`}
-                    style={{
-                      boxShadow: customization.appearance.textColor === textColor
-                        ? "2px 2px 0px #000000"
-                        : "1px 1px 0px #000000",
-                    }}
-                  >
-                    {textColor === "auto" ? "🤖 Auto" : textColor}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Color Palette - Smart & Curated */}
-            <div>
-              <h3 class="text-lg font-black text-gray-900 mb-4">
-                {colorMode.value.charAt(0).toUpperCase() + colorMode.value.slice(1)} Colors
-              </h3>
-              <div class="grid grid-cols-4 sm:grid-cols-6 gap-3">
+              {/* Color Swatches - 6x2 grid */}
+              <div class="grid grid-cols-6 gap-3">
                 {currentColors.map((color, index) => (
                   <button
                     key={index}
                     onClick={() => {
-                      if (customization.appearance.fillType === "solid") {
-                        updateAppearance("solidColor", color);
+                      if (currentMode.fillType === "solid") {
+                        onChange({
+                          ...customization,
+                          appearance: {
+                            ...customization.appearance,
+                            fillType: "solid",
+                            solidColor: color as string,
+                          },
+                        });
                       } else {
-                        updateGradient("start", color);
+                        // For gradient mode, color is [start, end] array
+                        const gradientColors = color as string[];
+                        onChange({
+                          ...customization,
+                          appearance: {
+                            ...customization.appearance,
+                            fillType: "gradient",
+                            gradient: {
+                              ...customization.appearance.gradient,
+                              start: gradientColors[0],
+                              end: gradientColors[1],
+                            },
+                          },
+                        });
                       }
                       playSound.colorSelect();
                       hapticService.buttonPress();
                     }}
                     onMouseEnter={() => playSound.hover()}
-                    class="h-12 w-12 rounded-2xl border-3 border-black hover:scale-110 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95"
+                    class="h-12 w-full rounded-xl border-3 border-black hover:scale-110 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95"
                     style={{
-                      background: color,
+                      background: currentMode.fillType === "solid" 
+                        ? color as string
+                        : `linear-gradient(135deg, ${(color as string[])[0]}, ${(color as string[])[1]})`,
                       boxShadow: "2px 2px 0px #000000",
                     }}
-                    title={color}
+                    title={currentMode.fillType === "solid" 
+                      ? color as string 
+                      : `${(color as string[])[0]} → ${(color as string[])[1]}`}
                   />
                 ))}
               </div>
