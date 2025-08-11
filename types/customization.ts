@@ -154,8 +154,8 @@ export interface EffectToggles {
 
   // Legacy effects (kept for compatibility but not shown in UI)
   wiggle?: boolean;
-  shadow?: boolean;
   rainbow?: boolean;
+  rainbowGlow?: boolean;
   sparkle?: boolean;
 }
 
