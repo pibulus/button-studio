@@ -669,32 +669,36 @@ export default function VoiceButton({
     let hoverStyles = {};
 
     switch (hoverEffect) {
-      case "grow":
-        hoverClasses = "hover-grow";
+      case "shift":
+        hoverClasses = "hover-shift";
+        // Shift hue based on button's dominant color
+        const hsl = hexToHSL(buttonColor);
+        const shiftAmount = hsl.s > 50 ? 30 : 45; // Less shift for saturated colors
         hoverStyles = {
-          "--button-color-dim": hexToRgba(buttonColor, 0.2),
+          "--shift-degrees": `${shiftAmount}deg`,
         };
         break;
       case "squish":
         hoverClasses = "hover-squish";
         break;
-      case "neon":
-        hoverClasses = "hover-neon";
-        // Generate neon colors based on button color
-        const hsl = hexToHSL(buttonColor);
+      case "lift":
+        hoverClasses = "hover-lift";
         hoverStyles = {
-          "--neon-color-1": `hsl(${hsl.h}, 100%, 50%)`,
-          "--neon-color-2": `hsl(${(hsl.h + 120) % 360}, 100%, 50%)`,
-          "--neon-color-3": `hsl(${(hsl.h + 240) % 360}, 100%, 50%)`,
+          "--original-shadow": shadowStyle === "none" ? "none" : shadowStyle,
         };
         break;
-      case "magnetic":
-        hoverClasses = "hover-magnetic";
+      case "glow":
+        hoverClasses = "hover-glow";
+        hoverStyles = {
+          "--glow-color": hexToRgba(buttonColor, 0.5),
+          "--glow-color-dim": hexToRgba(buttonColor, 0.3),
+          "--original-shadow": shadowStyle === "none" ? "none" : shadowStyle,
+        };
         break;
       default:
-        hoverClasses = "hover-grow";
+        hoverClasses = "hover-shift";
         hoverStyles = {
-          "--button-color-dim": hexToRgba(buttonColor, 0.2),
+          "--shift-degrees": "30deg",
         };
     }
 
@@ -840,18 +844,19 @@ export default function VoiceButton({
           }
         }
         
-        /* Hover Effect Classes - JUICY and SATISFYING! */
-        .hover-grow {
-          transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        /* Hover Effect Classes - PRACTICAL and SATISFYING! */
+        
+        /* Shift - Color shifts to complementary color */
+        .hover-shift {
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
-        .hover-grow:hover {
-          transform: scale(1.12) rotate(1deg);
-          box-shadow: 0 20px 40px rgba(0,0,0,0.25), 
-                      0 0 30px var(--button-color-dim, rgba(0,0,0,0.1));
-          filter: brightness(1.1) saturate(1.2);
+        .hover-shift:hover {
+          filter: hue-rotate(var(--shift-degrees, 30deg)) brightness(1.1);
+          transform: scale(1.05);
         }
         
+        /* Squish - Elastic jello bounce (keeping this, it's great!) */
         .hover-squish {
           transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         }
@@ -862,66 +867,35 @@ export default function VoiceButton({
         
         @keyframes squish-bounce {
           0% { transform: scale(1); }
-          30% { transform: scale(0.92, 1.08); }
-          60% { transform: scale(1.08, 0.92); }
+          30% { transform: scale(0.95, 1.05); }
+          60% { transform: scale(1.05, 0.95); }
           80% { transform: scale(0.98, 1.02); }
           100% { transform: scale(1); }
         }
         
-        .hover-neon {
+        /* Lift - Rise up with shadow */
+        .hover-lift {
+          transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        .hover-lift:hover {
+          transform: translateY(-8px) scale(1.02);
+          box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2), 
+                      0 8px 16px rgba(0, 0, 0, 0.15),
+                      var(--original-shadow, 4px 4px 0px #000);
+        }
+        
+        /* Glow - Soft ambient glow that matches button color */
+        .hover-glow {
           transition: all 0.3s ease-out;
-          position: relative;
         }
         
-        .hover-neon::before {
-          content: '';
-          position: absolute;
-          top: -4px;
-          left: -4px;
-          right: -4px;
-          bottom: -4px;
-          background: linear-gradient(45deg, 
-            var(--neon-color-1, #ff00ff), 
-            var(--neon-color-2, #00ffff), 
-            var(--neon-color-3, #ffff00),
-            var(--neon-color-1, #ff00ff));
-          background-size: 400% 400%;
-          border-radius: inherit;
-          opacity: 0;
-          z-index: -1;
-          transition: opacity 0.3s ease-out;
-          filter: blur(8px);
-        }
-        
-        .hover-neon:hover::before {
-          opacity: 1;
-          animation: neon-pulse 2s linear infinite;
-        }
-        
-        .hover-neon:hover {
-          transform: scale(1.05);
-          box-shadow: 0 0 30px var(--neon-color-1, #ff00ff),
-                      0 0 60px var(--neon-color-2, #00ffff);
-        }
-        
-        @keyframes neon-pulse {
-          0% { background-position: 0% 50%; }
-          100% { background-position: 400% 50%; }
-        }
-        
-        .hover-magnetic {
-          transition: transform 0.2s ease-out;
-        }
-        
-        .hover-magnetic:hover {
-          transform: scale(1.08) translateY(-2px);
-          animation: magnetic-pull 0.8s ease-in-out infinite;
-        }
-        
-        @keyframes magnetic-pull {
-          0%, 100% { transform: scale(1.08) translateY(-2px) translateX(0); }
-          25% { transform: scale(1.08) translateY(-2px) translateX(-2px); }
-          75% { transform: scale(1.08) translateY(-2px) translateX(2px); }
+        .hover-glow:hover {
+          transform: scale(1.03);
+          box-shadow: var(--original-shadow, 4px 4px 0px #000),
+                      0 0 20px var(--glow-color, rgba(255, 100, 200, 0.5)),
+                      0 0 40px var(--glow-color-dim, rgba(255, 100, 200, 0.3));
+          filter: brightness(1.05);
         }
         
         @keyframes recording-pulse {
