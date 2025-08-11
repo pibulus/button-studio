@@ -70,17 +70,29 @@ export default function CustomizationPanel(
     let newEffects = { ...customization.effects };
 
     if (
-      value && (key === "breathing" || key === "bounce" || key === "wiggle")
+      value &&
+      (key === "breathing" || key === "bounce" || key === "wiggle" ||
+        key === "pulse")
     ) {
       // Movement effects - turn off the others when enabling one
       newEffects.breathing = key === "breathing";
       newEffects.bounce = key === "bounce";
       newEffects.wiggle = key === "wiggle";
-    } else if (value && key === "glow") {
-      // Visual border effects
-      newEffects.glow = true;
+      newEffects.pulse = key === "pulse";
+    } else if (
+      value &&
+      (key === "glow" || key === "shadow" || key === "rainbow" ||
+        key === "sparkle")
+    ) {
+      // Visual effects can be combined (except rainbow conflicts with glow)
+      if (key === "rainbow") {
+        newEffects.glow = false; // Turn off glow when enabling rainbow
+      } else if (key === "glow") {
+        newEffects.rainbow = false; // Turn off rainbow when enabling glow
+      }
+      newEffects[key] = true;
     } else {
-      // Non-conflicting effects (pulse can work with anything)
+      // Simple toggle
       newEffects[key] = value;
     }
 
@@ -221,7 +233,7 @@ export default function CustomizationPanel(
     const getBackgroundColor = (colorKey: string) => {
       const colors = {
         red: "bg-red-200 hover:bg-red-300",
-        orange: "bg-orange-200 hover:bg-orange-300", 
+        orange: "bg-orange-200 hover:bg-orange-300",
         yellow: "bg-yellow-200 hover:bg-yellow-300",
         purple: "bg-purple-200 hover:bg-purple-300",
       };
@@ -264,6 +276,9 @@ export default function CustomizationPanel(
         {`
         /* Force Tailwind to include orange classes */
         .force-orange { @apply bg-orange-200 hover:bg-orange-300; }
+        .force-orange-50 { @apply bg-orange-50; }
+        .force-orange-200 { @apply bg-orange-200; }
+        .force-orange-300 { @apply bg-orange-300; }
         
         @keyframes breathe {
           0%, 100% { transform: scale(1); }
@@ -290,6 +305,34 @@ export default function CustomizationPanel(
           75% { transform: rotate(2deg); }
         }
         
+        @keyframes pulse-demo {
+          0%, 100% { 
+            transform: scale(1);
+            opacity: 1;
+          }
+          50% { 
+            transform: scale(1.08);
+            opacity: 0.9;
+          }
+        }
+        
+        @keyframes rainbow-demo {
+          0% { filter: hue-rotate(0deg); }
+          100% { filter: hue-rotate(360deg); }
+        }
+        
+        @keyframes sparkle-demo {
+          0%, 100% { 
+            opacity: 1;
+            background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.5) 50%, transparent 70%);
+            background-size: 200% 200%;
+            background-position: 0% 0%;
+          }
+          50% {
+            background-position: 100% 100%;
+          }
+        }
+        
         .effect-breathe {
           animation: breathe 3s ease-in-out infinite;
         }
@@ -304,6 +347,28 @@ export default function CustomizationPanel(
         
         .effect-wiggle {
           animation: wiggle-demo 2s ease-in-out infinite;
+        }
+        
+        .effect-pulse {
+          animation: pulse-demo 1.5s ease-in-out infinite;
+        }
+        
+        .effect-rainbow {
+          animation: rainbow-demo 4s linear infinite;
+        }
+        
+        .effect-sparkle::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.4) 50%, transparent 70%);
+          background-size: 200% 200%;
+          animation: sparkle-demo 3s linear infinite;
+          border-radius: inherit;
+          pointer-events: none;
         }
         `}
       </style>
@@ -368,13 +433,30 @@ export default function CustomizationPanel(
         </div>
       </CollapsiblePanel>
 
-      {/* Feel Panel - HARDCODED BECAUSE ORANGE WON'T WORK IN COMPONENT */}
+      {/* Feel Panel - ORANGE WITH INLINE STYLES! */}
       <div class="bg-white rounded-3xl shadow-lg border-4 border-black overflow-hidden">
         <button
           onClick={() => togglePanel("feel")}
           onMouseEnter={() => playSound.hover()}
           class="w-full px-8 py-6 text-left font-black text-black transition-all duration-200 shadow-sm hover:shadow-md active:shadow-sm"
-          style={{ backgroundColor: "#fed7aa", ":hover": { backgroundColor: "#fbbf24" } }}
+          style={{
+            backgroundColor: expandedPanels.value["feel"]
+              ? "#fb923c"
+              : "#fed7aa",
+            ":hover": { backgroundColor: "#fb923c" },
+          }}
+          onMouseOver={(e) => {
+            if (!expandedPanels.value["feel"]) {
+              (e.currentTarget as HTMLElement).style.backgroundColor =
+                "#fb923c";
+            }
+          }}
+          onMouseOut={(e) => {
+            if (!expandedPanels.value["feel"]) {
+              (e.currentTarget as HTMLElement).style.backgroundColor =
+                "#fed7aa";
+            }
+          }}
         >
           <div class="flex items-center justify-between">
             <span class="text-xl">Feel</span>
@@ -389,69 +471,164 @@ export default function CustomizationPanel(
         </button>
         {expandedPanels.value["feel"] && (
           <div class="p-8 border-t-4 border-black">
-            <div class="space-y-6">
-          {/* Effects */}
-          <div>
-            <h4 class="text-lg font-black text-gray-900 mb-4">Effects</h4>
-            <div class="grid grid-cols-2 gap-4">
-              {[
-                { key: "breathing", label: "Breathe", demoClass: "effect-breathe" },
-                { key: "bounce", label: "Bounce", demoClass: "effect-bounce" },
-                { key: "glow", label: "Glow", demoClass: "" },
-              ].map(({ key, label, demoClass }) => {
-                const isActive = customization.effects[key as keyof ButtonCustomization["effects"]];
-                return (
-                  <button
-                    key={key}
-                    onClick={() => {
-                      updateEffect(
-                        key as keyof ButtonCustomization["effects"],
-                        !isActive,
-                      );
-                      playSound.selectionSelect();
-                      hapticService.buttonPress();
-                    }}
-                    class={`px-6 py-4 rounded-2xl border-3 border-black font-black transition-all shadow-lg hover:shadow-xl active:scale-95 ${
-                      isActive
-                        ? "bg-orange-200 text-black shadow-xl scale-105"
-                        : `bg-white text-black hover:bg-orange-50 ${demoClass}`
-                    }`}
-                  >
-                    {label}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
+            <div class="space-y-4">
+              {/* Movement Effects */}
+              <div>
+                <h4 class="text-lg font-black text-gray-900 mb-4">
+                  Movement Effects
+                </h4>
+                <div class="grid grid-cols-2 gap-4">
+                  {[
+                    { key: "breathing", label: "Breathe" },
+                    { key: "bounce", label: "Bounce" },
+                    { key: "wiggle", label: "Wiggle" },
+                    { key: "pulse", label: "Pulse" },
+                  ].map(({ key, label }) => {
+                    const isActive = customization
+                      .effects[key as keyof ButtonCustomization["effects"]];
+                    return (
+                      <button
+                        key={key}
+                        onClick={() => {
+                          updateEffect(
+                            key as keyof ButtonCustomization["effects"],
+                            !isActive,
+                          );
+                          playSound.selectionSelect();
+                          hapticService.buttonPress();
+                        }}
+                        onMouseEnter={() => playSound.hover()}
+                        class={`px-6 py-4 rounded-2xl border-3 border-black font-black transition-all shadow-lg hover:shadow-xl active:scale-95 ${
+                          isActive
+                            ? "text-black shadow-xl scale-105"
+                            : "bg-white text-black"
+                        }`}
+                        style={{
+                          backgroundColor: isActive ? "#fed7aa" : undefined,
+                        }}
+                        onMouseOver={(e) => {
+                          if (!isActive) {
+                            (e.currentTarget as HTMLElement).style
+                              .backgroundColor = "#fff7ed";
+                          }
+                        }}
+                        onMouseOut={(e) => {
+                          if (!isActive) {
+                            (e.currentTarget as HTMLElement).style
+                              .backgroundColor = "#ffffff";
+                          }
+                        }}
+                      >
+                        {label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
 
-          {/* Hover Effects */}
-          <div>
-            <h4 class="text-lg font-black text-gray-900 mb-4">Hover Effects</h4>
-            <div class="grid grid-cols-2 gap-3">
-              {[
-                { value: "none", label: "None" },
-                { value: "lift", label: "Lift" },
-                { value: "glow", label: "Glow" },
-                { value: "pulse", label: "Pulse" },
-              ].map(({ value, label }) => (
-                <button
-                  key={value}
-                  onClick={() => {
-                    updateInteraction("hoverEffect", value);
-                    playSound.selectionSelect();
-                    hapticService.buttonPress();
-                  }}
-                  class={`px-4 py-3 rounded-xl border-3 border-black font-black transition-all shadow-sm hover:shadow-md active:scale-95 ${
-                    customization.interactions.hoverEffect === value
-                      ? "bg-orange-200 hover:bg-orange-300 text-black shadow-md scale-105"
-                      : "bg-white hover:bg-orange-50 text-black"
-                  }`}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-          </div>
+              {/* Visual Effects */}
+              <div>
+                <h4 class="text-lg font-black text-gray-900 mb-4">
+                  Visual Effects
+                </h4>
+                <div class="grid grid-cols-2 gap-4">
+                  {[
+                    { key: "glow", label: "Glow" },
+                    { key: "shadow", label: "Shadow" },
+                    { key: "rainbow", label: "Rainbow" },
+                    { key: "sparkle", label: "Sparkle" },
+                  ].map(({ key, label }) => {
+                    const isActive = customization
+                      .effects[key as keyof ButtonCustomization["effects"]];
+                    return (
+                      <button
+                        key={key}
+                        onClick={() => {
+                          updateEffect(
+                            key as keyof ButtonCustomization["effects"],
+                            !isActive,
+                          );
+                          playSound.selectionSelect();
+                          hapticService.buttonPress();
+                        }}
+                        onMouseEnter={() => playSound.hover()}
+                        class={`px-6 py-4 rounded-2xl border-3 border-black font-black transition-all shadow-lg hover:shadow-xl active:scale-95 ${
+                          isActive
+                            ? "text-black shadow-xl scale-105"
+                            : "bg-white text-black"
+                        }`}
+                        style={{
+                          backgroundColor: isActive ? "#fed7aa" : undefined,
+                        }}
+                        onMouseOver={(e) => {
+                          if (!isActive) {
+                            (e.currentTarget as HTMLElement).style
+                              .backgroundColor = "#fff7ed";
+                          }
+                        }}
+                        onMouseOut={(e) => {
+                          if (!isActive) {
+                            (e.currentTarget as HTMLElement).style
+                              .backgroundColor = "#ffffff";
+                          }
+                        }}
+                      >
+                        {label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Hover Behavior */}
+              <div>
+                <h4 class="text-lg font-black text-gray-900 mb-4">
+                  Hover Behavior
+                </h4>
+                <div class="grid grid-cols-2 gap-4">
+                  {[
+                    { value: "none", label: "None" },
+                    { value: "lift", label: "Lift" },
+                    { value: "glow", label: "Glow" },
+                    { value: "pulse", label: "Pulse" },
+                  ].map(({ value, label }) => (
+                    <button
+                      key={value}
+                      onClick={() => {
+                        updateInteraction("hoverEffect", value);
+                        playSound.selectionSelect();
+                        hapticService.buttonPress();
+                      }}
+                      onMouseEnter={() => playSound.hover()}
+                      class={`px-6 py-4 rounded-2xl border-3 border-black font-black transition-all shadow-lg hover:shadow-xl active:scale-95 ${
+                        customization.interactions.hoverEffect === value
+                          ? "text-black shadow-xl scale-105"
+                          : "bg-white text-black"
+                      }`}
+                      style={{
+                        backgroundColor:
+                          customization.interactions.hoverEffect === value
+                            ? "#fed7aa"
+                            : undefined,
+                      }}
+                      onMouseOver={(e) => {
+                        if (customization.interactions.hoverEffect !== value) {
+                          (e.currentTarget as HTMLElement).style
+                            .backgroundColor = "#fff7ed";
+                        }
+                      }}
+                      onMouseOut={(e) => {
+                        if (customization.interactions.hoverEffect !== value) {
+                          (e.currentTarget as HTMLElement).style
+                            .backgroundColor = "#ffffff";
+                        }
+                      }}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         )}
@@ -462,7 +639,9 @@ export default function CustomizationPanel(
         <div class="space-y-6">
           {/* API Configuration */}
           <div>
-            <h4 class="text-lg font-black text-gray-900 mb-4">Voice Magic Setup</h4>
+            <h4 class="text-lg font-black text-gray-900 mb-4">
+              Voice Magic Setup
+            </h4>
             <div class="space-y-4">
               <div>
                 <label class="block text-sm font-black text-black mb-2">
@@ -489,7 +668,9 @@ export default function CustomizationPanel(
 
           {/* Recording Behavior */}
           <div>
-            <h4 class="text-lg font-black text-gray-900 mb-4">Recording Behavior</h4>
+            <h4 class="text-lg font-black text-gray-900 mb-4">
+              Recording Behavior
+            </h4>
             <div class="grid grid-cols-2 gap-3">
               {[
                 { value: "timer", label: "Timer", icon: "⏱️" },
@@ -522,7 +703,9 @@ export default function CustomizationPanel(
         <div class="space-y-6">
           {/* Export Options */}
           <div>
-            <h4 class="text-lg font-black text-gray-900 mb-4">Save & Share Your Creation</h4>
+            <h4 class="text-lg font-black text-gray-900 mb-4">
+              Save & Share Your Creation
+            </h4>
             <div class="grid grid-cols-2 gap-4">
               {/* HTML Export */}
               <button
@@ -564,7 +747,8 @@ export default function CustomizationPanel(
 
           {/* Premium hint */}
           <div class="text-center text-xs text-gray-500 border-t-2 border-gray-200 pt-4">
-            🎲 Made with <span class="font-black">ButtonStudio</span> - Where voice buttons come alive!
+            🎲 Made with <span class="font-black">ButtonStudio</span>{" "}
+            - Where voice buttons come alive!
           </div>
         </div>
       </CollapsiblePanel>

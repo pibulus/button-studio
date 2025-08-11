@@ -468,14 +468,19 @@ export default function VoiceButton({
   const getTextColor = useMemo(() => {
     if (customization.appearance.textColor === "black") return "black";
     if (customization.appearance.textColor === "white") return "white";
-    
+
     // Auto mode - use smart contrast based on background color
-    const bgColor = customization.appearance.fillType === "solid" 
+    const bgColor = customization.appearance.fillType === "solid"
       ? customization.appearance.solidColor
       : customization.appearance.gradient.start; // Use start color for gradients
-    
+
     return getSmartTextColor(bgColor);
-  }, [customization.appearance.textColor, customization.appearance.fillType, customization.appearance.solidColor, customization.appearance.gradient.start]);
+  }, [
+    customization.appearance.textColor,
+    customization.appearance.fillType,
+    customization.appearance.solidColor,
+    customization.appearance.gradient.start,
+  ]);
 
   // Enhanced button styling with customization system
   const getButtonStyles = () => {

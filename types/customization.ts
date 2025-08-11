@@ -9,14 +9,14 @@ export type ColorIntensity = "pastel" | "neon";
 // Smart contrast utility - determines if a color is light or dark
 export function getSmartTextColor(backgroundColor: string): "black" | "white" {
   // Convert hex to RGB
-  const hex = backgroundColor.replace('#', '');
+  const hex = backgroundColor.replace("#", "");
   const r = parseInt(hex.substr(0, 2), 16);
   const g = parseInt(hex.substr(2, 2), 16);
   const b = parseInt(hex.substr(4, 2), 16);
-  
+
   // Calculate luminance using standard formula
   const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-  
+
   // Return black for light colors, white for dark colors
   return luminance > 0.5 ? "black" : "white";
 }
@@ -147,6 +147,9 @@ export interface EffectToggles {
   breathing: boolean;
   wiggle: boolean;
   pulse: boolean;
+  shadow: boolean;
+  rainbow: boolean;
+  sparkle: boolean;
 }
 
 export const defaultEffects: EffectToggles = {
@@ -155,6 +158,9 @@ export const defaultEffects: EffectToggles = {
   breathing: true, // starts with breathing
   wiggle: false,
   pulse: false,
+  shadow: false,
+  rainbow: false,
+  sparkle: false,
 };
 
 // ===================================================================

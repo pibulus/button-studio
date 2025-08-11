@@ -31,36 +31,74 @@ const colorModes = {
     name: "Pastel",
     fillType: "solid" as const,
     colors: [
-      "#ff9eb5", "#ffb08a", "#ffd4a3", "#fff3b8", "#c8e6c9", "#a8d8d1",
-      "#b8d8e0", "#d1c4e0", "#e6a8d6", "#ffb3d1", "#ffc4e1", "#ff9a8b"
-    ]
+      "#ff9eb5",
+      "#ffb08a",
+      "#ffd4a3",
+      "#fff3b8",
+      "#c8e6c9",
+      "#a8d8d1",
+      "#b8d8e0",
+      "#d1c4e0",
+      "#e6a8d6",
+      "#ffb3d1",
+      "#ffc4e1",
+      "#ff9a8b",
+    ],
   },
   neon: {
-    name: "Neon", 
+    name: "Neon",
     fillType: "solid" as const,
     colors: [
-      "#ff1493", "#ff4500", "#ffff00", "#7fff00", "#00ff7f", "#00ffff",
-      "#1e90ff", "#ff00ff", "#ff6347", "#ffd700", "#00fa9a", "#ff69b4"
-    ]
+      "#ff1493",
+      "#ff4500",
+      "#ffff00",
+      "#7fff00",
+      "#00ff7f",
+      "#00ffff",
+      "#1e90ff",
+      "#ff00ff",
+      "#ff6347",
+      "#ffd700",
+      "#00fa9a",
+      "#ff69b4",
+    ],
   },
   classic: {
     name: "Classic",
-    fillType: "solid" as const, 
+    fillType: "solid" as const,
     colors: [
-      "#f87171", "#fb923c", "#fbbf24", "#a3e635", "#4ade80", "#22d3ee",
-      "#60a5fa", "#818cf8", "#a78bfa", "#e879f9", "#f472b6", "#facc15"
-    ]
+      "#f87171",
+      "#fb923c",
+      "#fbbf24",
+      "#a3e635",
+      "#4ade80",
+      "#22d3ee",
+      "#60a5fa",
+      "#818cf8",
+      "#a78bfa",
+      "#e879f9",
+      "#f472b6",
+      "#facc15",
+    ],
   },
   gradient: {
     name: "Gradient",
     fillType: "gradient" as const,
     colors: [
-      ["#ff9a9e", "#fecfef"], ["#ffecd2", "#fcb69f"], ["#a8edea", "#fed6e3"], 
-      ["#8fd3f4", "#84fab0"], ["#a1c4fd", "#c2e9fb"], ["#4facfe", "#00f2fe"],
-      ["#fbc2eb", "#a6c1ee"], ["#667eea", "#764ba2"], ["#f093fb", "#f5576c"], 
-      ["#ff8a80", "#ff80ab"], ["#fdcbf1", "#e6dee9"], ["#cbb4d4", "#ddd6fe"]
-    ]
-  }
+      ["#ff9a9e", "#fecfef"],
+      ["#ffecd2", "#fcb69f"],
+      ["#a8edea", "#fed6e3"],
+      ["#8fd3f4", "#84fab0"],
+      ["#a1c4fd", "#c2e9fb"],
+      ["#4facfe", "#00f2fe"],
+      ["#fbc2eb", "#a6c1ee"],
+      ["#667eea", "#764ba2"],
+      ["#f093fb", "#f5576c"],
+      ["#ff8a80", "#ff80ab"],
+      ["#fdcbf1", "#e6dee9"],
+      ["#cbb4d4", "#ddd6fe"],
+    ],
+  },
 };
 
 export default function ButtonStudio() {
@@ -268,7 +306,8 @@ export default function ButtonStudio() {
                     // Stage 2: Satisfying bounce up with glow (120ms)
                     setTimeout(() => {
                       btn.style.transform = "scale(1.1)";
-                      btn.style.boxShadow = "4px 4px 0px #000000, 0 0 12px rgba(251, 191, 36, 0.4)";
+                      btn.style.boxShadow =
+                        "4px 4px 0px #000000, 0 0 12px rgba(251, 191, 36, 0.4)";
                       btn.style.backgroundColor = "#fbbf24"; // amber-400
                       btn.style.filter = "brightness(1.2)";
                     }, 80);
@@ -493,7 +532,9 @@ export default function ButtonStudio() {
                     >
                       <div
                         class={`w-6 h-6 bg-white rounded-full border-2 border-black transition-all duration-300 shadow-sm ${
-                          voiceEnabled.value ? "translate-x-6" : "translate-x-0.5"
+                          voiceEnabled.value
+                            ? "translate-x-6"
+                            : "translate-x-0.5"
                         }`}
                       />
                     </button>
@@ -504,10 +545,12 @@ export default function ButtonStudio() {
               {/* Color Mode Selector */}
               <div class="bg-white rounded-3xl p-6 shadow-lg border-4 border-black">
                 <h3 class="text-xl font-black text-gray-900 mb-4">Colors</h3>
-                
+
                 {/* Color Mode Buttons */}
                 <div class="grid grid-cols-2 gap-3 mb-6">
-                  {(["pastel", "neon", "classic", "gradient"] as const).map((mode) => (
+                  {(["pastel", "neon", "classic", "gradient"] as const).map((
+                    mode,
+                  ) => (
                     <button
                       key={mode}
                       onClick={() => {
@@ -579,14 +622,19 @@ export default function ButtonStudio() {
                       onMouseEnter={() => playSound.hover()}
                       class="h-12 w-full rounded-xl border-3 border-black hover:scale-110 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95"
                       style={{
-                        background: colorModes[colorMode.value].fillType === "solid" 
-                          ? color as string
-                          : `linear-gradient(135deg, ${(color as string[])[0]}, ${(color as string[])[1]})`,
+                        background:
+                          colorModes[colorMode.value].fillType === "solid"
+                            ? color as string
+                            : `linear-gradient(135deg, ${
+                              (color as string[])[0]
+                            }, ${(color as string[])[1]})`,
                         boxShadow: "2px 2px 0px #000000",
                       }}
-                      title={colorModes[colorMode.value].fillType === "solid" 
-                        ? color as string 
-                        : `${(color as string[])[0]} → ${(color as string[])[1]}`}
+                      title={colorModes[colorMode.value].fillType === "solid"
+                        ? color as string
+                        : `${(color as string[])[0]} → ${
+                          (color as string[])[1]
+                        }`}
                     />
                   ))}
                 </div>
@@ -598,15 +646,18 @@ export default function ButtonStudio() {
                   {sliderConfig.map((slider) => {
                     const rawValue = customization.value.appearance[slider.id];
 
-                    // Clean value formatting 
+                    // Clean value formatting
                     const formatValue = (val: number, unit: string) => {
-                      if (unit === "x") return `${Math.round(val * 10) / 10}${unit}`;
+                      if (unit === "x") {
+                        return `${Math.round(val * 10) / 10}${unit}`;
+                      }
                       return `${Math.round(val)}${unit}`;
                     };
 
                     const cleanValue = formatValue(rawValue, slider.unit);
                     const percentage =
-                      ((rawValue - slider.min) / (slider.max - slider.min)) * 100;
+                      ((rawValue - slider.min) / (slider.max - slider.min)) *
+                      100;
 
                     return (
                       <div key={slider.id} class="space-y-4">
@@ -640,7 +691,9 @@ export default function ButtonStudio() {
                             onInput={(e) => {
                               updateAppearance(
                                 slider.id,
-                                parseFloat((e.target as HTMLInputElement).value),
+                                parseFloat(
+                                  (e.target as HTMLInputElement).value,
+                                ),
                               );
                               // Subtle sound feedback for slider movement
                               playSound.sliderStep();
@@ -693,9 +746,11 @@ export default function ButtonStudio() {
 
               {/* Sound Picker */}
               <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-lg border-4 border-black">
-                <SoundPicker customization={customization.value} onChange={handleCustomizationChange} />
+                <SoundPicker
+                  customization={customization.value}
+                  onChange={handleCustomizationChange}
+                />
               </div>
-
             </div>
 
             {/* Right Column - Customization Panels */}

@@ -15,10 +15,10 @@ const baseConfig = {
     fillType: "gradient" as const,
     gradient: {
       start: "#ff1493", // Hot pink
-      end: "#00ffff",   // Cyan
+      end: "#00ffff", // Cyan
       direction: 135,
-    }
-  }
+    },
+  },
 };
 
 // Test 1: Pastel mode
@@ -28,7 +28,7 @@ const pastelConfig = {
   appearance: {
     ...baseConfig.appearance,
     colorIntensity: "pastel" as const,
-  }
+  },
 };
 
 const exporter = new ButtonExporter(pastelConfig);
@@ -38,17 +38,19 @@ const pastelResult = exporter.generateHTML({
 
 if (pastelResult.success) {
   const htmlContent = pastelResult.data as string;
-  
+
   const checks = {
-    noPulse: !htmlContent.includes('pulse'),
-    noGlow: !htmlContent.includes('box-shadow: 0 0 20px'),
-    normalSaturation: !htmlContent.includes('saturate(1.2)'),
+    noPulse: !htmlContent.includes("pulse"),
+    noGlow: !htmlContent.includes("box-shadow: 0 0 20px"),
+    normalSaturation: !htmlContent.includes("saturate(1.2)"),
   };
-  
+
   console.log("   Pastel Features:");
-  console.log(`   🎨 Soft appearance: ${checks.noPulse ? '✅' : '❌'}`);
-  console.log(`   💫 No neon glow: ${checks.noGlow ? '✅' : '❌'}`);
-  console.log(`   🌟 Normal saturation: ${checks.normalSaturation ? '✅' : '❌'}`);
+  console.log(`   🎨 Soft appearance: ${checks.noPulse ? "✅" : "❌"}`);
+  console.log(`   💫 No neon glow: ${checks.noGlow ? "✅" : "❌"}`);
+  console.log(
+    `   🌟 Normal saturation: ${checks.normalSaturation ? "✅" : "❌"}`,
+  );
 }
 
 // Test 2: Neon mode
@@ -58,7 +60,7 @@ const neonConfig = {
   appearance: {
     ...baseConfig.appearance,
     colorIntensity: "neon" as const,
-  }
+  },
 };
 
 const neonExporter = new ButtonExporter(neonConfig);
@@ -68,17 +70,22 @@ const neonResult = neonExporter.generateHTML({
 
 if (neonResult.success) {
   const htmlContent = neonResult.data as string;
-  
+
   const checks = {
-    hasGlow: htmlContent.includes('box-shadow') && htmlContent.includes('0 0 20px'),
-    hasSaturation: htmlContent.includes('saturate(1.2)'),
-    hasBrightness: htmlContent.includes('brightness(1.1)'),
+    hasGlow: htmlContent.includes("box-shadow") &&
+      htmlContent.includes("0 0 20px"),
+    hasSaturation: htmlContent.includes("saturate(1.2)"),
+    hasBrightness: htmlContent.includes("brightness(1.1)"),
   };
-  
+
   console.log("   Neon Features:");
-  console.log(`   ⚡ Electric glow: ${checks.hasGlow ? '✅' : '❌'}`);
-  console.log(`   🔥 Boosted saturation: ${checks.hasSaturation ? '✅' : '❌'}`);
-  console.log(`   💎 Enhanced brightness: ${checks.hasBrightness ? '✅' : '❌'}`);
+  console.log(`   ⚡ Electric glow: ${checks.hasGlow ? "✅" : "❌"}`);
+  console.log(
+    `   🔥 Boosted saturation: ${checks.hasSaturation ? "✅" : "❌"}`,
+  );
+  console.log(
+    `   💎 Enhanced brightness: ${checks.hasBrightness ? "✅" : "❌"}`,
+  );
 }
 
 console.log("\n🎨 COLOR PALETTE TEST:");
