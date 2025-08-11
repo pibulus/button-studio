@@ -647,7 +647,7 @@ export default function CustomizationPanel(
                   type="password"
                   placeholder="Enter your Gemini API key..."
                   value={apiKeyValue}
-                  onInput={(e) => {
+                  onChange={(e) => {
                     const value = (e.target as HTMLInputElement).value;
                     onApiKeyChange?.(value);
                   }}
@@ -662,7 +662,7 @@ export default function CustomizationPanel(
                   placeholder="Custom prompt for AI processing... (optional)"
                   value={customPromptValue}
                   rows={3}
-                  onInput={(e) => {
+                  onChange={(e) => {
                     const value = (e.target as HTMLTextAreaElement).value;
                     onCustomPromptChange?.(value);
                   }}
