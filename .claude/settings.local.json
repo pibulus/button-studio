@@ -26,7 +26,9 @@
       "Bash(deno run:*)",
       "Bash(osascript:*)",
       "Bash(open quick_test.html)",
-      "Bash(open http://localhost:8000)"
+      "Bash(open http://localhost:8000)",
+      "Bash(sed:*)",
+      "Bash(mv:*)"
     ],
     "deny": []
   }

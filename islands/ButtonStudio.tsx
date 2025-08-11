@@ -3,12 +3,15 @@ import { useEffect } from "preact/hooks";
 import VoiceButton from "../components/VoiceButton.tsx";
 import CustomizationPanel from "../components/CustomizationPanel.tsx";
 import AudioSettings from "../components/AudioSettings.tsx";
+import SoundPicker from "../components/SoundPicker.tsx";
 import {
   ButtonCustomization,
   defaultCustomization,
+  sliderConfig,
 } from "../types/customization.ts";
 import { soundService } from "../utils/audio/soundService.ts";
 import { hapticService } from "../utils/audio/hapticService.ts";
+import { playSound } from "../utils/audio/soundMapping.ts";
 
 // ===================================================================
 // GLOBAL STATE - Main app state using Preact signals
@@ -18,6 +21,47 @@ const customization = signal<ButtonCustomization>(defaultCustomization);
 const voiceEnabled = signal<boolean>(false);
 const transcriptResult = signal<string>("");
 const showTranscriptModal = signal<boolean>(false);
+
+// Color mode state - Smart unified color system
+const colorMode = signal<"pastel" | "neon" | "classic" | "gradient">("pastel");
+
+// Smart unified color system - each mode has its own color palette and style
+const colorModes = {
+  pastel: {
+    name: "Pastel",
+    fillType: "solid" as const,
+    colors: [
+      "#ff9eb5", "#ffb08a", "#ffd4a3", "#fff3b8", "#c8e6c9", "#a8d8d1",
+      "#b8d8e0", "#d1c4e0", "#e6a8d6", "#ffb3d1", "#ffc4e1", "#ff9a8b"
+    ]
+  },
+  neon: {
+    name: "Neon", 
+    fillType: "solid" as const,
+    colors: [
+      "#ff1493", "#ff4500", "#ffff00", "#7fff00", "#00ff7f", "#00ffff",
+      "#1e90ff", "#ff00ff", "#ff6347", "#ffd700", "#00fa9a", "#ff69b4"
+    ]
+  },
+  classic: {
+    name: "Classic",
+    fillType: "solid" as const, 
+    colors: [
+      "#f87171", "#fb923c", "#fbbf24", "#a3e635", "#4ade80", "#22d3ee",
+      "#60a5fa", "#818cf8", "#a78bfa", "#e879f9", "#f472b6", "#facc15"
+    ]
+  },
+  gradient: {
+    name: "Gradient",
+    fillType: "gradient" as const,
+    colors: [
+      ["#ff9a9e", "#fecfef"], ["#ffecd2", "#fcb69f"], ["#a8edea", "#fed6e3"], 
+      ["#8fd3f4", "#84fab0"], ["#a1c4fd", "#c2e9fb"], ["#4facfe", "#00f2fe"],
+      ["#fbc2eb", "#a6c1ee"], ["#667eea", "#764ba2"], ["#f093fb", "#f5576c"], 
+      ["#ff8a80", "#ff80ab"], ["#fdcbf1", "#e6dee9"], ["#cbb4d4", "#ddd6fe"]
+    ]
+  }
+};
 
 export default function ButtonStudio() {
   // ===================================================================
@@ -44,6 +88,20 @@ export default function ButtonStudio() {
 
   const handleVoiceToggle = (enabled: boolean) => {
     voiceEnabled.value = enabled;
+  };
+
+  // Update functions for customization
+  const updateAppearance = (
+    key: keyof ButtonCustomization["appearance"],
+    value: number | string,
+  ) => {
+    customization.value = {
+      ...customization.value,
+      appearance: {
+        ...customization.value.appearance,
+        [key]: value,
+      },
+    };
   };
 
   return (
@@ -443,24 +501,210 @@ export default function ButtonStudio() {
                 </div>
               </div>
 
-              {/* Master Controls */}
-              <CustomizationPanel
-                customization={customization.value}
-                onChange={handleCustomizationChange}
-                voiceEnabled={voiceEnabled.value}
-                onVoiceToggle={handleVoiceToggle}
-                mode="master"
-              />
+              {/* Color Mode Selector */}
+              <div class="bg-white rounded-3xl p-6 shadow-lg border-4 border-black">
+                <h3 class="text-xl font-black text-gray-900 mb-4">Colors</h3>
+                
+                {/* Color Mode Buttons */}
+                <div class="grid grid-cols-2 gap-3 mb-6">
+                  {(["pastel", "neon", "classic", "gradient"] as const).map((mode) => (
+                    <button
+                      key={mode}
+                      onClick={() => {
+                        colorMode.value = mode;
+                        // Update customization to match the selected mode
+                        const modeConfig = colorModes[mode];
+                        customization.value = {
+                          ...customization.value,
+                          appearance: {
+                            ...customization.value.appearance,
+                            fillType: modeConfig.fillType,
+                          },
+                        };
+                        playSound.selectionSelect();
+                        hapticService.buttonPress();
+                      }}
+                      onMouseEnter={() => playSound.hover()}
+                      class={`px-6 py-3 rounded-2xl border-3 border-black font-black transition-all capitalize shadow-sm hover:shadow-md active:scale-95 ${
+                        colorMode.value === mode
+                          ? "bg-purple-200 hover:bg-purple-300 text-black shadow-md scale-105"
+                          : "bg-white hover:bg-purple-50 text-black"
+                      }`}
+                      style={{
+                        boxShadow: colorMode.value === mode
+                          ? "3px 3px 0px #000000"
+                          : "2px 2px 0px #000000",
+                      }}
+                    >
+                      {colorModes[mode].name}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Color Swatches - 6x2 grid */}
+                <div class="grid grid-cols-6 gap-3">
+                  {colorModes[colorMode.value].colors.map((color, index) => (
+                    <button
+                      key={index}
+                      onClick={() => {
+                        const currentMode = colorModes[colorMode.value];
+                        if (currentMode.fillType === "solid") {
+                          customization.value = {
+                            ...customization.value,
+                            appearance: {
+                              ...customization.value.appearance,
+                              fillType: "solid",
+                              solidColor: color as string,
+                            },
+                          };
+                        } else {
+                          // For gradient mode, color is [start, end] array
+                          const gradientColors = color as string[];
+                          customization.value = {
+                            ...customization.value,
+                            appearance: {
+                              ...customization.value.appearance,
+                              fillType: "gradient",
+                              gradient: {
+                                ...customization.value.appearance.gradient,
+                                start: gradientColors[0],
+                                end: gradientColors[1],
+                              },
+                            },
+                          };
+                        }
+                        playSound.colorSelect();
+                        hapticService.buttonPress();
+                      }}
+                      onMouseEnter={() => playSound.hover()}
+                      class="h-12 w-full rounded-xl border-3 border-black hover:scale-110 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95"
+                      style={{
+                        background: colorModes[colorMode.value].fillType === "solid" 
+                          ? color as string
+                          : `linear-gradient(135deg, ${(color as string[])[0]}, ${(color as string[])[1]})`,
+                        boxShadow: "2px 2px 0px #000000",
+                      }}
+                      title={colorModes[colorMode.value].fillType === "solid" 
+                        ? color as string 
+                        : `${(color as string[])[0]} → ${(color as string[])[1]}`}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              {/* Main Sliders */}
+              <div class="bg-white rounded-3xl p-8 shadow-lg border-4 border-black">
+                <div class="space-y-10">
+                  {sliderConfig.map((slider) => {
+                    const rawValue = customization.value.appearance[slider.id];
+
+                    // Clean value formatting 
+                    const formatValue = (val: number, unit: string) => {
+                      if (unit === "x") return `${Math.round(val * 10) / 10}${unit}`;
+                      return `${Math.round(val)}${unit}`;
+                    };
+
+                    const cleanValue = formatValue(rawValue, slider.unit);
+                    const percentage =
+                      ((rawValue - slider.min) / (slider.max - slider.min)) * 100;
+
+                    return (
+                      <div key={slider.id} class="space-y-4">
+                        {/* Header with icon and label */}
+                        <div class="flex items-center justify-between">
+                          <div>
+                            <h3 class="text-xl font-black text-gray-900">
+                              {slider.label}
+                            </h3>
+                            <p class="text-sm text-gray-600 font-bold">
+                              Drag to adjust
+                            </p>
+                          </div>
+
+                          {/* Big Value Display */}
+                          <div class="bg-gradient-to-r from-rose-100 to-orange-100 border-4 border-black px-6 py-3 rounded-2xl shadow-lg">
+                            <span class="text-2xl font-black text-gray-900 font-mono">
+                              {cleanValue}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Slider */}
+                        <div class="relative px-2">
+                          <input
+                            type="range"
+                            min={slider.min}
+                            max={slider.max}
+                            step={slider.step || 1}
+                            value={rawValue}
+                            onInput={(e) => {
+                              updateAppearance(
+                                slider.id,
+                                parseFloat((e.target as HTMLInputElement).value),
+                              );
+                              // Subtle sound feedback for slider movement
+                              playSound.sliderStep();
+                              hapticService.sliderStep();
+                            }}
+                            onMouseUp={() => {
+                              // Sound when releasing slider
+                              playSound.sliderRelease();
+                              hapticService.sliderRelease();
+                            }}
+                            title={`${slider.label}: ${cleanValue}`}
+                            class="w-full h-8 bg-white border-4 border-black rounded-full appearance-none cursor-grab hover:cursor-grabbing transition-all shadow-md hover:shadow-lg"
+                            style={{
+                              background:
+                                `linear-gradient(to right, #ff9eb5 0%, #ff9eb5 ${percentage}%, #f8f9fa ${percentage}%, #f8f9fa 100%)`,
+                              border: "4px solid #000000",
+                            }}
+                          />
+                          <style jsx>
+                            {`
+                            input[type="range"]::-webkit-slider-thumb {
+                              appearance: none;
+                              height: 40px;
+                              width: 40px;
+                              border-radius: 20px;
+                              background: linear-gradient(135deg, #ff9eb5 0%, #ff6b9d 100%);
+                              border: 4px solid #000000;
+                              cursor: grab;
+                              box-shadow: 0 6px 20px rgba(255, 158, 181, 0.6), 0 2px 8px rgba(0, 0, 0, 0.2);
+                              transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+                            }
+                            input[type="range"]::-webkit-slider-thumb:hover {
+                              transform: scale(1.2) translateY(-2px);
+                              cursor: grabbing;
+                              box-shadow: 0 8px 25px rgba(255, 158, 181, 0.8), 0 4px 12px rgba(0, 0, 0, 0.3);
+                              background: linear-gradient(135deg, #ff6b9d 0%, #ff3d71 100%);
+                            }
+                            input[type="range"]::-webkit-slider-thumb:active {
+                              transform: scale(1.1) translateY(0px);
+                              box-shadow: 0 4px 15px rgba(255, 158, 181, 0.9), 0 2px 6px rgba(0, 0, 0, 0.4);
+                            }
+                            `}
+                          </style>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Sound Picker */}
+              <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-lg border-4 border-black">
+                <SoundPicker customization={customization.value} onChange={handleCustomizationChange} />
+              </div>
+
             </div>
 
-            {/* Right Column - Advanced Controls */}
+            {/* Right Column - Customization Panels */}
             <div>
               <CustomizationPanel
                 customization={customization.value}
                 onChange={handleCustomizationChange}
                 voiceEnabled={voiceEnabled.value}
                 onVoiceToggle={handleVoiceToggle}
-                mode="advanced"
               />
             </div>
           </div>
