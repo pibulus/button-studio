@@ -22,11 +22,13 @@ export class GeminiTranscriptionPlugin implements TranscriptionPlugin {
   private model = "gemini-2.0-flash-exp";
   private genAI: any;
   private geminiModel: any;
+  private customPrompt?: string;
 
   async configure(config: GeminiConfig): Promise<void> {
     // Use environment variable for security
     this.apiKey = Deno.env.get("GEMINI_API_KEY") || config.apiKey;
     this.model = config.model || "gemini-2.0-flash";
+    this.customPrompt = config.customPrompt;
 
     if (!this.apiKey) {
       throw new Error("GEMINI_API_KEY environment variable not set");
@@ -57,11 +59,14 @@ export class GeminiTranscriptionPlugin implements TranscriptionPlugin {
       const audioBase64 = await this.blobToBase64(audio.data);
 
       // Use the correct Gemini REST API format
+      // Use custom prompt if provided, otherwise use default transcription prompt
+      const promptText = this.customPrompt || 
+        "Transcribe this audio file accurately and completely, removing any redundant 'ums,' 'likes, 'uhs', and similar filler words. Return only the cleaned-up transcription, with no additional text.";
+
       const requestBody = {
         contents: [{
           parts: [{
-            text:
-              "Transcribe this audio file accurately and completely, removing any redundant 'ums,' 'likes, 'uhs', and similar filler words. Return only the cleaned-up transcription, with no additional text.",
+            text: promptText,
           }, {
             inline_data: {
               mime_type: audio.data.type,
@@ -386,4 +391,5 @@ export class GeminiAIService {
 export interface GeminiConfig extends TranscriptionConfig {
   apiKey: string;
   model?: string;
+  customPrompt?: string;
 }

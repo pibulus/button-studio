@@ -18,6 +18,8 @@ interface CustomizationPanelProps {
   onChange: (customization: ButtonCustomization) => void;
   voiceEnabled?: boolean;
   onVoiceToggle?: (enabled: boolean) => void;
+  onApiKeyChange?: (apiKey: string) => void;
+  onCustomPromptChange?: (prompt: string) => void;
 }
 
 // Collapsible panel state - Updated for 4 consolidated panels
@@ -29,7 +31,7 @@ const expandedPanels = signal<Record<string, boolean>>({
 });
 
 export default function CustomizationPanel(
-  { customization, onChange, voiceEnabled = false, onVoiceToggle }:
+  { customization, onChange, voiceEnabled = false, onVoiceToggle, onApiKeyChange, onCustomPromptChange }:
     CustomizationPanelProps,
 ) {
   // ===================================================================
@@ -110,14 +112,18 @@ export default function CustomizationPanel(
       playSound.export();
       hapticService.buttonPress();
 
-      // Get API key if available (from voice panel)
+      // Get API key and custom prompt from Magic panel
       const apiKeyInput = document.querySelector(
         'input[type="password"]',
       ) as HTMLInputElement;
+      const customPromptInput = document.querySelector(
+        'textarea[placeholder*="Custom prompt"]',
+      ) as HTMLTextAreaElement;
       const apiKey = apiKeyInput?.value || undefined;
+      const customPrompt = customPromptInput?.value || undefined;
 
       // Create exporter
-      const exporter = new ButtonExporter(customization, apiKey);
+      const exporter = new ButtonExporter(customization, apiKey, customPrompt);
 
       let result;
 
@@ -625,8 +631,29 @@ export default function CustomizationPanel(
                 <input
                   type="password"
                   placeholder="Enter your Gemini API key..."
+                  onInput={(e) => {
+                    const value = (e.target as HTMLInputElement).value;
+                    onApiKeyChange?.(value);
+                  }}
                   class="w-full px-4 py-3 bg-white border-3 border-black rounded-xl focus:bg-yellow-50 focus:outline-none transition-all font-mono text-sm shadow-sm focus:shadow-md"
                 />
+              </div>
+              <div>
+                <label class="block text-sm font-black text-black mb-2">
+                  Custom Instructions
+                </label>
+                <textarea
+                  placeholder="Custom prompt for AI processing... (optional)"
+                  rows={3}
+                  onInput={(e) => {
+                    const value = (e.target as HTMLTextAreaElement).value;
+                    onCustomPromptChange?.(value);
+                  }}
+                  class="w-full px-4 py-3 bg-white border-3 border-black rounded-xl focus:bg-yellow-50 focus:outline-none transition-all text-sm shadow-sm focus:shadow-md resize-none"
+                />
+                <div class="text-xs text-gray-500 mt-1">
+                  Leave blank for basic transcription, or add instructions like "Summarize the key points" or "Extract action items"
+                </div>
               </div>
               <div class="text-xs text-gray-600">
                 💡 Get your free key at{" "}

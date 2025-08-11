@@ -21,6 +21,8 @@ const customization = signal<ButtonCustomization>(defaultCustomization);
 const voiceEnabled = signal<boolean>(false);
 const transcriptResult = signal<string>("");
 const showTranscriptModal = signal<boolean>(false);
+const apiKey = signal<string>(""); // Track API key from Magic panel
+const customPrompt = signal<string>(""); // Track custom prompt from Magic panel
 
 // Color mode state - Smart unified color system
 const colorMode = signal<"pastel" | "neon" | "classic" | "gradient">("pastel");
@@ -340,6 +342,8 @@ export default function ButtonStudio() {
                     customization={customization.value}
                     onCustomizationChange={handleCustomizationChange}
                     voiceEnabled={voiceEnabled.value}
+                    apiKey={apiKey.value}
+                    customPrompt={customPrompt.value}
                     showWaveform={false}
                     onComplete={(result) => {
                       transcriptResult.value = result.text;
@@ -838,6 +842,12 @@ export default function ButtonStudio() {
                 onChange={handleCustomizationChange}
                 voiceEnabled={voiceEnabled.value}
                 onVoiceToggle={handleVoiceToggle}
+                onApiKeyChange={(newApiKey) => {
+                  apiKey.value = newApiKey;
+                }}
+                onCustomPromptChange={(newPrompt) => {
+                  customPrompt.value = newPrompt;
+                }}
               />
             </div>
           </div>

@@ -42,6 +42,10 @@ interface VoiceButtonProps {
   // Voice activation toggle
   voiceEnabled?: boolean;
   onVoiceToggle?: (enabled: boolean) => void;
+  
+  // API Configuration
+  apiKey?: string;
+  customPrompt?: string;
 
   // Core functionality
   transcriptionPlugin?: TranscriptionPlugin;
@@ -110,6 +114,8 @@ export default function VoiceButton({
   customization = defaultCustomization,
   voiceEnabled = false,
   onVoiceToggle,
+  apiKey,
+  customPrompt,
   theme = "amber",
   size = "large",
   customSize,
@@ -258,7 +264,10 @@ export default function VoiceButton({
 
       // Configure with user's API key (from UI input or environment variable)
       // The plugin automatically checks environment vars as fallback
-      await geminiPlugin.configure({ apiKey: "hardcoded" }); // Will use GEMINI_API_KEY env var or user input
+      await geminiPlugin.configure({ 
+        apiKey: apiKey || "hardcoded",
+        customPrompt: customPrompt 
+      }); // Use provided API key or fallback
 
       // Transform speech into clean, filler-free text ✨
       const result = await geminiPlugin.transcribe(audioBlob);

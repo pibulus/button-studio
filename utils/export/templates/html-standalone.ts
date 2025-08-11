@@ -10,6 +10,7 @@ export function generateStandaloneHTML(
   options: {
     includeAI?: boolean;
     apiKey?: string;
+    customPrompt?: string;
     customBranding?: boolean;
     autoStart?: boolean;
     autoCopy?: boolean;

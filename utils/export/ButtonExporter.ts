@@ -18,6 +18,7 @@ export class ButtonExporter {
   constructor(
     private customization: ButtonCustomization,
     private apiKey?: string,
+    private customPrompt?: string,
   ) {}
 
   // ===================================================================
@@ -29,6 +30,7 @@ export class ButtonExporter {
       const html = generateStandaloneHTML(this.customization, {
         includeAI: options.includeAI && !!this.apiKey,
         apiKey: this.apiKey,
+        customPrompt: this.customPrompt,
         customBranding: options.customBranding,
       });
 
