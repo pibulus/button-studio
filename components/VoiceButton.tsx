@@ -668,38 +668,22 @@ export default function VoiceButton({
     let hoverClasses = "";
     let hoverStyles = {};
 
+    // Simple hover class assignment - no complex variables needed
     switch (hoverEffect) {
-      case "shift":
-        hoverClasses = "hover-shift";
-        // Shift hue based on button's dominant color
-        const hsl = hexToHSL(buttonColor);
-        const shiftAmount = hsl.s > 50 ? 45 : 60; // More dramatic shift
-        hoverStyles = {
-          "--shift-degrees": `${shiftAmount}deg`,
-        };
-        break;
       case "squish":
         hoverClasses = "hover-squish";
         break;
-      case "lift":
-        hoverClasses = "hover-lift";
-        hoverStyles = {
-          "--original-shadow": shadowStyle === "none" ? "none" : shadowStyle,
-        };
+      case "grow":
+        hoverClasses = "hover-grow";
         break;
-      case "glow":
-        hoverClasses = "hover-glow";
-        const glowHsl = hexToHSL(buttonColor);
-        hoverStyles = {
-          "--glow-color": `hsl(${glowHsl.h}, 100%, 50%)`,
-          "--glow-color-alt": `hsl(${(glowHsl.h + 180) % 360}, 100%, 50%)`,
-        };
+      case "bright":
+        hoverClasses = "hover-bright";
+        break;
+      case "tilt":
+        hoverClasses = "hover-tilt";
         break;
       default:
-        hoverClasses = "hover-shift";
-        hoverStyles = {
-          "--shift-degrees": "30deg",
-        };
+        hoverClasses = "hover-squish";
     }
 
     return {
@@ -844,124 +828,61 @@ export default function VoiceButton({
           }
         }
         
-        /* Hover Effect Classes - PRACTICAL and SATISFYING! */
+        /* Simple, WORKING hover effects */
         
-        /* SHIFT - Psychedelic color morph */
-        .hover-shift {
-          transition: all 0.3s ease-out;
-        }
-        
-        .hover-shift:hover {
-          filter: hue-rotate(var(--shift-degrees, 45deg)) brightness(1.3) saturate(1.5) contrast(1.1);
-          transform: scale(1.05);
-        }
-        
-        .hover-shift:active {
-          filter: hue-rotate(calc(var(--shift-degrees, 45deg) * -1)) brightness(1.2) saturate(1.4);
-          transform: scale(0.98);
-        }
-        
-        /* SQUISH - Elastic jello bounce (THE GOOD ONE) */
+        /* SQUISH - The one that actually works */
         .hover-squish {
-          transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+          transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         }
         
         .hover-squish:hover {
-          animation: squish-bounce 0.6s ease-out;
-          filter: brightness(1.1);
+          animation: squish 0.5s ease-out;
         }
         
-        .hover-squish:active {
-          transform: scale(0.92, 1.08);
-          filter: brightness(1.05);
+        @keyframes squish {
+          0%, 100% { transform: scale(1); }
+          25% { transform: scale(0.95, 1.05); }
+          50% { transform: scale(1.05, 0.95); }
+          75% { transform: scale(0.98, 1.02); }
         }
         
-        @keyframes squish-bounce {
-          0% { 
-            transform: scale(1);
-            filter: brightness(1);
-          }
-          30% { 
-            transform: scale(0.92, 1.08);
-            filter: brightness(1.15);
-          }
-          60% { 
-            transform: scale(1.08, 0.92);
-            filter: brightness(1.1);
-          }
-          80% { 
-            transform: scale(0.98, 1.02);
-            filter: brightness(1.05);
-          }
-          100% { 
-            transform: scale(1);
-            filter: brightness(1.1);
-          }
+        /* GROW - Simple scale up */
+        .hover-grow {
+          transition: transform 0.2s ease-out;
         }
         
-        /* LIFT - 3D pop out with perspective */
-        .hover-lift {
-          transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-          transform-style: preserve-3d;
+        .hover-grow:hover {
+          transform: scale(1.1);
         }
         
-        .hover-lift:hover {
-          transform: translateY(-10px) translateZ(20px) rotateX(-5deg);
-          box-shadow: 0 25px 40px rgba(0, 0, 0, 0.4), 
-                      0 10px 20px rgba(0, 0, 0, 0.3),
-                      0 35px 65px rgba(0, 0, 0, 0.15);
+        .hover-grow:active {
+          transform: scale(0.95);
         }
         
-        .hover-lift:active {
-          transform: translateY(-3px) translateZ(10px);
-          box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+        /* BRIGHT - Brighten and saturate */
+        .hover-bright {
+          transition: filter 0.2s ease-out;
         }
         
-        /* GLOW - Neon border pulse */
-        .hover-glow {
-          transition: all 0.3s ease-out;
-          position: relative;
+        .hover-bright:hover {
+          filter: brightness(1.2) saturate(1.3);
         }
         
-        .hover-glow::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          border-radius: inherit;
-          padding: 3px;
-          background: linear-gradient(45deg, 
-            var(--glow-color, #ff00ff), 
-            var(--glow-color-alt, #00ffff), 
-            var(--glow-color, #ff00ff));
-          -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-          -webkit-mask-composite: xor;
-          mask-composite: exclude;
-          opacity: 0;
-          transition: opacity 0.3s ease-out;
+        .hover-bright:active {
+          filter: brightness(0.9);
         }
         
-        .hover-glow:hover::before {
-          opacity: 1;
-          animation: glow-pulse 1.5s ease-in-out infinite;
+        /* TILT - Subtle 3D tilt */
+        .hover-tilt {
+          transition: transform 0.2s ease-out;
         }
         
-        .hover-glow:hover {
-          transform: scale(1.02);
-          filter: brightness(1.15);
+        .hover-tilt:hover {
+          transform: perspective(1000px) rotateX(-10deg) scale(1.05);
         }
         
-        @keyframes glow-pulse {
-          0%, 100% { 
-            opacity: 1;
-            transform: scale(1);
-          }
-          50% { 
-            opacity: 0.8;
-            transform: scale(1.02);
-          }
+        .hover-tilt:active {
+          transform: perspective(1000px) rotateX(5deg) scale(0.98);
         }
         
         @keyframes recording-pulse {

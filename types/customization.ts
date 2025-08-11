@@ -45,7 +45,7 @@ export interface ButtonCustomization {
 
   // Interaction Effects
   interactions: {
-    hoverEffect: "shift" | "squish" | "lift" | "glow";
+    hoverEffect: "squish" | "grow" | "bright" | "tilt";
     clickAnimation: "none" | "bounce" | "shrink" | "spin" | "flash";
     textTransform: "none" | "uppercase" | "lowercase" | "capitalize";
     fontWeight: "normal" | "bold" | "light";
@@ -193,7 +193,7 @@ export const defaultCustomization: ButtonCustomization = {
     textColor: "auto", // Smart contrast
   },
   interactions: {
-    hoverEffect: "shift",
+    hoverEffect: "squish",
     clickAnimation: "bounce",
     textTransform: "none",
     fontWeight: "bold",
