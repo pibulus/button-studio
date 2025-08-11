@@ -142,25 +142,29 @@ export interface SliderDefinition {
 
 // Available visual effects (some conflict with each other)
 export interface EffectToggles {
-  bounce: boolean;
-  glow: boolean;
+  // Movement effects (only one at a time)
   breathing: boolean;
-  wiggle: boolean;
-  pulse: boolean;
-  shadow: boolean;
-  rainbow: boolean;
-  sparkle: boolean;
+  bounce: boolean;
+
+  // Visual effects
+  glow: boolean;
+  flat: boolean; // Removes all shadows for flat design
+  shine: boolean; // Moving shine/gloss effect
+
+  // Legacy effects (kept for compatibility but not shown in UI)
+  wiggle?: boolean;
+  pulse?: boolean;
+  shadow?: boolean;
+  rainbow?: boolean;
+  sparkle?: boolean;
 }
 
 export const defaultEffects: EffectToggles = {
+  breathing: true, // starts with breathing
   bounce: false,
   glow: false,
-  breathing: true, // starts with breathing
-  wiggle: false,
-  pulse: false,
-  shadow: false,
-  rainbow: false,
-  sparkle: false,
+  flat: false,
+  shine: false,
 };
 
 // ===================================================================

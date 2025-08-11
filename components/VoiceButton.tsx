@@ -509,7 +509,7 @@ export default function VoiceButton({
 
     // Non-transform effects (these can work together)
     // NOTE: glow effect handled via inline styles now, not CSS class
-    if (config.effects.pulse) effectClasses.push("effect-pulse");
+    if (config.effects.shine) effectClasses.push("effect-shine");
 
     const effectAnimations = effectClasses.join(" ");
 
@@ -566,13 +566,68 @@ export default function VoiceButton({
     const textTransform = config.interactions.textTransform;
     const fontWeight = config.interactions.fontWeight;
 
-    // Calculate shadow and glow based on type
-    const baseShadow = shadowType === "brutalist"
-      ? "8px 8px 0px #000000" // Hard brutalist shadow
-      : "0 8px 25px rgba(0,0,0,0.15), 0 4px 10px rgba(0,0,0,0.1)"; // Soft diffused shadow
+    // Calculate shadow and glow based on type and effects
+    let shadowStyle = "";
 
-    // SIMPLE GLOW SYSTEM - just the base shadow for now
-    const shadowStyle = baseShadow;
+    // Flat effect REMOVES all shadows, otherwise apply normal shadow
+    if (config.effects.flat) {
+      shadowStyle = "none"; // Completely flat, no shadow
+    } else {
+      // Default shadow when flat is NOT enabled
+      shadowStyle = shadowType === "brutalist"
+        ? "8px 8px 0px #000000" // Normal brutalist shadow
+        : "0 8px 25px rgba(0,0,0,0.15), 0 4px 10px rgba(0,0,0,0.1)"; // Normal soft shadow
+    }
+
+    // Glow effect ADDS to whatever shadow is set with HUE SHIFTED colors
+    if (config.effects.glow) {
+      // Convert hex to HSL and shift the hue for a more interesting glow
+      const hexToHSL = (hex: string) => {
+        const r = parseInt(hex.slice(1, 3), 16) / 255;
+        const g = parseInt(hex.slice(3, 5), 16) / 255;
+        const b = parseInt(hex.slice(5, 7), 16) / 255;
+
+        const max = Math.max(r, g, b);
+        const min = Math.min(r, g, b);
+        const l = (max + min) / 2;
+        let h = 0;
+        let s = 0;
+
+        if (max !== min) {
+          const d = max - min;
+          s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+
+          switch (max) {
+            case r:
+              h = ((g - b) / d + (g < b ? 6 : 0)) / 6;
+              break;
+            case g:
+              h = ((b - r) / d + 2) / 6;
+              break;
+            case b:
+              h = ((r - g) / d + 4) / 6;
+              break;
+          }
+        }
+
+        return { h: h * 360, s: s * 100, l: l * 100 };
+      };
+
+      const hsl = hexToHSL(buttonColor);
+      // Shift hue by 30 degrees for complementary glow
+      const glowHue1 = (hsl.h + 30) % 360;
+      const glowHue2 = (hsl.h - 30 + 360) % 360;
+
+      // Create HSL color strings with shifted hues
+      const glowColor1 = `hsla(${glowHue1}, ${Math.min(hsl.s * 1.2, 100)}%, ${
+        Math.min(hsl.l * 1.1, 80)
+      }%, 0.7)`;
+      const glowColor2 = `hsla(${glowHue2}, ${hsl.s}%, ${hsl.l}%, 0.5)`;
+      const originalGlow = hexToRgba(buttonColor, 0.3);
+
+      shadowStyle =
+        `${shadowStyle}, 0 0 25px ${glowColor1}, 0 0 50px ${glowColor2}, 0 0 75px ${originalGlow}`;
+    }
 
     // Shape-specific border radius
     const getBorderRadius = () => {
@@ -651,18 +706,12 @@ export default function VoiceButton({
         justifyContent: "center",
         color: "#000000",
         willChange: "transform, box-shadow, filter",
-        // FORCE glow effect via direct style override
-        boxShadow: config.effects.glow
-          ? (isPressed
-            ? `2px 2px 0px #000000, 0 0 15px ${hexToRgba(buttonColor, 0.6)}`
-            : `8px 8px 0px #000000, 0 0 25px ${
-              hexToRgba(buttonColor, 0.6)
-            }, 0 0 50px ${hexToRgba(buttonColor, 0.3)}`)
-          : (isPressed
-            ? (shadowType === "brutalist"
-              ? "2px 2px 0px #000000"
-              : "0 2px 4px rgba(0,0,0,0.2)")
-            : shadowStyle),
+        // Apply shadow with effects
+        boxShadow: isPressed
+          ? (shadowType === "brutalist"
+            ? "2px 2px 0px #000000"
+            : "0 2px 4px rgba(0,0,0,0.2)")
+          : shadowStyle,
         ...shapeDimensions,
         ...hoverStyles,
       } as any,
@@ -728,6 +777,57 @@ export default function VoiceButton({
         
         .effect-pulse {
           animation: pulse-effect 2s ease-in-out infinite;
+        }
+        
+        @keyframes rainbow-effect {
+          0% { filter: hue-rotate(0deg); }
+          100% { filter: hue-rotate(360deg); }
+        }
+        
+        .effect-rainbow {
+          animation: rainbow-effect 4s linear infinite;
+        }
+        
+        @keyframes shine-effect {
+          0%, 100% { 
+            opacity: 1;
+          }
+          50% {
+            opacity: 0.95;
+          }
+        }
+        
+        .effect-shine {
+          position: relative;
+          overflow: hidden;
+        }
+        
+        .effect-shine::before {
+          content: '';
+          position: absolute;
+          top: -50%;
+          left: -50%;
+          width: 200%;
+          height: 200%;
+          background: linear-gradient(
+            45deg, 
+            transparent 40%, 
+            rgba(255,255,255,0.3) 50%, 
+            transparent 60%
+          );
+          background-size: 200% 200%;
+          animation: shine-move 4s linear infinite;
+          pointer-events: none;
+          z-index: 1;
+        }
+        
+        @keyframes shine-move {
+          0% { 
+            transform: translateX(-100%) translateY(-100%);
+          }
+          100% { 
+            transform: translateX(100%) translateY(100%);
+          }
         }
         
         

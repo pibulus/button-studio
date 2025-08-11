@@ -69,30 +69,15 @@ export default function CustomizationPanel(
   ) => {
     let newEffects = { ...customization.effects };
 
-    if (
-      value &&
-      (key === "breathing" || key === "bounce" || key === "wiggle" ||
-        key === "pulse")
-    ) {
-      // Movement effects - turn off the others when enabling one
+    if (value && (key === "breathing" || key === "bounce")) {
+      // Movement effects - turn off the other when enabling one
       newEffects.breathing = key === "breathing";
       newEffects.bounce = key === "bounce";
-      newEffects.wiggle = key === "wiggle";
-      newEffects.pulse = key === "pulse";
-    } else if (
-      value &&
-      (key === "glow" || key === "shadow" || key === "rainbow" ||
-        key === "sparkle")
-    ) {
-      // Visual effects can be combined (except rainbow conflicts with glow)
-      if (key === "rainbow") {
-        newEffects.glow = false; // Turn off glow when enabling rainbow
-      } else if (key === "glow") {
-        newEffects.rainbow = false; // Turn off rainbow when enabling glow
-      }
-      newEffects[key] = true;
+    } else if (key === "breathing" || key === "bounce") {
+      // Turning off a movement effect
+      newEffects[key] = false;
     } else {
-      // Simple toggle
+      // Visual effects (glow, flat, shine) can be toggled independently
       newEffects[key] = value;
     }
 
@@ -440,22 +425,14 @@ export default function CustomizationPanel(
           onMouseEnter={() => playSound.hover()}
           class="w-full px-8 py-6 text-left font-black text-black transition-all duration-200 shadow-sm hover:shadow-md active:shadow-sm"
           style={{
-            backgroundColor: expandedPanels.value["feel"]
-              ? "#fb923c"
-              : "#fed7aa",
+            backgroundColor: "#fed7aa",
             ":hover": { backgroundColor: "#fb923c" },
           }}
           onMouseOver={(e) => {
-            if (!expandedPanels.value["feel"]) {
-              (e.currentTarget as HTMLElement).style.backgroundColor =
-                "#fb923c";
-            }
+            (e.currentTarget as HTMLElement).style.backgroundColor = "#fb923c";
           }}
           onMouseOut={(e) => {
-            if (!expandedPanels.value["feel"]) {
-              (e.currentTarget as HTMLElement).style.backgroundColor =
-                "#fed7aa";
-            }
+            (e.currentTarget as HTMLElement).style.backgroundColor = "#fed7aa";
           }}
         >
           <div class="flex items-center justify-between">
@@ -481,8 +458,6 @@ export default function CustomizationPanel(
                   {[
                     { key: "breathing", label: "Breathe" },
                     { key: "bounce", label: "Bounce" },
-                    { key: "wiggle", label: "Wiggle" },
-                    { key: "pulse", label: "Pulse" },
                   ].map(({ key, label }) => {
                     const isActive = customization
                       .effects[key as keyof ButtonCustomization["effects"]];
@@ -534,9 +509,8 @@ export default function CustomizationPanel(
                 <div class="grid grid-cols-2 gap-4">
                   {[
                     { key: "glow", label: "Glow" },
-                    { key: "shadow", label: "Shadow" },
-                    { key: "rainbow", label: "Rainbow" },
-                    { key: "sparkle", label: "Sparkle" },
+                    { key: "flat", label: "Flat" },
+                    { key: "shine", label: "Shine" },
                   ].map(({ key, label }) => {
                     const isActive = customization
                       .effects[key as keyof ButtonCustomization["effects"]];
