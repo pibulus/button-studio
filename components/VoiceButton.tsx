@@ -673,7 +673,7 @@ export default function VoiceButton({
         hoverClasses = "hover-shift";
         // Shift hue based on button's dominant color
         const hsl = hexToHSL(buttonColor);
-        const shiftAmount = hsl.s > 50 ? 30 : 45; // Less shift for saturated colors
+        const shiftAmount = hsl.s > 50 ? 45 : 60; // More dramatic shift
         hoverStyles = {
           "--shift-degrees": `${shiftAmount}deg`,
         };
@@ -689,10 +689,10 @@ export default function VoiceButton({
         break;
       case "glow":
         hoverClasses = "hover-glow";
+        const glowHsl = hexToHSL(buttonColor);
         hoverStyles = {
-          "--glow-color": hexToRgba(buttonColor, 0.7),
-          "--glow-color-dim": hexToRgba(buttonColor, 0.4),
-          "--original-shadow": shadowStyle === "none" ? "none" : shadowStyle,
+          "--glow-color": `hsl(${glowHsl.h}, 100%, 50%)`,
+          "--glow-color-alt": `hsl(${(glowHsl.h + 180) % 360}, 100%, 50%)`,
         };
         break;
       default:
@@ -846,24 +846,22 @@ export default function VoiceButton({
         
         /* Hover Effect Classes - PRACTICAL and SATISFYING! */
         
-        /* Shift - BOLD color shift with scale */
+        /* SHIFT - Psychedelic color morph */
         .hover-shift {
-          transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+          transition: all 0.3s ease-out;
         }
         
         .hover-shift:hover {
-          filter: hue-rotate(var(--shift-degrees, 30deg)) brightness(1.2) saturate(1.4);
-          transform: scale(1.08) rotate(-0.5deg);
-          box-shadow: 6px 6px 0px #000,
-                      0 10px 25px rgba(0, 0, 0, 0.2);
+          filter: hue-rotate(var(--shift-degrees, 45deg)) brightness(1.3) saturate(1.5) contrast(1.1);
+          transform: scale(1.05);
         }
         
         .hover-shift:active {
-          transform: scale(1.02);
-          filter: hue-rotate(var(--shift-degrees, 30deg)) brightness(1.15) saturate(1.3);
+          filter: hue-rotate(calc(var(--shift-degrees, 45deg) * -1)) brightness(1.2) saturate(1.4);
+          transform: scale(0.98);
         }
         
-        /* Squish - Elastic jello bounce ENHANCED */
+        /* SQUISH - Elastic jello bounce (THE GOOD ONE) */
         .hover-squish {
           transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         }
@@ -901,42 +899,69 @@ export default function VoiceButton({
           }
         }
         
-        /* Lift - DRAMATIC rise with FAT shadow */
+        /* LIFT - 3D pop out with perspective */
         .hover-lift {
           transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+          transform-style: preserve-3d;
         }
         
         .hover-lift:hover {
-          transform: translateY(-6px) scale(1.08) rotate(0.5deg);
-          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 
-                      0 15px 25px rgba(0, 0, 0, 0.2),
-                      8px 8px 0px #000;
-          filter: brightness(1.08);
+          transform: translateY(-10px) translateZ(20px) rotateX(-5deg);
+          box-shadow: 0 25px 40px rgba(0, 0, 0, 0.4), 
+                      0 10px 20px rgba(0, 0, 0, 0.3),
+                      0 35px 65px rgba(0, 0, 0, 0.15);
         }
         
         .hover-lift:active {
-          transform: translateY(-2px) scale(1.02);
-          box-shadow: 4px 4px 0px #000;
+          transform: translateY(-3px) translateZ(10px);
+          box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
         }
         
-        /* Glow - VIBRANT pulsing glow with color intensity */
+        /* GLOW - Neon border pulse */
         .hover-glow {
-          transition: all 0.25s ease-out;
+          transition: all 0.3s ease-out;
           position: relative;
         }
         
-        .hover-glow:hover {
-          transform: scale(1.1) rotate(-1deg);
-          box-shadow: 8px 8px 0px #000,
-                      0 0 30px var(--glow-color, rgba(255, 100, 200, 0.7)),
-                      0 0 60px var(--glow-color-dim, rgba(255, 100, 200, 0.4)),
-                      inset 0 0 20px var(--glow-color-dim, rgba(255, 100, 200, 0.2));
-          filter: brightness(1.15) saturate(1.3);
+        .hover-glow::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          border-radius: inherit;
+          padding: 3px;
+          background: linear-gradient(45deg, 
+            var(--glow-color, #ff00ff), 
+            var(--glow-color-alt, #00ffff), 
+            var(--glow-color, #ff00ff));
+          -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+          -webkit-mask-composite: xor;
+          mask-composite: exclude;
+          opacity: 0;
+          transition: opacity 0.3s ease-out;
         }
         
-        .hover-glow:active {
-          transform: scale(1.05);
-          filter: brightness(1.1) saturate(1.2);
+        .hover-glow:hover::before {
+          opacity: 1;
+          animation: glow-pulse 1.5s ease-in-out infinite;
+        }
+        
+        .hover-glow:hover {
+          transform: scale(1.02);
+          filter: brightness(1.15);
+        }
+        
+        @keyframes glow-pulse {
+          0%, 100% { 
+            opacity: 1;
+            transform: scale(1);
+          }
+          50% { 
+            opacity: 0.8;
+            transform: scale(1.02);
+          }
         }
         
         @keyframes recording-pulse {
