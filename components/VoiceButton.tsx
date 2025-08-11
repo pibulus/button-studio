@@ -42,7 +42,7 @@ interface VoiceButtonProps {
   // Voice activation toggle
   voiceEnabled?: boolean;
   onVoiceToggle?: (enabled: boolean) => void;
-  
+
   // API Configuration
   apiKey?: string;
   customPrompt?: string;
@@ -157,9 +157,9 @@ export default function VoiceButton({
     onStateChange?.(buttonState.value);
   }, [buttonState.value]);
 
-  // 📋 AUTO-CLIPBOARD MAGIC - The secret sauce of great UX!
-  // Automatically copies transcription results so users can immediately paste anywhere.
-  // This eliminates the extra click and makes voice transcription feel instantaneous.
+  // ===================================================================
+  // AUTO-CLIPBOARD - Automatically copy transcription results
+  // ===================================================================
   useEffect(() => {
     if (transcript.value) {
       copyToClipboard(transcript.value).then((success) => {
@@ -255,21 +255,30 @@ export default function VoiceButton({
       const recorder = recorderRef.current!;
       const audioBlob = await recorder.stopRecording();
 
-      // 🤖 GEMINI AI TRANSCRIPTION - The magic happens here!
-      // This connects to Google's latest Gemini 2.0 Flash model for speech-to-text
+      // ===================================================================
+      // AI TRANSCRIPTION - Process audio through Gemini
+      // ===================================================================
+
+      // Validate API key before attempting transcription
+      if (!apiKey) {
+        throw new VoiceButtonError(
+          "Please enter your Gemini API key in the Magic panel",
+          "INVALID_CONFIG" as any,
+        );
+      }
+
+      // Load and configure Gemini plugin
       const { GeminiTranscriptionPlugin } = await import(
         "../plugins/transcription/gemini.ts"
       );
       const geminiPlugin = new GeminiTranscriptionPlugin();
 
-      // Configure with user's API key (from UI input or environment variable)
-      // The plugin automatically checks environment vars as fallback
-      await geminiPlugin.configure({ 
-        apiKey: apiKey || "hardcoded",
-        customPrompt: customPrompt 
-      }); // Use provided API key or fallback
+      await geminiPlugin.configure({
+        apiKey: apiKey,
+        customPrompt: customPrompt,
+      });
 
-      // Transform speech into clean, filler-free text ✨
+      // Transcribe audio to text
       const result = await geminiPlugin.transcribe(audioBlob);
       transcript.value = result.text;
 

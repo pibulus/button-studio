@@ -18,7 +18,9 @@ interface CustomizationPanelProps {
   onChange: (customization: ButtonCustomization) => void;
   voiceEnabled?: boolean;
   onVoiceToggle?: (enabled: boolean) => void;
+  apiKeyValue?: string;
   onApiKeyChange?: (apiKey: string) => void;
+  customPromptValue?: string;
   onCustomPromptChange?: (prompt: string) => void;
 }
 
@@ -31,8 +33,16 @@ const expandedPanels = signal<Record<string, boolean>>({
 });
 
 export default function CustomizationPanel(
-  { customization, onChange, voiceEnabled = false, onVoiceToggle, onApiKeyChange, onCustomPromptChange }:
-    CustomizationPanelProps,
+  {
+    customization,
+    onChange,
+    voiceEnabled = false,
+    onVoiceToggle,
+    apiKeyValue = "",
+    onApiKeyChange,
+    customPromptValue = "",
+    onCustomPromptChange,
+  }: CustomizationPanelProps,
 ) {
   // ===================================================================
   // STATE UPDATE HANDLERS - Clean, typed state management
@@ -625,12 +635,18 @@ export default function CustomizationPanel(
             </h4>
             <div class="space-y-4">
               <div>
-                <label class="block text-sm font-black text-black mb-2">
+                <label class="block text-sm font-black text-black mb-2 flex items-center gap-2">
                   API Key
+                  {voiceEnabled && (
+                    <span class="text-xs px-2 py-1 rounded-full bg-green-100 text-green-700 font-bold">
+                      Voice Active
+                    </span>
+                  )}
                 </label>
                 <input
                   type="password"
                   placeholder="Enter your Gemini API key..."
+                  value={apiKeyValue}
                   onInput={(e) => {
                     const value = (e.target as HTMLInputElement).value;
                     onApiKeyChange?.(value);
@@ -644,6 +660,7 @@ export default function CustomizationPanel(
                 </label>
                 <textarea
                   placeholder="Custom prompt for AI processing... (optional)"
+                  value={customPromptValue}
                   rows={3}
                   onInput={(e) => {
                     const value = (e.target as HTMLTextAreaElement).value;
@@ -652,7 +669,8 @@ export default function CustomizationPanel(
                   class="w-full px-4 py-3 bg-white border-3 border-black rounded-xl focus:bg-yellow-50 focus:outline-none transition-all text-sm shadow-sm focus:shadow-md resize-none"
                 />
                 <div class="text-xs text-gray-500 mt-1">
-                  Leave blank for basic transcription, or add instructions like "Summarize the key points" or "Extract action items"
+                  Leave blank for basic transcription, or add instructions like
+                  "Summarize the key points" or "Extract action items"
                 </div>
               </div>
               <div class="text-xs text-gray-600">

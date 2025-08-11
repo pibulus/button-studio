@@ -10,7 +10,9 @@ import {
   VoiceButtonError,
 } from "../../types/core.ts";
 
-// Gemini Transcription Plugin (based on Pablo's brilliant geminiService implementation)
+// ===================================================================
+// GEMINI TRANSCRIPTION PLUGIN - Browser-compatible speech-to-text
+// ===================================================================
 export class GeminiTranscriptionPlugin implements TranscriptionPlugin {
   readonly id = "gemini";
   readonly name = "Google Gemini";
@@ -20,21 +22,26 @@ export class GeminiTranscriptionPlugin implements TranscriptionPlugin {
 
   private apiKey?: string;
   private model = "gemini-2.0-flash-exp";
-  private genAI: any;
-  private geminiModel: any;
   private customPrompt?: string;
 
+  /**
+   * Configure the plugin with API credentials and optional settings
+   * @param config - Configuration including API key and optional model/prompt
+   */
   async configure(config: GeminiConfig): Promise<void> {
-    // Use environment variable for security
-    this.apiKey = Deno.env.get("GEMINI_API_KEY") || config.apiKey;
-    this.model = config.model || "gemini-2.0-flash";
+    // Store API key from UI input (browser-compatible approach)
+    this.apiKey = config.apiKey;
+    this.model = config.model || "gemini-2.0-flash-exp";
     this.customPrompt = config.customPrompt;
 
+    // Validate API key is provided
     if (!this.apiKey) {
-      throw new Error("GEMINI_API_KEY environment variable not set");
+      throw new Error(
+        "Gemini API key not provided. Please enter your API key in the Magic panel.",
+      );
     }
 
-    console.log("✅ Gemini plugin configured with environment key");
+    console.log("✅ Gemini plugin configured successfully");
   }
 
   validateConfig(config: unknown): config is GeminiConfig {
@@ -44,7 +51,13 @@ export class GeminiTranscriptionPlugin implements TranscriptionPlugin {
       typeof (config as any).apiKey === "string";
   }
 
+  /**
+   * Transcribe audio using Gemini's REST API
+   * @param audio - Audio blob containing recorded speech
+   * @returns Transcription result with text and metadata
+   */
   async transcribe(audio: AudioBlob): Promise<TranscriptionResult> {
+    // Ensure API key is configured
     if (!this.apiKey) {
       throw new VoiceButtonError(
         "Gemini API key not configured",
@@ -53,43 +66,44 @@ export class GeminiTranscriptionPlugin implements TranscriptionPlugin {
     }
 
     try {
-      console.log("🤖 Starting Gemini transcription with REST API...");
+      console.log("🎤 Starting Gemini transcription...");
 
-      // Convert audio to base64 for the REST API
+      // Convert audio blob to base64 for REST API
       const audioBase64 = await this.blobToBase64(audio.data);
 
-      // Use the correct Gemini REST API format
-      // Use custom prompt if provided, otherwise use default transcription prompt
-      const promptText = this.customPrompt || 
+      // Build transcription prompt - use custom or default
+      const promptText = this.customPrompt ||
         "Transcribe this audio file accurately and completely, removing any redundant 'ums,' 'likes, 'uhs', and similar filler words. Return only the cleaned-up transcription, with no additional text.";
 
+      // Construct Gemini API request body
       const requestBody = {
         contents: [{
-          parts: [{
-            text: promptText,
-          }, {
-            inline_data: {
-              mime_type: audio.data.type,
-              data: audioBase64,
+          parts: [
+            { text: promptText },
+            {
+              inline_data: {
+                mime_type: audio.data.type,
+                data: audioBase64,
+              },
             },
-          }],
+          ],
         }],
       };
 
+      // Call Gemini API
       const response = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/${this.model}:generateContent?key=${this.apiKey}`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(requestBody),
         },
       );
 
+      // Handle API errors
       if (!response.ok) {
         const errorText = await response.text();
-        console.error("Gemini API error:", errorText);
+        console.error("❌ Gemini API error:", errorText);
         throw new VoiceButtonError(
           `Gemini API error: ${response.status} ${response.statusText}`,
           ErrorCode.TRANSCRIPTION_API_ERROR,
@@ -97,11 +111,11 @@ export class GeminiTranscriptionPlugin implements TranscriptionPlugin {
         );
       }
 
+      // Parse response
       const result = await response.json();
-      console.log("🎉 Raw Gemini response:", result);
-
       const text = result.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
 
+      // Validate transcription result
       if (!text) {
         throw new VoiceButtonError(
           "Gemini returned empty transcription",
@@ -110,7 +124,7 @@ export class GeminiTranscriptionPlugin implements TranscriptionPlugin {
         );
       }
 
-      console.log("✅ Gemini transcription completed:", {
+      console.log("✅ Transcription completed:", {
         length: text.length,
         preview: text.substring(0, 50) + "...",
       });
@@ -125,12 +139,14 @@ export class GeminiTranscriptionPlugin implements TranscriptionPlugin {
         },
       };
     } catch (error) {
-      console.error("❌ Gemini transcription failed:", error);
+      console.error("❌ Transcription failed:", error);
 
+      // Re-throw VoiceButtonError as-is
       if (error instanceof VoiceButtonError) {
         throw error;
       }
 
+      // Wrap other errors
       throw new VoiceButtonError(
         "Gemini transcription failed",
         ErrorCode.TRANSCRIPTION_API_ERROR,
@@ -160,7 +176,11 @@ export class GeminiTranscriptionPlugin implements TranscriptionPlugin {
     return Math.max(0.01, durationMinutes * 0.075); // Minimum 1 cent
   }
 
-  // Convert blob to base64 for REST API
+  /**
+   * Convert audio blob to base64 string for API transmission
+   * @param blob - Audio blob to convert
+   * @returns Base64 encoded string
+   */
   private async blobToBase64(blob: Blob): Promise<string> {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -168,7 +188,8 @@ export class GeminiTranscriptionPlugin implements TranscriptionPlugin {
       reader.onloadend = () => {
         try {
           const result = reader.result as string;
-          const base64data = result.split(",")[1]; // Remove data:audio/webm;base64, prefix
+          // Extract base64 data from data URL
+          const base64data = result.split(",")[1];
           resolve(base64data);
         } catch (error) {
           reject(
@@ -195,13 +216,15 @@ export class GeminiTranscriptionPlugin implements TranscriptionPlugin {
   }
 }
 
-// Enhanced Gemini Service (Pablo's additional AI features as separate methods)
+// ===================================================================
+// ENHANCED GEMINI SERVICE - Additional AI features
+// ===================================================================
 export class GeminiAIService {
   private genAI: any;
   private model: any;
 
   constructor(apiKey: string, modelName = "gemini-2.0-flash-exp") {
-    // This will be initialized when needed
+    // Initialized when needed
   }
 
   async init(apiKey: string, modelName = "gemini-2.0-flash-exp") {

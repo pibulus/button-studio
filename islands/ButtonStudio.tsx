@@ -126,29 +126,39 @@ export default function ButtonStudio() {
     const handleSurpriseMe = () => {
       // Generate random appearance values
       const currentMode = colorModes[colorMode.value];
-      const randomColorIndex = Math.floor(Math.random() * currentMode.colors.length);
+      const randomColorIndex = Math.floor(
+        Math.random() * currentMode.colors.length,
+      );
       const randomColor = currentMode.colors[randomColorIndex];
-      
+
       // Random shape
       const shapes = ["circle", "rounded", "square"] as const;
       const randomShape = shapes[Math.floor(Math.random() * shapes.length)];
-      
+
       // Random effects (pick 1-2 effects randomly)
-      const effectKeys = ["breathing", "bounce", "glow", "shadow", "shine", "pulse"] as const;
+      const effectKeys = [
+        "breathing",
+        "bounce",
+        "glow",
+        "shadow",
+        "shine",
+        "pulse",
+      ] as const;
       const newEffects = { ...defaultCustomization.effects };
-      
+
       // Reset all effects first
-      effectKeys.forEach(key => {
+      effectKeys.forEach((key) => {
         newEffects[key as keyof typeof newEffects] = false;
       });
-      
+
       // Pick 1-2 random effects
       const numEffects = Math.random() < 0.6 ? 1 : 2;
       for (let i = 0; i < numEffects; i++) {
-        const randomEffect = effectKeys[Math.floor(Math.random() * effectKeys.length)];
+        const randomEffect =
+          effectKeys[Math.floor(Math.random() * effectKeys.length)];
         newEffects[randomEffect as keyof typeof newEffects] = true;
       }
-      
+
       // Create new randomized customization
       const newCustomization: ButtonCustomization = {
         ...customization.value,
@@ -160,26 +170,30 @@ export default function ButtonStudio() {
           borderWidth: Math.floor(Math.random() * 6) + 2, // 2-8px
           borderStyle: Math.random() > 0.5 ? "solid" : "dashed",
           fillType: currentMode.fillType,
-          ...(currentMode.fillType === "solid" 
+          ...(currentMode.fillType === "solid"
             ? { solidColor: randomColor as string }
-            : { 
-                gradient: {
-                  start: (randomColor as string[])[0],
-                  end: (randomColor as string[])[1],
-                  direction: Math.floor(Math.random() * 8) * 45 // 0, 45, 90, 135, etc.
-                }
-              }
-          ),
+            : {
+              gradient: {
+                start: (randomColor as string[])[0],
+                end: (randomColor as string[])[1],
+                direction: Math.floor(Math.random() * 8) * 45, // 0, 45, 90, 135, etc.
+              },
+            }),
         },
         effects: newEffects,
         interactions: {
           ...customization.value.interactions,
-          hoverEffect: ["squish", "grow", "bright", "tilt"][Math.floor(Math.random() * 4)] as any,
-        }
+          hoverEffect: [
+            "squish",
+            "grow",
+            "bright",
+            "tilt",
+          ][Math.floor(Math.random() * 4)] as any,
+        },
       };
 
       customization.value = newCustomization;
-      
+
       // Play celebration sound
       setTimeout(() => {
         soundService.playSuccess();
@@ -189,7 +203,7 @@ export default function ButtonStudio() {
 
     // Listen for the shuffle event
     document.addEventListener("surpriseMe", handleSurpriseMe);
-    
+
     // Cleanup
     return () => {
       document.removeEventListener("surpriseMe", handleSurpriseMe);
@@ -842,9 +856,11 @@ export default function ButtonStudio() {
                 onChange={handleCustomizationChange}
                 voiceEnabled={voiceEnabled.value}
                 onVoiceToggle={handleVoiceToggle}
+                apiKeyValue={apiKey.value}
                 onApiKeyChange={(newApiKey) => {
                   apiKey.value = newApiKey;
                 }}
+                customPromptValue={customPrompt.value}
                 onCustomPromptChange={(newPrompt) => {
                   customPrompt.value = newPrompt;
                 }}
