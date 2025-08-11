@@ -206,6 +206,26 @@ organization:
 - **Vibration API**: For haptic feedback on mobile devices
 - **Google Gemini API**: For speech transcription (API key required)
 
+### 🎤 Voice Transcription System
+
+The app uses Google Gemini 2.0 Flash for speech-to-text transcription:
+
+- **Browser-Compatible**: No server-side dependencies, works entirely in browser
+- **API Key Management**: User provides key via Magic panel UI (no env vars
+  needed)
+- **Custom Instructions**: Support for custom prompts to modify transcription
+  behavior
+- **Auto-Clipboard**: Transcriptions automatically copied to clipboard
+- **State Persistence**: API key and custom prompt values persist during session
+
+**Important Implementation Notes**:
+
+- Uses `onChange` (not `onInput`) for controlled components to prevent focus
+  loss
+- API key validation happens before transcription attempt
+- FileReader API converts audio to base64 for Gemini REST API
+- Error messages guide users to enter API key in Magic panel
+
 ## 🚀 Complete Export System
 
 ButtonStudio transforms from a design tool into a **complete platform** with
