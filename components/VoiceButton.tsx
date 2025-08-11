@@ -583,38 +583,6 @@ export default function VoiceButton({
 
     // Glow effect ADDS to whatever shadow is set with HUE SHIFTED colors
     if (config.effects.glow) {
-      // Convert hex to HSL and shift the hue for a more interesting glow
-      const hexToHSL = (hex: string) => {
-        const r = parseInt(hex.slice(1, 3), 16) / 255;
-        const g = parseInt(hex.slice(3, 5), 16) / 255;
-        const b = parseInt(hex.slice(5, 7), 16) / 255;
-
-        const max = Math.max(r, g, b);
-        const min = Math.min(r, g, b);
-        const l = (max + min) / 2;
-        let h = 0;
-        let s = 0;
-
-        if (max !== min) {
-          const d = max - min;
-          s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-
-          switch (max) {
-            case r:
-              h = ((g - b) / d + (g < b ? 6 : 0)) / 6;
-              break;
-            case g:
-              h = ((b - r) / d + 2) / 6;
-              break;
-            case b:
-              h = ((r - g) / d + 4) / 6;
-              break;
-          }
-        }
-
-        return { h: h * 360, s: s * 100, l: l * 100 };
-      };
-
       const hsl = hexToHSL(buttonColor);
       // Shift hue by 45 degrees for more dramatic color offset
       const glowHue1 = (hsl.h + 45) % 360;
@@ -662,6 +630,38 @@ export default function VoiceButton({
     const hoverLift = juiceSettings.hoverLift;
     const animSpeed = juiceSettings.animationSpeed;
 
+    // Helper function to convert hex to HSL (needed for neon effect and glow)
+    const hexToHSL = (hex: string) => {
+      const r = parseInt(hex.slice(1, 3), 16) / 255;
+      const g = parseInt(hex.slice(3, 5), 16) / 255;
+      const b = parseInt(hex.slice(5, 7), 16) / 255;
+
+      const max = Math.max(r, g, b);
+      const min = Math.min(r, g, b);
+      const l = (max + min) / 2;
+      let h = 0;
+      let s = 0;
+
+      if (max !== min) {
+        const d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+
+        switch (max) {
+          case r:
+            h = ((g - b) / d + (g < b ? 6 : 0)) / 6;
+            break;
+          case g:
+            h = ((b - r) / d + 2) / 6;
+            break;
+          case b:
+            h = ((r - g) / d + 4) / 6;
+            break;
+        }
+      }
+
+      return { h: h * 360, s: s * 100, l: l * 100 };
+    };
+
     // Use memoized easing curve for performance
 
     // Dynamic hover effects with juice controls - Using CSS custom properties for dynamic values
@@ -669,29 +669,32 @@ export default function VoiceButton({
     let hoverStyles = {};
 
     switch (hoverEffect) {
-      case "lift":
-        hoverClasses = "hover-lift";
+      case "grow":
+        hoverClasses = "hover-grow";
         hoverStyles = {
-          "--hover-scale": bounceScale,
-          "--hover-lift": `${hoverLift}px`,
+          "--button-color-dim": hexToRgba(buttonColor, 0.2),
         };
         break;
-      case "glow":
-        hoverClasses = "hover-glow";
+      case "squish":
+        hoverClasses = "hover-squish";
+        break;
+      case "neon":
+        hoverClasses = "hover-neon";
+        // Generate neon colors based on button color
+        const hsl = hexToHSL(buttonColor);
         hoverStyles = {
-          "--glow-color": hexToRgba(buttonColor, 0.6),
+          "--neon-color-1": `hsl(${hsl.h}, 100%, 50%)`,
+          "--neon-color-2": `hsl(${(hsl.h + 120) % 360}, 100%, 50%)`,
+          "--neon-color-3": `hsl(${(hsl.h + 240) % 360}, 100%, 50%)`,
         };
         break;
-      case "pulse":
-        hoverClasses = "hover:animate-pulse";
-        break;
-      case "rotate":
-        hoverClasses = "hover:rotate-3";
+      case "magnetic":
+        hoverClasses = "hover-magnetic";
         break;
       default:
-        hoverClasses = "hover-default";
+        hoverClasses = "hover-grow";
         hoverStyles = {
-          "--hover-scale": 1 + juiceSettings.bounceFactor / 200,
+          "--button-color-dim": hexToRgba(buttonColor, 0.2),
         };
     }
 
@@ -837,31 +840,88 @@ export default function VoiceButton({
           }
         }
         
-        /* Hover Effect Classes - Using CSS variables for dynamic values */
-        .hover-lift {
-          transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+        /* Hover Effect Classes - JUICY and SATISFYING! */
+        .hover-grow {
+          transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         
-        .hover-lift:hover {
-          transform: scale(var(--hover-scale, 1.05)) translateY(calc(-1 * var(--hover-lift, 5px)));
-          box-shadow: 0 calc(var(--hover-lift, 5px) * 2) 20px rgba(0,0,0,0.15);
+        .hover-grow:hover {
+          transform: scale(1.12) rotate(1deg);
+          box-shadow: 0 20px 40px rgba(0,0,0,0.25), 
+                      0 0 30px var(--button-color-dim, rgba(0,0,0,0.1));
+          filter: brightness(1.1) saturate(1.2);
         }
         
-        .hover-glow {
-          transition: box-shadow 0.3s ease-out, filter 0.3s ease-out;
+        .hover-squish {
+          transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         }
         
-        .hover-glow:hover {
-          filter: drop-shadow(0 0 20px var(--glow-color, rgba(59, 130, 246, 0.6))) 
-                  drop-shadow(0 0 40px var(--glow-color, rgba(59, 130, 246, 0.4)));
+        .hover-squish:hover {
+          animation: squish-bounce 0.6s ease-out;
         }
         
-        .hover-default {
-          transition: transform 0.15s ease-out;
+        @keyframes squish-bounce {
+          0% { transform: scale(1); }
+          30% { transform: scale(0.92, 1.08); }
+          60% { transform: scale(1.08, 0.92); }
+          80% { transform: scale(0.98, 1.02); }
+          100% { transform: scale(1); }
         }
         
-        .hover-default:hover {
-          transform: scale(var(--hover-scale, 1.03));
+        .hover-neon {
+          transition: all 0.3s ease-out;
+          position: relative;
+        }
+        
+        .hover-neon::before {
+          content: '';
+          position: absolute;
+          top: -4px;
+          left: -4px;
+          right: -4px;
+          bottom: -4px;
+          background: linear-gradient(45deg, 
+            var(--neon-color-1, #ff00ff), 
+            var(--neon-color-2, #00ffff), 
+            var(--neon-color-3, #ffff00),
+            var(--neon-color-1, #ff00ff));
+          background-size: 400% 400%;
+          border-radius: inherit;
+          opacity: 0;
+          z-index: -1;
+          transition: opacity 0.3s ease-out;
+          filter: blur(8px);
+        }
+        
+        .hover-neon:hover::before {
+          opacity: 1;
+          animation: neon-pulse 2s linear infinite;
+        }
+        
+        .hover-neon:hover {
+          transform: scale(1.05);
+          box-shadow: 0 0 30px var(--neon-color-1, #ff00ff),
+                      0 0 60px var(--neon-color-2, #00ffff);
+        }
+        
+        @keyframes neon-pulse {
+          0% { background-position: 0% 50%; }
+          100% { background-position: 400% 50%; }
+        }
+        
+        .hover-magnetic {
+          transition: transform 0.2s ease-out;
+        }
+        
+        .hover-magnetic:hover {
+          transform: scale(1.08) translateY(-2px);
+          animation: magnetic-pull 0.8s ease-in-out infinite;
+        }
+        
+        @keyframes magnetic-pull {
+          0%, 100% { transform: scale(1.08) translateY(-2px) translateX(0); }
+          25% { transform: scale(1.08) translateY(-2px) translateX(-2px); }
+          75% { transform: scale(1.08) translateY(-2px) translateX(2px); }
         }
         
         @keyframes recording-pulse {

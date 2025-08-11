@@ -562,10 +562,10 @@ export default function CustomizationPanel(
                 </h4>
                 <div class="grid grid-cols-2 gap-4">
                   {[
-                    { value: "none", label: "None" },
-                    { value: "lift", label: "Lift" },
-                    { value: "glow", label: "Glow" },
-                    { value: "pulse", label: "Pulse" },
+                    { value: "grow", label: "Grow" },
+                    { value: "squish", label: "Squish" },
+                    { value: "neon", label: "Neon" },
+                    { value: "magnetic", label: "Magnetic" },
                   ].map(({ value, label }) => (
                     <button
                       key={value}
