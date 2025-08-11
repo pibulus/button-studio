@@ -81,10 +81,9 @@ export default function CustomizationPanel(
       newEffects.breathing = key === "breathing";
       newEffects.bounce = key === "bounce";
       newEffects.wiggle = key === "wiggle";
-    } else if (value && (key === "glow" || key === "rainbowGlow")) {
-      // Visual border effects - turn off the other when enabling one
-      newEffects.glow = key === "glow";
-      newEffects.rainbowGlow = key === "rainbowGlow";
+    } else if (value && key === "glow") {
+      // Visual border effects
+      newEffects.glow = true;
     } else {
       // Non-conflicting effects (pulse can work with anything)
       newEffects[key] = value;
@@ -410,7 +409,7 @@ export default function CustomizationPanel(
     const randomMovement =
       movementEffects[Math.floor(Math.random() * movementEffects.length)];
     const shouldUseGlow = Math.random() > 0.7;
-    const shouldUseRainbow = Math.random() > 0.85 && randomShape !== "circle";
+    const shouldUseRainbow = false; // Rainbow effect removed
 
     // Create tasteful customization
     const newCustomization = {
@@ -472,8 +471,7 @@ export default function CustomizationPanel(
         breathing: randomMovement === "breathing",
         bounce: randomMovement === "bounce",
         wiggle: randomMovement === "wiggle",
-        glow: shouldUseGlow && !shouldUseRainbow, // Don't mix glow and rainbow
-        rainbowGlow: shouldUseRainbow,
+        glow: shouldUseGlow,
         pulse: Math.random() > 0.8, // Rare
       },
     };
@@ -733,63 +731,6 @@ function handleButtonClick() {
         `}
         </style>
 
-        {/* Content Input + Voice Toggle - Enhanced UX */}
-        <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-lg border-4 border-black">
-          <div class="space-y-4">
-            <div class="flex items-center gap-6">
-              <div class="flex-1 relative">
-                <input
-                  type="text"
-                  value={customization.content.value}
-                  onInput={(e) =>
-                    updateContent((e.target as HTMLInputElement).value)}
-                  onFocus={() => {
-                    playSound.secondaryClick();
-                    hapticService.buttonPress();
-                  }}
-                  onMouseEnter={() => playSound.hover()}
-                  placeholder="Button text..."
-                  maxLength={25}
-                  class="w-full px-6 py-4 text-xl font-bold bg-white border-3 border-black rounded-2xl focus:bg-orange-50 focus:shadow-lg hover:bg-pink-50 hover:shadow-md hover:-translate-y-0.5 focus:outline-none transition-all duration-300 text-center"
-                />
-                {/* Character counter when approaching limit */}
-                {customization.content.value.length > 18 && (
-                  <div class="absolute -bottom-6 right-2 text-xs font-bold text-gray-500">
-                    {customization.content.value.length}/25
-                  </div>
-                )}
-              </div>
-              <button
-                onClick={() => {
-                  const newState = !voiceEnabled;
-                  onVoiceToggle?.(newState);
-
-                  // Sound and haptic feedback
-                  if (newState) {
-                    playSound.toggleOn();
-                    hapticService.toggleOn();
-                  } else {
-                    playSound.toggleOff();
-                    hapticService.toggleOff();
-                  }
-                }}
-                onMouseEnter={() => playSound.hover()}
-                title="🎤 Enable voice transcription and AI processing - converts speech to text automatically"
-                class={`w-16 h-10 sm:w-18 sm:h-12 rounded-full border-3 border-black transition-all duration-300 flex items-center shadow-md hover:shadow-lg hover:scale-105 touch-manipulation ${
-                  voiceEnabled
-                    ? "bg-pink-300 hover:bg-pink-400"
-                    : "bg-orange-200 hover:bg-orange-300"
-                }`}
-              >
-                <div
-                  class={`w-7 h-7 bg-white rounded-full border-2 border-black transition-all duration-300 shadow-sm ${
-                    voiceEnabled ? "translate-x-7" : "translate-x-1"
-                  }`}
-                />
-              </button>
-            </div>
-          </div>
-        </div>
 
         {/* 🎨 Colors */}
         <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-lg border-4 border-black">

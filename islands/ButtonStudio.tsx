@@ -377,6 +377,70 @@ export default function ButtonStudio() {
                   }
                 `}
                 </style>
+
+                {/* Text Input + Voice Toggle - Integrated into button panel */}
+                <div class="mt-8 space-y-4">
+                  <div class="flex items-center gap-4">
+                    <div class="flex-1 relative">
+                      <input
+                        type="text"
+                        value={customization.value.content.value}
+                        onInput={(e) => {
+                          const newValue = (e.target as HTMLInputElement).value;
+                          handleCustomizationChange({
+                            ...customization.value,
+                            content: {
+                              ...customization.value.content,
+                              value: newValue,
+                            },
+                          });
+                        }}
+                        onFocus={() => {
+                          soundService.playUI();
+                          hapticService.buttonPress();
+                        }}
+                        onMouseEnter={() => soundService.playButtonHover()}
+                        placeholder="Button text..."
+                        maxLength={25}
+                        class="w-full px-4 py-3 text-lg font-bold bg-white border-3 border-black rounded-xl focus:bg-orange-50 focus:shadow-lg hover:bg-pink-50 hover:shadow-md hover:-translate-y-0.5 focus:outline-none transition-all duration-300 text-center"
+                        style={{ boxShadow: "2px 2px 0px #000000" }}
+                      />
+                      {/* Character counter */}
+                      {customization.value.content.value.length > 18 && (
+                        <div class="absolute -bottom-6 right-2 text-xs font-bold text-gray-500">
+                          {customization.value.content.value.length}/25
+                        </div>
+                      )}
+                    </div>
+                    <button
+                      onClick={() => {
+                        handleVoiceToggle(!voiceEnabled.value);
+                        // Sound and haptic feedback
+                        if (!voiceEnabled.value) {
+                          soundService.playSuccess();
+                          hapticService.toggleOn();
+                        } else {
+                          soundService.playUI();
+                          hapticService.toggleOff();
+                        }
+                      }}
+                      onMouseEnter={() => soundService.playButtonHover()}
+                      title="🎤 Enable voice transcription"
+                      class={`w-14 h-8 rounded-full border-3 border-black transition-all duration-300 flex items-center shadow-md hover:shadow-lg hover:scale-105 ${
+                        voiceEnabled.value
+                          ? "bg-green-300 hover:bg-green-400"
+                          : "bg-gray-200 hover:bg-gray-300"
+                      }`}
+                      style={{ boxShadow: "2px 2px 0px #000000" }}
+                    >
+                      <div
+                        class={`w-6 h-6 bg-white rounded-full border-2 border-black transition-all duration-300 shadow-sm ${
+                          voiceEnabled.value ? "translate-x-6" : "translate-x-0.5"
+                        }`}
+                      />
+                    </button>
+                  </div>
+                </div>
               </div>
 
               {/* Master Controls */}

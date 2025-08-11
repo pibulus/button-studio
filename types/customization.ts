@@ -146,7 +146,6 @@ export interface EffectToggles {
   glow: boolean;
   breathing: boolean;
   wiggle: boolean;
-  rainbowGlow: boolean;
   pulse: boolean;
 }
 
@@ -155,7 +154,6 @@ export const defaultEffects: EffectToggles = {
   glow: false,
   breathing: true, // starts with breathing
   wiggle: false,
-  rainbowGlow: false,
   pulse: false,
 };
 
