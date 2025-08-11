@@ -509,8 +509,9 @@ export default function CustomizationPanel(
                 <div class="grid grid-cols-2 gap-4">
                   {[
                     { key: "glow", label: "Glow" },
-                    { key: "flat", label: "Flat" },
+                    { key: "shadow", label: "Shadow" },
                     { key: "shine", label: "Shine" },
+                    { key: "pulse", label: "Pulse" },
                   ].map(({ key, label }) => {
                     const isActive = customization
                       .effects[key as keyof ButtonCustomization["effects"]];

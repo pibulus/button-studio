@@ -148,12 +148,12 @@ export interface EffectToggles {
 
   // Visual effects
   glow: boolean;
-  flat: boolean; // Removes all shadows for flat design
+  shadow: boolean; // Adds shadow (buttons start flat)
   shine: boolean; // Moving shine/gloss effect
+  pulse: boolean; // Pulsing opacity effect
 
   // Legacy effects (kept for compatibility but not shown in UI)
   wiggle?: boolean;
-  pulse?: boolean;
   shadow?: boolean;
   rainbow?: boolean;
   sparkle?: boolean;
@@ -163,8 +163,9 @@ export const defaultEffects: EffectToggles = {
   breathing: true, // starts with breathing
   bounce: false,
   glow: false,
-  flat: false,
+  shadow: true, // buttons start WITH shadow by default
   shine: false,
+  pulse: false,
 };
 
 // ===================================================================

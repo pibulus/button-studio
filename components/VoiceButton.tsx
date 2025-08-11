@@ -510,6 +510,7 @@ export default function VoiceButton({
     // Non-transform effects (these can work together)
     // NOTE: glow effect handled via inline styles now, not CSS class
     if (config.effects.shine) effectClasses.push("effect-shine");
+    if (config.effects.pulse) effectClasses.push("effect-pulse");
 
     const effectAnimations = effectClasses.join(" ");
 
@@ -569,14 +570,15 @@ export default function VoiceButton({
     // Calculate shadow and glow based on type and effects
     let shadowStyle = "";
 
-    // Flat effect REMOVES all shadows, otherwise apply normal shadow
-    if (config.effects.flat) {
-      shadowStyle = "none"; // Completely flat, no shadow
-    } else {
-      // Default shadow when flat is NOT enabled
+    // Shadow effect controls whether button has shadow or is flat
+    if (config.effects.shadow) {
+      // Shadow is ON - show the shadow
       shadowStyle = shadowType === "brutalist"
         ? "8px 8px 0px #000000" // Normal brutalist shadow
         : "0 8px 25px rgba(0,0,0,0.15), 0 4px 10px rgba(0,0,0,0.1)"; // Normal soft shadow
+    } else {
+      // Shadow is OFF - flat design
+      shadowStyle = "none"; // Completely flat, no shadow
     }
 
     // Glow effect ADDS to whatever shadow is set with HUE SHIFTED colors
@@ -614,19 +616,27 @@ export default function VoiceButton({
       };
 
       const hsl = hexToHSL(buttonColor);
-      // Shift hue by 30 degrees for complementary glow
-      const glowHue1 = (hsl.h + 30) % 360;
-      const glowHue2 = (hsl.h - 30 + 360) % 360;
+      // Shift hue by 45 degrees for more dramatic color offset
+      const glowHue1 = (hsl.h + 45) % 360;
+      const glowHue2 = (hsl.h - 45 + 360) % 360;
 
-      // Create HSL color strings with shifted hues
-      const glowColor1 = `hsla(${glowHue1}, ${Math.min(hsl.s * 1.2, 100)}%, ${
-        Math.min(hsl.l * 1.1, 80)
-      }%, 0.7)`;
-      const glowColor2 = `hsla(${glowHue2}, ${hsl.s}%, ${hsl.l}%, 0.5)`;
-      const originalGlow = hexToRgba(buttonColor, 0.3);
+      // Create HSL color strings with MORE SATURATED and SHIFTED hues
+      const glowColor1 = `hsla(${glowHue1}, ${Math.min(hsl.s * 1.5, 100)}%, ${
+        Math.min(hsl.l * 1.2, 70)
+      }%, 0.8)`;
+      const glowColor2 = `hsla(${glowHue2}, ${
+        Math.min(hsl.s * 1.3, 100)
+      }%, ${hsl.l}%, 0.6)`;
+      const originalGlow = hexToRgba(buttonColor, 0.4);
 
-      shadowStyle =
-        `${shadowStyle}, 0 0 25px ${glowColor1}, 0 0 50px ${glowColor2}, 0 0 75px ${originalGlow}`;
+      // If shadow is "none", just set the glow. Otherwise append to existing shadow
+      if (shadowStyle === "none") {
+        shadowStyle =
+          `0 0 25px ${glowColor1}, 0 0 50px ${glowColor2}, 0 0 75px ${originalGlow}`;
+      } else {
+        shadowStyle =
+          `${shadowStyle}, 0 0 25px ${glowColor1}, 0 0 50px ${glowColor2}, 0 0 75px ${originalGlow}`;
+      }
     }
 
     // Shape-specific border radius
@@ -788,45 +798,41 @@ export default function VoiceButton({
           animation: rainbow-effect 4s linear infinite;
         }
         
-        @keyframes shine-effect {
-          0%, 100% { 
-            opacity: 1;
-          }
-          50% {
-            opacity: 0.95;
-          }
-        }
-        
         .effect-shine {
           position: relative;
-          overflow: hidden;
         }
         
-        .effect-shine::before {
+        .effect-shine::after {
           content: '';
           position: absolute;
-          top: -50%;
-          left: -50%;
-          width: 200%;
-          height: 200%;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
           background: linear-gradient(
-            45deg, 
+            105deg, 
             transparent 40%, 
-            rgba(255,255,255,0.3) 50%, 
+            rgba(255,255,255,0.4) 50%, 
             transparent 60%
           );
-          background-size: 200% 200%;
-          animation: shine-move 4s linear infinite;
+          animation: shine-sweep 3s ease-in-out infinite;
           pointer-events: none;
-          z-index: 1;
+          border-radius: inherit;
+          opacity: 0;
         }
         
-        @keyframes shine-move {
+        @keyframes shine-sweep {
           0% { 
-            transform: translateX(-100%) translateY(-100%);
+            transform: translateX(-100%);
+            opacity: 0;
+          }
+          50% {
+            transform: translateX(0%);
+            opacity: 1;
           }
           100% { 
-            transform: translateX(100%) translateY(100%);
+            transform: translateX(100%);
+            opacity: 0;
           }
         }
         
