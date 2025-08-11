@@ -217,14 +217,16 @@ export default function CustomizationPanel(
   ) => {
     const isExpanded = expandedPanels.value[id];
 
-    // 🌈 VIBRANT PANEL HEADERS - Each panel gets distinct bright color!
+    // 🌈 HARMONIOUS PANEL HEADERS - Each panel gets distinct pastel color!
     const getBackgroundColor = (colorKey: string) => {
       const colors = {
-        red: "bg-red-300 hover:bg-red-400",
-        orange: "bg-orange-300 hover:bg-orange-400", 
-        yellow: "bg-yellow-300 hover:bg-yellow-400",
-        purple: "bg-purple-300 hover:bg-purple-400",
+        red: "bg-red-200 hover:bg-red-300",
+        orange: "bg-orange-200 hover:bg-orange-300", 
+        yellow: "bg-yellow-200 hover:bg-yellow-300",
+        purple: "bg-purple-200 hover:bg-purple-300",
       };
+      // Debug: log what we're getting
+      console.log(`Panel color: ${colorKey} -> ${colors[colorKey as keyof typeof colors] || colors.red}`);
       return colors[colorKey as keyof typeof colors] || colors.red;
     };
 
@@ -234,7 +236,7 @@ export default function CustomizationPanel(
           onClick={() => togglePanel(id)}
           onMouseEnter={() => playSound.hover()}
           class={`w-full px-8 py-6 text-left font-black text-black transition-all duration-200 ${
-            getBackgroundColor(color)
+            id === "feel" ? "bg-orange-200 hover:bg-orange-300" : getBackgroundColor(color)
           } shadow-sm hover:shadow-md active:shadow-sm`}
         >
           <div class="flex items-center justify-between">
@@ -262,6 +264,9 @@ export default function CustomizationPanel(
       {/* 🍊 LUSH JUICE ANIMATIONS + EFFECTS */}
       <style jsx>
         {`
+        /* Force Tailwind to include orange classes */
+        .force-orange { @apply bg-orange-200 hover:bg-orange-300; }
+        
         @keyframes breathe {
           0%, 100% { transform: scale(1); }
           50% { transform: scale(1.05); }
@@ -305,8 +310,8 @@ export default function CustomizationPanel(
         `}
       </style>
 
-      {/* 📐 Design Panel */}
-      <CollapsiblePanel id="design" title="📐 Design" color="red">
+      {/* Design Panel */}
+      <CollapsiblePanel id="design" title="Design" color="red">
         <div class="space-y-4">
           {/* Button Shape */}
           <div>
@@ -365,9 +370,28 @@ export default function CustomizationPanel(
         </div>
       </CollapsiblePanel>
 
-      {/* 🎭 Feel Panel */}
-      <CollapsiblePanel id="feel" title="🎭 Feel" color="orange">
-        <div class="space-y-6">
+      {/* Feel Panel - FORCING INLINE STYLE */}
+      <div class="bg-white rounded-3xl shadow-lg border-4 border-black overflow-hidden">
+        <button
+          onClick={() => togglePanel("feel")}
+          onMouseEnter={() => playSound.hover()}
+          class="w-full px-8 py-6 text-left font-black text-black transition-all duration-200 shadow-sm hover:shadow-md active:shadow-sm"
+          style={{ backgroundColor: "#fed7aa" }}
+        >
+          <div class="flex items-center justify-between">
+            <span class="text-xl">Feel</span>
+            <span
+              class={`text-2xl transition-transform duration-200 ${
+                expandedPanels.value["feel"] ? "rotate-180" : ""
+              }`}
+            >
+              ▼
+            </span>
+          </div>
+        </button>
+        {expandedPanels.value["feel"] && (
+          <div class="p-8 border-t-4 border-black">
+            <div class="space-y-6">
           {/* Effects */}
           <div>
             <h4 class="text-lg font-black text-gray-900 mb-4">Effects</h4>
@@ -430,11 +454,13 @@ export default function CustomizationPanel(
               ))}
             </div>
           </div>
-        </div>
-      </CollapsiblePanel>
+            </div>
+          </div>
+        )}
+      </div>
 
-      {/* ✨ Magic Panel */}
-      <CollapsiblePanel id="magic" title="✨ Magic" color="yellow">
+      {/* Magic Panel */}
+      <CollapsiblePanel id="magic" title="Magic" color="yellow">
         <div class="space-y-6">
           {/* API Configuration */}
           <div>
@@ -493,8 +519,8 @@ export default function CustomizationPanel(
         </div>
       </CollapsiblePanel>
 
-      {/* 🚀 Ship Panel */}
-      <CollapsiblePanel id="ship" title="🚀 Ship" color="purple">
+      {/* Ship Panel */}
+      <CollapsiblePanel id="ship" title="Ship" color="purple">
         <div class="space-y-6">
           {/* Export Options */}
           <div>
