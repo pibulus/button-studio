@@ -6,6 +6,21 @@
 export type ButtonTheme = "minimal" | "warm" | "professional" | "lush";
 export type ColorIntensity = "pastel" | "neon";
 
+// Smart contrast utility - determines if a color is light or dark
+export function getSmartTextColor(backgroundColor: string): "black" | "white" {
+  // Convert hex to RGB
+  const hex = backgroundColor.replace('#', '');
+  const r = parseInt(hex.substr(0, 2), 16);
+  const g = parseInt(hex.substr(2, 2), 16);
+  const b = parseInt(hex.substr(4, 2), 16);
+  
+  // Calculate luminance using standard formula
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  
+  // Return black for light colors, white for dark colors
+  return luminance > 0.5 ? "black" : "white";
+}
+
 // Main customization interface - everything configurable about a button
 export interface ButtonCustomization {
   // Visual Properties
@@ -25,6 +40,7 @@ export interface ButtonCustomization {
       end: string; // Hex color for gradient end
       direction: number; // 0-360 degrees
     };
+    textColor: "auto" | "black" | "white"; // Auto for smart contrast
   };
 
   // Interaction Effects
@@ -165,6 +181,7 @@ export const defaultCustomization: ButtonCustomization = {
       end: "#f0d1a8", // Softer peach end
       direction: 135, // Diagonal
     },
+    textColor: "auto", // Smart contrast
   },
   interactions: {
     hoverEffect: "lift",

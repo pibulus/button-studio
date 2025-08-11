@@ -19,6 +19,7 @@ import {
   defaultCustomization,
   generateButtonClasses,
   generateButtonStyles,
+  getSmartTextColor,
 } from "../types/customization.ts";
 import { SOUND_PRESETS, synthEngine } from "../utils/audio/synthEngine.ts";
 import { toast } from "./Toast.tsx";
@@ -463,6 +464,19 @@ export default function VoiceButton({
     }
   }, [customization.interactions.easingStyle]);
 
+  // Smart text color calculation
+  const getTextColor = useMemo(() => {
+    if (customization.appearance.textColor === "black") return "black";
+    if (customization.appearance.textColor === "white") return "white";
+    
+    // Auto mode - use smart contrast based on background color
+    const bgColor = customization.appearance.fillType === "solid" 
+      ? customization.appearance.solidColor
+      : customization.appearance.gradient.start; // Use start color for gradients
+    
+    return getSmartTextColor(bgColor);
+  }, [customization.appearance.textColor, customization.appearance.fillType, customization.appearance.solidColor, customization.appearance.gradient.start]);
+
   // Enhanced button styling with customization system
   const getButtonStyles = () => {
     // Use customization system for live slider updates
@@ -868,6 +882,7 @@ export default function VoiceButton({
                       maxWidth: "100%",
                       wordBreak: "break-word",
                       hyphens: "auto",
+                      color: getTextColor,
                     }}
                   >
                     {customization.content.value}

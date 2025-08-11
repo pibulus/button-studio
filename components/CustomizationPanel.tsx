@@ -30,6 +30,9 @@ const expandedPanels = signal<Record<string, boolean>>({
   export: false,
 });
 
+// Color mode state - Smart color palette switching
+const colorMode = signal<"pastel" | "neon" | "classic">("pastel");
+
 export default function CustomizationPanel(
   { customization, onChange, voiceEnabled = false, onVoiceToggle, mode }:
     CustomizationPanelProps,
@@ -340,21 +343,53 @@ export default function CustomizationPanel(
   // pure chaos. Uses weighted randomness to favor good combinations while
   // still providing delightful surprises. The 80/20 of randomization! ✨
 
-  // Succulent-inspired color palette
-  const succulentColors = [
-    "#ff9eb5", // Pink succulent tip
-    "#ffb3d1", // Soft rose
-    "#ffc4e1", // Baby pink
-    "#e6a8d6", // Lavender pink
-    "#d1c4e0", // Soft purple
-    "#b8d8e0", // Powder blue
-    "#a8d8d1", // Sage green
-    "#c8e6c9", // Mint green
-    "#fff3b8", // Cream yellow
-    "#ffd4a3", // Peach
-    "#ffb08a", // Coral
-    "#ff9a8b", // Warm coral
-  ];
+  // Smart curated color palettes
+  const colorPalettes = {
+    pastel: [
+      "#ff9eb5", // Pink succulent tip
+      "#ffb3d1", // Soft rose
+      "#e6a8d6", // Lavender pink
+      "#d1c4e0", // Soft purple
+      "#b8d8e0", // Powder blue
+      "#a8d8d1", // Sage green
+      "#c8e6c9", // Mint green
+      "#fff3b8", // Cream yellow
+      "#ffd4a3", // Peach
+      "#ffb08a", // Coral
+      "#ffc4e1", // Baby pink
+      "#ff9a8b", // Warm coral
+    ],
+    neon: [
+      "#ff1493", // Hot pink
+      "#00ff7f", // Spring green
+      "#1e90ff", // Dodger blue
+      "#ff4500", // Orange red
+      "#ff00ff", // Magenta
+      "#00ffff", // Cyan
+      "#ffff00", // Yellow
+      "#ff6347", // Tomato
+      "#7fff00", // Chartreuse
+      "#00fa9a", // Spring green
+      "#ffd700", // Gold
+      "#ff69b4", // Hot pink variant
+    ],
+    classic: [
+      "#f87171", // Red-400
+      "#fb923c", // Orange-400  
+      "#fbbf24", // Amber-400
+      "#facc15", // Yellow-400
+      "#a3e635", // Lime-400
+      "#4ade80", // Green-400
+      "#22d3ee", // Cyan-400
+      "#60a5fa", // Blue-400
+      "#818cf8", // Indigo-400
+      "#a78bfa", // Violet-400
+      "#e879f9", // Fuchsia-400
+      "#f472b6", // Pink-400
+    ],
+  };
+
+  const currentColors = colorPalettes[colorMode.value];
 
   // Generate tasteful random button (weighted toward good combinations)
   const surpriseMe = () => {
@@ -397,7 +432,7 @@ export default function CustomizationPanel(
           ? "gradient"
           : "solid" as "gradient" | "solid", // Prefer gradients
         solidColor:
-          succulentColors[Math.floor(Math.random() * succulentColors.length)],
+          currentColors[Math.floor(Math.random() * currentColors.length)],
         shape: randomShape,
         scale: 0.8 + Math.random() * 0.6, // Constrained size range (0.8-1.4x)
         roundness: Math.random() * 25, // Less extreme roundness
@@ -414,9 +449,9 @@ export default function CustomizationPanel(
         gradient: {
           ...customization.appearance.gradient,
           start:
-            succulentColors[Math.floor(Math.random() * succulentColors.length)],
+            currentColors[Math.floor(Math.random() * currentColors.length)],
           end:
-            succulentColors[Math.floor(Math.random() * succulentColors.length)],
+            currentColors[Math.floor(Math.random() * currentColors.length)],
         },
       },
       interactions: {
@@ -814,13 +849,83 @@ function handleButtonClick() {
               </div>
             </div>
 
-            {/* Color Palette - Redesigned */}
+            {/* Color Mode Toggle */}
             <div>
               <h3 class="text-lg font-black text-gray-900 mb-4">
-                Color Palette
+                Color Mode
+              </h3>
+              <div class="flex gap-3 mb-4">
+                {(["pastel", "neon", "classic"] as const).map((mode) => (
+                  <button
+                    key={mode}
+                    onClick={() => {
+                      colorMode.value = mode;
+                      playSound.selectionSelect();
+                      hapticService.buttonPress();
+                    }}
+                    onMouseEnter={() => playSound.hover()}
+                    class={`px-6 py-3 rounded-2xl border-3 border-black font-black transition-all capitalize shadow-sm hover:shadow-md active:scale-95 ${
+                      colorMode.value === mode
+                        ? "bg-purple-200 hover:bg-purple-300 text-black shadow-md scale-105"
+                        : "bg-white hover:bg-purple-50 text-black"
+                    }`}
+                    style={{
+                      boxShadow: colorMode.value === mode
+                        ? "3px 3px 0px #000000"
+                        : "2px 2px 0px #000000",
+                    }}
+                  >
+                    {mode}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Text Color Control */}
+            <div>
+              <h3 class="text-lg font-black text-gray-900 mb-4">
+                Text Color
+              </h3>
+              <div class="flex gap-3">
+                {(["auto", "black", "white"] as const).map((textColor) => (
+                  <button
+                    key={textColor}
+                    onClick={() => {
+                      onChange({
+                        ...customization,
+                        appearance: {
+                          ...customization.appearance,
+                          textColor,
+                        },
+                      });
+                      playSound.selectionSelect();
+                      hapticService.buttonPress();
+                    }}
+                    onMouseEnter={() => playSound.hover()}
+                    class={`px-4 py-2 rounded-xl border-3 border-black font-black transition-all capitalize text-sm ${
+                      customization.appearance.textColor === textColor
+                        ? "bg-cyan-200 hover:bg-cyan-300 text-black shadow-md scale-105"
+                        : "bg-white hover:bg-cyan-50 text-black"
+                    }`}
+                    style={{
+                      boxShadow: customization.appearance.textColor === textColor
+                        ? "2px 2px 0px #000000"
+                        : "1px 1px 0px #000000",
+                    }}
+                  >
+                    {textColor === "auto" ? "🤖 Auto" : textColor}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Color Palette - Smart & Curated */}
+            <div>
+              <h3 class="text-lg font-black text-gray-900 mb-4">
+                {colorMode.value.charAt(0).toUpperCase() + colorMode.value.slice(1)} Colors
               </h3>
               <div class="grid grid-cols-4 sm:grid-cols-6 gap-3">
-                {succulentColors.map((color, index) => (
+                {currentColors.map((color, index) => (
                   <button
                     key={index}
                     onClick={() => {

@@ -186,77 +186,42 @@ export default function ButtonStudio() {
                       ".sparkle-container",
                     );
 
-                    // Create dynamic sparkle burst!
-                    for (let i = 0; i < 12; i++) {
+                    // Create subtle sparkle effect - elegant & refined
+                    for (let i = 0; i < 6; i++) {
                       const sparkle = document.createElement("div");
                       sparkle.className =
-                        "absolute w-2 h-2 bg-yellow-400 rounded-full animate-ping pointer-events-none";
+                        "absolute w-1.5 h-1.5 bg-amber-400 rounded-full animate-ping pointer-events-none";
                       sparkle.style.left = Math.random() * 100 + "%";
                       sparkle.style.top = Math.random() * 100 + "%";
-                      sparkle.style.animationDelay = Math.random() * 300 + "ms";
-                      sparkle.style.animationDuration =
-                        (Math.random() * 500 + 400) + "ms";
+                      sparkle.style.animationDelay = Math.random() * 200 + "ms";
+                      sparkle.style.animationDuration = "600ms";
                       sparkleContainer.appendChild(sparkle);
 
                       // Clean up sparkle after animation
-                      setTimeout(() => sparkle.remove(), 1000);
+                      setTimeout(() => sparkle.remove(), 800);
                     }
 
-                    // ULTIMATE JUICE SEQUENCE - Enhanced with more stages!
-                    // Stage 1: Initial squish with color burst (60ms)
-                    btn.style.transform =
-                      "scale(0.8) rotate(-8deg) translate(2px, 3px)";
-                    btn.style.boxShadow = "1px 1px 0px #000000";
-                    btn.style.backgroundColor = "#fbbf24";
-                    btn.style.filter = "brightness(1.3) saturate(1.5)";
+                    // Elegant shuffle animation - Simple and satisfying
+                    // Stage 1: Gentle press down (80ms)
+                    btn.style.transform = "scale(0.9)";
+                    btn.style.boxShadow = "2px 2px 0px #000000";
+                    btn.style.backgroundColor = "#fed7aa"; // amber-200
 
-                    // Stage 2: Quick bounce with rotation (90ms)
+                    // Stage 2: Satisfying bounce up with glow (120ms)
                     setTimeout(() => {
-                      btn.style.transform =
-                        "scale(1.2) rotate(8deg) translate(-2px, -2px)";
-                      btn.style.boxShadow = "6px 6px 0px #000000";
-                      btn.style.backgroundColor = "#f59e0b";
-                      btn.style.filter =
-                        "brightness(1.4) saturate(1.8) drop-shadow(0 0 10px #fbbf24)";
-                    }, 60);
+                      btn.style.transform = "scale(1.1)";
+                      btn.style.boxShadow = "4px 4px 0px #000000, 0 0 12px rgba(251, 191, 36, 0.4)";
+                      btn.style.backgroundColor = "#fbbf24"; // amber-400
+                      btn.style.filter = "brightness(1.2)";
+                    }, 80);
 
-                    // Stage 3: Wild shake with rainbow glow (120ms)
+                    // Stage 3: Gentle settle (150ms)
                     setTimeout(() => {
-                      btn.style.transform =
-                        "scale(1.1) rotate(-5deg) translate(1px, -1px)";
-                      btn.style.boxShadow =
-                        "5px 5px 0px #000000, 0 0 15px #ff6b9d";
-                      btn.style.backgroundColor = "#fbbf24";
-                      btn.style.filter =
-                        "brightness(1.5) saturate(2) hue-rotate(30deg) drop-shadow(0 0 15px #ff6b9d)";
-                    }, 150);
-
-                    // Stage 4: Celebration bounce (100ms)
-                    setTimeout(() => {
-                      btn.style.transform =
-                        "scale(1.15) rotate(3deg) translate(-1px, 0px)";
-                      btn.style.boxShadow =
-                        "4px 4px 0px #000000, 0 0 20px #10b981";
-                      btn.style.backgroundColor = "#fcd34d";
-                      btn.style.filter =
-                        "brightness(1.3) saturate(1.6) drop-shadow(0 0 12px #10b981)";
-                    }, 270);
-
-                    // Stage 5: Final magical settle (200ms)
-                    setTimeout(() => {
-                      btn.style.transform =
-                        "scale(1) rotate(0deg) translate(0px, 0px)";
-                      btn.style.boxShadow =
-                        "3px 3px 0px #000000, 0 0 8px rgba(251, 191, 36, 0.3)";
-                      btn.style.backgroundColor = "#fef3c7";
-                      btn.style.filter = "brightness(1.1) saturate(1.2)";
-                    }, 370);
-
-                    // Final cleanup - reset all effects (300ms later)
-                    setTimeout(() => {
-                      btn.style.filter = "brightness(1) saturate(1)";
+                      btn.style.transform = "scale(1)";
                       btn.style.boxShadow = "3px 3px 0px #000000";
-                    }, 670);
+                      btn.style.backgroundColor = "#fef7ed"; // amber-50
+                      btn.style.filter = "brightness(1)";
+                    }, 200);
 
                     // Trigger the surprise function
                     const event = new CustomEvent("surpriseMe");
@@ -270,10 +235,10 @@ export default function ButtonStudio() {
                     e.currentTarget.style.transform =
                       "scale(1.08) rotate(3deg)";
                     e.currentTarget.style.boxShadow =
-                      "4px 4px 0px #000000, 0 0 12px rgba(251, 191, 36, 0.4)";
-                    e.currentTarget.style.backgroundColor = "#fef3c7";
+                      "4px 4px 0px #000000, 0 0 12px rgba(217, 119, 6, 0.4)";
+                    e.currentTarget.style.backgroundColor = "#fed7aa"; // amber-200
                     e.currentTarget.style.filter =
-                      "brightness(1.15) saturate(1.1) drop-shadow(0 0 6px #fbbf24)";
+                      "brightness(1.15) saturate(1.1) drop-shadow(0 0 6px #d97706)";
 
                     // Add a gentle sparkle on hover
                     const sparkleContainer = e.currentTarget.querySelector(
@@ -281,7 +246,7 @@ export default function ButtonStudio() {
                     );
                     const hoverSparkle = document.createElement("div");
                     hoverSparkle.className =
-                      "absolute w-1 h-1 bg-yellow-300 rounded-full animate-pulse pointer-events-none hover-sparkle";
+                      "absolute w-1 h-1 bg-amber-400 rounded-full animate-pulse pointer-events-none hover-sparkle";
                     hoverSparkle.style.left = "70%";
                     hoverSparkle.style.top = "25%";
                     sparkleContainer.appendChild(hoverSparkle);
@@ -290,7 +255,7 @@ export default function ButtonStudio() {
                     // Smooth return to normal with cleanup
                     e.currentTarget.style.transform = "scale(1) rotate(0deg)";
                     e.currentTarget.style.boxShadow = "3px 3px 0px #000000";
-                    e.currentTarget.style.backgroundColor = "#ffffff";
+                    e.currentTarget.style.backgroundColor = "#fef7ed"; // amber-50
                     e.currentTarget.style.filter = "brightness(1) saturate(1)";
 
                     // Clean up hover sparkles
@@ -299,7 +264,7 @@ export default function ButtonStudio() {
                     );
                     hoverSparkles.forEach((s) => s.remove());
                   }}
-                  class="absolute top-4 right-4 w-12 h-12 sm:w-14 sm:h-14 bg-white border-3 border-black rounded-xl flex items-center justify-center group transition-all duration-200 ease-out cursor-pointer touch-manipulation"
+                  class="absolute top-4 right-4 w-12 h-12 sm:w-14 sm:h-14 bg-amber-50 border-3 border-black rounded-xl flex items-center justify-center group transition-all duration-200 ease-out cursor-pointer touch-manipulation"
                   title="Surprise me! 🎲"
                   style={{
                     boxShadow: "3px 3px 0px #000000",
