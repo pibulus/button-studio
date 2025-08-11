@@ -2,6 +2,12 @@ import { Options } from "twind";
 
 export default {
   selfURL: import.meta.url,
+  // Force include orange classes for panel headers
+  safelist: [
+    "bg-orange-200",
+    "hover:bg-orange-300",
+    "bg-orange-50",
+  ],
   theme: {
     extend: {
       // Custom fonts for chunky typography

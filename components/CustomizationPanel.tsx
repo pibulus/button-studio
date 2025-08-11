@@ -225,8 +225,6 @@ export default function CustomizationPanel(
         yellow: "bg-yellow-200 hover:bg-yellow-300",
         purple: "bg-purple-200 hover:bg-purple-300",
       };
-      // Debug: log what we're getting
-      console.log(`Panel color: ${colorKey} -> ${colors[colorKey as keyof typeof colors] || colors.red}`);
       return colors[colorKey as keyof typeof colors] || colors.red;
     };
 
@@ -236,7 +234,7 @@ export default function CustomizationPanel(
           onClick={() => togglePanel(id)}
           onMouseEnter={() => playSound.hover()}
           class={`w-full px-8 py-6 text-left font-black text-black transition-all duration-200 ${
-            id === "feel" ? "bg-orange-200 hover:bg-orange-300" : getBackgroundColor(color)
+            getBackgroundColor(color)
           } shadow-sm hover:shadow-md active:shadow-sm`}
         >
           <div class="flex items-center justify-between">
@@ -370,13 +368,13 @@ export default function CustomizationPanel(
         </div>
       </CollapsiblePanel>
 
-      {/* Feel Panel - FORCING INLINE STYLE */}
+      {/* Feel Panel - HARDCODED BECAUSE ORANGE WON'T WORK IN COMPONENT */}
       <div class="bg-white rounded-3xl shadow-lg border-4 border-black overflow-hidden">
         <button
           onClick={() => togglePanel("feel")}
           onMouseEnter={() => playSound.hover()}
           class="w-full px-8 py-6 text-left font-black text-black transition-all duration-200 shadow-sm hover:shadow-md active:shadow-sm"
-          style={{ backgroundColor: "#fed7aa" }}
+          style={{ backgroundColor: "#fed7aa", ":hover": { backgroundColor: "#fbbf24" } }}
         >
           <div class="flex items-center justify-between">
             <span class="text-xl">Feel</span>
