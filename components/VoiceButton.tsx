@@ -690,8 +690,8 @@ export default function VoiceButton({
       case "glow":
         hoverClasses = "hover-glow";
         hoverStyles = {
-          "--glow-color": hexToRgba(buttonColor, 0.5),
-          "--glow-color-dim": hexToRgba(buttonColor, 0.3),
+          "--glow-color": hexToRgba(buttonColor, 0.7),
+          "--glow-color-dim": hexToRgba(buttonColor, 0.4),
           "--original-shadow": shadowStyle === "none" ? "none" : shadowStyle,
         };
         break;
@@ -846,56 +846,97 @@ export default function VoiceButton({
         
         /* Hover Effect Classes - PRACTICAL and SATISFYING! */
         
-        /* Shift - Color shifts to complementary color */
+        /* Shift - BOLD color shift with scale */
         .hover-shift {
-          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
         .hover-shift:hover {
-          filter: hue-rotate(var(--shift-degrees, 30deg)) brightness(1.1);
-          transform: scale(1.05);
+          filter: hue-rotate(var(--shift-degrees, 30deg)) brightness(1.2) saturate(1.4);
+          transform: scale(1.08) rotate(-0.5deg);
+          box-shadow: 6px 6px 0px #000,
+                      0 10px 25px rgba(0, 0, 0, 0.2);
         }
         
-        /* Squish - Elastic jello bounce (keeping this, it's great!) */
+        .hover-shift:active {
+          transform: scale(1.02);
+          filter: hue-rotate(var(--shift-degrees, 30deg)) brightness(1.15) saturate(1.3);
+        }
+        
+        /* Squish - Elastic jello bounce ENHANCED */
         .hover-squish {
-          transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+          transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         }
         
         .hover-squish:hover {
           animation: squish-bounce 0.6s ease-out;
+          filter: brightness(1.1);
+        }
+        
+        .hover-squish:active {
+          transform: scale(0.92, 1.08);
+          filter: brightness(1.05);
         }
         
         @keyframes squish-bounce {
-          0% { transform: scale(1); }
-          30% { transform: scale(0.95, 1.05); }
-          60% { transform: scale(1.05, 0.95); }
-          80% { transform: scale(0.98, 1.02); }
-          100% { transform: scale(1); }
+          0% { 
+            transform: scale(1);
+            filter: brightness(1);
+          }
+          30% { 
+            transform: scale(0.92, 1.08);
+            filter: brightness(1.15);
+          }
+          60% { 
+            transform: scale(1.08, 0.92);
+            filter: brightness(1.1);
+          }
+          80% { 
+            transform: scale(0.98, 1.02);
+            filter: brightness(1.05);
+          }
+          100% { 
+            transform: scale(1);
+            filter: brightness(1.1);
+          }
         }
         
-        /* Lift - Rise up with shadow */
+        /* Lift - DRAMATIC rise with FAT shadow */
         .hover-lift {
-          transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+          transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         
         .hover-lift:hover {
-          transform: translateY(-8px) scale(1.02);
-          box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2), 
-                      0 8px 16px rgba(0, 0, 0, 0.15),
-                      var(--original-shadow, 4px 4px 0px #000);
+          transform: translateY(-6px) scale(1.08) rotate(0.5deg);
+          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 
+                      0 15px 25px rgba(0, 0, 0, 0.2),
+                      8px 8px 0px #000;
+          filter: brightness(1.08);
         }
         
-        /* Glow - Soft ambient glow that matches button color */
+        .hover-lift:active {
+          transform: translateY(-2px) scale(1.02);
+          box-shadow: 4px 4px 0px #000;
+        }
+        
+        /* Glow - VIBRANT pulsing glow with color intensity */
         .hover-glow {
-          transition: all 0.3s ease-out;
+          transition: all 0.25s ease-out;
+          position: relative;
         }
         
         .hover-glow:hover {
-          transform: scale(1.03);
-          box-shadow: var(--original-shadow, 4px 4px 0px #000),
-                      0 0 20px var(--glow-color, rgba(255, 100, 200, 0.5)),
-                      0 0 40px var(--glow-color-dim, rgba(255, 100, 200, 0.3));
-          filter: brightness(1.05);
+          transform: scale(1.1) rotate(-1deg);
+          box-shadow: 8px 8px 0px #000,
+                      0 0 30px var(--glow-color, rgba(255, 100, 200, 0.7)),
+                      0 0 60px var(--glow-color-dim, rgba(255, 100, 200, 0.4)),
+                      inset 0 0 20px var(--glow-color-dim, rgba(255, 100, 200, 0.2));
+          filter: brightness(1.15) saturate(1.3);
+        }
+        
+        .hover-glow:active {
+          transform: scale(1.05);
+          filter: brightness(1.1) saturate(1.2);
         }
         
         @keyframes recording-pulse {
