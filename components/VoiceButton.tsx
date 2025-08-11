@@ -723,6 +723,7 @@ export default function VoiceButton({
             : "0 2px 4px rgba(0,0,0,0.2)")
           : shadowStyle,
         ...shapeDimensions,
+        // Merge hover CSS variables
         ...hoverStyles,
       } as any,
     };
@@ -836,6 +837,32 @@ export default function VoiceButton({
           }
         }
         
+        /* Hover Effect Classes - Using CSS variables for dynamic values */
+        .hover-lift {
+          transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+        }
+        
+        .hover-lift:hover {
+          transform: scale(var(--hover-scale, 1.05)) translateY(calc(-1 * var(--hover-lift, 5px)));
+          box-shadow: 0 calc(var(--hover-lift, 5px) * 2) 20px rgba(0,0,0,0.15);
+        }
+        
+        .hover-glow {
+          transition: box-shadow 0.3s ease-out, filter 0.3s ease-out;
+        }
+        
+        .hover-glow:hover {
+          filter: drop-shadow(0 0 20px var(--glow-color, rgba(59, 130, 246, 0.6))) 
+                  drop-shadow(0 0 40px var(--glow-color, rgba(59, 130, 246, 0.4)));
+        }
+        
+        .hover-default {
+          transition: transform 0.15s ease-out;
+        }
+        
+        .hover-default:hover {
+          transform: scale(var(--hover-scale, 1.03));
+        }
         
         @keyframes recording-pulse {
           0%, 100% { transform: scale(1); }
