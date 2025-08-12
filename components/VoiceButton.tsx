@@ -62,13 +62,16 @@ interface VoiceButtonProps {
   chonkiness?: string;
   glowIntensity?: number;
   customText?: string;
-  buttonShape?: "circle" | "square" | "rectangle";
+  buttonShape?: "circle" | "pill" | "rounded" | "sharp";
 
   // Legacy comprehensive config (preserved for compatibility)
   buttonConfig?: {
     content: { text: string; autoScale: boolean };
     size: { width: number; height: number; maintainRatio?: boolean };
-    shape: { type: "circle" | "square" | "rectangle"; borderRadius: number };
+    shape: {
+      type: "circle" | "pill" | "rounded" | "sharp";
+      borderRadius: number;
+    };
     appearance: {
       fill: {
         type: "solid" | "gradient";
@@ -663,9 +666,7 @@ export default function VoiceButton({
         case "circle":
           return "50%";
         case "square":
-          return `${Math.min(dynamicRoundness, 20)}px`; // Allow roundness on squares too, max 20px
-        case "rounded":
-          return `${dynamicRoundness}px`;
+          return `${dynamicRoundness}px`; // User-controlled roundness for square
         default:
           return `${dynamicRoundness}px`;
       }
@@ -706,13 +707,14 @@ export default function VoiceButton({
 
     return {
       className:
-        `${stateClasses} ${stateAnimations} ${contentSize} relative cursor-pointer select-none transition-all ease-out ${hoverClasses} border-black`,
+        `${stateClasses} ${stateAnimations} ${contentSize} relative cursor-pointer select-none transition-all ease-out ${hoverClasses}`,
       style: {
         background: backgroundStyle,
         transform: `scale(${isPressed ? squishScale : 1})`,
         borderRadius: getBorderRadius(),
         borderStyle: borderStyle,
         borderWidth: `${borderWidth}px`,
+        borderColor: "#000000",
         textTransform: textTransform as any,
         fontWeight: fontWeight === "bold"
           ? "bold"
@@ -943,6 +945,7 @@ export default function VoiceButton({
           border-radius: 20px;
           display: inline-block;
         }
+        
       `}
       </style>
 

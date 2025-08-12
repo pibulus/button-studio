@@ -29,7 +29,7 @@ export interface ButtonCustomization {
     colorIntensity: ColorIntensity; // NEW: Pastel vs Neon toggle
     fillType: "solid" | "gradient";
     solidColor: string; // Hex color for solid fills
-    shape: "circle" | "rounded" | "square";
+    shape: "circle" | "square";
     scale: number; // 0.5-2.0x multiplier (Size)
     roundness: number; // 0-50px border radius
     borderWidth: number; // 0-10px border thickness
@@ -179,7 +179,7 @@ export const defaultCustomization: ButtonCustomization = {
     colorIntensity: "pastel", // Default to pastel
     fillType: "gradient",
     solidColor: "#ff60e0",
-    shape: "rounded",
+    shape: "square",
     scale: 1.0,
     roundness: 16,
     borderWidth: 4,

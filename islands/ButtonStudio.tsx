@@ -132,7 +132,7 @@ export default function ButtonStudio() {
       const randomColor = currentMode.colors[randomColorIndex];
 
       // Random shape
-      const shapes = ["circle", "rounded", "square"] as const;
+      const shapes = ["circle", "square"] as const;
       const randomShape = shapes[Math.floor(Math.random() * shapes.length)];
 
       // Random effects (pick 1-2 effects randomly)
@@ -737,106 +737,131 @@ export default function ButtonStudio() {
               </div>
 
               {/* Main Sliders */}
-              <div class="bg-white rounded-3xl p-8 shadow-lg border-4 border-black">
-                <div class="space-y-10">
-                  {sliderConfig.map((slider) => {
-                    const rawValue = customization.value.appearance[slider.id];
-
-                    // Clean value formatting
-                    const formatValue = (val: number, unit: string) => {
-                      if (unit === "x") {
-                        return `${Math.round(val * 10) / 10}${unit}`;
+              <div class="bg-white rounded-3xl p-6 shadow-lg border-4 border-black">
+                <div class="space-y-8">
+                  {sliderConfig
+                    .filter((slider) => {
+                      // Only show Roundness slider when shape is "square"
+                      if (slider.id === "roundness") {
+                        return customization.value.appearance.shape ===
+                          "square";
                       }
-                      return `${Math.round(val)}${unit}`;
-                    };
+                      return true;
+                    })
+                    .map((slider) => {
+                      const rawValue =
+                        customization.value.appearance[slider.id];
 
-                    const cleanValue = formatValue(rawValue, slider.unit);
-                    const percentage =
-                      ((rawValue - slider.min) / (slider.max - slider.min)) *
-                      100;
+                      // Clean value formatting
+                      const formatValue = (val: number, unit: string) => {
+                        if (unit === "x") {
+                          return `${Math.round(val * 10) / 10}${unit}`;
+                        }
+                        return `${Math.round(val)}${unit}`;
+                      };
 
-                    return (
-                      <div key={slider.id} class="space-y-4">
-                        {/* Header with icon and label */}
-                        <div class="flex items-center justify-between">
-                          <div>
+                      const cleanValue = formatValue(rawValue, slider.unit);
+                      const percentage =
+                        ((rawValue - slider.min) / (slider.max - slider.min)) *
+                        100;
+
+                      return (
+                        <div key={slider.id} class="space-y-3">
+                          {/* Header with icon and label */}
+                          <div class="flex items-center justify-between">
                             <h3 class="text-xl font-black text-gray-900">
                               {slider.label}
                             </h3>
-                            <p class="text-sm text-gray-600 font-bold">
-                              Drag to adjust
-                            </p>
+
+                            {/* Compact Value Display */}
+                            <div class="bg-gradient-to-r from-gray-50 to-gray-100 border-2 border-black px-3 py-1 rounded-lg shadow-sm">
+                              <span class="text-sm font-bold text-gray-800 font-mono">
+                                {cleanValue}
+                              </span>
+                            </div>
                           </div>
 
-                          {/* Big Value Display */}
-                          <div class="bg-gradient-to-r from-rose-100 to-orange-100 border-4 border-black px-6 py-3 rounded-2xl shadow-lg">
-                            <span class="text-2xl font-black text-gray-900 font-mono">
-                              {cleanValue}
-                            </span>
-                          </div>
-                        </div>
-
-                        {/* Slider */}
-                        <div class="relative px-2">
-                          <input
-                            type="range"
-                            min={slider.min}
-                            max={slider.max}
-                            step={slider.step || 1}
-                            value={rawValue}
-                            onInput={(e) => {
-                              updateAppearance(
-                                slider.id,
-                                parseFloat(
-                                  (e.target as HTMLInputElement).value,
-                                ),
-                              );
-                              // Subtle sound feedback for slider movement
-                              playSound.sliderStep();
-                              hapticService.sliderStep();
-                            }}
-                            onMouseUp={() => {
-                              // Sound when releasing slider
-                              playSound.sliderRelease();
-                              hapticService.sliderRelease();
-                            }}
-                            title={`${slider.label}: ${cleanValue}`}
-                            class="w-full h-8 bg-white border-4 border-black rounded-full appearance-none cursor-grab hover:cursor-grabbing transition-all shadow-md hover:shadow-lg"
-                            style={{
-                              background:
-                                `linear-gradient(to right, #ff9eb5 0%, #ff9eb5 ${percentage}%, #f8f9fa ${percentage}%, #f8f9fa 100%)`,
-                              border: "4px solid #000000",
-                            }}
-                          />
-                          <style jsx>
-                            {`
+                          {/* Slider */}
+                          <div class="relative">
+                            <input
+                              type="range"
+                              min={slider.min}
+                              max={slider.max}
+                              step={slider.step || 1}
+                              value={rawValue}
+                              onInput={(e) => {
+                                updateAppearance(
+                                  slider.id,
+                                  parseFloat(
+                                    (e.target as HTMLInputElement).value,
+                                  ),
+                                );
+                                // Subtle sound feedback for slider movement
+                                playSound.sliderStep();
+                                hapticService.sliderStep();
+                              }}
+                              onMouseUp={() => {
+                                // Sound when releasing slider
+                                playSound.sliderRelease();
+                                hapticService.sliderRelease();
+                              }}
+                              title={`${slider.label}: ${cleanValue}`}
+                              class="w-full h-6 bg-white border-3 border-black rounded-full appearance-none cursor-grab hover:cursor-grabbing transition-all shadow-sm hover:shadow-md"
+                              style={{
+                                background:
+                                  `linear-gradient(to right, #ff9eb5 0%, #ff9eb5 ${percentage}%, #f0f0f0 ${percentage}%, #f0f0f0 100%)`,
+                                border: "3px solid #000000",
+                              }}
+                            />
+                            <style jsx>
+                              {`
                             input[type="range"]::-webkit-slider-thumb {
                               appearance: none;
-                              height: 40px;
-                              width: 40px;
-                              border-radius: 20px;
+                              height: 32px;
+                              width: 32px;
+                              border-radius: 16px;
                               background: linear-gradient(135deg, #ff9eb5 0%, #ff6b9d 100%);
-                              border: 4px solid #000000;
+                              border: 3px solid #000000;
                               cursor: grab;
-                              box-shadow: 0 6px 20px rgba(255, 158, 181, 0.6), 0 2px 8px rgba(0, 0, 0, 0.2);
+                              box-shadow: 0 4px 12px rgba(255, 158, 181, 0.4), 0 2px 4px rgba(0, 0, 0, 0.15);
                               transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
                             }
                             input[type="range"]::-webkit-slider-thumb:hover {
-                              transform: scale(1.2) translateY(-2px);
+                              transform: scale(1.15) translateY(-1px);
                               cursor: grabbing;
                               box-shadow: 0 8px 25px rgba(255, 158, 181, 0.8), 0 4px 12px rgba(0, 0, 0, 0.3);
                               background: linear-gradient(135deg, #ff6b9d 0%, #ff3d71 100%);
                             }
                             input[type="range"]::-webkit-slider-thumb:active {
-                              transform: scale(1.1) translateY(0px);
-                              box-shadow: 0 4px 15px rgba(255, 158, 181, 0.9), 0 2px 6px rgba(0, 0, 0, 0.4);
+                              transform: scale(1.05) translateY(0px);
+                              box-shadow: 0 3px 10px rgba(255, 158, 181, 0.6), 0 2px 4px rgba(0, 0, 0, 0.3);
+                            }
+                            /* Firefox styles */
+                            input[type="range"]::-moz-range-thumb {
+                              appearance: none;
+                              height: 32px;
+                              width: 32px;
+                              border-radius: 16px;
+                              background: linear-gradient(135deg, #ff9eb5 0%, #ff6b9d 100%);
+                              border: 3px solid #000000;
+                              cursor: grab;
+                              box-shadow: 0 4px 12px rgba(255, 158, 181, 0.4), 0 2px 4px rgba(0, 0, 0, 0.15);
+                              transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+                            }
+                            input[type="range"]::-moz-range-thumb:hover {
+                              transform: scale(1.15) translateY(-1px);
+                              cursor: grabbing;
+                            }
+                            input[type="range"]::-moz-range-thumb:active {
+                              transform: scale(1.05) translateY(0px);
+                              box-shadow: 0 3px 10px rgba(255, 158, 181, 0.6), 0 2px 4px rgba(0, 0, 0, 0.3);
                             }
                             `}
-                          </style>
+                            </style>
+                          </div>
                         </div>
-                      </div>
-                    );
-                  })}
+                      );
+                    })}
                 </div>
               </div>
 

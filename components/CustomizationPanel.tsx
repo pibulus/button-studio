@@ -380,10 +380,9 @@ export default function CustomizationPanel(
           {/* Button Shape */}
           <div>
             <h4 class="text-lg font-black text-gray-900 mb-4">Button Shape</h4>
-            <div class="grid grid-cols-3 gap-4">
+            <div class="grid grid-cols-2 gap-4">
               {[
                 { shape: "circle", label: "Circle" },
-                { shape: "rounded", label: "Rounded" },
                 { shape: "square", label: "Square" },
               ].map(({ shape, label }) => (
                 <button
@@ -412,6 +411,8 @@ export default function CustomizationPanel(
               {[
                 { value: "solid", label: "Solid" },
                 { value: "dashed", label: "Dashed" },
+                { value: "dotted", label: "Dotted" },
+                { value: "double", label: "Double" },
               ].map(({ value, label }) => (
                 <button
                   key={value}
