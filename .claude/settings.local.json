@@ -33,6 +33,9 @@
       "Bash(open http://localhost:8001)",
       "mcp__voice-mode__converse"
     ],
-    "deny": []
+    "deny": [],
+    "additionalDirectories": [
+      "/Users/pabloalvarado"
+    ]
   }
 }

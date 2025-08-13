@@ -336,10 +336,10 @@ export default function ButtonStudio() {
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
             {/* Left Column - Button + Master Controls */}
             <div class="space-y-4 sm:space-y-6">
-              {/* Button Preview Panel - Redesigned with better hierarchy */}
+              {/* Button Preview Panel - Enhanced with stronger focal point */}
               <div class="bg-white rounded-3xl shadow-lg border-4 border-black overflow-hidden">
-                {/* Mode Indicator - Now a proper interactive badge */}
-                <div class="px-6 py-4 border-b-3 border-black bg-gradient-to-r from-pink-50 to-purple-50">
+                {/* Mode Indicator - Stronger toggle identity */}
+                <div class="px-6 py-5 border-b-4 border-black bg-gradient-to-r from-purple-50 to-pink-50 flex justify-center">
                   <button
                     onClick={() => {
                       handleVoiceToggle(!voiceEnabled.value);
@@ -347,186 +347,191 @@ export default function ButtonStudio() {
                       hapticService.buttonPress();
                     }}
                     onMouseEnter={() => soundService.playButtonHover()}
-                    class={`px-4 py-2 rounded-full border-3 border-black font-black text-sm transition-all hover:scale-105 active:scale-95 ${
+                    class={`px-6 py-3 rounded-full border-3 border-black font-black text-base transition-all hover:scale-105 active:scale-95 flex items-center gap-3 ${
                       voiceEnabled.value
-                        ? "bg-green-300 hover:bg-green-400"
+                        ? "bg-green-300 hover:bg-green-400 shadow-lg"
                         : "bg-amber-200 hover:bg-amber-300"
                     }`}
-                    style={{ boxShadow: "2px 2px 0px #000000" }}
+                    style={{ boxShadow: "3px 3px 0px #000000" }}
                   >
-                    <span class="flex items-center gap-2">
-                      <div
-                        class={`w-2 h-2 rounded-full ${
-                          voiceEnabled.value
-                            ? "bg-green-600 animate-pulse"
-                            : "bg-amber-600"
-                        }`}
-                      >
-                      </div>
+                    <div
+                      class={`w-3 h-3 rounded-full ${
+                        voiceEnabled.value
+                          ? "bg-green-600 animate-pulse"
+                          : "bg-amber-600"
+                      }`}
+                    >
+                    </div>
+                    <span>
                       {voiceEnabled.value ? "Recording Mode" : "Preview Mode"}
+                    </span>
+                    <span class="text-xs opacity-60">
+                      {voiceEnabled.value ? "ON" : "ON"}
                     </span>
                   </button>
                 </div>
 
-                {/* Preview Area - With subtle background */}
-                <div
-                  class="p-8 flex justify-center items-center min-h-[200px] relative"
-                  style={{
-                    background:
-                      "radial-gradient(circle at center, rgba(255, 237, 213, 0.3), transparent)",
-                    backgroundImage:
-                      'url("data:image/svg+xml,%3Csvg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23fbbf24" fill-opacity="0.03"%3E%3Ccircle cx="20" cy="20" r="1"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
-                  }}
-                >
-                  <VoiceButton
-                    customization={customization.value}
-                    onCustomizationChange={handleCustomizationChange}
-                    voiceEnabled={voiceEnabled.value}
-                    apiKey={apiKey.value}
-                    customPrompt={customPrompt.value}
-                    showWaveform={false}
-                    onComplete={(result) => {
-                      transcriptResult.value = result.text;
-                      showTranscriptModal.value = true;
-                    }}
-                  />
-
-                  {/* 🎲 Dice Shuffle Button - Repositioned to preview area */}
-                  <button
-                    onClick={(e) => {
-                      // Epic sound and haptic feedback first!
-                      soundService.playDiceRoll();
-                      hapticService.diceRoll();
-
-                      const btn = e.currentTarget;
-                      const sparkleContainer = btn.querySelector(
-                        ".sparkle-container",
-                      );
-
-                      // Create subtle sparkle effect - elegant & refined
-                      for (let i = 0; i < 6; i++) {
-                        const sparkle = document.createElement("div");
-                        sparkle.className =
-                          "absolute w-1.5 h-1.5 bg-amber-400 rounded-full animate-ping pointer-events-none";
-                        sparkle.style.left = Math.random() * 100 + "%";
-                        sparkle.style.top = Math.random() * 100 + "%";
-                        sparkle.style.animationDelay = Math.random() * 200 +
-                          "ms";
-                        sparkle.style.animationDuration = "600ms";
-                        sparkleContainer.appendChild(sparkle);
-
-                        // Clean up sparkle after animation
-                        setTimeout(() => sparkle.remove(), 800);
-                      }
-
-                      // Elegant shuffle animation - Simple and satisfying
-                      // Stage 1: Gentle press down (80ms)
-                      btn.style.transform = "scale(0.9)";
-                      btn.style.boxShadow = "2px 2px 0px #000000";
-                      btn.style.backgroundColor = "#fed7aa"; // amber-200
-
-                      // Stage 2: Satisfying bounce up with glow (120ms)
-                      setTimeout(() => {
-                        btn.style.transform = "scale(1.1)";
-                        btn.style.boxShadow =
-                          "4px 4px 0px #000000, 0 0 12px rgba(251, 191, 36, 0.4)";
-                        btn.style.backgroundColor = "#fbbf24"; // amber-400
-                        btn.style.filter = "brightness(1.2)";
-                      }, 80);
-
-                      // Stage 3: Gentle settle (150ms)
-                      setTimeout(() => {
-                        btn.style.transform = "scale(1)";
-                        btn.style.boxShadow = "3px 3px 0px #000000";
-                        btn.style.backgroundColor = "#fef7ed"; // amber-50
-                        btn.style.filter = "brightness(1)";
-                      }, 200);
-
-                      // Trigger the surprise function
-                      const event = new CustomEvent("surpriseMe");
-                      document.dispatchEvent(event);
-                    }}
-                    onMouseEnter={(e) => {
-                      // Enhanced sound feedback on hover
-                      soundService.playButtonHover();
-
-                      // Magical hover animation with gentle sparkle
-                      e.currentTarget.style.transform =
-                        "scale(1.08) rotate(3deg)";
-                      e.currentTarget.style.boxShadow =
-                        "4px 4px 0px #000000, 0 0 12px rgba(217, 119, 6, 0.4)";
-                      e.currentTarget.style.backgroundColor = "#fed7aa"; // amber-200
-                      e.currentTarget.style.filter =
-                        "brightness(1.15) saturate(1.1) drop-shadow(0 0 6px #d97706)";
-
-                      // Add a gentle sparkle on hover
-                      const sparkleContainer = e.currentTarget.querySelector(
-                        ".sparkle-container",
-                      );
-                      const hoverSparkle = document.createElement("div");
-                      hoverSparkle.className =
-                        "absolute w-1 h-1 bg-amber-400 rounded-full animate-pulse pointer-events-none hover-sparkle";
-                      hoverSparkle.style.left = "70%";
-                      hoverSparkle.style.top = "25%";
-                      sparkleContainer.appendChild(hoverSparkle);
-                    }}
-                    onMouseLeave={(e) => {
-                      // Smooth return to normal with cleanup
-                      e.currentTarget.style.transform = "scale(1) rotate(0deg)";
-                      e.currentTarget.style.boxShadow = "3px 3px 0px #000000";
-                      e.currentTarget.style.backgroundColor = "#fef7ed"; // amber-50
-                      e.currentTarget.style.filter =
-                        "brightness(1) saturate(1)";
-
-                      // Clean up hover sparkles
-                      const hoverSparkles = e.currentTarget.querySelectorAll(
-                        ".hover-sparkle",
-                      );
-                      hoverSparkles.forEach((s) => s.remove());
-                    }}
-                    class="absolute top-4 right-4 w-12 h-12 sm:w-14 sm:h-14 bg-amber-50 border-3 border-black rounded-xl flex items-center justify-center group transition-all duration-200 ease-out cursor-pointer touch-manipulation"
-                    title="Surprise me! 🎲"
+                {/* Preview Stage - Enhanced with rounded container and more space */}
+                <div class="p-6 bg-gradient-to-br from-amber-50/30 to-pink-50/30">
+                  <div
+                    class="rounded-3xl border-4 border-black bg-gradient-to-br from-amber-50/50 to-pink-50/50 p-10 flex items-center justify-center min-h-[280px] relative"
                     style={{
-                      boxShadow: "3px 3px 0px #000000",
-                      willChange:
-                        "transform, box-shadow, background-color, filter",
+                      backgroundImage:
+                        'url("data:image/svg+xml,%3Csvg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23fbbf24" fill-opacity="0.03"%3E%3Ccircle cx="20" cy="20" r="1.5"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
+                      boxShadow: "inset 0 2px 4px rgba(0,0,0,0.06)"
                     }}
                   >
-                    {/* Sparkle container for dynamic sparkles */}
-                    <div class="sparkle-container absolute inset-0 overflow-hidden rounded-xl pointer-events-none">
+                    {/* Main Preview Button - Now the focal point */}
+                    <div class="transform scale-110">
+                      <VoiceButton
+                        customization={customization.value}
+                        onCustomizationChange={handleCustomizationChange}
+                        voiceEnabled={voiceEnabled.value}
+                        apiKey={apiKey.value}
+                        customPrompt={customPrompt.value}
+                        showWaveform={false}
+                        onComplete={(result) => {
+                          transcriptResult.value = result.text;
+                          showTranscriptModal.value = true;
+                        }}
+                      />
                     </div>
 
-                    {/* 🎲 Enhanced Dice Icon with magical animations */}
-                    <svg
-                      class="relative z-10 w-6 h-6 sm:w-7 sm:h-7 text-amber-800 group-hover:text-amber-900 transition-all duration-300 group-hover:rotate-[15deg] group-hover:scale-110 drop-shadow-sm"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
+                    {/* 🎲 Dice Shuffle Button - Corner positioned */}
+                    <button
+                      onClick={(e) => {
+                        // Epic sound and haptic feedback first!
+                        soundService.playDiceRoll();
+                        hapticService.diceRoll();
+
+                        const btn = e.currentTarget;
+                        const sparkleContainer = btn.querySelector(
+                          ".sparkle-container",
+                        );
+
+                        // Create subtle sparkle effect - elegant & refined
+                        for (let i = 0; i < 6; i++) {
+                          const sparkle = document.createElement("div");
+                          sparkle.className =
+                            "absolute w-1.5 h-1.5 bg-amber-400 rounded-full animate-ping pointer-events-none";
+                          sparkle.style.left = Math.random() * 100 + "%";
+                          sparkle.style.top = Math.random() * 100 + "%";
+                          sparkle.style.animationDelay = Math.random() * 200 +
+                            "ms";
+                          sparkle.style.animationDuration = "600ms";
+                          sparkleContainer.appendChild(sparkle);
+
+                          // Clean up sparkle after animation
+                          setTimeout(() => sparkle.remove(), 800);
+                        }
+
+                        // Elegant shuffle animation - Simple and satisfying
+                        // Stage 1: Gentle press down (80ms)
+                        btn.style.transform = "scale(0.9)";
+                        btn.style.boxShadow = "2px 2px 0px #000000";
+                        btn.style.backgroundColor = "#fed7aa"; // amber-200
+
+                        // Stage 2: Satisfying bounce up with glow (120ms)
+                        setTimeout(() => {
+                          btn.style.transform = "scale(1.1)";
+                          btn.style.boxShadow =
+                            "4px 4px 0px #000000, 0 0 12px rgba(251, 191, 36, 0.4)";
+                          btn.style.backgroundColor = "#fbbf24"; // amber-400
+                          btn.style.filter = "brightness(1.2)";
+                        }, 80);
+
+                        // Stage 3: Gentle settle (150ms)
+                        setTimeout(() => {
+                          btn.style.transform = "scale(1)";
+                          btn.style.boxShadow = "3px 3px 0px #000000";
+                          btn.style.backgroundColor = "#fef7ed"; // amber-50
+                          btn.style.filter = "brightness(1)";
+                        }, 200);
+
+                        // Trigger the surprise function
+                        const event = new CustomEvent("surpriseMe");
+                        document.dispatchEvent(event);
+                      }}
+                      onMouseEnter={(e) => {
+                        // Enhanced sound feedback on hover
+                        soundService.playButtonHover();
+
+                        // Magical hover animation with gentle sparkle
+                        e.currentTarget.style.transform =
+                          "scale(1.08) rotate(3deg)";
+                        e.currentTarget.style.boxShadow =
+                          "4px 4px 0px #000000, 0 0 12px rgba(217, 119, 6, 0.4)";
+                        e.currentTarget.style.backgroundColor = "#fed7aa"; // amber-200
+                        e.currentTarget.style.filter =
+                          "brightness(1.15) saturate(1.1) drop-shadow(0 0 6px #d97706)";
+
+                        // Add a gentle sparkle on hover
+                        const sparkleContainer = e.currentTarget.querySelector(
+                          ".sparkle-container",
+                        );
+                        const hoverSparkle = document.createElement("div");
+                        hoverSparkle.className =
+                          "absolute w-1 h-1 bg-amber-400 rounded-full animate-pulse pointer-events-none hover-sparkle";
+                        hoverSparkle.style.left = "70%";
+                        hoverSparkle.style.top = "25%";
+                        sparkleContainer.appendChild(hoverSparkle);
+                      }}
+                      onMouseLeave={(e) => {
+                        // Smooth return to normal with cleanup
+                        e.currentTarget.style.transform =
+                          "scale(1) rotate(0deg)";
+                        e.currentTarget.style.boxShadow = "3px 3px 0px #000000";
+                        e.currentTarget.style.backgroundColor = "#fef7ed"; // amber-50
+                        e.currentTarget.style.filter =
+                          "brightness(1) saturate(1)";
+
+                        // Clean up hover sparkles
+                        const hoverSparkles = e.currentTarget.querySelectorAll(
+                          ".hover-sparkle",
+                        );
+                        hoverSparkles.forEach((s) => s.remove());
+                      }}
+                      class="absolute top-4 right-4 w-12 h-12 bg-white/90 hover:bg-amber-100 border-3 border-black rounded-xl flex items-center justify-center group transition-all duration-200 ease-out cursor-pointer touch-manipulation hover:scale-110"
+                      title="Shuffle design 🎲"
+                      style={{
+                        boxShadow: "2px 2px 0px #000000",
+                      }}
                     >
-                      <path d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zM7.5 6a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm9 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zM12 10.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zM7.5 15a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm9 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z" />
-                    </svg>
+                      {/* Sparkle container for dynamic sparkles */}
+                      <div class="sparkle-container absolute inset-0 overflow-hidden rounded-xl pointer-events-none">
+                      </div>
 
-                    {/* ULTIMATE SPARKLE SYSTEM - Static sparkles that animate on hover */}
-                    <div class="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-r from-yellow-400 to-amber-400 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-all duration-300 shadow-lg">
-                    </div>
-                    <div class="absolute -bottom-1 -left-1 w-2 h-2 bg-gradient-to-r from-orange-400 to-red-400 rounded-full opacity-0 group-hover:opacity-90 group-hover:animate-pulse transition-all duration-500 shadow-md">
-                    </div>
-                    <div class="absolute top-1 left-1 w-1.5 h-1.5 bg-gradient-to-r from-pink-300 to-purple-300 rounded-full opacity-0 group-hover:opacity-80 group-hover:animate-bounce transition-all duration-700 delay-100">
-                    </div>
-                    <div class="absolute bottom-2 right-2 w-1 h-1 bg-gradient-to-r from-green-400 to-blue-400 rounded-full opacity-0 group-hover:opacity-70 group-hover:animate-ping transition-all duration-400 delay-200">
-                    </div>
+                      {/* 🎲 Dice Icon */}
+                      <svg
+                        class="relative z-10 w-6 h-6 text-black group-hover:text-amber-900 transition-all duration-300 group-hover:rotate-[15deg] drop-shadow-sm"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zM7.5 6a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm9 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zM12 10.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zM7.5 15a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm9 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z" />
+                      </svg>
 
-                    {/* Enhanced magical glow effect */}
-                    <div class="absolute inset-0 rounded-xl bg-gradient-to-br from-yellow-200/20 via-amber-200/20 to-orange-200/20 opacity-0 group-hover:opacity-50 transition-opacity duration-400 -z-10 blur-sm">
-                    </div>
+                      {/* ULTIMATE SPARKLE SYSTEM - Static sparkles that animate on hover */}
+                      <div class="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-r from-yellow-400 to-amber-400 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping transition-all duration-300 shadow-lg">
+                      </div>
+                      <div class="absolute -bottom-1 -left-1 w-2 h-2 bg-gradient-to-r from-orange-400 to-red-400 rounded-full opacity-0 group-hover:opacity-90 group-hover:animate-pulse transition-all duration-500 shadow-md">
+                      </div>
+                      <div class="absolute top-1 left-1 w-1.5 h-1.5 bg-gradient-to-r from-pink-300 to-purple-300 rounded-full opacity-0 group-hover:opacity-80 group-hover:animate-bounce transition-all duration-700 delay-100">
+                      </div>
+                      <div class="absolute bottom-2 right-2 w-1 h-1 bg-gradient-to-r from-green-400 to-blue-400 rounded-full opacity-0 group-hover:opacity-70 group-hover:animate-ping transition-all duration-400 delay-200">
+                      </div>
 
-                    {/* Subtle inner glow */}
-                    <div class="absolute inset-1 rounded-lg bg-gradient-to-r from-yellow-100/30 to-amber-100/30 opacity-0 group-hover:opacity-40 transition-opacity duration-300 -z-10">
-                    </div>
-                  </button>
+                      {/* Enhanced magical glow effect */}
+                      <div class="absolute inset-0 rounded-xl bg-gradient-to-br from-yellow-200/20 via-amber-200/20 to-orange-200/20 opacity-0 group-hover:opacity-50 transition-opacity duration-400 -z-10 blur-sm">
+                      </div>
 
-                  {/* ✨ ULTIMATE MAGICAL ANIMATION SYSTEM */}
-                  <style jsx>
-                    {`
+                      {/* Subtle inner glow */}
+                      <div class="absolute inset-1 rounded-lg bg-gradient-to-r from-yellow-100/30 to-amber-100/30 opacity-0 group-hover:opacity-40 transition-opacity duration-300 -z-10">
+                      </div>
+                    </button>
+
+                    {/* ✨ ULTIMATE MAGICAL ANIMATION SYSTEM */}
+                    <style jsx>
+                      {`
                   @keyframes dice-roll-ultimate {
                     0% { 
                       transform: rotate(0deg) scale(1); 
@@ -596,11 +601,12 @@ export default function ButtonStudio() {
                     animation: rainbow-pulse 2s ease-in-out infinite;
                   }
                 `}
-                  </style>
+                    </style>
+                  </div>
                 </div>
 
-                {/* Control Area - Separated with clear hierarchy */}
-                <div class="px-6 py-4 border-t-3 border-black bg-gradient-to-r from-blue-50 to-purple-50">
+                {/* Control Area - Full width with better proportions */}
+                <div class="px-4 py-5 border-t-4 border-black bg-gradient-to-r from-blue-50 to-purple-50">
                   <div class="flex items-center gap-3">
                     <div class="flex-1 relative">
                       <input
@@ -623,8 +629,8 @@ export default function ButtonStudio() {
                         onMouseEnter={() => soundService.playButtonHover()}
                         placeholder="Type your button text..."
                         maxLength={25}
-                        class="w-full px-4 py-3 text-lg font-bold bg-white border-3 border-black rounded-xl focus:bg-orange-50 focus:shadow-lg hover:bg-pink-50 hover:shadow-md hover:-translate-y-0.5 focus:outline-none transition-all duration-300 text-center"
-                        style={{ boxShadow: "2px 2px 0px #000000" }}
+                        class="w-full px-5 py-4 text-xl font-black bg-white border-4 border-black rounded-2xl focus:bg-orange-50 focus:shadow-lg hover:bg-pink-50 hover:shadow-md hover:-translate-y-0.5 focus:outline-none transition-all duration-300 text-center"
+                        style={{ boxShadow: "3px 3px 0px #000000" }}
                       />
                       {/* Character counter */}
                       {customization.value.content.value.length > 18 && (
@@ -634,7 +640,7 @@ export default function ButtonStudio() {
                       )}
                     </div>
 
-                    {/* Mode Toggle - Redesigned as clear toggle */}
+                    {/* Test Button - Chunky and matching */}
                     <button
                       onClick={() => {
                         handleVoiceToggle(!voiceEnabled.value);
@@ -648,13 +654,13 @@ export default function ButtonStudio() {
                         }
                       }}
                       onMouseEnter={() => soundService.playButtonHover()}
-                      class={`px-6 py-3 rounded-xl border-3 border-black transition-all duration-300 font-bold text-lg hover:scale-105 active:scale-95 ${
+                      class={`px-8 py-4 rounded-2xl border-4 border-black transition-all duration-300 font-black text-xl hover:scale-105 active:scale-95 ${
                         voiceEnabled.value
                           ? "bg-green-300 hover:bg-green-400 text-black"
-                          : "bg-amber-100 hover:bg-amber-200 text-black"
+                          : "bg-amber-200 hover:bg-amber-300 text-black"
                       }`}
                       style={{
-                        boxShadow: "2px 2px 0px #000000",
+                        boxShadow: "3px 3px 0px #000000",
                       }}
                     >
                       {voiceEnabled.value ? "Live" : "Test"}
