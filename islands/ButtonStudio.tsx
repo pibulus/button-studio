@@ -378,7 +378,7 @@ export default function ButtonStudio() {
                     style={{
                       backgroundImage:
                         'url("data:image/svg+xml,%3Csvg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23fbbf24" fill-opacity="0.03"%3E%3Ccircle cx="20" cy="20" r="1.5"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
-                      boxShadow: "inset 0 2px 4px rgba(0,0,0,0.06)"
+                      boxShadow: "inset 0 2px 4px rgba(0,0,0,0.06)",
                     }}
                   >
                     {/* Main Preview Button - Now the focal point */}
@@ -906,7 +906,7 @@ export default function ButtonStudio() {
             </div>
 
             {/* Right Column - Customization Panels */}
-            <div>
+            <div class="space-y-4 sm:space-y-6">
               <CustomizationPanel
                 customization={customization.value}
                 onChange={handleCustomizationChange}

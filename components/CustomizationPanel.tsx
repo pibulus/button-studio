@@ -271,7 +271,7 @@ export default function CustomizationPanel(
   };
 
   return (
-    <div class="space-y-4">
+    <>
       {/* 🍊 LUSH JUICE ANIMATIONS + EFFECTS */}
       <style jsx>
         {`
@@ -773,6 +773,6 @@ export default function CustomizationPanel(
           </div>
         </div>
       </CollapsiblePanel>
-    </div>
+    </>
   );
 }
