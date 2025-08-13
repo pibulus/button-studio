@@ -1,0 +1,43 @@
+# .claudeignore - Exclude sensitive files from Claude Code access
+# This file uses gitignore syntax
+
+# Environment and secrets
+.env*
+*.key
+*.pem
+*.cert
+*.crt
+secrets/
+credentials/
+
+# Build and dependencies
+node_modules/
+.deno/
+dist/
+build/
+target/
+
+# IDE and system files
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Logs and temp files
+*.log
+tmp/
+temp/
+cache/
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Private/sensitive data
+private/
+confidential/
+*.private
+*.secret

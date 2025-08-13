@@ -13,7 +13,6 @@
       "Bash(git push:*)",
       "Bash(deployctl deploy:*)",
       "Bash(deno check:*)",
-      "Bash(/opt/homebrew/bin/deno check components/CustomizationPanel.tsx)",
       "Bash(git checkout:*)",
       "Bash(mkdir:*)",
       "Bash(cp:*)",
@@ -31,7 +30,8 @@
       "Bash(mv:*)",
       "Bash(rolldice:*)",
       "Bash(open http://localhost:8001)",
-      "mcp__voice-mode__converse"
+      "mcp__voice-mode__converse",
+      "WebSearch"
     ],
     "deny": [],
     "additionalDirectories": [

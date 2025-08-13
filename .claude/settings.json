@@ -1,0 +1,21 @@
+{
+  "description": "Button Studio - Team-shared project settings",
+  "permissions": {
+    "allow": [
+      "Bash(deno:*)",
+      "Bash(git:*)",
+      "Bash(npm:*)",
+      "Bash(deployctl:*)"
+    ],
+    "deny": [
+      "**/.env*",
+      "**/secrets/**",
+      "**/*.key",
+      "**/*.pem"
+    ]
+  },
+  "environment": {
+    "PROJECT_NAME": "Button Studio",
+    "DENO_VERSION": "1.46.3"
+  }
+}
