@@ -1,8 +1,8 @@
 // Flowing Rainbow Border Component for Ultimate Satisfaction
-import { useEffect, useRef } from "preact/hooks";
+import { useRef } from "preact/hooks";
 
 interface RainbowBorderProps {
-  children: any;
+  children: JSX.Element | JSX.Element[] | string;
   isActive?: boolean;
   borderRadius?: number;
 }

@@ -171,7 +171,9 @@ export default function CustomizationPanel(
                 "voice-button-pwa.html",
                 "text/html",
               );
-              toast.success("📱 PWA files ready! Upload to HTTPS server to install.");
+              toast.success(
+                "📱 PWA files ready! Upload to HTTPS server to install.",
+              );
             }
           }
           break;

@@ -68,7 +68,8 @@ function initSoundSettings() {
 
   // Make soundsEnabled available globally for debugging
   if (typeof window !== "undefined") {
-    (window as any).soundsEnabled = soundsEnabled;
+    (window as unknown as { soundsEnabled: boolean }).soundsEnabled =
+      soundsEnabled;
     console.log("🔊 ButtonStudio sound effects enabled:", soundsEnabled);
   }
 }

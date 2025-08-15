@@ -65,6 +65,7 @@ export function SquishyButton({
 
   return (
     <button
+      type="button"
       className={`
         ${colorConfig.bg}
         ${!disabled && colorConfig.hover}
@@ -86,7 +87,11 @@ export function SquishyButton({
         active:shadow-[0px_0px_0px_rgba(0,0,0,1)]
         active:translate-x-[4px]
         active:translate-y-[4px]
-        ${disabled ? "opacity-50 cursor-not-allowed !shadow-[2px_2px_0px_rgba(0,0,0,0.5)]" : ""}
+        ${
+        disabled
+          ? "opacity-50 cursor-not-allowed !shadow-[2px_2px_0px_rgba(0,0,0,0.5)]"
+          : ""
+      }
         ${className}
       `}
       onClick={disabled ? undefined : onClick}
@@ -125,7 +130,8 @@ export function UltraSquishyButton({
 
   return (
     <>
-      <style>{`
+      <style>
+        {`
         @keyframes jello-bounce {
           0% { 
             transform: scale(1, 1);
@@ -192,9 +198,11 @@ export function UltraSquishyButton({
           box-shadow: 8px 8px 0px rgba(0,0,0,1);
           transform: translate(-1px, -1px) scale(1.02) rotate(0.5deg);
         }
-      `}</style>
-      
+      `}
+      </style>
+
       <button
+        type="button"
         className={`
           ultra-squishy
           ${colors[color]}
