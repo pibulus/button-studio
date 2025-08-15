@@ -710,7 +710,9 @@ export default function VoiceButton({
         `${stateClasses} ${stateAnimations} ${contentSize} relative cursor-pointer select-none transition-all ease-out ${hoverClasses}`,
       style: {
         background: backgroundStyle,
-        transform: `scale(${isPressed ? squishScale : 1})`,
+        transform: isPressed 
+          ? `translate(3px, 3px) scale(${squishScale})`  // Move down-right when pressed
+          : `translate(0, 0) scale(1)`,
         borderRadius: getBorderRadius(),
         borderStyle: borderStyle,
         borderWidth: `${borderWidth}px`,
@@ -727,11 +729,11 @@ export default function VoiceButton({
         justifyContent: "center",
         color: "#000000",
         willChange: "transform, box-shadow, filter",
-        // Apply shadow with effects
+        // Apply shadow with squishy effect - shadow reduces when pressed
         boxShadow: isPressed
           ? (shadowType === "brutalist"
-            ? "2px 2px 0px #000000"
-            : "0 2px 4px rgba(0,0,0,0.2)")
+            ? "1px 1px 0px #000000"  // Reduced from 2px to 1px
+            : "0 1px 2px rgba(0,0,0,0.15)")
           : shadowStyle,
         ...shapeDimensions,
         // Merge hover CSS variables
