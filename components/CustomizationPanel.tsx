@@ -153,6 +153,29 @@ export default function CustomizationPanel(
           }
           break;
 
+        case "pwa":
+          result = exporter.generatePWA({
+            includeAI: !!apiKey,
+            autoStart: false,
+            autoCopy: true,
+            customBranding: false,
+          });
+          if (result.success && result.data) {
+            // PWA returns a package - for now download as ZIP
+            const packageData = result.data as any;
+            if (packageData.files && packageData.files.length > 0) {
+              // For now, just download the main HTML file
+              // TODO: Implement proper ZIP download for full PWA package
+              downloadFile(
+                packageData.files[0].content,
+                "voice-button-pwa.html",
+                "text/html",
+              );
+              toast.success("📱 PWA files ready! Upload to HTTPS server to install.");
+            }
+          }
+          break;
+
         case "share":
           result = exporter.generateShareLink({
             title: customization.content.label || "Voice Button",
@@ -160,6 +183,18 @@ export default function CustomizationPanel(
           if (result.success && result.data) {
             await navigator.clipboard.writeText(result.data as string);
             toast.success("🔗 Share link copied to clipboard!");
+          }
+          break;
+
+        case "embed":
+          result = exporter.generateEmbedCode({
+            width: 400,
+            height: 300,
+            responsive: true,
+          });
+          if (result.success && result.data) {
+            await navigator.clipboard.writeText(result.data as string);
+            toast.success("🎯 Embed code copied to clipboard!");
           }
           break;
 
@@ -643,6 +678,24 @@ export default function CustomizationPanel(
                 </div>
               </button>
 
+              {/* PWA Export */}
+              <button
+                onClick={() => handleExport("pwa")}
+                onMouseEnter={() => playSound.hover()}
+                class="group p-4 bg-gradient-to-br from-blue-100 to-blue-200 border-3 border-black rounded-2xl font-black transition-all duration-300 ease-out shadow-lg hover:shadow-xl active:scale-95 transform hover:scale-105 hover:-translate-y-1"
+                style={{
+                  boxShadow: "4px 4px 0px #000000",
+                }}
+              >
+                <div class="text-3xl mb-2 group-hover:scale-110 transition-transform duration-300">
+                  📱
+                </div>
+                <div class="text-sm font-black">Mobile App</div>
+                <div class="text-xs text-gray-600 font-bold mt-1">
+                  Install on iPhone
+                </div>
+              </button>
+
               {/* Share Link */}
               <button
                 onClick={() => handleExport("share")}
@@ -658,6 +711,24 @@ export default function CustomizationPanel(
                 <div class="text-sm font-black">Share Link</div>
                 <div class="text-xs text-gray-600 font-bold mt-1">
                   Instant sharing
+                </div>
+              </button>
+
+              {/* Embed Code */}
+              <button
+                onClick={() => handleExport("embed")}
+                onMouseEnter={() => playSound.hover()}
+                class="group p-4 bg-gradient-to-br from-purple-100 to-purple-200 border-3 border-black rounded-2xl font-black transition-all duration-300 ease-out shadow-lg hover:shadow-xl active:scale-95 transform hover:scale-105 hover:-translate-y-1"
+                style={{
+                  boxShadow: "4px 4px 0px #000000",
+                }}
+              >
+                <div class="text-3xl mb-2 group-hover:scale-110 transition-transform duration-300">
+                  🎯
+                </div>
+                <div class="text-sm font-black">Embed Code</div>
+                <div class="text-xs text-gray-600 font-bold mt-1">
+                  Add to website
                 </div>
               </button>
             </div>
