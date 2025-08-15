@@ -677,6 +677,13 @@ export default function VoiceButton({
       {/* LUSH Animation Styles + Hover Effects */}
       <style jsx>
         {`
+        /* Squish effect on press */
+        .voice-button:active {
+          transform: translate(3px, 3px) scale(0.97) !important;
+          box-shadow: 1px 1px 0px #000000 !important;
+          transition: all 0.05s ease-out !important;
+        }
+        
         /* Hover Effects - Custom CSS for dynamic values */
         .hover-lift:hover {
           transform: scale(var(--hover-scale)) translateY(calc(-1 * var(--hover-lift)));
