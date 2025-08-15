@@ -161,10 +161,10 @@ export function UltraSquishyButton({
         .ultra-squishy::before {
           content: '';
           position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
+          top: -4px;  /* Account for border */
+          left: -4px;
+          right: -4px;
+          bottom: -4px;
           border-radius: inherit;
           background: black;
           z-index: -1;
@@ -227,7 +227,6 @@ export function UltraSquishyButton({
           cursor-pointer
           select-none
           relative
-          isolate
           ${disabled ? "opacity-50 cursor-not-allowed" : ""}
           ${className}
         `}
