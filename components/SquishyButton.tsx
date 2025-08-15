@@ -128,50 +128,36 @@ export function UltraSquishyButton({
       <style>{`
         @keyframes jello-bounce {
           0% { 
-            transform: translate(2px, 2px) scale(1, 1);
+            transform: scale(1, 1);
           }
           30% { 
-            transform: translate(2px, 2px) scale(1.25, 0.75);
+            transform: scale(1.25, 0.75);
           }
           40% { 
-            transform: translate(2px, 2px) scale(0.75, 1.25);
+            transform: scale(0.75, 1.25);
           }
           50% { 
-            transform: translate(2px, 2px) scale(1.15, 0.85);
+            transform: scale(1.15, 0.85);
           }
           65% { 
-            transform: translate(0px, 0px) scale(0.95, 1.05);
+            transform: scale(0.95, 1.05);
           }
           75% { 
-            transform: translate(0px, 0px) scale(1.05, 0.95);
+            transform: scale(1.05, 0.95);
           }
           100% { 
-            transform: translate(0px, 0px) scale(1, 1);
+            transform: scale(1, 1);
           }
         }
         
         .ultra-squishy {
-          position: relative;
+          box-shadow: 6px 6px 0px rgba(0,0,0,1);
           transform: translate(0px, 0px);
           transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-          will-change: transform;
+          will-change: transform, box-shadow;
         }
         
-        /* Pseudo-element for the shadow that moves independently */
-        .ultra-squishy::before {
-          content: '';
-          position: absolute;
-          top: -4px;  /* Account for border */
-          left: -4px;
-          right: -4px;
-          bottom: -4px;
-          border-radius: inherit;
-          background: black;
-          z-index: -1;
-          transform: translate(6px, 6px);
-          transition: transform 0.034s ease-out;  /* 34ms - Josh Comeau's magic number */
-        }
-        
+        /* Inner glow overlay */
         .ultra-squishy::after {
           content: '';
           position: absolute;
@@ -181,24 +167,21 @@ export function UltraSquishyButton({
           bottom: 0;
           border-radius: inherit;
           background: linear-gradient(145deg, 
-            rgba(255,255,255,0.3) 0%, 
-            transparent 50%);
+            rgba(255,255,255,0.4) 0%, 
+            transparent 60%);
           opacity: 0;
-          transition: opacity 0.1s ease-out;
+          transition: opacity 0.15s ease-out;
           pointer-events: none;
         }
         
         .ultra-squishy:active {
-          transform: translate(2px, 2px) scale(0.97);
-          transition: all 0.034s ease-out;  /* Super fast press */
-        }
-        
-        .ultra-squishy:active::before {
-          transform: translate(2px, 2px);  /* Shadow moves closer */
+          box-shadow: 2px 2px 0px rgba(0,0,0,0.8);
+          transform: translate(4px, 4px) scale(0.97);
+          transition: all 0.034s ease-out;  /* Super fast press - 2 frames */
         }
         
         .ultra-squishy:active::after {
-          opacity: 0.8;  /* Light up with inner glow */
+          opacity: 1;  /* Light up with inner glow */
         }
         
         .ultra-squishy:active:not(:disabled) {
@@ -206,11 +189,8 @@ export function UltraSquishyButton({
         }
         
         .ultra-squishy:hover:not(:active):not(:disabled) {
+          box-shadow: 8px 8px 0px rgba(0,0,0,1);
           transform: translate(-1px, -1px) scale(1.02) rotate(0.5deg);
-        }
-        
-        .ultra-squishy:hover:not(:active):not(:disabled)::before {
-          transform: translate(8px, 8px);  /* Shadow extends on hover */
         }
       `}</style>
       
