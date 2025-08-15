@@ -123,77 +123,59 @@ export function UltraSquishyButton({
     lg: "px-10 py-5 text-lg",
   };
 
-  // Get color-specific glow for active state
-  const glowColors = {
-    pink: "255, 105, 180",  // Hot pink glow
-    yellow: "255, 215, 0",  // Gold glow
-    cyan: "0, 255, 255",    // Cyan glow
-    lime: "50, 205, 50",    // Lime green glow
-    orange: "255, 140, 0",  // Dark orange glow
-  };
-
   return (
     <>
       <style>{`
-        @keyframes ultra-squish-bounce {
+        @keyframes jello-bounce {
           0% { 
-            transform: scale(1) scaleY(1);
-          }
-          15% { 
-            transform: scale(0.9) scaleY(0.85);  /* Squish down more vertically */
+            transform: scale(1, 1);
           }
           30% { 
-            transform: scale(1.15) scaleY(1.1);  /* Bounce up with stretch */
+            transform: scale(1.25, 0.75);  /* Stretch wide, squish down */
           }
-          45% { 
-            transform: scale(0.95) scaleY(0.92);
+          40% { 
+            transform: scale(0.75, 1.25);  /* Squish narrow, stretch tall */
           }
-          60% { 
-            transform: scale(1.08) scaleY(1.05);
+          50% { 
+            transform: scale(1.15, 0.85);
+          }
+          65% { 
+            transform: scale(0.95, 1.05);
           }
           75% { 
-            transform: scale(0.98) scaleY(0.98);
-          }
-          90% { 
-            transform: scale(1.02) scaleY(1.01);
+            transform: scale(1.05, 0.95);
           }
           100% { 
-            transform: scale(1) scaleY(1);
+            transform: scale(1, 1);
           }
         }
         
         .ultra-squishy {
           box-shadow: 
-            inset -3px -3px 8px rgba(255,255,255,0.5),
-            8px 8px 0px black;
-          transform: scale(1) scaleY(1);
-          transition: all 0.08s ease-out;
+            inset -2px -2px 4px rgba(255,255,255,0.7),
+            6px 6px 0px rgba(0,0,0,1);
+          transform: scale(1);
+          transition: transform 0.1s cubic-bezier(0.34, 1.56, 0.64, 1);
+          will-change: transform;
         }
         
         .ultra-squishy:active {
           box-shadow: 
-            inset 6px 6px 12px rgba(0,0,0,0.4),
-            0px 0px 0px black,
-            0px 0px 40px rgba(${glowColors[color]}, 0.8),
-            0px 0px 80px rgba(${glowColors[color]}, 0.4);
-          transform: scale(0.92) scaleY(0.85);  /* More vertical squish */
-          filter: brightness(1.2);
+            inset 2px 2px 4px rgba(0,0,0,0.2),
+            1px 1px 0px rgba(0,0,0,0.8);
+          transform: scale(0.94);
         }
         
         .ultra-squishy:active:not(:disabled) {
-          animation: ultra-squish-bounce 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+          animation: jello-bounce 0.6s ease-out;
+          animation-delay: 0.1s;  /* Slight delay makes it feel more responsive */
         }
         
         .ultra-squishy:hover:not(:active):not(:disabled) {
           box-shadow: 
-            inset -3px -3px 8px rgba(255,255,255,0.5),
-            10px 10px 0px black,
-            0px 0px 20px rgba(${glowColors[color]}, 0.2);
-          transform: scale(1.03) scaleY(1.01);
-        }
-        
-        .ultra-squishy:active span {
-          transform: scaleY(0.9);  /* Inner content also squishes */
+            inset -2px -2px 4px rgba(255,255,255,0.7),
+            8px 8px 0px rgba(0,0,0,1);
+          transform: scale(1.02) rotate(1deg);  /* Tiny rotation adds playfulness */
         }
       `}</style>
       
@@ -216,7 +198,7 @@ export function UltraSquishyButton({
         onClick={disabled ? undefined : onClick}
         disabled={disabled}
       >
-        <span className="block pointer-events-none transition-transform duration-100">
+        <span className="block pointer-events-none">
           {children}
         </span>
       </button>
