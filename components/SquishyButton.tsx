@@ -128,54 +128,89 @@ export function UltraSquishyButton({
       <style>{`
         @keyframes jello-bounce {
           0% { 
-            transform: scale(1, 1);
+            transform: translate(2px, 2px) scale(1, 1);
           }
           30% { 
-            transform: scale(1.25, 0.75);  /* Stretch wide, squish down */
+            transform: translate(2px, 2px) scale(1.25, 0.75);
           }
           40% { 
-            transform: scale(0.75, 1.25);  /* Squish narrow, stretch tall */
+            transform: translate(2px, 2px) scale(0.75, 1.25);
           }
           50% { 
-            transform: scale(1.15, 0.85);
+            transform: translate(2px, 2px) scale(1.15, 0.85);
           }
           65% { 
-            transform: scale(0.95, 1.05);
+            transform: translate(0px, 0px) scale(0.95, 1.05);
           }
           75% { 
-            transform: scale(1.05, 0.95);
+            transform: translate(0px, 0px) scale(1.05, 0.95);
           }
           100% { 
-            transform: scale(1, 1);
+            transform: translate(0px, 0px) scale(1, 1);
           }
         }
         
         .ultra-squishy {
-          box-shadow: 
-            inset -2px -2px 4px rgba(255,255,255,0.7),
-            6px 6px 0px rgba(0,0,0,1);
-          transform: scale(1);
-          transition: transform 0.1s cubic-bezier(0.34, 1.56, 0.64, 1);
+          position: relative;
+          transform: translate(0px, 0px);
+          transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
           will-change: transform;
         }
         
+        /* Pseudo-element for the shadow that moves independently */
+        .ultra-squishy::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          border-radius: inherit;
+          background: black;
+          z-index: -1;
+          transform: translate(6px, 6px);
+          transition: transform 0.034s ease-out;  /* 34ms - Josh Comeau's magic number */
+        }
+        
+        .ultra-squishy::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          border-radius: inherit;
+          background: linear-gradient(145deg, 
+            rgba(255,255,255,0.3) 0%, 
+            transparent 50%);
+          opacity: 0;
+          transition: opacity 0.1s ease-out;
+          pointer-events: none;
+        }
+        
         .ultra-squishy:active {
-          box-shadow: 
-            inset 2px 2px 4px rgba(0,0,0,0.2),
-            1px 1px 0px rgba(0,0,0,0.8);
-          transform: scale(0.94);
+          transform: translate(2px, 2px) scale(0.97);
+          transition: all 0.034s ease-out;  /* Super fast press */
+        }
+        
+        .ultra-squishy:active::before {
+          transform: translate(2px, 2px);  /* Shadow moves closer */
+        }
+        
+        .ultra-squishy:active::after {
+          opacity: 0.8;  /* Light up with inner glow */
         }
         
         .ultra-squishy:active:not(:disabled) {
-          animation: jello-bounce 0.6s ease-out;
-          animation-delay: 0.1s;  /* Slight delay makes it feel more responsive */
+          animation: jello-bounce 0.5s ease-out;
         }
         
         .ultra-squishy:hover:not(:active):not(:disabled) {
-          box-shadow: 
-            inset -2px -2px 4px rgba(255,255,255,0.7),
-            8px 8px 0px rgba(0,0,0,1);
-          transform: scale(1.02) rotate(1deg);  /* Tiny rotation adds playfulness */
+          transform: translate(-1px, -1px) scale(1.02) rotate(0.5deg);
+        }
+        
+        .ultra-squishy:hover:not(:active):not(:disabled)::before {
+          transform: translate(8px, 8px);  /* Shadow extends on hover */
         }
       `}</style>
       
@@ -192,6 +227,7 @@ export function UltraSquishyButton({
           cursor-pointer
           select-none
           relative
+          isolate
           ${disabled ? "opacity-50 cursor-not-allowed" : ""}
           ${className}
         `}
