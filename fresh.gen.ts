@@ -6,9 +6,6 @@ import * as $_404 from "./routes/_404.tsx";
 import * as $_app from "./routes/_app.tsx";
 import * as $index from "./routes/index.tsx";
 import * as $ButtonStudio from "./islands/ButtonStudio.tsx";
-import * as $studio_ButtonStudioCore from "./islands/studio/ButtonStudioCore.tsx";
-import * as $studio_ButtonStudioState from "./islands/studio/ButtonStudioState.tsx";
-import * as $studio_ColorModeManager from "./islands/studio/ColorModeManager.tsx";
 import type { Manifest } from "$fresh/server.ts";
 
 const manifest = {
@@ -19,9 +16,6 @@ const manifest = {
   },
   islands: {
     "./islands/ButtonStudio.tsx": $ButtonStudio,
-    "./islands/studio/ButtonStudioCore.tsx": $studio_ButtonStudioCore,
-    "./islands/studio/ButtonStudioState.tsx": $studio_ButtonStudioState,
-    "./islands/studio/ColorModeManager.tsx": $studio_ColorModeManager,
   },
   baseUrl: import.meta.url,
 } satisfies Manifest;

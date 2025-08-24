@@ -8,6 +8,12 @@ import {
   triggerHapticFeedback,
 } from "../utils/audio.ts";
 import {
+  initializeIOSAudio,
+  initializeIOSSupport,
+  isIOS,
+  writeToClipboardIOS,
+} from "../utils/iosSafariSupport.ts";
+import {
   ButtonSize,
   ButtonState,
   ThemeId,
@@ -175,6 +181,11 @@ export default function VoiceButton({
 
       if (enableHaptics) {
         triggerHapticFeedback(HapticPatterns.recordStart);
+      }
+
+      // iOS requires audio context initialization from user gesture
+      if (isIOS()) {
+        await initializeIOSAudio();
       }
 
       const recorder = recorderRef.current!;
