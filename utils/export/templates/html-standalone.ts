@@ -18,7 +18,15 @@ export function generateStandaloneHTML(
     silenceDuration?: number;
   } = {},
 ): string {
-  const buttonStyles = generateButtonStyles(customization);
+  const buttonStylesObj = generateButtonStyles(customization);
+  // Convert style object to inline CSS string
+  const buttonStyles = Object.entries(buttonStylesObj)
+    .map(([key, value]) => {
+      // Convert camelCase to kebab-case for CSS properties
+      const cssKey = key.replace(/([A-Z])/g, '-$1').toLowerCase();
+      return `${cssKey}: ${value}`;
+    })
+    .join('; ');
   const buttonId = `voice-button-${Date.now()}`;
 
   return `<!DOCTYPE html>
@@ -527,48 +535,109 @@ export function generateStandaloneHTML(
 
 function getCustomCSS(customization: ButtonCustomization): string {
   // Generate custom CSS based on customization
-  const { appearance, interactions } = customization;
+  const { appearance, interactions, effects } = customization;
+  
+  // Calculate sizes based on scale
+  const buttonSize = 200 * appearance.scale;
+  const fontSize = Math.min(appearance.scale * 60, 120);
 
   return `
     .voice-button {
-      width: ${100 * appearance.scale}px;
-      height: ${100 * appearance.scale}px;
-      border-radius: ${
-    appearance.shape === "circle" ? "50%" : appearance.roundness + "px"
-  };
-      border: ${appearance.borderWidth}px solid ${
-    appearance.theme === "minimal" ? "#000" : "#333"
-  };
-      background: ${
-    appearance.fillType === "solid"
-      ? appearance.solidColor
-      : `linear-gradient(${appearance.gradient.direction}deg, ${appearance.gradient.start}, ${appearance.gradient.end})`
-  };
-      box-shadow: ${
-    appearance.shadowType === "brutalist"
-      ? "4px 4px 0px #000"
-      : "0 4px 12px rgba(0,0,0,0.15)"
-  };
+      width: ${buttonSize}px;
+      height: ${buttonSize}px;
+      position: relative;
       cursor: pointer;
       user-select: none;
       display: flex;
       align-items: center;
       justify-content: center;
+      font-weight: ${interactions.fontWeight || 'bold'};
+      text-transform: ${interactions.textTransform || 'none'};
+      transition: all ${interactions.animationSpeed || 1}s;
+      ${appearance.borderStyle ? `border-style: ${appearance.borderStyle};` : ''}
     }
     
     .voice-button:hover {
       transform: ${
-    interactions.hoverEffect === "lift"
-      ? "translateY(-2px)"
-      : interactions.hoverEffect === "glow"
-      ? "scale(1.05)"
-      : "none"
-  };
+        interactions.hoverEffect === "squish"
+          ? `scale(${1 - (interactions.squishPower || 6) / 100})`
+          : interactions.hoverEffect === "grow"
+          ? "scale(1.05)"
+          : interactions.hoverEffect === "bright"
+          ? "brightness(1.1)"
+          : interactions.hoverEffect === "tilt"
+          ? "rotate(2deg)"
+          : `translateY(-${interactions.hoverLift || 2}px)`
+      };
+    }
+    
+    .voice-button:active {
+      transform: scale(${1 - (interactions.squishPower || 6) / 100}) translateY(2px);
     }
     
     .button-content {
-      font-size: ${Math.min(appearance.scale * 40, 60)}px;
+      font-size: ${fontSize}px;
       line-height: 1;
+      z-index: 10;
+      position: relative;
     }
+    
+    /* Effects */
+    ${effects.breathing ? `
+    .voice-button {
+      animation: breathing 3s ease-in-out infinite;
+    }
+    @keyframes breathing {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    ` : ''}
+    
+    ${effects.bounce ? `
+    .voice-button {
+      animation: bounce 2s ease-in-out infinite;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    ` : ''}
+    
+    ${effects.glow ? `
+    .voice-button {
+      animation: glow 2s ease-in-out infinite;
+    }
+    @keyframes glow {
+      0%, 100% { box-shadow: 0 0 20px rgba(255, 107, 157, 0.5); }
+      50% { box-shadow: 0 0 40px rgba(255, 107, 157, 0.8); }
+    }
+    ` : ''}
+    
+    ${effects.pulse ? `
+    .voice-button {
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.8; }
+    }
+    ` : ''}
+    
+    ${effects.shine ? `
+    .voice-button::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      animation: shine 3s infinite;
+    }
+    @keyframes shine {
+      0% { left: -100%; }
+      50%, 100% { left: 100%; }
+    }
+    ` : ''}
   `;
 }

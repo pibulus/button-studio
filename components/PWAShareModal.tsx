@@ -34,16 +34,18 @@ export default function PWAShareModal({
     playSound.primaryClick();
     
     try {
-      const exporter = new ButtonExporter();
-      const result = await exporter.generatePWA(customization, {
-        includeAI: !!apiKey,
-        apiKey: apiKey,
-      });
+      // Encode the button configuration as URL-safe base64 with UTF-8 support
+      const configJson = JSON.stringify(customization);
+      // Convert to UTF-8 bytes first to handle emojis and special characters
+      const encoder = new TextEncoder();
+      const data = encoder.encode(configJson);
+      const base64 = btoa(String.fromCharCode(...data));
+      // Make it URL-safe by replacing characters
+      const urlSafeId = base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
       
-      // In real implementation, this would upload to server
-      // For now, we'll create a demo URL
-      const uniqueId = Math.random().toString(36).substr(2, 9);
-      const url = `https://buttonstudio.app/b/${uniqueId}`;
+      // Create the real URL that will serve the PWA
+      const baseUrl = window.location.origin;
+      const url = `${baseUrl}/b/${urlSafeId}`;
       pwaUrl.value = url;
       
       // Generate QR code using free API
@@ -53,6 +55,7 @@ export default function PWAShareModal({
       hapticService.success();
       toast("PWA ready to share! 🎉", "success");
     } catch (error) {
+      console.error("PWA generation error:", error);
       toast("Failed to generate PWA", "error");
       playSound.error();
     } finally {

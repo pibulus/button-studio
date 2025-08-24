@@ -412,10 +412,16 @@ export function getColorForIntensity(
 export function generateButtonStyles(
   customization: ButtonCustomization,
 ): Record<string, string> {
-  const { gradient, colorIntensity } = customization.appearance;
+  const { gradient, colorIntensity, fillType } = customization.appearance;
 
-  // Auto-enhance colors based on intensity
-  const enhancedGradient = enhanceColorsForIntensity(gradient, colorIntensity);
+  // Auto-enhance colors based on intensity (only if gradient is used)
+  const enhancedGradient = fillType === "gradient" && gradient 
+    ? {
+        start: enhanceColorForIntensity(gradient.start, colorIntensity),
+        end: enhanceColorForIntensity(gradient.end, colorIntensity),
+        direction: gradient.direction,
+      }
+    : null;
 
   return {
     // CSS custom properties for real-time updates
@@ -428,14 +434,16 @@ export function generateButtonStyles(
         customization.appearance.solidColor,
         colorIntensity,
       )
-      : `linear-gradient(${enhancedGradient.direction}deg, ${enhancedGradient.start}, ${enhancedGradient.end})`,
+      : enhancedGradient 
+        ? `linear-gradient(${enhancedGradient.direction}deg, ${enhancedGradient.start}, ${enhancedGradient.end})`
+        : "#ff60e0",
 
     // Border styling
     borderColor: "#000000",
     borderWidth: `${customization.appearance.borderWidth}px`,
 
     // Neon glow effect for neon mode
-    ...(colorIntensity === "neon" && {
+    ...(colorIntensity === "neon" && enhancedGradient && {
       boxShadow:
         `0 0 20px ${enhancedGradient.start}80, 0 4px 8px rgba(0,0,0,0.3)`,
       filter: "saturate(1.2) brightness(1.1)",
