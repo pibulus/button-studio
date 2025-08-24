@@ -11,6 +11,9 @@ import * as $squishy_demo from "./routes/squishy-demo.tsx";
 import * as $ButtonStudio from "./islands/ButtonStudio.tsx";
 import * as $Counter from "./islands/Counter.tsx";
 import * as $SoundDesigner from "./islands/SoundDesigner.tsx";
+import * as $studio_ButtonStudioCore from "./islands/studio/ButtonStudioCore.tsx";
+import * as $studio_ButtonStudioState from "./islands/studio/ButtonStudioState.tsx";
+import * as $studio_ColorModeManager from "./islands/studio/ColorModeManager.tsx";
 import type { Manifest } from "$fresh/server.ts";
 
 const manifest = {
@@ -26,6 +29,9 @@ const manifest = {
     "./islands/ButtonStudio.tsx": $ButtonStudio,
     "./islands/Counter.tsx": $Counter,
     "./islands/SoundDesigner.tsx": $SoundDesigner,
+    "./islands/studio/ButtonStudioCore.tsx": $studio_ButtonStudioCore,
+    "./islands/studio/ButtonStudioState.tsx": $studio_ButtonStudioState,
+    "./islands/studio/ColorModeManager.tsx": $studio_ColorModeManager,
   },
   baseUrl: import.meta.url,
 } satisfies Manifest;
