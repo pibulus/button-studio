@@ -19,8 +19,9 @@ export function generateStandaloneHTML(
   } = {},
 ): string {
   const buttonStylesObj = generateButtonStyles(customization);
-  // Convert style object to inline CSS string
+  // Convert style object to inline CSS string, filtering out CSS variables
   const buttonStyles = Object.entries(buttonStylesObj)
+    .filter(([key]) => !key.startsWith('--')) // Filter out CSS variables
     .map(([key, value]) => {
       // Convert camelCase to kebab-case for CSS properties
       const cssKey = key.replace(/([A-Z])/g, '-$1').toLowerCase();
@@ -86,8 +87,10 @@ export function generateStandaloneHTML(
             ontouchend="handleMouseUp()"
             onclick="handleButtonClick()"
         >
-            <span class="button-content text-4xl">
-                ${customization.content.value}
+            <span class="button-content">
+                ${customization.content.type === 'emoji' 
+                  ? customization.content.value 
+                  : customization.content.value || 'Boop me!'}
             </span>
         </button>
         
@@ -537,9 +540,10 @@ function getCustomCSS(customization: ButtonCustomization): string {
   // Generate custom CSS based on customization
   const { appearance, interactions, effects } = customization;
   
-  // Calculate sizes based on scale
-  const buttonSize = 200 * appearance.scale;
-  const fontSize = Math.min(appearance.scale * 60, 120);
+  // Calculate sizes based on scale (match VoiceButton component sizing)
+  const baseSize = appearance.shape === "circle" ? 120 : 160;
+  const buttonSize = baseSize * appearance.scale;
+  const fontSize = Math.min(appearance.scale * 40, 60);
 
   return `
     .voice-button {
