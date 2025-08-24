@@ -97,7 +97,7 @@ export default function ShipPanel(
             📦 Export PWA (ZIP)
           </button>
 
-          {/* NEW: Easy Share Button */}
+          {/* NEW: Save to Phone Button */}
           <button
             onClick={() => {
               playSound.primaryClick();
@@ -106,7 +106,7 @@ export default function ShipPanel(
             type="button"
             class="w-full px-6 py-4 rounded-2xl border-3 border-black font-black transition-all shadow-lg hover:shadow-xl active:scale-95 bg-gradient-to-r from-purple-500 to-pink-500 text-white"
           >
-            🚀 Share as App (NEW!)
+            📱 Save to Phone
           </button>
 
           <button

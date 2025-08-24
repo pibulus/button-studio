@@ -82,7 +82,10 @@ export default function PWAShareModal({
         {/* Header */}
         <div class="bg-gradient-to-r from-purple-500 to-pink-500 p-6 text-white">
           <div class="flex justify-between items-center">
-            <h2 class="text-2xl font-black">Share Your Button App</h2>
+            <div>
+              <h2 class="text-2xl font-black">Save Button as App</h2>
+              <p class="text-sm opacity-90 mt-1">Install on your phone's home screen</p>
+            </div>
             <button
               onClick={onClose}
               class="text-white text-2xl hover:scale-110 transition-transform"
@@ -137,18 +140,35 @@ export default function PWAShareModal({
                 </button>
               </div>
               
-              {/* Instructions Preview */}
-              <div class="border-t pt-4">
-                <h3 class="font-bold mb-3">📚 Quick Install Guide:</h3>
-                <div class="space-y-2 text-sm">
+              {/* What Happens Next */}
+              <div class="border-t pt-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-4">
+                <h3 class="font-bold mb-3 text-purple-800">✨ What You Get:</h3>
+                <div class="space-y-2 text-sm text-gray-700">
                   <div class="flex gap-2">
-                    <span class="text-blue-500 font-bold">iPhone:</span>
-                    <span>Safari → Share → Add to Home Screen</span>
+                    <span>📱</span>
+                    <span>Your button becomes an app icon on your home screen</span>
                   </div>
                   <div class="flex gap-2">
-                    <span class="text-green-500 font-bold">Android:</span>
-                    <span>Chrome → Menu → Install app</span>
+                    <span>🎤</span>
+                    <span>Tap the icon → Opens just your button (no ButtonStudio)</span>
                   </div>
+                  <div class="flex gap-2">
+                    <span>📋</span>
+                    <span>Record → Get transcription → Auto-copies to clipboard</span>
+                  </div>
+                  <div class="flex gap-2">
+                    <span>🔗</span>
+                    <span>Share this link with friends → They get the same button!</span>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Simple Install Steps */}
+              <div class="mt-4 p-3 bg-yellow-50 rounded-xl border-2 border-yellow-200">
+                <p class="text-xs font-bold text-yellow-800 mb-2">📲 How to Install:</p>
+                <div class="text-xs space-y-1">
+                  <div><span class="font-bold">iPhone:</span> Open in Safari → Tap Share → Add to Home Screen</div>
+                  <div><span class="font-bold">Android:</span> Open in Chrome → Tap Menu (⋮) → Install app</div>
                 </div>
               </div>
             </div>
