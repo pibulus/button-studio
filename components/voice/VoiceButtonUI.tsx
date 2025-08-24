@@ -4,7 +4,6 @@
 // ===================================================================
 
 import { ButtonState } from "../../types/core.ts";
-import { ButtonCustomization } from "../../types/customization.ts";
 
 // ===================================================================
 // BUTTON ICON COMPONENT

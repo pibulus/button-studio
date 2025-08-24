@@ -27,6 +27,7 @@ export default function MagicPanel({
             Voice Transcription
           </h4>
           <button
+            type="button"
             onClick={() => {
               onVoiceToggle(!voiceEnabled);
               playSound.toggleOn();

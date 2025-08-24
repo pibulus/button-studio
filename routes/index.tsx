@@ -37,7 +37,7 @@ export default function Home() {
           content="Design beautiful voice recording buttons with real-time transcription. Export as HTML, PWA, or share your designs."
         />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://buttonstudio.app" />
+        <meta property="og:url" content="https://button-studio.app" />
         <meta property="og:image" content="/og-image.png" />
 
         {/* Twitter Card */}

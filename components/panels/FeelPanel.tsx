@@ -12,22 +12,12 @@ interface FeelPanelProps {
     key: keyof ButtonCustomization["effects"],
     value: boolean,
   ) => void;
-  updateAppearance: (
-    key: keyof ButtonCustomization["appearance"],
-    value: number | string,
-  ) => void;
-  updateInteraction: (
-    key: keyof ButtonCustomization["interactions"],
-    value: string | number,
-  ) => void;
   applyTheme: (theme: ButtonTheme) => void;
 }
 
 export default function FeelPanel({
   customization,
   updateEffect,
-  updateAppearance: _updateAppearance,
-  updateInteraction: _updateInteraction,
   applyTheme,
 }: FeelPanelProps) {
   return (

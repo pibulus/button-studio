@@ -56,19 +56,6 @@ export default function CustomizationPanel({
     });
   };
 
-  const updateInteraction = (
-    key: keyof ButtonCustomization["interactions"],
-    value: string | number,
-  ) => {
-    onChange({
-      ...customization,
-      interactions: {
-        ...customization.interactions,
-        [key]: value,
-      },
-    });
-  };
-
   // Smart effect toggling - handles conflicts between similar effects
   const updateEffect = (
     key: keyof ButtonCustomization["effects"],
@@ -146,8 +133,6 @@ export default function CustomizationPanel({
         <FeelPanel
           customization={customization}
           updateEffect={updateEffect}
-          updateAppearance={updateAppearance}
-          updateInteraction={updateInteraction}
           applyTheme={applyTheme}
         />
       </CollapsiblePanel>
