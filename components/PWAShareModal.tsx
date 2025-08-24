@@ -3,11 +3,13 @@
 // ===================================================================
 
 import { signal } from "@preact/signals";
+import { useRef } from "preact/hooks";
 import { ButtonCustomization } from "../types/customization.ts";
 import { ButtonExporter } from "../utils/export/ButtonExporter.ts";
 import { playSound } from "../utils/audio/soundMapping.ts";
 import { hapticService } from "../utils/audio/hapticService.ts";
 import { toast } from "./Toast.tsx";
+import { encryptWithPIN, isValidPIN } from "../utils/simpleEncrypt.ts";
 
 interface PWAShareModalProps {
   isOpen: boolean;
@@ -20,6 +22,8 @@ interface PWAShareModalProps {
 const pwaUrl = signal<string>("");
 const isGenerating = signal<boolean>(false);
 const qrCodeUrl = signal<string>("");
+const includeApiKey = signal<boolean>(false);
+const pin = signal<string>("");
 
 export default function PWAShareModal({
   isOpen,
@@ -45,7 +49,14 @@ export default function PWAShareModal({
       
       // Create the real URL that will serve the PWA
       const baseUrl = window.location.origin;
-      const url = `${baseUrl}/b/${urlSafeId}`;
+      let url = `${baseUrl}/b/${urlSafeId}`;
+      
+      // Add encrypted API key if requested
+      if (includeApiKey.value && apiKey && pin.value && isValidPIN(pin.value)) {
+        const encryptedKey = encryptWithPIN(apiKey, pin.value);
+        url += `?k=${encryptedKey}`;
+      }
+      
       pwaUrl.value = url;
       
       // Generate QR code using free API
@@ -74,8 +85,8 @@ export default function PWAShareModal({
     window.open(pwaUrl.value, "_blank");
   };
   
-  // Auto-generate on open
-  if (isOpen && !pwaUrl.value && !isGenerating.value) {
+  // Auto-generate on open only if no API key
+  if (isOpen && !pwaUrl.value && !isGenerating.value && !apiKey) {
     generatePWA();
   }
   
@@ -105,6 +116,49 @@ export default function PWAShareModal({
               <div class="text-4xl animate-spin mb-4">⚡</div>
               <p class="text-gray-600 font-bold">Creating your app...</p>
             </div>
+          ) : !pwaUrl.value && apiKey ? (
+            // PIN Setup UI (only show if API key exists)
+            <div class="space-y-4">
+              <div class="text-center">
+                <h3 class="text-xl font-bold mb-2">🔐 Share with API Key?</h3>
+                <p class="text-sm text-gray-600">Include your transcription features</p>
+              </div>
+              
+              <div class="bg-yellow-50 border-2 border-yellow-200 rounded-xl p-4">
+                <label class="flex items-center gap-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={includeApiKey.value}
+                    onChange={(e) => includeApiKey.value = (e.target as HTMLInputElement).checked}
+                    class="w-5 h-5 rounded"
+                  />
+                  <span class="font-medium">Include API Key (Protected)</span>
+                </label>
+                
+                {includeApiKey.value && (
+                  <div class="mt-3">
+                    <label class="block text-sm font-medium mb-1">Set PIN (4-6 digits)</label>
+                    <input
+                      type="number"
+                      value={pin.value}
+                      onInput={(e) => pin.value = (e.target as HTMLInputElement).value}
+                      placeholder="1234"
+                      maxLength={6}
+                      class="w-full px-3 py-2 border-2 border-gray-300 rounded-lg font-mono text-center text-lg"
+                    />
+                    <p class="text-xs text-gray-500 mt-1">Share this PIN separately with friends</p>
+                  </div>
+                )}
+              </div>
+              
+              <button
+                onClick={generatePWA}
+                disabled={includeApiKey.value && !isValidPIN(pin.value)}
+                class="w-full py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-2xl font-black hover:from-purple-600 hover:to-pink-600 transition-all disabled:opacity-50"
+              >
+                Generate Share Link
+              </button>
+            </div>
           ) : pwaUrl.value ? (
             <div class="space-y-6">
               {/* QR Code */}
@@ -125,6 +179,15 @@ export default function PWAShareModal({
               <div class="bg-gray-100 rounded-xl p-3 font-mono text-sm break-all">
                 {pwaUrl.value}
               </div>
+              
+              {/* PIN Display if used */}
+              {includeApiKey.value && pin.value && (
+                <div class="bg-green-50 border-2 border-green-300 rounded-xl p-4">
+                  <p class="font-bold text-green-800 mb-1">🔐 PIN Protected</p>
+                  <p class="text-2xl font-mono font-black text-center">{pin.value}</p>
+                  <p class="text-xs text-gray-600 mt-2">Share this PIN with your friends separately</p>
+                </div>
+              )}
               
               {/* Action Buttons */}
               <div class="space-y-3">
