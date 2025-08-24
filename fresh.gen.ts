@@ -4,13 +4,8 @@
 
 import * as $_404 from "./routes/_404.tsx";
 import * as $_app from "./routes/_app.tsx";
-import * as $button_lab from "./routes/button-lab.tsx";
-import * as $greet_name_ from "./routes/greet/[name].tsx";
 import * as $index from "./routes/index.tsx";
-import * as $squishy_demo from "./routes/squishy-demo.tsx";
 import * as $ButtonStudio from "./islands/ButtonStudio.tsx";
-import * as $Counter from "./islands/Counter.tsx";
-import * as $SoundDesigner from "./islands/SoundDesigner.tsx";
 import * as $studio_ButtonStudioCore from "./islands/studio/ButtonStudioCore.tsx";
 import * as $studio_ButtonStudioState from "./islands/studio/ButtonStudioState.tsx";
 import * as $studio_ColorModeManager from "./islands/studio/ColorModeManager.tsx";
@@ -20,15 +15,10 @@ const manifest = {
   routes: {
     "./routes/_404.tsx": $_404,
     "./routes/_app.tsx": $_app,
-    "./routes/button-lab.tsx": $button_lab,
-    "./routes/greet/[name].tsx": $greet_name_,
     "./routes/index.tsx": $index,
-    "./routes/squishy-demo.tsx": $squishy_demo,
   },
   islands: {
     "./islands/ButtonStudio.tsx": $ButtonStudio,
-    "./islands/Counter.tsx": $Counter,
-    "./islands/SoundDesigner.tsx": $SoundDesigner,
     "./islands/studio/ButtonStudioCore.tsx": $studio_ButtonStudioCore,
     "./islands/studio/ButtonStudioState.tsx": $studio_ButtonStudioState,
     "./islands/studio/ColorModeManager.tsx": $studio_ColorModeManager,
