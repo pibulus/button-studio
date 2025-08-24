@@ -15,17 +15,46 @@ import { generateShareLink } from "./shareLink.ts";
 import { generateStandaloneHTML } from "./templates/html-standalone.ts";
 
 export class ButtonExporter {
-  constructor(
-    private customization: ButtonCustomization,
-    private apiKey?: string,
-    private customPrompt?: string,
-  ) {}
+  customization: ButtonCustomization;
+  apiKey?: string;
+  customPrompt?: string;
+
+  constructor(customization?: ButtonCustomization, options?: any) {
+    // Handle both old and new constructor signatures
+    if (customization && !options) {
+      this.customization = customization;
+    } else if (options) {
+      this.customization = customization!;
+      this.apiKey = options.apiKey;
+      this.customPrompt = options.customPrompt;
+    } else {
+      this.customization = {} as ButtonCustomization;
+    }
+  }
 
   // ===================================================================
   // HTML STANDALONE EXPORT - Self-contained file
   // ===================================================================
 
-  generateHTML(options: ExportOptions = {}): ExportResult {
+  generateHTML(customization: ButtonCustomization, options: any = {}) {
+    // Update internal state
+    this.customization = customization;
+    this.apiKey = options.apiKey;
+    
+    const html = generateStandaloneHTML(customization, {
+      includeAI: options.includeAI && !!options.apiKey,
+      apiKey: options.apiKey,
+      customPrompt: this.customPrompt,
+      customBranding: options.customBranding,
+    });
+
+    return {
+      html,
+      filename: this.generateFilename("html"),
+    };
+  }
+
+  generateHTMLOld(options: ExportOptions = {}): ExportResult {
     try {
       const html = generateStandaloneHTML(this.customization, {
         includeAI: options.includeAI && !!this.apiKey,
@@ -53,7 +82,33 @@ export class ButtonExporter {
   // PWA EXPORT - Progressive Web App package
   // ===================================================================
 
-  generatePWA(options: ExportOptions = {}): ExportResult {
+  generatePWA(customization: ButtonCustomization, options: any = {}) {
+    // Update internal state
+    this.customization = customization;
+    this.apiKey = options.apiKey;
+    
+    const appName = customization.content.label || "Voice Button";
+    const manifest = this.generatePWAManifest(appName);
+    const html = this.generatePWAHTML(appName, {
+      includeAI: options.includeAI && !!options.apiKey,
+      apiKey: options.apiKey,
+      customPrompt: this.customPrompt,
+    });
+    const serviceWorker = this.generateServiceWorker();
+    const icon192 = this.generateIconDataURL(192);
+    const icon512 = this.generateIconDataURL(512);
+
+    return {
+      html,
+      manifest: JSON.stringify(manifest, null, 2),
+      serviceWorker,
+      icon192,
+      icon512,
+      filename: `${this.sanitizeFilename(appName)}-pwa.zip`,
+    };
+  }
+
+  generatePWAOld(options: ExportOptions = {}): ExportResult {
     try {
       const appName = this.customization.content.label || "Voice Button";
       const manifest = this.generatePWAManifest(appName);
@@ -113,7 +168,17 @@ export class ButtonExporter {
   // SHARE LINK GENERATION
   // ===================================================================
 
-  generateShareLink(options: {
+  generateShareLink(customization: ButtonCustomization): string {
+    // Update internal state
+    this.customization = customization;
+    
+    return generateShareLink(customization, {
+      title: customization.content.label,
+      includeApiKey: false,
+    });
+  }
+
+  generateShareLinkOld(options: {
     title?: string;
     description?: string;
   } = {}): ExportResult {
@@ -293,9 +358,14 @@ export class ButtonExporter {
     };
   }
 
-  private generatePWAHTML(appName: string, options: ExportOptions): string {
+  private generatePWAHTML(appName: string, options: any): string {
     // Enhanced HTML with PWA features
-    const baseHTML = generateStandaloneHTML(this.customization, options);
+    const baseHTML = generateStandaloneHTML(this.customization, {
+      includeAI: options.includeAI && !!options.apiKey,
+      apiKey: options.apiKey,
+      customPrompt: this.customPrompt,
+      customBranding: options.customBranding,
+    });
 
     // Add PWA meta tags and service worker registration
     return baseHTML.replace(
@@ -312,6 +382,8 @@ export class ButtonExporter {
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="${appName}">
     <link rel="apple-touch-icon" href="./icon-192.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="./icon-192.png">
+    <link rel="apple-touch-icon" sizes="512x512" href="./icon-512.png">
     
     <!-- Service Worker Registration -->
     <script>
@@ -358,34 +430,86 @@ self.addEventListener('fetch', (event) => {
 });`;
   }
 
-  private generateIcon(size: number): string {
-    // For now, return a data URL for a simple icon
-    // In a real implementation, this would generate actual PNG data
+  /**
+   * Generate a PNG data URL icon that matches the button design
+   * Uses SVG foreignObject to render the actual button HTML/CSS
+   */
+  private generateIconDataURL(size: number): string {
+    const { customization } = this;
+    const { appearance, content, effects } = customization;
+    
+    // Calculate scaling factor
+    const buttonSize = Math.min(size * 0.6, size - 40); // Leave padding
+    const borderRadius = appearance.roundness || 16;
+    const borderWidth = appearance.borderWidth || 3;
+    
+    // Build gradient style if needed
+    const backgroundStyle = appearance.fillType === "gradient" 
+      ? `background: linear-gradient(${appearance.gradient.direction}deg, ${appearance.gradient.start}, ${appearance.gradient.end});`
+      : `background: ${appearance.solidColor};`;
+    
+    // Build shadow style
+    const shadowStyle = effects.shadow 
+      ? `box-shadow: ${effects.shadowOffsetX || 4}px ${effects.shadowOffsetY || 4}px ${effects.shadowBlur || 0}px ${effects.shadowColor || '#000000'};`
+      : '';
+    
+    // Scale emoji/text appropriately
+    const fontSize = content.type === "emoji" 
+      ? buttonSize * 0.5 
+      : buttonSize * 0.15;
+    
+    // Create the SVG with embedded HTML button
     const svgContent = `
       <svg width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="${size / 2}" cy="${size / 2}" r="${size / 2 - 10}" 
-                fill="${
-      this.customization.appearance.fillType === "solid"
-        ? this.customization.appearance.solidColor
-        : this.customization.appearance.gradient.start
-    }" 
-                stroke="#000" stroke-width="4"/>
-        <text x="${size / 2}" y="${size / 2}" text-anchor="middle" dy="0.35em" 
-              font-size="${size / 3}" font-family="Arial">
-          ${this.customization.content.value}
-        </text>
+        <foreignObject width="${size}" height="${size}">
+          <div xmlns="http://www.w3.org/1999/xhtml" style="
+            width: ${size}px;
+            height: ${size}px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+          ">
+            <div style="
+              width: ${buttonSize}px;
+              height: ${buttonSize}px;
+              border-radius: ${borderRadius}px;
+              border: ${borderWidth}px solid ${appearance.borderColor || '#000'};
+              ${backgroundStyle}
+              ${shadowStyle}
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: ${fontSize}px;
+              font-weight: bold;
+              color: ${content.type === "text" ? (appearance.textColor || '#000') : 'inherit'};
+              font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+              overflow: hidden;
+              position: relative;
+            ">
+              ${content.value || content.label || '🎤'}
+            </div>
+          </div>
+        </foreignObject>
       </svg>
     `;
+    
+    // Clean up the SVG and encode it properly
+    const cleanedSvg = svgContent
+      .replace(/\n/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+    
+    // Encode to base64 with proper UTF-8 handling
+    const utf8Bytes = new TextEncoder().encode(cleanedSvg);
+    const base64 = btoa(String.fromCharCode(...utf8Bytes));
+    
+    return `data:image/svg+xml;base64,${base64}`;
+  }
 
-    // Fix for Unicode characters in SVG
-    const utf8Bytes = new TextEncoder().encode(svgContent);
-    const binaryString = Array.from(
-      utf8Bytes,
-      (byte) => String.fromCharCode(byte),
-    ).join("");
-    const encoded = btoa(binaryString);
-
-    return `data:image/svg+xml;base64,${encoded}`;
+  private generateIcon(size: number): string {
+    // Backwards compatibility wrapper
+    return this.generateIconDataURL(size);
   }
 
   private generateReactNativeFiles(config: MobileTemplateConfig) {
