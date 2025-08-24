@@ -33,6 +33,7 @@ export default function CollapsiblePanel({
   return (
     <div class="bg-white rounded-3xl shadow-lg border-4 border-black overflow-hidden">
       <button
+        type="button"
         onClick={() => onToggle(id)}
         onMouseEnter={() => playSound.hover()}
         class={`w-full px-8 py-6 text-left font-black text-black transition-all duration-200 ${

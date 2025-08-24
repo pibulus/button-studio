@@ -120,8 +120,14 @@ function playSound(soundName: keyof typeof soundFiles, options: {
       // Play with delay
       setTimeout(() => {
         audio.play().catch((error) => {
-          console.warn(`Error playing sound "${soundName}":`, error);
-          reject(error);
+          // Silently ignore autoplay policy errors - these are expected before user interaction
+          if (error.name === "NotAllowedError") {
+            // Don't log autoplay errors - they're expected and handled gracefully
+            resolve(); // Resolve instead of reject for autoplay issues
+          } else {
+            console.warn(`Error playing sound "${soundName}":`, error);
+            reject(error);
+          }
         });
       }, config.delay * 1000);
     } catch (error) {

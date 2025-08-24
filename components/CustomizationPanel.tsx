@@ -100,11 +100,17 @@ export default function CustomizationPanel({
   };
 
   const togglePanel = (panelId: string) => {
+    const isExpanding = !expandedPanels.value[panelId];
     expandedPanels.value = {
       ...expandedPanels.value,
-      [panelId]: !expandedPanels.value[panelId],
+      [panelId]: isExpanding,
     };
-    playSound.panelOpen();
+    // Use correct sound based on expand/collapse action
+    if (isExpanding) {
+      playSound.panelsExpand?.() || playSound.primaryClick();
+    } else {
+      playSound.panelsCollapse?.() || playSound.secondaryClick();
+    }
     hapticService.lightTap();
   };
 

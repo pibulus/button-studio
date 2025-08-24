@@ -302,7 +302,7 @@ export default function ButtonStudio() {
                   <button
                     onClick={() => {
                       handleVoiceToggle(!voiceEnabled.value);
-                      soundService.playUI();
+                      playSound.primaryClick();
                       hapticService.buttonPress();
                     }}
                     onMouseEnter={() => soundService.playButtonHover()}
@@ -413,7 +413,7 @@ export default function ButtonStudio() {
                           });
                         }}
                         onFocus={() => {
-                          soundService.playUI();
+                          playSound.primaryClick();
                           hapticService.buttonPress();
                         }}
                         onMouseEnter={() => soundService.playButtonHover()}
@@ -435,7 +435,7 @@ export default function ButtonStudio() {
                           soundService.playSuccess();
                           hapticService.toggleOn();
                         } else {
-                          soundService.playUI();
+                          playSound.primaryClick();
                           hapticService.toggleOff();
                         }
                       }}
