@@ -6,7 +6,9 @@
 import { signal } from "@preact/signals";
 
 // Color mode state - Smart unified color system
-export const colorMode = signal<"pastel" | "neon" | "classic" | "gradient">("pastel");
+export const colorMode = signal<"pastel" | "neon" | "classic" | "gradient">(
+  "pastel",
+);
 
 // Smart unified color system - each mode has its own color palette and style
 export const colorModes = {

@@ -3,37 +3,44 @@
 // Uses extracted State and ColorMode components for better organization
 // ===================================================================
 
-import { useEffect } from "preact/hooks";
+import { lazy, Suspense, useEffect } from "preact/compat";
 import VoiceButton from "../../components/VoiceButton.tsx";
-import CustomizationPanel from "../../components/CustomizationPanel.tsx";
 import AudioSettings from "../../components/AudioSettings.tsx";
-import SoundPicker from "../../components/SoundPicker.tsx";
-import { sliderConfig } from "../../types/customization.ts";
+
+// Lazy load heavier components for better performance
+const CustomizationPanel = lazy(() =>
+  import("../../components/CustomizationPanel.tsx")
+);
+const SoundPicker = lazy(() => import("../../components/SoundPicker.tsx"));
+import {
+  ButtonCustomization,
+  sliderConfig,
+} from "../../types/customization.ts";
 import { soundService } from "../../utils/audio/soundService.ts";
 import { hapticService } from "../../utils/audio/hapticService.ts";
 import { playSound } from "../../utils/audio/soundMapping.ts";
 
 // Import extracted modules
-import { 
-  customization,
-  voiceEnabled,
-  transcriptResult,
-  showTranscriptModal,
+import {
   apiKey,
-  customPrompt,
-  setTranscriptResult,
   closeTranscriptModal,
+  customization,
+  customPrompt,
   setApiKey,
   setCustomPrompt,
+  setTranscriptResult,
+  showTranscriptModal,
   toggleVoiceEnabled,
+  transcriptResult,
+  voiceEnabled,
 } from "./ButtonStudioState.tsx";
 
 import {
   colorMode,
   colorModes,
+  cycleColorMode,
   getCurrentColorPalette,
   getCurrentFillType,
-  cycleColorMode,
 } from "./ColorModeManager.tsx";
 
 // Import Gemini transcription plugin
@@ -43,16 +50,13 @@ export default function ButtonStudioCore() {
   // ===================================================================
   // INITIALIZATION & EFFECTS
   // ===================================================================
-  
+
   useEffect(() => {
     // Initialize audio system
-    soundService.initialize().then(() => {
-      console.log("🎵 Sound service initialized");
-    });
+    soundService.initialize();
 
     // Initialize haptics
     hapticService.initialize();
-    console.log("📳 Haptic service initialized");
 
     // Welcome sound
     playSound.startup();
@@ -61,7 +65,7 @@ export default function ButtonStudioCore() {
   // ===================================================================
   // TRANSCRIPTION PLUGIN SETUP
   // ===================================================================
-  
+
   const transcriptionPlugin = apiKey.value
     ? new GeminiTranscriptionPlugin()
     : undefined;
@@ -81,11 +85,11 @@ export default function ButtonStudioCore() {
   // ===================================================================
   // COLOR MODE INTEGRATION
   // ===================================================================
-  
+
   useEffect(() => {
     const mode = colorModes[colorMode.value];
     const fillType = mode.fillType;
-    
+
     // Update customization based on color mode
     if (fillType === "gradient") {
       const gradientColors = mode.colors[0] as [string, string];
@@ -115,7 +119,7 @@ export default function ButtonStudioCore() {
         },
       };
     }
-    
+
     // Play color change sound
     playSound.colorChange();
   }, [colorMode.value]);
@@ -123,17 +127,16 @@ export default function ButtonStudioCore() {
   // ===================================================================
   // EVENT HANDLERS
   // ===================================================================
-  
+
   const handleTranscript = (text: string) => {
-    console.log("📝 Transcript received:", text);
     setTranscriptResult(text);
   };
 
   const handleStateChange = (state: string) => {
-    console.log("🎤 Voice button state:", state);
+    // Voice button state change handler
   };
 
-  const handleCustomizationChange = (newCustomization: any) => {
+  const handleCustomizationChange = (newCustomization: ButtonCustomization) => {
     customization.value = newCustomization;
     playSound.sliderStep();
   };
@@ -141,7 +144,7 @@ export default function ButtonStudioCore() {
   // ===================================================================
   // RENDER
   // ===================================================================
-  
+
   return (
     <div className="min-h-screen bg-cream relative overflow-hidden">
       {/* Background gradient animation */}
@@ -163,7 +166,7 @@ export default function ButtonStudioCore() {
                 Voice Design Lab
               </span>
             </div>
-            
+
             {/* Audio Settings */}
             <div className="flex items-center gap-4">
               <SoundPicker />
@@ -183,7 +186,7 @@ export default function ButtonStudioCore() {
                 <h2 className="text-xl font-bold mb-6 text-center">
                   Live Preview
                 </h2>
-                
+
                 {/* Voice Button Preview */}
                 <div className="flex justify-center items-center min-h-[300px]">
                   <VoiceButton
@@ -211,10 +214,13 @@ export default function ButtonStudioCore() {
                       {colorModes[colorMode.value].name}
                     </button>
                   </div>
-                  
+
                   {/* Color Palette Preview */}
                   <div className="grid grid-cols-6 gap-2">
-                    {getCurrentColorPalette().slice(0, 12).map((color, index) => (
+                    {getCurrentColorPalette().slice(0, 12).map((
+                      color,
+                      index,
+                    ) => (
                       <button
                         key={index}
                         onClick={() => {
@@ -242,7 +248,9 @@ export default function ButtonStudioCore() {
                         className="w-10 h-10 rounded-lg border-2 border-black shadow-md hover:scale-110 transition-transform"
                         style={{
                           background: getCurrentFillType() === "gradient"
-                            ? `linear-gradient(135deg, ${(color as [string, string])[0]}, ${(color as [string, string])[1]})`
+                            ? `linear-gradient(135deg, ${
+                              (color as [string, string])[0]
+                            }, ${(color as [string, string])[1]})`
                             : color as string,
                         }}
                         aria-label={`Select color ${index + 1}`}
@@ -254,17 +262,27 @@ export default function ButtonStudioCore() {
             </div>
           </div>
 
-          {/* Customization Panel */}
+          {/* Customization Panel - Lazy loaded with Suspense */}
           <div className="lg:col-span-2">
-            <CustomizationPanel
-              customization={customization.value}
-              onChange={handleCustomizationChange}
-              sliderConfig={sliderConfig}
-              apiKey={apiKey.value}
-              onApiKeyChange={setApiKey}
-              customPrompt={customPrompt.value}
-              onCustomPromptChange={setCustomPrompt}
-            />
+            <Suspense
+              fallback={
+                <div className="flex items-center justify-center h-64">
+                  <div className="text-lg font-semibold text-gray-600">
+                    Loading customization panel...
+                  </div>
+                </div>
+              }
+            >
+              <CustomizationPanel
+                customization={customization.value}
+                onChange={handleCustomizationChange}
+                sliderConfig={sliderConfig}
+                apiKey={apiKey.value}
+                onApiKeyChange={setApiKey}
+                customPrompt={customPrompt.value}
+                onCustomPromptChange={setCustomPrompt}
+              />
+            </Suspense>
           </div>
         </div>
       </main>

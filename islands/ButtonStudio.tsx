@@ -3,7 +3,7 @@
 // This file now re-exports the refactored ButtonStudio component
 // The actual implementation has been split into smaller modules:
 // - ButtonStudioCore.tsx: Main component logic
-// - ButtonStudioState.tsx: Signal state management  
+// - ButtonStudioState.tsx: Signal state management
 // - ColorModeManager.tsx: Color mode system
 // ===================================================================
 

@@ -455,7 +455,11 @@ function enhanceColorForIntensity(
   return color; // Pastel stays as-is
 }
 
-function enhanceColorsForIntensity(gradient: any, intensity: ColorIntensity) {
+function enhanceColorsForIntensity(gradient: {
+  colors: [string, string];
+  type: "linear" | "radial";
+  direction: number;
+}, intensity: ColorIntensity) {
   return {
     start: enhanceColorForIntensity(gradient.start, intensity),
     end: enhanceColorForIntensity(gradient.end, intensity),
