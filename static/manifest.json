@@ -1,0 +1,39 @@
+{
+  "name": "ButtonStudio - Voice Button Design Lab",
+  "short_name": "ButtonStudio",
+  "description": "Design beautiful voice recording buttons with real-time transcription",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFF8F0",
+  "theme_color": "#FFF8F0",
+  "orientation": "any",
+  "categories": ["productivity", "utilities", "developer"],
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "New Button",
+      "short_name": "New",
+      "description": "Create a new voice button",
+      "url": "/",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    }
+  ],
+  "features": [
+    "voice-recording",
+    "audio-capture",
+    "clipboard-write"
+  ]
+}

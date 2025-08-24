@@ -1,7 +1,4 @@
-import {
-  ButtonCustomization,
-  ButtonTheme,
-} from "../types/customization.ts";
+import { ButtonCustomization, ButtonTheme } from "../types/customization.ts";
 import { signal } from "@preact/signals";
 import { playSound } from "../utils/audio/soundMapping.ts";
 import { hapticService } from "../utils/audio/hapticService.ts";
