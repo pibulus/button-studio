@@ -1,13 +1,18 @@
+import { signal } from "@preact/signals";
 import { ButtonCustomization } from "../../types/customization.ts";
 import { ButtonExporter } from "../../utils/export/ButtonExporter.ts";
 import { toast } from "../Toast.tsx";
 import { playSound } from "../../utils/audio/soundMapping.ts";
 import { hapticService } from "../../utils/audio/hapticService.ts";
+import PWAShareModal from "../PWAShareModal.tsx";
 
 interface ShipPanelProps {
   customization: ButtonCustomization;
   apiKeyValue?: string;
 }
+
+// State for PWA share modal
+const showPWAModal = signal(false);
 
 export default function ShipPanel(
   { customization, apiKeyValue = "" }: ShipPanelProps,
@@ -78,6 +83,7 @@ export default function ShipPanel(
         <div class="space-y-3">
           <button
             onClick={() => handleExport("html")}
+            type="button"
             class="w-full px-6 py-4 rounded-2xl border-3 border-black font-black transition-all shadow-lg hover:shadow-xl active:scale-95 bg-white text-black hover:bg-yellow-50"
           >
             📄 Export as HTML
@@ -85,13 +91,27 @@ export default function ShipPanel(
 
           <button
             onClick={() => handleExport("pwa")}
+            type="button"
             class="w-full px-6 py-4 rounded-2xl border-3 border-black font-black transition-all shadow-lg hover:shadow-xl active:scale-95 bg-white text-black hover:bg-yellow-50"
           >
-            📱 Export as PWA
+            📦 Export PWA (ZIP)
+          </button>
+
+          {/* NEW: Easy Share Button */}
+          <button
+            onClick={() => {
+              playSound.primaryClick();
+              showPWAModal.value = true;
+            }}
+            type="button"
+            class="w-full px-6 py-4 rounded-2xl border-3 border-black font-black transition-all shadow-lg hover:shadow-xl active:scale-95 bg-gradient-to-r from-purple-500 to-pink-500 text-white"
+          >
+            🚀 Share as App (NEW!)
           </button>
 
           <button
             onClick={() => handleExport("share")}
+            type="button"
             class="w-full px-6 py-4 rounded-2xl border-3 border-black font-black transition-all shadow-lg hover:shadow-xl active:scale-95 bg-white text-black hover:bg-yellow-50"
           >
             🔗 Copy Share Link
@@ -111,6 +131,14 @@ export default function ShipPanel(
           )}
         </ul>
       </div>
+      
+      {/* PWA Share Modal */}
+      <PWAShareModal
+        isOpen={showPWAModal.value}
+        onClose={() => showPWAModal.value = false}
+        customization={customization}
+        apiKey={apiKeyValue}
+      />
     </div>
   );
 }
