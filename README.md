@@ -123,10 +123,7 @@ artisanal craftsmanship.
 believes UI should spark joy.**
 
 ```
-╭─────────────────────────────────────╮
-│  🎨 Happy button making! ✨        │
-│                                     │
-│  "The best buttons feel like magic  │
-│   but work like clockwork" 🕰️       │
-╰─────────────────────────────────────╯
+╭──────────────────────────────────╮
+│  🎨 Happy button making! ✨       │
+╰──────────────────────────────────╯
 ```
