@@ -95,9 +95,9 @@ export class GeminiTranscriptionPlugin implements TranscriptionPlugin {
         `https://generativelanguage.googleapis.com/v1beta/models/${this.model}:generateContent`,
         {
           method: "POST",
-          headers: { 
+          headers: {
             "Content-Type": "application/json",
-            "x-goog-api-key": this.apiKey
+            "x-goog-api-key": this.apiKey,
           },
           body: JSON.stringify(requestBody),
         },

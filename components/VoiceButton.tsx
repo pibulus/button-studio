@@ -1,3 +1,34 @@
+// ===================================================================
+// VOICE BUTTON - MAIN EXPORT
+// This file now re-exports the refactored VoiceButton component
+// The actual implementation has been split into smaller modules:
+// - VoiceButtonCore.tsx: Main component logic
+// - VoiceButtonUI.tsx: UI components (Icon, Recording, Waveform)
+// - VoiceButtonAudio.tsx: Audio recording and processing logic
+// ===================================================================
+
+import VoiceButtonCore from "./voice/VoiceButtonCore.tsx";
+
+// Re-export the refactored VoiceButton component
+export default VoiceButtonCore;
+
+// Also export the UI components for external use if needed
+export {
+  ButtonIcon,
+  RecordingContent,
+  WaveformVisualizer,
+} from "./voice/VoiceButtonUI.tsx";
+export { VoiceButtonAudioManager } from "./voice/VoiceButtonAudio.tsx";
+
+// The original implementation is preserved below for reference
+// It can be removed once the refactored version is fully tested
+
+/*
+ * LEGACY IMPLEMENTATION - TO BE REMOVED AFTER TESTING
+ * The code below is the original monolithic implementation
+ * kept temporarily for reference during the transition.
+ */
+
 import { signal } from "@preact/signals";
 import { useEffect, useMemo, useRef } from "preact/hooks";
 import {
@@ -113,7 +144,8 @@ interface VoiceButtonProps {
   onCustomizationChange?: (customization: ButtonCustomization) => void;
 }
 
-export default function VoiceButton({
+// Legacy VoiceButton implementation (temporarily renamed)
+function VoiceButtonLegacy({
   customization = defaultCustomization,
   voiceEnabled = false,
   onVoiceToggle,
@@ -1110,7 +1142,7 @@ export default function VoiceButton({
 }
 
 // Button Icon Component (theme-aware and sophisticated)
-function ButtonIcon(
+function ButtonIconLegacy(
   { state, theme, scale = 1 }: {
     state: ButtonState;
     theme?: string;
@@ -1209,7 +1241,7 @@ function ButtonIcon(
 }
 
 // Recording Content Component - Handles different visual feedback types
-function RecordingContent(
+function RecordingContentLegacy(
   { recordingConfig, duration, originalContent, buttonState, theme }: {
     recordingConfig: ButtonCustomization["recording"];
     duration: number;
@@ -1316,7 +1348,7 @@ function RecordingContent(
 }
 
 // Waveform Visualizer Component (like Pablo's AudioVisualizer.svelte)
-function WaveformVisualizer(
+function WaveformVisualizerLegacy(
   { analyzer, theme }: { analyzer?: AudioAnalyzer; theme?: string },
 ) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
