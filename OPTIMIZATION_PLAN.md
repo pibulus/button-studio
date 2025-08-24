@@ -4,6 +4,7 @@
 
 ## 🎯 Current Status
 - Branch: `feature/ultimate-optimization`
+- Base commit: 26d91e4 (latest on feature/voice-platform)
 - Recent fixes already applied (b2f913d):
   - ✅ Fixed missing button type attributes
   - ✅ Removed 'any' types in several components
@@ -11,21 +12,28 @@
   - ✅ Added proper type safety
   - ✅ All source files pass linting (gen/ folder excluded)
 
-## 🚨 Priority 1: Critical Security & Performance (Not Yet Fixed)
+## ✅ Already Fixed/Verified
+- **Memory leak prevention**: AudioAnalyzer.disconnect() already exists and IS called in VoiceButton cleanup
+- **Lint errors**: Only in generated files (gen/ folder), source files are clean
+- **Button squish effects**: Already implemented with CSS :active pseudo-class
+- **Sound service**: Already has proper initialization and cleanup
+
+## 🚨 Priority 1: Critical Security & Performance (ACTUAL Issues)
 
 ### 1.1 API Key Security
-- [ ] **Issue**: API key exposed in URL params (gemini.ts:95)
-- [ ] **Fix**: Move to headers (x-goog-api-key)
-- [ ] **Alternative**: Consider server-side proxy for API calls
+- [x] **Issue**: API key was in URL params (gemini.ts:95)
+- [x] **Fixed**: Changed to use headers (x-goog-api-key) - NEEDS TESTING
+- [ ] **Verify**: Test that Gemini API still works with header auth
 
-### 1.2 Memory Leaks
-- [ ] **Issue**: Audio contexts not properly closed
-- [ ] **Fix**: Add cleanup in useEffect returns
-- [ ] **Files**: VoiceButton.tsx, AudioAnalyzer class
+### 1.2 Performance Issues (REAL)
+- [ ] **Issue**: Multiple Deno processes running (potential memory accumulation)
+- [ ] **Issue**: Wrong app on port 8000 (QRBuddy instead of ButtonStudio)
+- [ ] **Fix**: Kill orphaned processes, restart correct app
 
-### 1.3 Remaining Lint Issues
-- [ ] **AudioVisualizer.tsx**: Still has 'any' types (lines 6-7)
-- [ ] **AudioSettings.tsx**: Missing button types (lines 40, 76, 97)
+### 1.3 Component Size Issues (ACTUAL)
+- [ ] **VoiceButton.tsx**: 1370 lines - TOO BIG
+- [ ] **ButtonStudio.tsx**: 930 lines - TOO BIG
+- [ ] **CustomizationPanel.tsx**: 748 lines - needs splitting
 
 ## 🎨 Priority 2: Code Organization & Optimization
 
@@ -95,6 +103,22 @@
 4. **Test on real devices** (especially iOS PWA)
 5. **Keep user experience smooth** during refactoring
 
+## 🎯 Quick Start for Next Instance
+
+1. **Check branch**: Should be on `feature/ultimate-optimization`
+2. **Verify Gemini API fix**: Test the header-based auth works
+3. **Focus on REAL issues**:
+   - Split the 1370-line VoiceButton.tsx
+   - Split the 930-line ButtonStudio.tsx
+   - Add lazy loading for heavy components
+   - Fix any actual performance bottlenecks
+
+## ⚠️ Don't Waste Time On
+- Lint errors in gen/ folder (they're generated files)
+- Memory leaks that are already fixed
+- Button type attributes (already fixed in b2f913d)
+- Audio cleanup (already implemented)
+
 ## 💡 Future Considerations
 
 - Consider migrating to Fresh 2.0 when stable
@@ -105,12 +129,11 @@
 
 ## 📝 Notes for Future Instances
 
-This plan is **flexible and evolving**! Feel free to:
-- Skip items that no longer make sense
-- Add new optimizations discovered during implementation
-- Adjust priorities based on user feedback
-- Question assumptions made here
-- Propose alternative solutions
+This plan is **flexible and evolving**! Key findings:
+- The app is actually in good shape technically
+- Main issue is component size and organization
+- Performance is decent but could use lazy loading
+- Security fix for Gemini API needs verification
 
 The goal is a **fast, juicy, reliable** Button Studio that feels great to use!
 
