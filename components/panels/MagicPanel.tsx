@@ -47,9 +47,16 @@ export default function MagicPanel({
       {/* API Key Input */}
       {voiceEnabled && onApiKeyChange && (
         <div>
-          <h4 class="text-lg font-black text-gray-900 mb-2">Gemini API Key</h4>
+          <h4 class="text-lg font-black text-gray-900 mb-2">
+            Gemini API Key
+            {apiKeyValue && apiKeyValue.trim() !== "" && (
+              <span class="ml-2 text-green-600">✓ Configured</span>
+            )}
+          </h4>
           <p class="text-sm text-gray-600 mb-3">
-            Enter your Gemini API key to enable voice transcription
+            {!apiKeyValue || apiKeyValue.trim() === ""
+              ? "⚠️ API key required for transcription - Get one at makersuite.google.com/app/apikey"
+              : "Your API key is configured and ready to use"}
           </p>
           <input
             type="password"
@@ -57,7 +64,11 @@ export default function MagicPanel({
             onChange={(e) =>
               onApiKeyChange((e.target as HTMLInputElement).value)}
             placeholder="AIza..."
-            class="w-full px-4 py-3 rounded-xl border-3 border-black font-mono text-sm focus:outline-none focus:ring-4 focus:ring-purple-300 bg-white"
+            class={`w-full px-4 py-3 rounded-xl border-3 font-mono text-sm focus:outline-none focus:ring-4 focus:ring-purple-300 ${
+              apiKeyValue && apiKeyValue.trim() !== ""
+                ? "border-green-500 bg-green-50"
+                : "border-orange-500 bg-orange-50"
+            }`}
           />
         </div>
       )}

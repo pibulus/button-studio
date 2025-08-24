@@ -104,6 +104,10 @@ interface VoiceButtonProps {
   showTimer?: boolean;
   showWaveform?: boolean;
 
+  // API Configuration
+  apiKey?: string;
+  customPrompt?: string;
+
   // Event callbacks (like Pablo's onComplete pattern)
   onComplete?: (result: { text: string; confidence: number }) => void;
   onError?: (error: VoiceButtonError) => void;
@@ -115,6 +119,8 @@ export default function VoiceButton({
   customization = defaultCustomization,
   voiceEnabled = false,
   onVoiceToggle,
+  apiKey = "",
+  customPrompt = "",
   theme = "amber",
   size = "large",
   customSize,
@@ -257,14 +263,25 @@ export default function VoiceButton({
       const recorder = recorderRef.current!;
       const audioBlob = await recorder.stopRecording();
 
-      // Use real Gemini transcription with hardcoded API key
+      // Check if API key is provided
+      if (!apiKey || apiKey.trim() === "") {
+        throw new VoiceButtonError(
+          "Please enter your Gemini API key in the Magic panel to enable transcription",
+          "INVALID_CONFIG" as any,
+        );
+      }
+
+      // Use real Gemini transcription with API key
       const { GeminiTranscriptionPlugin } = await import(
         "../plugins/transcription/gemini.ts"
       );
       const geminiPlugin = new GeminiTranscriptionPlugin();
 
       // Configure and transcribe
-      await geminiPlugin.configure({ apiKey: "hardcoded" }); // API key is hardcoded in plugin
+      await geminiPlugin.configure({
+        apiKey: apiKey,
+        customPrompt: customPrompt,
+      });
       const result = await geminiPlugin.transcribe(audioBlob);
       transcript.value = result.text;
 
