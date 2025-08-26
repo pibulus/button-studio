@@ -528,7 +528,7 @@ export default function VoiceButton({
         stateAnimations = "animate-pulse";
         break;
       case "recording":
-        stateClasses = "ring-4 ring-red-300";
+        stateClasses = "";
         stateAnimations = "animate-[recording-pulse_1s_ease-in-out_infinite]";
         break;
       case "processing":

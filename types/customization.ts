@@ -231,7 +231,7 @@ export const defaultCustomization: ButtonCustomization = {
     visualFeedback: "timer",
     showTimer: true,
     pulseIntensity: 80,
-    ringColor: "#ff6b9d",
+    ringColor: "transparent",
     keepSize: true,
     showWaveform: false,
   },
