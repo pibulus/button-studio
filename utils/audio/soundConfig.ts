@@ -215,7 +215,7 @@ export const APP_SOUND_PRESETS = {
  *   description: 'Modal dialog interactions'
  * })
  */
-export function addSoundCategory(name: string, config: any) {
+export function addSoundCategory(name: string, config: SoundCategoryConfig) {
   // @ts-ignore - Dynamic category addition
   SOUND_CATEGORIES[name] = config;
 }

@@ -1,4 +1,9 @@
 import { AudioBlob, ErrorCode, VoiceButtonError } from "../types/core.ts";
+import {
+  getIOSRecordingConstraints,
+  getIOSSupportedMimeType,
+  isIOS,
+} from "./iosSafariSupport.ts";
 
 // Audio recording with optimized speech settings (based on Pablo's Svelte implementation)
 export class AudioRecorder {
@@ -26,14 +31,16 @@ export class AudioRecorder {
     try {
       console.log("🎤 Starting recording...");
 
-      // Get microphone access
-      this.stream = await navigator.mediaDevices.getUserMedia({
+      // Get microphone access with iOS-optimized settings
+      const constraints = isIOS() ? getIOSRecordingConstraints() : {
         audio: {
           echoCancellation: true,
           noiseSuppression: true,
           sampleRate: 16000, // Good for speech recognition
         },
-      });
+      };
+
+      this.stream = await navigator.mediaDevices.getUserMedia(constraints);
 
       // Create MediaRecorder with optimal settings for speech
       const options = this.getSupportedMimeType();
@@ -172,7 +179,13 @@ export class AudioRecorder {
   }
 
   private getSupportedMimeType(): MediaRecorderOptions {
-    // Try different formats in order of preference
+    // Use iOS-optimized MIME type detection
+    if (isIOS()) {
+      const iosMimeType = getIOSSupportedMimeType();
+      return { mimeType: iosMimeType };
+    }
+
+    // Try different formats in order of preference for other platforms
     const types = [
       "audio/webm;codecs=opus",
       "audio/webm",

@@ -41,43 +41,51 @@ function createSoundMapping() {
       if (typeof soundGetter === "function" && actionName !== "description") {
         const soundFile = soundGetter();
         mapping[categoryName][actionName] = () => {
-          // Map sound files to soundService functions
-          if (soundFile.includes("panel")) {
-            if (actionName === "expand") soundService.playPanelOpen();
-            else soundService.playPanelClose();
-          } else if (soundFile.includes("toggle")) {
-            if (actionName === "on") soundService.playToggleOn();
-            else soundService.playToggleOff();
-          } else if (soundFile.includes("slider")) {
-            if (actionName === "step") soundService.playSliderStep();
-            else soundService.playSliderRelease();
-          } else if (soundFile.includes("color")) {
-            soundService.playColorSelect();
-          } else if (soundFile.includes("copy")) {
-            buttonSounds.playSage();
-          } else if (soundFile.includes("export")) {
-            buttonSounds.playPearl();
-          } else if (soundFile.includes("dice")) {
-            soundService.playDiceRoll();
-          } else if (soundFile.includes("celebration")) {
-            soundService.playCelebration();
-          } else if (soundFile.includes("hover")) {
-            soundService.playButtonHover();
-          } else {
-            // Default mappings based on action type
-            if (actionName === "click") {
-              if (categoryName === "primaryButtons") buttonSounds.playCoral();
-              else if (categoryName === "secondaryButtons") {
-                buttonSounds
-                  .playAmber();
-              } else soundService.playButtonClick();
-            } else if (actionName === "select") {
-              buttonSounds.playAmber();
-            } else if (actionName === "deselect") {
-              buttonSounds.playSlate();
-            } else if (actionName === "hover") {
-              soundService.playButtonHover();
+          // Wrap all sound calls to handle autoplay errors gracefully
+          try {
+            // Map sound files to soundService functions
+            if (soundFile.includes("panel")) {
+              if (actionName === "expand") {
+                soundService.playPanelOpen()?.catch(() => {});
+              } else soundService.playPanelClose()?.catch(() => {});
+            } else if (soundFile.includes("toggle")) {
+              if (actionName === "on") {
+                soundService.playToggleOn()?.catch(() => {});
+              } else soundService.playToggleOff()?.catch(() => {});
+            } else if (soundFile.includes("slider")) {
+              if (actionName === "step") {
+                soundService.playSliderStep()?.catch(() => {});
+              } else soundService.playSliderRelease()?.catch(() => {});
+            } else if (soundFile.includes("color")) {
+              soundService.playColorSelect()?.catch(() => {});
+            } else if (soundFile.includes("copy")) {
+              buttonSounds.playSage()?.catch(() => {});
+            } else if (soundFile.includes("export")) {
+              buttonSounds.playPearl()?.catch(() => {});
+            } else if (soundFile.includes("dice")) {
+              soundService.playDiceRoll()?.catch(() => {});
+            } else if (soundFile.includes("celebration")) {
+              soundService.playCelebration()?.catch(() => {});
+            } else if (soundFile.includes("hover")) {
+              soundService.playButtonHover()?.catch(() => {});
+            } else {
+              // Default mappings based on action type
+              if (actionName === "click") {
+                if (categoryName === "primaryButtons") {
+                  buttonSounds.playCoral()?.catch(() => {});
+                } else if (categoryName === "secondaryButtons") {
+                  buttonSounds.playAmber()?.catch(() => {});
+                } else soundService.playButtonClick()?.catch(() => {});
+              } else if (actionName === "select") {
+                buttonSounds.playAmber()?.catch(() => {});
+              } else if (actionName === "deselect") {
+                buttonSounds.playSlate()?.catch(() => {});
+              } else if (actionName === "hover") {
+                soundService.playButtonHover()?.catch(() => {});
+              }
             }
+          } catch (error) {
+            // Silently ignore any sound errors
           }
         };
       }
@@ -141,7 +149,7 @@ function createPlaySoundInterface() {
   }
 
   // Add universal hover function (most commonly used)
-  playSound.hover = () => soundService.playButtonHover();
+  playSound.hover = () => soundService.playButtonHover()?.catch(() => {});
 
   // Add special convenience functions
   playSound.soundPreview = SOUND_MAPPING.soundPreview.preview;

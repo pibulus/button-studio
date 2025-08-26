@@ -5,16 +5,70 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Voice Button Studio</title>
-        <meta name="description" content="Design your perfect voice button" />
-        <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>
+          ButtonStudio - Voice Button Design Lab | Create Beautiful Voice
+          Buttons
+        </title>
+        <meta
+          name="description"
+          content="Design and customize beautiful voice recording buttons with real-time transcription. Export as HTML, PWA, or share your designs. The Figma for voice buttons."
+        />
+
+        {/* Viewport and Mobile */}
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes"
+        />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta
+          name="apple-mobile-web-app-status-bar-style"
+          content="black-translucent"
+        />
+        <meta name="theme-color" content="#FFF8F0" />
+
+        {/* SEO and Open Graph */}
+        <meta
+          property="og:title"
+          content="ButtonStudio - Voice Button Design Lab"
+        />
+        <meta
+          property="og:description"
+          content="Design beautiful voice recording buttons with real-time transcription. Export as HTML, PWA, or share your designs."
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://buttonstudio.app" />
+        <meta property="og:image" content="/og-image.png" />
+
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta
+          name="twitter:title"
+          content="ButtonStudio - Voice Button Design Lab"
+        />
+        <meta
+          name="twitter:description"
+          content="Design beautiful voice recording buttons with real-time transcription."
+        />
+        <meta name="twitter:image" content="/og-image.png" />
+
+        {/* PWA */}
+        <link rel="manifest" href="/manifest.json" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="icon" type="image/png" href="/favicon.png" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+        {/* Fonts */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
           rel="stylesheet"
         />
+
+        {/* Performance */}
+        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+        <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
       </Head>
 
       <ButtonStudio />

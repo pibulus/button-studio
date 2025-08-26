@@ -3,8 +3,8 @@
 // Access the existing button state from VoiceButton
 declare global {
   interface Window {
-    buttonState?: any;
-    transcript?: any;
+    buttonState?: string;
+    transcript?: string;
   }
 }
 

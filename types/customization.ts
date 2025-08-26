@@ -4,15 +4,32 @@
 // Comprehensive interface for all button appearance, behavior, and functionality
 
 export type ButtonTheme = "minimal" | "warm" | "professional" | "lush";
+export type ColorIntensity = "pastel" | "neon";
+
+// Smart contrast utility - determines if a color is light or dark
+export function getSmartTextColor(backgroundColor: string): "black" | "white" {
+  // Convert hex to RGB
+  const hex = backgroundColor.replace("#", "");
+  const r = parseInt(hex.substr(0, 2), 16);
+  const g = parseInt(hex.substr(2, 2), 16);
+  const b = parseInt(hex.substr(4, 2), 16);
+
+  // Calculate luminance using standard formula
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+
+  // Return black for light colors, white for dark colors
+  return luminance > 0.5 ? "black" : "white";
+}
 
 // Main customization interface - everything configurable about a button
 export interface ButtonCustomization {
   // Visual Properties
   appearance: {
     theme: ButtonTheme;
+    colorIntensity: ColorIntensity; // NEW: Pastel vs Neon toggle
     fillType: "solid" | "gradient";
     solidColor: string; // Hex color for solid fills
-    shape: "circle" | "rounded" | "square";
+    shape: "circle" | "square";
     scale: number; // 0.5-2.0x multiplier (Size)
     roundness: number; // 0-50px border radius
     borderWidth: number; // 0-10px border thickness
@@ -23,11 +40,12 @@ export interface ButtonCustomization {
       end: string; // Hex color for gradient end
       direction: number; // 0-360 degrees
     };
+    textColor: "auto" | "black" | "white"; // Auto for smart contrast
   };
 
   // Interaction Effects
   interactions: {
-    hoverEffect: "none" | "lift" | "glow" | "pulse" | "rotate";
+    hoverEffect: "squish" | "grow" | "bright" | "tilt";
     clickAnimation: "none" | "bounce" | "shrink" | "spin" | "flash";
     textTransform: "none" | "uppercase" | "lowercase" | "capitalize";
     fontWeight: "normal" | "bold" | "light";
@@ -124,20 +142,29 @@ export interface SliderDefinition {
 
 // Available visual effects (some conflict with each other)
 export interface EffectToggles {
-  bounce: boolean;
-  glow: boolean;
+  // Movement effects (only one at a time)
   breathing: boolean;
-  wiggle: boolean;
-  rainbowGlow: boolean;
-  pulse: boolean;
+  bounce: boolean;
+
+  // Visual effects
+  glow: boolean;
+  shadow: boolean; // Adds shadow (buttons start flat)
+  shine: boolean; // Moving shine/gloss effect
+  pulse: boolean; // Pulsing opacity effect
+
+  // Legacy effects (kept for compatibility but not shown in UI)
+  wiggle?: boolean;
+  rainbow?: boolean;
+  rainbowGlow?: boolean;
+  sparkle?: boolean;
 }
 
 export const defaultEffects: EffectToggles = {
+  breathing: true, // starts with breathing
   bounce: false,
   glow: false,
-  breathing: true, // starts with breathing
-  wiggle: false,
-  rainbowGlow: false,
+  shadow: true, // buttons start WITH shadow by default
+  shine: false,
   pulse: false,
 };
 
@@ -149,9 +176,10 @@ export const defaultEffects: EffectToggles = {
 export const defaultCustomization: ButtonCustomization = {
   appearance: {
     theme: "warm",
+    colorIntensity: "pastel", // Default to pastel
     fillType: "gradient",
     solidColor: "#ff60e0",
-    shape: "rounded",
+    shape: "square",
     scale: 1.0,
     roundness: 16,
     borderWidth: 4,
@@ -162,9 +190,10 @@ export const defaultCustomization: ButtonCustomization = {
       end: "#f0d1a8", // Softer peach end
       direction: 135, // Diagonal
     },
+    textColor: "auto", // Smart contrast
   },
   interactions: {
-    hoverEffect: "lift",
+    hoverEffect: "squish",
     clickAnimation: "bounce",
     textTransform: "none",
     fontWeight: "bold",
@@ -295,6 +324,87 @@ export const sliderConfig: SliderDefinition[] = [
 ];
 
 // ===================================================================
+// COLOR INTENSITY SYSTEM - Pastel vs Neon palettes
+// ===================================================================
+
+export const colorPalettes = {
+  pastel: {
+    // Soft, gentle colors
+    pink: {
+      solid: "#f8c2cc",
+      gradientStart: "#f8c2cc",
+      gradientEnd: "#f0d1a8",
+    },
+    blue: {
+      solid: "#b3d9ff",
+      gradientStart: "#b3d9ff",
+      gradientEnd: "#d4b3ff",
+    },
+    green: {
+      solid: "#c2f0c2",
+      gradientStart: "#c2f0c2",
+      gradientEnd: "#b3e5fc",
+    },
+    purple: {
+      solid: "#d4b3ff",
+      gradientStart: "#d4b3ff",
+      gradientEnd: "#f8c2cc",
+    },
+    orange: {
+      solid: "#ffcc99",
+      gradientStart: "#ffcc99",
+      gradientEnd: "#ffd9b3",
+    },
+    yellow: {
+      solid: "#fff2b3",
+      gradientStart: "#fff2b3",
+      gradientEnd: "#ffcc99",
+    },
+  },
+  neon: {
+    // Electric, vibrant colors
+    pink: {
+      solid: "#ff1493",
+      gradientStart: "#ff1493",
+      gradientEnd: "#ff6347",
+    },
+    blue: {
+      solid: "#00ffff",
+      gradientStart: "#00ffff",
+      gradientEnd: "#1e90ff",
+    },
+    green: {
+      solid: "#00ff00",
+      gradientStart: "#00ff00",
+      gradientEnd: "#32cd32",
+    },
+    purple: {
+      solid: "#8a2be2",
+      gradientStart: "#8a2be2",
+      gradientEnd: "#ff1493",
+    },
+    orange: {
+      solid: "#ff4500",
+      gradientStart: "#ff4500",
+      gradientEnd: "#ffa500",
+    },
+    yellow: {
+      solid: "#ffff00",
+      gradientStart: "#ffff00",
+      gradientEnd: "#ff4500",
+    },
+  },
+};
+
+// Helper to get colors based on intensity setting
+export function getColorForIntensity(
+  colorIntensity: ColorIntensity,
+  colorName: keyof typeof colorPalettes.pastel = "pink",
+) {
+  return colorPalettes[colorIntensity][colorName];
+}
+
+// ===================================================================
 // UTILITY FUNCTIONS - Style generation and helpers
 // ===================================================================
 
@@ -302,26 +412,66 @@ export const sliderConfig: SliderDefinition[] = [
 export function generateButtonStyles(
   customization: ButtonCustomization,
 ): Record<string, string> {
-  const { gradient } = customization.appearance;
+  const { gradient, colorIntensity, fillType } = customization.appearance;
+
+  // Auto-enhance colors based on intensity (only if gradient is used)
+  const enhancedGradient = fillType === "gradient" && gradient 
+    ? {
+        start: enhanceColorForIntensity(gradient.start, colorIntensity),
+        end: enhanceColorForIntensity(gradient.end, colorIntensity),
+        direction: gradient.direction,
+      }
+    : null;
 
   return {
     // CSS custom properties for real-time updates
-    "--button-radius": `${customization.appearance.radius}px`,
+    "--button-radius": `${customization.appearance.roundness}px`,
     "--button-scale": customization.appearance.scale.toString(),
-    "--button-elevation": `${customization.appearance.elevation}px`,
-    "--button-saturation": `${customization.appearance.saturation}%`,
 
-    // Computed values
-    "--shadow-blur": `${customization.appearance.elevation * 2}px`,
-    "--shadow-spread": `${customization.appearance.elevation * 0.5}px`,
+    // Enhanced gradient background with intensity
+    background: customization.appearance.fillType === "solid"
+      ? enhanceColorForIntensity(
+        customization.appearance.solidColor,
+        colorIntensity,
+      )
+      : enhancedGradient 
+        ? `linear-gradient(${enhancedGradient.direction}deg, ${enhancedGradient.start}, ${enhancedGradient.end})`
+        : "#ff60e0",
 
-    // Pablo's gradient background
-    background:
-      `linear-gradient(${gradient.direction}deg, ${gradient.start}, ${gradient.end})`,
-
-    // Pablo's thick border
+    // Border styling
     borderColor: "#000000",
-    borderWidth: "4px",
+    borderWidth: `${customization.appearance.borderWidth}px`,
+
+    // Neon glow effect for neon mode
+    ...(colorIntensity === "neon" && enhancedGradient && {
+      boxShadow:
+        `0 0 20px ${enhancedGradient.start}80, 0 4px 8px rgba(0,0,0,0.3)`,
+      filter: "saturate(1.2) brightness(1.1)",
+    }),
+  };
+}
+
+// Helper functions for color intensity
+function enhanceColorForIntensity(
+  color: string,
+  intensity: ColorIntensity,
+): string {
+  if (intensity === "neon") {
+    // For neon, we boost saturation and brightness
+    return color; // Keep original for now, could add HSL manipulation
+  }
+  return color; // Pastel stays as-is
+}
+
+function enhanceColorsForIntensity(gradient: {
+  colors: [string, string];
+  type: "linear" | "radial";
+  direction: number;
+}, intensity: ColorIntensity) {
+  return {
+    start: enhanceColorForIntensity(gradient.start, intensity),
+    end: enhanceColorForIntensity(gradient.end, intensity),
+    direction: gradient.direction,
   };
 }
 

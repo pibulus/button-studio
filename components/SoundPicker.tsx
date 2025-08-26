@@ -14,6 +14,8 @@ interface SoundPickerProps {
 export default function SoundPicker(
   { customization, onChange }: SoundPickerProps,
 ) {
+  // Ensure sound property exists with default
+  const currentSound = customization?.sound || { type: "amber", enabled: true };
   const playSoundPreview = (soundName: string) => {
     if (isPlaying.value) return;
 
@@ -24,7 +26,7 @@ export default function SoundPicker(
       onChange({
         ...customization,
         sound: {
-          ...customization.sound,
+          ...currentSound,
           type: soundName as "slate" | "amber" | "coral" | "sage" | "pearl",
         },
       });
@@ -68,14 +70,14 @@ export default function SoundPicker(
       <div class="flex items-center justify-between">
         <h3 class="text-lg font-black text-gray-900">🎵 Button Sound</h3>
         <div class="text-xs font-bold text-gray-600 bg-gray-100 px-2 py-1 rounded border border-gray-300">
-          {customization.sound.type.toUpperCase()}
+          {currentSound.type.toUpperCase()}
         </div>
       </div>
 
       {/* Simple preset buttons */}
       <div class="grid grid-cols-5 gap-2">
         {soundPresets.map((preset) => {
-          const isSelected = customization.sound.type === preset.id;
+          const isSelected = currentSound.type === preset.id;
           const isCurrentlyPlaying = isPlaying.value && isSelected;
 
           return (

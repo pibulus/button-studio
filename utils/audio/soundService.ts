@@ -8,7 +8,7 @@ import { toast } from "../../components/Toast.tsx";
 
 // Check if we're in a browser environment with audio support
 const hasAudioSupport = typeof window !== "undefined" &&
-  window.HTMLAudioElement;
+  globalThis.HTMLAudioElement;
 
 // Store settings flag - default to true
 let soundsEnabled = true;
@@ -68,7 +68,8 @@ function initSoundSettings() {
 
   // Make soundsEnabled available globally for debugging
   if (typeof window !== "undefined") {
-    (window as any).soundsEnabled = soundsEnabled;
+    (window as unknown as { soundsEnabled: boolean }).soundsEnabled =
+      soundsEnabled;
     console.log("🔊 ButtonStudio sound effects enabled:", soundsEnabled);
   }
 }
@@ -119,8 +120,14 @@ function playSound(soundName: keyof typeof soundFiles, options: {
       // Play with delay
       setTimeout(() => {
         audio.play().catch((error) => {
-          console.warn(`Error playing sound "${soundName}":`, error);
-          reject(error);
+          // Silently ignore autoplay policy errors - these are expected before user interaction
+          if (error.name === "NotAllowedError") {
+            // Don't log autoplay errors - they're expected and handled gracefully
+            resolve(); // Resolve instead of reject for autoplay issues
+          } else {
+            console.warn(`Error playing sound "${soundName}":`, error);
+            reject(error);
+          }
         });
       }, config.delay * 1000);
     } catch (error) {
@@ -160,6 +167,14 @@ export const buttonStudioSounds = {
 
   // Color picker
   playColorSelect: () => playSound("colorSelect"),
+
+  // Selection sounds (for customization options)
+  playSelectionSelect: () => playSound("buttonSuccess", { volume: 0.3 }),
+  playSelectionDeselect: () => playSound("sliderStep", { volume: 0.2 }),
+
+  // Action sounds
+  playCopyCode: () => playSound("copy"),
+  playExport: () => playSound("success", { volume: 0.4 }),
 
   // General interactions
   playCopy: () => playSound("copy"),

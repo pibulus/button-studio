@@ -122,7 +122,7 @@ export class SynthEngine {
   }
 
   private initAudioContext(): void {
-    if (typeof window !== "undefined" && window.AudioContext) {
+    if (typeof window !== "undefined" && globalThis.AudioContext) {
       try {
         this.audioContext = new AudioContext();
       } catch (e) {
