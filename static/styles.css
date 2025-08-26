@@ -37,9 +37,9 @@ video {
 html {
   line-height: 1.5;
   -webkit-text-size-adjust: 100%;
-  /* iOS viewport height fix */
-  height: 100vh;
-  height: calc(var(--vh, 1vh) * 100);
+  /* Allow normal document height */
+  height: auto;
+  min-height: 100vh;
   font-family:
     ui-sans-serif,
     system-ui,
@@ -59,11 +59,11 @@ html {
 
 /* iOS Safari Optimizations */
 body {
-  /* Prevent iOS bounce scrolling */
-  position: fixed;
+  /* Allow normal scrolling */
   width: 100%;
-  height: 100%;
-  overflow: auto;
+  height: auto;
+  min-height: 100vh;
+  overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   /* Disable tap highlight */
   -webkit-tap-highlight-color: transparent;

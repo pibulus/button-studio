@@ -1,4 +1,5 @@
-import { UltraSquishyButton } from "../components/SquishyButton.tsx";
+import VoiceButton from "../components/VoiceButton.tsx";
+import { defaultCustomization } from "../types/customization.ts";
 
 // Different button personalities with tweaked physics
 const buttonVariants = [
@@ -180,14 +181,15 @@ export default function ButtonLab() {
         <div class="grid grid-cols-3 gap-8">
           {buttonVariants.map((variant) => (
             <div class="text-center">
-              <UltraSquishyButton
-                color="pink"
-                size="md"
-                className={variant.className}
-                onClick={() => console.log(`${variant.name} clicked!`)}
-              >
-                {variant.name}
-              </UltraSquishyButton>
+              <VoiceButton
+                customization={{
+                  ...defaultCustomization,
+                  content: { text: variant.name, autoScale: true },
+                  appearance: { fill: "#FFB6C1", border: "#000000", shadow: "#000000" },
+                  size: { width: 140, height: 140 }
+                }}
+                customCSS={variant.className}
+              />
               <p class="mt-2 text-sm text-gray-600">{variant.description}</p>
             </div>
           ))}
