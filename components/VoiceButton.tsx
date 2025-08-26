@@ -415,11 +415,11 @@ export default function VoiceButton({
   const buttonColor = useMemo(() => {
     return customization.appearance.fillType === "solid"
       ? customization.appearance.solidColor
-      : customization.appearance.gradient.start;
+      : customization.appearance.gradient?.start || "#ff60e0";
   }, [
     customization.appearance.fillType,
     customization.appearance.solidColor,
-    customization.appearance.gradient.start,
+    customization.appearance.gradient?.start,
   ]);
 
   // Memoize hex to rgba conversion for consistent colors
