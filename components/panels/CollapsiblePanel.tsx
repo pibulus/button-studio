@@ -30,6 +30,7 @@ export default function CollapsiblePanel({
     return colors[colorKey as keyof typeof colors] || colors.light;
   };
 
+
   return (
     <div class="bg-white rounded-3xl shadow-lg border-4 border-black overflow-hidden">
       <button
