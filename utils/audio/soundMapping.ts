@@ -8,17 +8,24 @@
  * @example
  * // Use in any component:
  * import { playSound } from './soundMapping.ts'
+ *
+ * // All functions are now discoverable through autocomplete!
  * onClick={() => playSound.primaryClick()}
  * onMouseEnter={() => playSound.hover()}
  *
+ * // Gradient panels - two ways to use:
+ * onMouseEnter={() => playSound.gradientPanelsRed()}  // Specific color
+ * onMouseEnter={() => playSound.gradientPanel('red')} // Helper method
+ *
  * @author ButtonStudio Audio Team
- * @version 3.0.0 - Universal Portable System
+ * @version 3.1.0 - Improved with TypeScript types and helpers
  */
 
 import { SOUND_CATEGORIES } from "./soundConfig.ts";
 import { soundService } from "./soundService.ts";
 import { buttonSounds } from "./synthEngine.ts";
 import { throttleSound } from "./throttledSound.ts";
+import type { GradientPanelColor, PlaySoundInterface } from "./soundTypes.ts";
 
 /**
  * Dynamic Sound Mapping - Connects config to actual playback
@@ -84,7 +91,7 @@ SOUND_MAPPING.soundPreview = {
  */
 
 // Auto-generate clean playSound interface from categories
-function createPlaySoundInterface() {
+function createPlaySoundInterface(): PlaySoundInterface {
   const playSound: Record<string, any> = {};
 
   // Generate functions for each category and action
@@ -132,10 +139,31 @@ function createPlaySoundInterface() {
     "gradient-panel",
   );
 
-  return playSound;
+  // Add helper function for gradient panels - MUCH easier to use!
+  playSound.gradientPanel = (color: GradientPanelColor) => {
+    const functionName = `gradientPanels${color.charAt(0).toUpperCase()}${
+      color.slice(1)
+    }`;
+    const fn = playSound[functionName];
+    if (fn && typeof fn === "function") {
+      fn();
+    } else {
+      // Fallback to hover if color not found
+      playSound.hover();
+    }
+  };
+
+  // Add feedback sounds as direct methods for easier discovery
+  playSound.success = () => soundService.playSuccess();
+  playSound.error = () => soundService.playError();
+  playSound.warning = () => soundService.playWarning();
+  playSound.completion = () => soundService.playCompletion();
+  playSound.celebration = () => soundService.playCelebration();
+
+  return playSound as PlaySoundInterface;
 }
 
-export const playSound = createPlaySoundInterface();
+export const playSound: PlaySoundInterface = createPlaySoundInterface();
 
 // ===================================================================
 // SOUND AUDIT HELPERS - For systematic sound application
@@ -149,6 +177,43 @@ export function listAvailableSounds() {
   });
   console.groupEnd();
 }
+
+/**
+ * Get all available sound function names
+ * Useful for debugging and documentation
+ */
+export function getAvailableSounds(): string[] {
+  return Object.keys(playSound).sort();
+}
+
+/**
+ * USAGE EXAMPLES - Copy these into your components!
+ *
+ * @example
+ * // Button clicks
+ * <button onClick={() => playSound.primaryClick()}>Submit</button>
+ * <button onClick={() => playSound.secondaryClick()}>Cancel</button>
+ *
+ * @example
+ * // Hover effects
+ * <div onMouseEnter={() => playSound.hover()}>Hover me</div>
+ *
+ * @example
+ * // Gradient panels - NEW easier way!
+ * <div onMouseEnter={() => playSound.gradientPanel('red')}>Red Panel</div>
+ * <div onMouseEnter={() => playSound.gradientPanel('blue')}>Blue Panel</div>
+ *
+ * @example
+ * // Toggle switches
+ * <Switch
+ *   onChange={(checked) => checked ? playSound.toggleOn() : playSound.toggleOff()}
+ * />
+ *
+ * @example
+ * // Success feedback
+ * await saveData();
+ * playSound.success();
+ */
 
 // Get sound category info for documentation
 export function getSoundCategories() {

@@ -52,22 +52,9 @@ export default function CollapsiblePanel({
   };
 
   // 🎵 Play gradient sound based on panel color
-  // Using the sound system's built-in gradient panel sounds!
+  // Now using the improved helper function - so much cleaner!
   const playGradientSound = throttleSound(
-    () => {
-      // The sound system has gradient functions for each color
-      const gradientFunctionName = `gradientPanels${
-        color.charAt(0).toUpperCase()
-      }${color.slice(1)}`;
-      const soundFunction = (playSound as any)[gradientFunctionName];
-
-      if (soundFunction && typeof soundFunction === "function") {
-        soundFunction();
-      } else {
-        // Fallback to generic hover sound if color not found
-        playSound.hover();
-      }
-    },
+    () => playSound.gradientPanel(color as any),
     200,
     `gradient-panel-${id}`,
   ); // Throttle per panel with unique key
