@@ -6,7 +6,7 @@
  */
 
 import { signal } from "@preact/signals";
-import { SoundPack, SoundPackManager } from "../utils/audio/SoundPack.ts";
+import { SoundPackManager, type SoundPackManifest } from "../utils/audio/SoundPack.ts";
 import kenneyManifest from "../static/sounds/kenney/manifest.json" with { type: "json" };
 
 // Initialize the sound pack manager
@@ -16,7 +16,7 @@ const currentPack = signal("kenney");
 
 // Load the Kenney pack on component mount
 if (typeof window !== 'undefined') {
-  packManager.loadPack('kenney', kenneyManifest, '/sounds').then(() => {
+  packManager.loadPack('kenney', kenneyManifest as SoundPackManifest, { basePath: '/sounds' }).then(() => {
     packLoaded.value = true;
   });
 }

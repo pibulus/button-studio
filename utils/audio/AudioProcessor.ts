@@ -1,61 +1,107 @@
 /**
  * Audio Processing Pipeline
  * 
- * Built-in audio processing capabilities for the SoftStack Sound System.
- * Handles format conversion, silence detection, pitch shifting, and more.
- * Can use ffmpeg for preprocessing OR Web Audio API for real-time effects.
+ * Core audio processing with Web Audio API.
+ * Handles caching, pitch shifting, and effects processing.
  * 
- * @author SoftStack Audio Team
+ * @module @softstack/sounds
  * @version 1.0.0
  */
 
 // ===================================================================
-// WEB AUDIO API PROCESSOR - Real-time effects in browser
+// TYPES
+// ===================================================================
+
+export interface PlaybackOptions {
+  pitch?: number;        // Semitones to shift (-24 to +24)
+  volume?: number;       // Volume level (0 to 1)
+  detune?: number;       // Fine tuning in cents (-100 to +100)
+  playbackRate?: number; // Speed multiplier (0.25 to 4)
+}
+
+export interface EffectOptions {
+  lowpass?: number;      // Frequency cutoff for warmth (20-20000)
+  highpass?: number;     // Frequency cutoff for brightness (20-20000)
+  delay?: number;        // Delay time in seconds (0-5)
+  reverb?: number;       // Reverb amount (0-1) - future enhancement
+  distortion?: number;   // Distortion amount (0-1) - future enhancement
+}
+
+// ===================================================================
+// WEB AUDIO PROCESSOR
 // ===================================================================
 
 export class WebAudioProcessor {
   private context: AudioContext | null = null;
   private cache: Map<string, AudioBuffer> = new Map();
+  private maxCacheSize = 100; // Prevent memory leaks
 
   constructor() {
-    if (typeof window !== 'undefined' && window.AudioContext) {
-      this.context = new AudioContext();
+    this.initContext();
+  }
+
+  /**
+   * Initialize or resume audio context
+   */
+  private async initContext(): Promise<void> {
+    if (typeof window === 'undefined') return;
+    
+    if (!this.context) {
+      this.context = new (window.AudioContext || (window as any).webkitAudioContext)();
+    }
+    
+    // Resume context if suspended (iOS requirement)
+    if (this.context.state === 'suspended') {
+      await this.context.resume();
     }
   }
 
   /**
-   * Load and cache an audio buffer
+   * Load and cache an audio buffer with error handling
    */
   async loadSound(url: string): Promise<AudioBuffer> {
+    // Check cache first
     if (this.cache.has(url)) {
       return this.cache.get(url)!;
     }
 
-    const response = await fetch(url);
-    const arrayBuffer = await response.arrayBuffer();
-    const audioBuffer = await this.context!.decodeAudioData(arrayBuffer);
-    
-    this.cache.set(url, audioBuffer);
-    return audioBuffer;
+    try {
+      // Ensure context is ready
+      await this.initContext();
+      if (!this.context) throw new Error('AudioContext not available');
+
+      // Fetch audio data
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`Failed to load sound: ${response.status} ${response.statusText}`);
+      }
+
+      const arrayBuffer = await response.arrayBuffer();
+      const audioBuffer = await this.context.decodeAudioData(arrayBuffer);
+      
+      // Manage cache size
+      if (this.cache.size >= this.maxCacheSize) {
+        const firstKey = this.cache.keys().next().value;
+        this.cache.delete(firstKey);
+      }
+      
+      this.cache.set(url, audioBuffer);
+      return audioBuffer;
+    } catch (error) {
+      console.error(`Error loading sound from ${url}:`, error);
+      throw error;
+    }
   }
 
   /**
-   * Play a sound with optional pitch shift
-   * 
-   * @param url - Sound file URL
-   * @param options - Playback options
-   * @returns Audio source node for further manipulation
+   * Play a sound with optional pitch and volume adjustments
    */
   async playWithPitch(
     url: string,
-    options: {
-      pitch?: number;        // Semitones to shift (-12 to +12)
-      volume?: number;       // 0 to 1
-      detune?: number;      // Cents to detune (-100 to +100)
-      playbackRate?: number; // Speed multiplier (0.5 = half speed, 2 = double)
-    } = {}
-  ) {
-    if (!this.context) throw new Error('Web Audio API not available');
+    options: PlaybackOptions = {}
+  ): Promise<AudioBufferSourceNode> {
+    await this.initContext();
+    if (!this.context) throw new Error('AudioContext not available');
 
     const audioBuffer = await this.loadSound(url);
     const source = this.context.createBufferSource();
@@ -63,30 +109,28 @@ export class WebAudioProcessor {
 
     source.buffer = audioBuffer;
     
-    // Apply pitch shift via playback rate (maintains duration)
+    // Apply pitch shift (preserves duration unlike playbackRate)
     if (options.pitch !== undefined) {
-      // Convert semitones to playback rate
-      // +12 semitones = 2x frequency (one octave up)
-      // -12 semitones = 0.5x frequency (one octave down)
-      source.playbackRate.value = Math.pow(2, options.pitch / 12);
+      const clampedPitch = Math.max(-24, Math.min(24, options.pitch));
+      source.playbackRate.value = Math.pow(2, clampedPitch / 12);
     }
 
     // Fine-tune with cents
     if (options.detune !== undefined) {
-      source.detune.value = options.detune;
+      source.detune.value = Math.max(-100, Math.min(100, options.detune));
     }
 
-    // Direct playback rate control
+    // Direct playback rate control (affects both pitch and duration)
     if (options.playbackRate !== undefined) {
-      source.playbackRate.value = options.playbackRate;
+      source.playbackRate.value = Math.max(0.25, Math.min(4, options.playbackRate));
     }
 
-    // Volume control
-    if (options.volume !== undefined) {
-      gainNode.gain.value = options.volume;
-    }
+    // Volume control with smooth ramping to prevent clicks
+    const targetVolume = Math.max(0, Math.min(1, options.volume ?? 1));
+    gainNode.gain.setValueAtTime(0, this.context.currentTime);
+    gainNode.gain.linearRampToValueAtTime(targetVolume, this.context.currentTime + 0.01);
 
-    // Connect nodes
+    // Connect audio graph
     source.connect(gainNode);
     gainNode.connect(this.context.destination);
 
@@ -95,287 +139,106 @@ export class WebAudioProcessor {
   }
 
   /**
-   * Create a gradient of pitched sounds from a single source
-   * Perfect for UI elements with visual gradients
-   * 
-   * @param url - Base sound file
-   * @param steps - Number of gradient steps
-   * @param range - Semitone range (e.g., 12 for one octave)
-   */
-  createPitchGradient(
-    url: string,
-    steps: number = 4,
-    range: number = 8
-  ): Array<() => Promise<AudioBufferSourceNode>> {
-    const pitches = [];
-    const stepSize = range / (steps - 1);
-
-    for (let i = 0; i < steps; i++) {
-      const pitch = -(range / 2) + (i * stepSize);
-      pitches.push(() => this.playWithPitch(url, { pitch }));
-    }
-
-    return pitches;
-  }
-
-  /**
-   * Apply real-time effects to a playing sound
+   * Apply real-time effects to a sound
    */
   async playWithEffects(
     url: string,
-    effects: {
-      lowpass?: number;    // Frequency cutoff for warmth
-      highpass?: number;   // Frequency cutoff for brightness
-      reverb?: number;     // Reverb amount (0-1)
-      delay?: number;      // Delay time in seconds
-      distortion?: number; // Distortion amount (0-1)
-    } = {}
-  ) {
-    if (!this.context) throw new Error('Web Audio API not available');
+    effects: EffectOptions = {},
+    playbackOptions: PlaybackOptions = {}
+  ): Promise<AudioBufferSourceNode> {
+    await this.initContext();
+    if (!this.context) throw new Error('AudioContext not available');
 
     const audioBuffer = await this.loadSound(url);
     const source = this.context.createBufferSource();
     source.buffer = audioBuffer;
 
+    // Apply playback options
+    if (playbackOptions.pitch !== undefined) {
+      const clampedPitch = Math.max(-24, Math.min(24, playbackOptions.pitch));
+      source.playbackRate.value = Math.pow(2, clampedPitch / 12);
+    }
+
     let currentNode: AudioNode = source;
 
-    // Lowpass filter (warm/muffled sound)
-    if (effects.lowpass) {
+    // Build effects chain
+    if (effects.lowpass && effects.lowpass < 20000) {
       const filter = this.context.createBiquadFilter();
       filter.type = 'lowpass';
-      filter.frequency.value = effects.lowpass;
+      filter.frequency.value = Math.max(20, effects.lowpass);
       currentNode.connect(filter);
       currentNode = filter;
     }
 
-    // Highpass filter (bright/tinny sound)
-    if (effects.highpass) {
+    if (effects.highpass && effects.highpass > 20) {
       const filter = this.context.createBiquadFilter();
       filter.type = 'highpass';
-      filter.frequency.value = effects.highpass;
+      filter.frequency.value = Math.min(20000, effects.highpass);
       currentNode.connect(filter);
       currentNode = filter;
     }
 
-    // Simple delay effect
-    if (effects.delay) {
-      const delay = this.context.createDelay();
+    if (effects.delay && effects.delay > 0) {
+      const delay = this.context.createDelay(5);
       const feedback = this.context.createGain();
       const mix = this.context.createGain();
 
-      delay.delayTime.value = effects.delay;
-      feedback.gain.value = 0.5;
+      delay.delayTime.value = Math.min(5, effects.delay);
+      feedback.gain.value = 0.4;
       mix.gain.value = 0.5;
 
+      // Create delay feedback loop
       currentNode.connect(delay);
       delay.connect(feedback);
       feedback.connect(delay);
+      
+      // Mix dry and wet signals
       delay.connect(mix);
       currentNode.connect(mix);
       currentNode = mix;
     }
 
-    currentNode.connect(this.context.destination);
+    // Apply final volume
+    const gainNode = this.context.createGain();
+    gainNode.gain.value = playbackOptions.volume ?? 1;
+    currentNode.connect(gainNode);
+    gainNode.connect(this.context.destination);
+
     source.start(0);
     return source;
   }
-}
 
-// ===================================================================
-// FFMPEG PROCESSOR - Preprocessing with silence detection
-// ===================================================================
-
-export class FFmpegProcessor {
   /**
-   * Generate ffmpeg command for audio processing
-   * Can be run server-side or via WASM in browser
+   * Clear the audio cache
    */
-  static generateCommand(
-    input: string,
-    output: string,
-    options: {
-      format?: 'mp3' | 'ogg' | 'wav';
-      bitrate?: string;          // e.g., '128k'
-      silenceDetect?: boolean;   // Trim silence
-      normalize?: boolean;       // Normalize volume
-      pitch?: number;           // Semitones to shift
-      tempo?: number;           // Speed change without pitch change
-    } = {}
-  ): string {
-    const parts = ['ffmpeg', '-i', input];
-    const filters = [];
-
-    // Silence detection and removal
-    if (options.silenceDetect) {
-      // Remove silence from start and end
-      filters.push('silenceremove=start_periods=1:start_silence=0.05:start_threshold=-50dB');
-      filters.push('silenceremove=stop_periods=-1:stop_silence=0.05:stop_threshold=-50dB');
-    }
-
-    // Volume normalization
-    if (options.normalize) {
-      filters.push('loudnorm=I=-16:LRA=11:TP=-1.5');
-    }
-
-    // Pitch shifting
-    if (options.pitch) {
-      const semitoneRatio = Math.pow(2, options.pitch / 12);
-      filters.push(`asetrate=44100*${semitoneRatio},aresample=44100`);
-    }
-
-    // Tempo change without pitch change
-    if (options.tempo) {
-      filters.push(`atempo=${options.tempo}`);
-    }
-
-    if (filters.length > 0) {
-      parts.push('-af', filters.join(','));
-    }
-
-    // Output format and quality
-    if (options.format === 'mp3') {
-      parts.push('-acodec', 'mp3', '-ab', options.bitrate || '128k');
-    } else if (options.format === 'ogg') {
-      parts.push('-acodec', 'libvorbis', '-ab', options.bitrate || '128k');
-    }
-
-    parts.push(output);
-    return parts.join(' ');
+  clearCache(): void {
+    this.cache.clear();
   }
 
   /**
-   * Batch process audio files
+   * Get cache statistics
    */
-  static batchProcessCommands(
-    files: string[],
-    outputDir: string,
-    options: Parameters<typeof FFmpegProcessor.generateCommand>[2]
-  ): string[] {
-    return files.map(file => {
-      const basename = file.split('/').pop()?.replace(/\.[^.]+$/, '');
-      const outputFormat = options.format || 'mp3';
-      const output = `${outputDir}/${basename}.${outputFormat}`;
-      return this.generateCommand(file, output, options);
-    });
-  }
-}
-
-// ===================================================================
-// GRADIENT SOUND MAPPER - Map visual gradients to audio
-// ===================================================================
-
-export class GradientSoundMapper {
-  private processor: WebAudioProcessor;
-
-  constructor(processor: WebAudioProcessor) {
-    this.processor = processor;
-  }
-
-  /**
-   * Map a color gradient to sound pitches
-   * 
-   * @example
-   * // For 4 buttons in purple gradient
-   * const sounds = mapper.mapColorGradient(
-   *   'click.mp3',
-   *   ['#e9d5ff', '#d8b4fe', '#c084fc', '#9333ea'],
-   *   { rangeInSemitones: 8 }
-   * );
-   * // Each sound plays the same click at different pitches
-   */
-  mapColorGradient(
-    baseSound: string,
-    colors: string[],
-    options: {
-      rangeInSemitones?: number;  // Total pitch range
-      brightness?: boolean;       // Map to brightness instead of hue
-      reverse?: boolean;          // Reverse pitch direction
-    } = {}
-  ) {
-    const range = options.rangeInSemitones || 8;
-    const count = colors.length;
-    
-    // Calculate pitch for each color
-    const pitches = colors.map((color, index) => {
-      let position = index / (count - 1); // 0 to 1
-      if (options.reverse) position = 1 - position;
-      
-      // Map position to pitch range
-      return (position - 0.5) * range;
-    });
-
-    // Return sound players with mapped pitches
-    return pitches.map((pitch, index) => ({
-      color: colors[index],
-      pitch,
-      play: () => this.processor.playWithPitch(baseSound, { pitch })
-    }));
-  }
-
-  /**
-   * Create harmonic intervals for related UI elements
-   * Uses musical intervals for pleasing combinations
-   */
-  createHarmonicSet(
-    baseSound: string,
-    count: number = 4,
-    scale: 'major' | 'minor' | 'pentatonic' = 'pentatonic'
-  ) {
-    const scales = {
-      major: [0, 2, 4, 5, 7, 9, 11, 12],      // Major scale
-      minor: [0, 2, 3, 5, 7, 8, 10, 12],      // Natural minor
-      pentatonic: [0, 2, 4, 7, 9, 12],        // Pentatonic (always sounds good)
+  getCacheStats(): { size: number; urls: string[] } {
+    return {
+      size: this.cache.size,
+      urls: Array.from(this.cache.keys())
     };
+  }
 
-    const intervals = scales[scale];
-    const sounds = [];
-
-    for (let i = 0; i < count; i++) {
-      const noteIndex = i % intervals.length;
-      const octave = Math.floor(i / intervals.length);
-      const pitch = intervals[noteIndex] + (octave * 12);
-      
-      sounds.push(() => this.processor.playWithPitch(baseSound, { pitch }));
+  /**
+   * Cleanup resources
+   */
+  async dispose(): Promise<void> {
+    this.clearCache();
+    if (this.context && this.context.state !== 'closed') {
+      await this.context.close();
     }
-
-    return sounds;
+    this.context = null;
   }
 }
 
 // ===================================================================
-// USAGE EXAMPLES
+// EXPORT
 // ===================================================================
 
-/*
-// Basic pitch shifting
-const processor = new WebAudioProcessor();
-processor.playWithPitch('click.mp3', { pitch: 4 }); // 4 semitones up
-
-// Gradient sounds for buttons
-const gradient = processor.createPitchGradient('click.mp3', 4, 8);
-buttons.forEach((btn, i) => {
-  btn.onclick = gradient[i]; // Each button plays different pitch
-});
-
-// Harmonic UI sounds
-const mapper = new GradientSoundMapper(processor);
-const harmonic = mapper.createHarmonicSet('hover.mp3', 5, 'pentatonic');
-
-// FFmpeg preprocessing
-const cmd = FFmpegProcessor.generateCommand(
-  'input.ogg',
-  'output.mp3',
-  {
-    format: 'mp3',
-    silenceDetect: true,
-    normalize: true,
-    pitch: -2 // 2 semitones down
-  }
-);
-*/
-
-export default {
-  WebAudioProcessor,
-  FFmpegProcessor,
-  GradientSoundMapper
-};
+export default WebAudioProcessor;
