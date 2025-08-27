@@ -40,7 +40,7 @@ export class ButtonExporter {
     // Update internal state
     this.customization = customization;
     this.apiKey = options.apiKey;
-    
+
     const html = generateStandaloneHTML(customization, {
       includeAI: options.includeAI && !!options.apiKey,
       apiKey: options.apiKey,
@@ -86,7 +86,7 @@ export class ButtonExporter {
     // Update internal state
     this.customization = customization;
     this.apiKey = options.apiKey;
-    
+
     const appName = customization.content.label || "Voice Button";
     const manifest = this.generatePWAManifest(appName);
     const html = this.generatePWAHTML(appName, {
@@ -171,7 +171,7 @@ export class ButtonExporter {
   generateShareLink(customization: ButtonCustomization): string {
     // Update internal state
     this.customization = customization;
-    
+
     return generateShareLink(customization, {
       title: customization.content.label,
       includeApiKey: false,
@@ -437,27 +437,29 @@ self.addEventListener('fetch', (event) => {
   private generateIconDataURL(size: number): string {
     const { customization } = this;
     const { appearance, content, effects } = customization;
-    
+
     // Calculate scaling factor
     const buttonSize = Math.min(size * 0.6, size - 40); // Leave padding
     const borderRadius = appearance.roundness || 16;
     const borderWidth = appearance.borderWidth || 3;
-    
+
     // Build gradient style if needed
-    const backgroundStyle = appearance.fillType === "gradient" 
+    const backgroundStyle = appearance.fillType === "gradient"
       ? `background: linear-gradient(${appearance.gradient.direction}deg, ${appearance.gradient.start}, ${appearance.gradient.end});`
       : `background: ${appearance.solidColor};`;
-    
+
     // Build shadow style
-    const shadowStyle = effects.shadow 
-      ? `box-shadow: ${effects.shadowOffsetX || 4}px ${effects.shadowOffsetY || 4}px ${effects.shadowBlur || 0}px ${effects.shadowColor || '#000000'};`
-      : '';
-    
+    const shadowStyle = effects.shadow
+      ? `box-shadow: ${effects.shadowOffsetX || 4}px ${
+        effects.shadowOffsetY || 4
+      }px ${effects.shadowBlur || 0}px ${effects.shadowColor || "#000000"};`
+      : "";
+
     // Scale emoji/text appropriately
-    const fontSize = content.type === "emoji" 
-      ? buttonSize * 0.5 
+    const fontSize = content.type === "emoji"
+      ? buttonSize * 0.5
       : buttonSize * 0.15;
-    
+
     // Create the SVG with embedded HTML button
     const svgContent = `
       <svg width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg">
@@ -474,7 +476,9 @@ self.addEventListener('fetch', (event) => {
               width: ${buttonSize}px;
               height: ${buttonSize}px;
               border-radius: ${borderRadius}px;
-              border: ${borderWidth}px solid ${appearance.borderColor || '#000'};
+              border: ${borderWidth}px solid ${
+      appearance.borderColor || "#000"
+    };
               ${backgroundStyle}
               ${shadowStyle}
               display: flex;
@@ -482,28 +486,30 @@ self.addEventListener('fetch', (event) => {
               justify-content: center;
               font-size: ${fontSize}px;
               font-weight: bold;
-              color: ${content.type === "text" ? (appearance.textColor || '#000') : 'inherit'};
+              color: ${
+      content.type === "text" ? (appearance.textColor || "#000") : "inherit"
+    };
               font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
               overflow: hidden;
               position: relative;
             ">
-              ${content.value || content.label || '🎤'}
+              ${content.value || content.label || "🎤"}
             </div>
           </div>
         </foreignObject>
       </svg>
     `;
-    
+
     // Clean up the SVG and encode it properly
     const cleanedSvg = svgContent
-      .replace(/\n/g, '')
-      .replace(/\s+/g, ' ')
+      .replace(/\n/g, "")
+      .replace(/\s+/g, " ")
       .trim();
-    
+
     // Encode to base64 with proper UTF-8 handling
     const utf8Bytes = new TextEncoder().encode(cleanedSvg);
     const base64 = btoa(String.fromCharCode(...utf8Bytes));
-    
+
     return `data:image/svg+xml;base64,${base64}`;
   }
 

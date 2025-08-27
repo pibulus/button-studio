@@ -3,16 +3,19 @@
 // ===================================================================
 
 import { Handlers } from "$fresh/server.ts";
-import { ButtonCustomization, defaultCustomization } from "../../types/customization.ts";
+import {
+  ButtonCustomization,
+  defaultCustomization,
+} from "../../types/customization.ts";
 import { ButtonExporter } from "../../utils/export/ButtonExporter.ts";
 
 // Decode button config from URL-safe base64 with UTF-8 support
 function decodeButtonConfig(id: string): ButtonCustomization | null {
   try {
     // Replace URL-safe characters back to standard base64
-    const base64 = id.replace(/-/g, '+').replace(/_/g, '/');
+    const base64 = id.replace(/-/g, "+").replace(/_/g, "/");
     // Add padding if necessary
-    const padded = base64 + '=='.substring(0, (4 - base64.length % 4) % 4);
+    const padded = base64 + "==".substring(0, (4 - base64.length % 4) % 4);
     // Decode base64 to binary string
     const binaryString = atob(padded);
     // Convert binary string to UTF-8
@@ -40,7 +43,7 @@ export const handler: Handlers = {
     if (!customization) {
       return new Response("Invalid button configuration", { status: 404 });
     }
-    
+
     // Merge with defaults to ensure all required fields are present
     customization = {
       ...defaultCustomization,
@@ -111,8 +114,11 @@ export const handler: Handlers = {
     if (path.endsWith("/icon-192.png")) {
       const iconDataUrl = exporter.generateIconDataURL(192);
       const base64Data = iconDataUrl.split(",")[1];
-      const imageData = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
-      
+      const imageData = Uint8Array.from(
+        atob(base64Data),
+        (c) => c.charCodeAt(0),
+      );
+
       return new Response(imageData, {
         headers: {
           "Content-Type": "image/png",
@@ -124,8 +130,11 @@ export const handler: Handlers = {
     if (path.endsWith("/icon-512.png")) {
       const iconDataUrl = exporter.generateIconDataURL(512);
       const base64Data = iconDataUrl.split(",")[1];
-      const imageData = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
-      
+      const imageData = Uint8Array.from(
+        atob(base64Data),
+        (c) => c.charCodeAt(0),
+      );
+
       return new Response(imageData, {
         headers: {
           "Content-Type": "image/png",

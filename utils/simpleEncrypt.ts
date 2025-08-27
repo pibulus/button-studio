@@ -7,48 +7,48 @@
  * Good enough for API keys, simple to implement
  */
 export function encryptWithPIN(text: string, pin: string): string {
-  if (!text || !pin) return '';
-  
+  if (!text || !pin) return "";
+
   // Repeat PIN to match text length
   const repeatedPIN = pin.repeat(Math.ceil(text.length / pin.length));
-  
+
   // XOR each character
-  const encrypted = text.split('').map((char, i) => {
+  const encrypted = text.split("").map((char, i) => {
     const charCode = char.charCodeAt(0);
     const pinCode = repeatedPIN.charCodeAt(i);
     return String.fromCharCode(charCode ^ pinCode);
-  }).join('');
-  
+  }).join("");
+
   // Convert to base64 and make URL-safe
   const base64 = btoa(encrypted);
-  return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+  return base64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
 }
 
 /**
  * Decrypt with PIN
  */
 export function decryptWithPIN(encrypted: string, pin: string): string {
-  if (!encrypted || !pin) return '';
-  
+  if (!encrypted || !pin) return "";
+
   try {
     // Convert from URL-safe base64
-    const base64 = encrypted.replace(/-/g, '+').replace(/_/g, '/');
-    const padded = base64 + '=='.substring(0, (4 - base64.length % 4) % 4);
+    const base64 = encrypted.replace(/-/g, "+").replace(/_/g, "/");
+    const padded = base64 + "==".substring(0, (4 - base64.length % 4) % 4);
     const text = atob(padded);
-    
+
     // Repeat PIN to match text length
     const repeatedPIN = pin.repeat(Math.ceil(text.length / pin.length));
-    
+
     // XOR each character (XOR is its own inverse)
-    const decrypted = text.split('').map((char, i) => {
+    const decrypted = text.split("").map((char, i) => {
       const charCode = char.charCodeAt(0);
       const pinCode = repeatedPIN.charCodeAt(i);
       return String.fromCharCode(charCode ^ pinCode);
-    }).join('');
-    
+    }).join("");
+
     return decrypted;
   } catch {
-    return ''; // Wrong PIN or corrupted
+    return ""; // Wrong PIN or corrupted
   }
 }
 

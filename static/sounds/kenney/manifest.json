@@ -12,7 +12,12 @@
     "click": {
       "primary": {
         "default": "original/click_003",
-        "variants": ["original/click_001", "original/click_002", "original/click_004", "original/click_005"]
+        "variants": [
+          "original/click_001",
+          "original/click_002",
+          "original/click_004",
+          "original/click_005"
+        ]
       },
       "secondary": "original/click_001",
       "soft": "original/tick_001"

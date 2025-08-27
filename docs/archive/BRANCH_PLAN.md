@@ -2,11 +2,14 @@
 
 ## Mission: Make "Save to Phone" Actually Work
 
-**The Goal**: When a user clicks "Save to Phone", their button becomes a real installable PWA at a real URL that works on phones. No more fake demos - real working apps.
+**The Goal**: When a user clicks "Save to Phone", their button becomes a real
+installable PWA at a real URL that works on phones. No more fake demos - real
+working apps.
 
 ## 🎯 Core Objective
 
 Transform this flow from demo to reality:
+
 1. User designs button in ButtonStudio
 2. Clicks "📱 Save to Phone"
 3. Gets REAL URL (not fake demo)
@@ -16,6 +19,7 @@ Transform this flow from demo to reality:
 ## 📍 Current State (What's Built)
 
 ### ✅ Already Working:
+
 - Button customization (fully functional)
 - PWA export generates correct files (manifest, icons, HTML)
 - Icons dynamically match button design (SVG foreignObject)
@@ -25,6 +29,7 @@ Transform this flow from demo to reality:
 - Gemini transcription (with API key)
 
 ### 🚫 Not Working (Fake/Demo):
+
 - URL is fake: `buttonstudio.app/b/${randomId}`
 - No actual hosting happens
 - QR code points to nowhere
@@ -33,6 +38,7 @@ Transform this flow from demo to reality:
 ## 🎨 Related Projects to Know About
 
 ### QRBuddy (`~/Projects/active/apps/qrbuddy`)
+
 - Same tech stack (Deno/Fresh)
 - Beautiful gradient QR codes
 - Could integrate for better QR generation
@@ -42,6 +48,7 @@ Transform this flow from demo to reality:
 ## 🛠 Implementation Options (Pick Your Path)
 
 ### Option 1: Deno Deploy Edge Functions (Recommended)
+
 ```typescript
 // routes/b/[id].tsx
 export default function ButtonPWA(req: Request, ctx: Context) {
@@ -51,25 +58,28 @@ export default function ButtonPWA(req: Request, ctx: Context) {
   // Return appropriate file (HTML/manifest/icon/sw.js)
 }
 ```
-**Pros**: No storage needed, instant, scales infinitely
-**Cons**: Need to encode all config in URL
+
+**Pros**: No storage needed, instant, scales infinitely **Cons**: Need to encode
+all config in URL
 
 ### Option 2: Supabase Storage + Edge Functions
+
 ```typescript
 // Store button config in Supabase
 const { data } = await supabase
-  .from('buttons')
+  .from("buttons")
   .insert({ config: customization })
-  .select('id')
+  .select("id")
   .single();
 
 // Serve from edge function
 // buttonstudio.app/b/[id]
 ```
-**Pros**: Short URLs, can track analytics
-**Cons**: Needs Supabase setup
+
+**Pros**: Short URLs, can track analytics **Cons**: Needs Supabase setup
 
 ### Option 3: Static File Hosting (Netlify/Vercel API)
+
 ```typescript
 // Use Netlify's API to deploy
 const siteId = await netlify.createSite({
@@ -77,18 +87,20 @@ const siteId = await netlify.createSite({
 });
 // Returns: unique-name.netlify.app
 ```
-**Pros**: True static hosting, permanent
-**Cons**: External dependency, API limits
+
+**Pros**: True static hosting, permanent **Cons**: External dependency, API
+limits
 
 ### Option 4: GitHub Pages Auto-Deploy
+
 ```typescript
 // Create repo via GitHub API
 // Push PWA files
 // Enable Pages
 // Returns: username.github.io/button-[id]
 ```
-**Pros**: Free, permanent, no limits
-**Cons**: Requires GitHub token
+
+**Pros**: Free, permanent, no limits **Cons**: Requires GitHub token
 
 ## 🔥 Quick Wins (Do These First)
 
@@ -110,21 +122,25 @@ const siteId = await netlify.createSite({
 ## 📝 Flexible Implementation Guide
 
 ### Step 1: Choose Your Hosting Strategy
+
 Look at the options above. Pick what feels right. Don't overthink it.
 
 ### Step 2: Create the Route Handler
+
 ```typescript
 // routes/b/[id].tsx or routes/pwa/[...path].tsx
 // This serves the PWA files dynamically
 ```
 
 ### Step 3: Update PWAShareModal
+
 ```typescript
 // Change fake URL generation to real URL
 // Update generatePWA() to use chosen hosting method
 ```
 
 ### Step 4: Test the Flow
+
 1. Design button
 2. Save to phone
 3. Scan QR
@@ -145,6 +161,7 @@ Look at the options above. Pick what feels right. Don't overthink it.
 ## 💡 Creative Freedom Zone
 
 **Feel free to:**
+
 - Try different hosting approaches
 - Integrate QRBuddy for better QR codes
 - Add analytics/tracking
@@ -154,6 +171,7 @@ Look at the options above. Pick what feels right. Don't overthink it.
 - Make it magical
 
 **Don't worry about:**
+
 - Perfect code first try
 - Following exact patterns
 - Edge cases initially
@@ -195,6 +213,7 @@ deno task start
 ## 📊 Definition of Done
 
 When someone can:
+
 1. Design a button
 2. Save it to their phone
 3. Use it as a real app
@@ -214,6 +233,7 @@ Then we're done! 🎉
 
 ---
 
-**Remember**: The magic moment is when someone's custom button becomes an app on their phone. Everything else is just implementation details.
+**Remember**: The magic moment is when someone's custom button becomes an app on
+their phone. Everything else is just implementation details.
 
 Good luck! Make it awesome! 🚀

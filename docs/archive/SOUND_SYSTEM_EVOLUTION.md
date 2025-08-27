@@ -1,16 +1,23 @@
 # 🎵 Sound System Evolution Plan
+
 > ButtonStudio → Universal SoftStack Sound System
 
 ## 🚨 CURRENT STATUS - READY FOR NEXT CLAUDE!
+
 **Branch**: `sounds` - Major architecture complete, ready for integration
-**Pablo's Vision**: Gradient sounds that match visual gradients (IMPLEMENTED! 🔥)
+**Pablo's Vision**: Gradient sounds that match visual gradients (IMPLEMENTED!
+🔥)
 
 ## 🎯 Mission
-Transform ButtonStudio's sound system into a **portable, modular, extensible** audio framework that can power any SoftStack app (and beyond). Think: **"Tailwind for Sound"** - utility-first, composable, theme-able.
+
+Transform ButtonStudio's sound system into a **portable, modular, extensible**
+audio framework that can power any SoftStack app (and beyond). Think:
+**"Tailwind for Sound"** - utility-first, composable, theme-able.
 
 ## 🏗️ Architecture Vision
 
 ### Core Principles (80/20 Rule)
+
 1. **Simple by default** - `sounds.play('click')` just works
 2. **Powerful when needed** - Full control over mixing, timing, effects
 3. **Pack-based** - Swap entire sound themes instantly
@@ -18,6 +25,7 @@ Transform ButtonStudio's sound system into a **portable, modular, extensible** a
 5. **Framework-agnostic** - Works with Deno, Node, React, Svelte, vanilla
 
 ### 📦 Sound Pack Structure
+
 ```
 sound-packs/
 ├── kenney/                    # Interface Sounds pack
@@ -36,6 +44,7 @@ sound-packs/
 ```
 
 ### 🔊 Manifest Structure
+
 ```json
 {
   "name": "Kenney Interface Sounds",
@@ -71,6 +80,7 @@ sound-packs/
 ## 🛠️ Implementation Plan
 
 ### Phase 1: Foundation ✅ COMPLETE!
+
 - [x] Create sounds branch
 - [x] Build AudioProcessor.ts with Web Audio API pitch shifting
 - [x] Create SoundPack.ts modular system with manifest support
@@ -79,6 +89,7 @@ sound-packs/
 - [x] Create GradientSoundDemo.tsx interactive showcase
 
 ### Phase 2: Integration ✅ IN PROGRESS!
+
 - [x] Run `./scripts/convert-sounds.sh` to process Kenney sounds
 - [x] Create route `/sound-demo` for GradientSoundDemo
 - [x] Create manifest.json with proper ButtonStudio mappings
@@ -89,12 +100,14 @@ sound-packs/
 - [ ] Add pack switcher UI in CustomizationPanel
 
 ### Phase 3: Export & Package
+
 - [ ] Extract sound system to `/packages/sounds/`
 - [ ] Create npm/deno package structure
 - [ ] Build standalone demo page
 - [ ] Write API documentation
 
 ### Phase 4: Polish & Extend
+
 - [ ] Add more sound packs (retro synth, organic)
 - [ ] Integrate with existing SoundDesigner
 - [ ] Add real-time mixing/layering
@@ -103,68 +116,72 @@ sound-packs/
 ## 🎨 API Design
 
 ### Basic Usage
+
 ```typescript
-import { SoundSystem } from '@softstack/sounds'
+import { SoundSystem } from "@softstack/sounds";
 
 // Initialize with pack
-const sounds = new SoundSystem('kenney')
+const sounds = new SoundSystem("kenney");
 
 // Simple playback
-sounds.play('click')           // Auto-maps to click.primary
-sounds.play('hover.gentle')     // Specific variant
-sounds.play('success', { volume: 0.5 })
+sounds.play("click"); // Auto-maps to click.primary
+sounds.play("hover.gentle"); // Specific variant
+sounds.play("success", { volume: 0.5 });
 
 // Category volume control
-sounds.setCategoryVolume('navigation', 0.7)
+sounds.setCategoryVolume("navigation", 0.7);
 
 // Global controls
-sounds.mute()
-sounds.unmute()
-sounds.setMasterVolume(0.8)
+sounds.mute();
+sounds.unmute();
+sounds.setMasterVolume(0.8);
 ```
 
 ### React/Preact Hook
+
 ```typescript
-import { useSound } from '@softstack/sounds/react'
+import { useSound } from "@softstack/sounds/react";
 
 function MyButton() {
-  const { play, isPlaying } = useSound()
-  
+  const { play, isPlaying } = useSound();
+
   return (
-    <button 
-      onClick={() => play('click')}
-      onMouseEnter={() => play('hover', { volume: 0.3 })}
+    <button
+      onClick={() => play("click")}
+      onMouseEnter={() => play("hover", { volume: 0.3 })}
     >
       Click Me
     </button>
-  )
+  );
 }
 ```
 
 ### Advanced Features
+
 ```typescript
 // Pack switching
-await sounds.loadPack('retro')
-sounds.switchPack('retro', { fadeTime: 500 })
+await sounds.loadPack("retro");
+sounds.switchPack("retro", { fadeTime: 500 });
 
 // Mixing packs
 sounds.useMixed({
-  click: 'kenney',
-  hover: 'retro',
-  feedback: 'organic'
-})
+  click: "kenney",
+  hover: "retro",
+  feedback: "organic",
+});
 
 // Queue & priority
-sounds.queue('success', { delay: 100, priority: 'high' })
+sounds.queue("success", { delay: 100, priority: "high" });
 
 // Events
-sounds.on('play', (sound) => console.log(`Playing: ${sound}`))
-sounds.on('packLoaded', (packName) => console.log(`Loaded: ${packName}`))
+sounds.on("play", (sound) => console.log(`Playing: ${sound}`));
+sounds.on("packLoaded", (packName) => console.log(`Loaded: ${packName}`));
 ```
 
 ## 📁 File Organization
 
 ### Current ButtonStudio
+
 ```
 utils/audio/
 ├── soundService.ts       → Core playback engine (keep & enhance)
@@ -175,6 +192,7 @@ utils/audio/
 ```
 
 ### Future Package Structure
+
 ```
 @softstack/sounds/
 ├── src/
@@ -197,6 +215,7 @@ utils/audio/
 ```
 
 ## 🎯 Success Metrics
+
 - ✅ Can swap sound packs with one line of code
 - ✅ Works in ButtonStudio without breaking anything
 - ✅ Can be copied to any other project easily
@@ -204,41 +223,53 @@ utils/audio/
 - ✅ Bundle size: <10KB core (excluding sound files)
 - ✅ Developer experience: Intuitive, discoverable API
 
-## 💭 Future Claude Notes - START HERE! 
-Hey future Claude! You're picking up the **sounds branch** with Phase 2 partially complete:
+## 💭 Future Claude Notes - START HERE!
+
+Hey future Claude! You're picking up the **sounds branch** with Phase 2
+partially complete:
 
 ### 🎯 Current Status (Dec 27, 2024)
+
 **What's Working:**
+
 - ✅ Sound pack system fully functional
 - ✅ 100 Kenney sounds converted and organized
 - ✅ Demo page at http://localhost:8001/sound-demo showing the modular system
 - ✅ Manifest properly maps sounds to ButtonStudio UI categories
 
 **What's NOT Done:**
+
 - ❌ ButtonStudio still uses old soundService (not SoundPack)
 - ❌ No UI for switching between sound packs
 - ❌ Export system doesn't include new sound packs
 
 ### 🎯 Main Goal: Modular Sound Pack System
-**Primary Mission**: Create a portable sound system that can be dropped into ANY webapp (especially Deno/Fresh projects). Think "npm install @softstack/sounds" simplicity.
+
+**Primary Mission**: Create a portable sound system that can be dropped into ANY
+webapp (especially Deno/Fresh projects). Think "npm install @softstack/sounds"
+simplicity.
 
 ### ✅ What Previous Claude Built:
+
 1. **SoundPack.ts** - CORE: Modular pack system with manifest-based loading
-2. **AudioProcessor.ts** - Processing engine (format conversion, pitch shifting, effects)
+2. **AudioProcessor.ts** - Processing engine (format conversion, pitch shifting,
+   effects)
 3. **convert-sounds.sh** - FFmpeg pipeline for batch processing sounds
 4. **Manifest structure** - JSON-based pack configuration
 5. **Pitch variations** - Bonus feature for UI gradients (not the main focus)
 
 ### 🚀 Your IMMEDIATE Next Steps:
-1. **Create SoundService adapter**: Bridge between old API and new SoundPack system
+
+1. **Create SoundService adapter**: Bridge between old API and new SoundPack
+   system
    - Keep existing `playSound` calls working
    - Load Kenney pack on app init
    - Gradually migrate components
 
-2. **Add to ButtonStudio main app**: 
+2. **Add to ButtonStudio main app**:
    - Initialize SoundPackManager in ButtonStudio.tsx
    - Keep old system as fallback during transition
-   
+
 3. **Simple pack switcher UI**:
    - Add dropdown in CustomizationPanel
    - Just "Classic" vs "Kenney" to start
@@ -250,6 +281,7 @@ Hey future Claude! You're picking up the **sounds branch** with Phase 2 partiall
    - Verify export still works
 
 ### 🔧 Key Files to Know:
+
 ```
 utils/audio/
 ├── AudioProcessor.ts    # Core pitch/effects engine (NEW)
@@ -266,14 +298,17 @@ scripts/
 ```
 
 ### 💡 Core Architecture:
+
 - **Manifest-based packs** - Easy theme switching via JSON config
-- **Format auto-detection** - mp3/ogg/wav based on browser support  
+- **Format auto-detection** - mp3/ogg/wav based on browser support
 - **Simple API** - `sounds.play('click')` with optional variants
 - **Portable** - Works with Deno, Node, vanilla JS
 - **Bonus features** - Pitch shifting, effects (nice to have, not core)
 
 ### 🎯 Remember the Focus:
+
 This is about creating a **reusable sound system** for ALL SoftStack apps:
+
 - Drop-in replacement for any webapp's sound needs
 - Pack-based for easy customization
 - Simple enough for `sounds.play('click')`
@@ -281,6 +316,7 @@ This is about creating a **reusable sound system** for ALL SoftStack apps:
 - **Not** just about gradients (that's just one cool feature)
 
 ## 🔥 Quick Start Commands
+
 ```bash
 # Convert .ogg files to .mp3
 for f in ~/Downloads/'Interface Sounds'/Audio/*.ogg; do 
@@ -295,11 +331,15 @@ open http://localhost:8000/sound-test
 ```
 
 ## 🎪 The Magic
-This isn't just a sound system - it's a **vibe system**. Every click, hover, and transition should feel intentional, delightful, and part of a cohesive experience. We're not just playing sounds, we're creating **micro-moments of joy**.
+
+This isn't just a sound system - it's a **vibe system**. Every click, hover, and
+transition should feel intentional, delightful, and part of a cohesive
+experience. We're not just playing sounds, we're creating **micro-moments of
+joy**.
 
 Remember: **Simplicity with legs** - easy to use, hard to outgrow.
 
 ---
-*Last updated: [Current Date]*
-*Branch: sounds*
-*Pablo's vision: "Make it feel like magic but work like clockwork"*
+
+_Last updated: [Current Date]_ _Branch: sounds_ _Pablo's vision: "Make it feel
+like magic but work like clockwork"_

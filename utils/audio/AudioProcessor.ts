@@ -1,9 +1,9 @@
 /**
  * Audio Processing Pipeline
- * 
+ *
  * Core audio processing with Web Audio API.
  * Handles caching, pitch shifting, and effects processing.
- * 
+ *
  * @module @softstack/sounds
  * @version 1.0.0
  */
@@ -13,18 +13,18 @@
 // ===================================================================
 
 export interface PlaybackOptions {
-  pitch?: number;        // Semitones to shift (-24 to +24)
-  volume?: number;       // Volume level (0 to 1)
-  detune?: number;       // Fine tuning in cents (-100 to +100)
+  pitch?: number; // Semitones to shift (-24 to +24)
+  volume?: number; // Volume level (0 to 1)
+  detune?: number; // Fine tuning in cents (-100 to +100)
   playbackRate?: number; // Speed multiplier (0.25 to 4)
 }
 
 export interface EffectOptions {
-  lowpass?: number;      // Frequency cutoff for warmth (20-20000)
-  highpass?: number;     // Frequency cutoff for brightness (20-20000)
-  delay?: number;        // Delay time in seconds (0-5)
-  reverb?: number;       // Reverb amount (0-1) - future enhancement
-  distortion?: number;   // Distortion amount (0-1) - future enhancement
+  lowpass?: number; // Frequency cutoff for warmth (20-20000)
+  highpass?: number; // Frequency cutoff for brightness (20-20000)
+  delay?: number; // Delay time in seconds (0-5)
+  reverb?: number; // Reverb amount (0-1) - future enhancement
+  distortion?: number; // Distortion amount (0-1) - future enhancement
 }
 
 // ===================================================================
@@ -44,14 +44,15 @@ export class WebAudioProcessor {
    * Initialize or resume audio context
    */
   private async initContext(): Promise<void> {
-    if (typeof window === 'undefined') return;
-    
+    if (typeof window === "undefined") return;
+
     if (!this.context) {
-      this.context = new (window.AudioContext || (window as any).webkitAudioContext)();
+      this.context =
+        new (window.AudioContext || (window as any).webkitAudioContext)();
     }
-    
+
     // Resume context if suspended (iOS requirement)
-    if (this.context.state === 'suspended') {
+    if (this.context.state === "suspended") {
       await this.context.resume();
     }
   }
@@ -68,23 +69,25 @@ export class WebAudioProcessor {
     try {
       // Ensure context is ready
       await this.initContext();
-      if (!this.context) throw new Error('AudioContext not available');
+      if (!this.context) throw new Error("AudioContext not available");
 
       // Fetch audio data
       const response = await fetch(url);
       if (!response.ok) {
-        throw new Error(`Failed to load sound: ${response.status} ${response.statusText}`);
+        throw new Error(
+          `Failed to load sound: ${response.status} ${response.statusText}`,
+        );
       }
 
       const arrayBuffer = await response.arrayBuffer();
       const audioBuffer = await this.context.decodeAudioData(arrayBuffer);
-      
+
       // Manage cache size
       if (this.cache.size >= this.maxCacheSize) {
         const firstKey = this.cache.keys().next().value;
         this.cache.delete(firstKey);
       }
-      
+
       this.cache.set(url, audioBuffer);
       return audioBuffer;
     } catch (error) {
@@ -98,17 +101,17 @@ export class WebAudioProcessor {
    */
   async playWithPitch(
     url: string,
-    options: PlaybackOptions = {}
+    options: PlaybackOptions = {},
   ): Promise<AudioBufferSourceNode> {
     await this.initContext();
-    if (!this.context) throw new Error('AudioContext not available');
+    if (!this.context) throw new Error("AudioContext not available");
 
     const audioBuffer = await this.loadSound(url);
     const source = this.context.createBufferSource();
     const gainNode = this.context.createGain();
 
     source.buffer = audioBuffer;
-    
+
     // Apply pitch shift (preserves duration unlike playbackRate)
     if (options.pitch !== undefined) {
       const clampedPitch = Math.max(-24, Math.min(24, options.pitch));
@@ -122,13 +125,19 @@ export class WebAudioProcessor {
 
     // Direct playback rate control (affects both pitch and duration)
     if (options.playbackRate !== undefined) {
-      source.playbackRate.value = Math.max(0.25, Math.min(4, options.playbackRate));
+      source.playbackRate.value = Math.max(
+        0.25,
+        Math.min(4, options.playbackRate),
+      );
     }
 
     // Volume control with smooth ramping to prevent clicks
     const targetVolume = Math.max(0, Math.min(1, options.volume ?? 1));
     gainNode.gain.setValueAtTime(0, this.context.currentTime);
-    gainNode.gain.linearRampToValueAtTime(targetVolume, this.context.currentTime + 0.01);
+    gainNode.gain.linearRampToValueAtTime(
+      targetVolume,
+      this.context.currentTime + 0.01,
+    );
 
     // Connect audio graph
     source.connect(gainNode);
@@ -144,10 +153,10 @@ export class WebAudioProcessor {
   async playWithEffects(
     url: string,
     effects: EffectOptions = {},
-    playbackOptions: PlaybackOptions = {}
+    playbackOptions: PlaybackOptions = {},
   ): Promise<AudioBufferSourceNode> {
     await this.initContext();
-    if (!this.context) throw new Error('AudioContext not available');
+    if (!this.context) throw new Error("AudioContext not available");
 
     const audioBuffer = await this.loadSound(url);
     const source = this.context.createBufferSource();
@@ -164,7 +173,7 @@ export class WebAudioProcessor {
     // Build effects chain
     if (effects.lowpass && effects.lowpass < 20000) {
       const filter = this.context.createBiquadFilter();
-      filter.type = 'lowpass';
+      filter.type = "lowpass";
       filter.frequency.value = Math.max(20, effects.lowpass);
       currentNode.connect(filter);
       currentNode = filter;
@@ -172,7 +181,7 @@ export class WebAudioProcessor {
 
     if (effects.highpass && effects.highpass > 20) {
       const filter = this.context.createBiquadFilter();
-      filter.type = 'highpass';
+      filter.type = "highpass";
       filter.frequency.value = Math.min(20000, effects.highpass);
       currentNode.connect(filter);
       currentNode = filter;
@@ -191,7 +200,7 @@ export class WebAudioProcessor {
       currentNode.connect(delay);
       delay.connect(feedback);
       feedback.connect(delay);
-      
+
       // Mix dry and wet signals
       delay.connect(mix);
       currentNode.connect(mix);
@@ -221,7 +230,7 @@ export class WebAudioProcessor {
   getCacheStats(): { size: number; urls: string[] } {
     return {
       size: this.cache.size,
-      urls: Array.from(this.cache.keys())
+      urls: Array.from(this.cache.keys()),
     };
   }
 
@@ -230,7 +239,7 @@ export class WebAudioProcessor {
    */
   async dispose(): Promise<void> {
     this.clearCache();
-    if (this.context && this.context.state !== 'closed') {
+    if (this.context && this.context.state !== "closed") {
       await this.context.close();
     }
     this.context = null;

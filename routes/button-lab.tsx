@@ -7,62 +7,63 @@ const buttonVariants = [
     name: "Original",
     className: "",
     style: {},
-    description: "Jello physics"
+    description: "Jello physics",
   },
   {
     name: "Snappy",
     className: "snappy-btn",
     style: {},
-    description: "Instant response"
+    description: "Instant response",
   },
   {
     name: "Gummy",
     className: "gummy-btn",
     style: {},
-    description: "Slow & sticky"
+    description: "Slow & sticky",
   },
   {
     name: "Bouncy",
     className: "bouncy-btn",
     style: {},
-    description: "Extra springy"
+    description: "Extra springy",
   },
   {
     name: "Heavy",
     className: "heavy-btn",
     style: {},
-    description: "Feels weighty"
+    description: "Feels weighty",
   },
   {
     name: "Soft",
     className: "soft-btn",
     style: {},
-    description: "Gentle press"
+    description: "Gentle press",
   },
   {
     name: "Clicky",
     className: "clicky-btn",
     style: {},
-    description: "Mechanical feel"
+    description: "Mechanical feel",
   },
   {
     name: "Wobbly",
     className: "wobbly-btn",
     style: {},
-    description: "Jiggle physics"
+    description: "Jiggle physics",
   },
   {
     name: "Magnetic",
     className: "magnetic-btn",
     style: {},
-    description: "Pulls to press"
+    description: "Pulls to press",
   },
 ];
 
 export default function ButtonLab() {
   return (
     <div class="min-h-screen bg-gradient-to-br from-indigo-100 to-purple-100 p-8">
-      <style>{`
+      <style>
+        {`
         /* Snappy - Ultra fast response, minimal travel */
         .snappy-btn {
           transition: all 0.05s linear !important;
@@ -168,7 +169,8 @@ export default function ButtonLab() {
           box-shadow: 0px 0px 0px rgba(0,0,0,1) !important;
           transition: all 0.08s ease-in !important;
         }
-      `}</style>
+      `}
+      </style>
 
       <div class="max-w-5xl mx-auto">
         <h1 class="text-4xl font-black mb-2 text-center">
@@ -177,7 +179,7 @@ export default function ButtonLab() {
         <p class="text-center text-gray-700 mb-8">
           Test different button "feelings" - find your favorite squish!
         </p>
-        
+
         <div class="grid grid-cols-3 gap-8">
           {buttonVariants.map((variant) => (
             <div class="text-center">
@@ -185,8 +187,12 @@ export default function ButtonLab() {
                 customization={{
                   ...defaultCustomization,
                   content: { text: variant.name, autoScale: true },
-                  appearance: { fill: "#FFB6C1", border: "#000000", shadow: "#000000" },
-                  size: { width: 140, height: 140 }
+                  appearance: {
+                    fill: "#FFB6C1",
+                    border: "#000000",
+                    shadow: "#000000",
+                  },
+                  size: { width: 140, height: 140 },
                 }}
                 customCSS={variant.className}
               />

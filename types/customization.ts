@@ -415,12 +415,12 @@ export function generateButtonStyles(
   const { gradient, colorIntensity, fillType } = customization.appearance;
 
   // Auto-enhance colors based on intensity (only if gradient is used)
-  const enhancedGradient = fillType === "gradient" && gradient 
+  const enhancedGradient = fillType === "gradient" && gradient
     ? {
-        start: enhanceColorForIntensity(gradient.start, colorIntensity),
-        end: enhanceColorForIntensity(gradient.end, colorIntensity),
-        direction: gradient.direction,
-      }
+      start: enhanceColorForIntensity(gradient.start, colorIntensity),
+      end: enhanceColorForIntensity(gradient.end, colorIntensity),
+      direction: gradient.direction,
+    }
     : null;
 
   return {
@@ -434,9 +434,9 @@ export function generateButtonStyles(
         customization.appearance.solidColor,
         colorIntensity,
       )
-      : enhancedGradient 
-        ? `linear-gradient(${enhancedGradient.direction}deg, ${enhancedGradient.start}, ${enhancedGradient.end})`
-        : "#ff60e0",
+      : enhancedGradient
+      ? `linear-gradient(${enhancedGradient.direction}deg, ${enhancedGradient.start}, ${enhancedGradient.end})`
+      : "#ff60e0",
 
     // Border styling
     borderColor: "#000000",

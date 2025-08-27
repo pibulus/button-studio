@@ -3,6 +3,7 @@ import { useEffect } from "preact/hooks";
 import VoiceButton from "../components/VoiceButton.tsx";
 import CustomizationPanel from "../components/CustomizationPanel.tsx";
 import AudioSettings from "../components/AudioSettings.tsx";
+import CollapsiblePanel from "../components/panels/CollapsiblePanel.tsx";
 import {
   ButtonCustomization,
   defaultCustomization,
@@ -25,6 +26,12 @@ const customPrompt = signal<string>("");
 
 // Color mode state
 const colorMode = signal<"pastel" | "neon" | "classic" | "gradient">("pastel");
+
+// Panel expansion state for left column
+const expandedLeftPanels = signal<Record<string, boolean>>({
+  colors: true,
+  size: false,
+});
 
 // Color system
 const colorModes = {
@@ -209,6 +216,21 @@ export default function ButtonStudio() {
         [key]: value,
       },
     };
+  };
+
+  const toggleLeftPanel = (panelId: string) => {
+    const isExpanding = !expandedLeftPanels.value[panelId];
+    expandedLeftPanels.value = {
+      ...expandedLeftPanels.value,
+      [panelId]: isExpanding,
+    };
+    // Use correct sound based on expand/collapse action
+    if (isExpanding) {
+      playSound.panelsExpand?.() || playSound.primaryClick();
+    } else {
+      playSound.panelsCollapse?.() || playSound.secondaryClick();
+    }
+    hapticService.lightTap();
   };
 
   return (
@@ -454,9 +476,13 @@ export default function ButtonStudio() {
               </div>
 
               {/* Color Mode Selector */}
-              <div class="bg-white rounded-3xl p-6 shadow-lg border-4 border-black">
-                <h3 class="text-xl font-black text-gray-900 mb-4">Colors</h3>
-
+              <CollapsiblePanel
+                id="colors"
+                title="Colors"
+                color="cyan"
+                isExpanded={expandedLeftPanels.value.colors}
+                onToggle={toggleLeftPanel}
+              >
                 <div class="grid grid-cols-2 gap-3 mb-6">
                   {(["pastel", "neon", "classic", "gradient"] as const).map((
                     mode,
@@ -540,10 +566,16 @@ export default function ButtonStudio() {
                     />
                   ))}
                 </div>
-              </div>
+              </CollapsiblePanel>
 
-              {/* Main Sliders */}
-              <div class="bg-white rounded-3xl p-6 shadow-lg border-4 border-black">
+              {/* Size Controls */}
+              <CollapsiblePanel
+                id="size"
+                title="Size & Shape"
+                color="green"
+                isExpanded={expandedLeftPanels.value.size}
+                onToggle={toggleLeftPanel}
+              >
                 <div class="space-y-8">
                   {sliderConfig
                     .filter((slider) => {
@@ -612,7 +644,7 @@ export default function ButtonStudio() {
                       );
                     })}
                 </div>
-              </div>
+              </CollapsiblePanel>
             </div>
 
             {/* Right Column - Customization Panels */}

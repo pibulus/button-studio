@@ -219,7 +219,7 @@ function playCustomSound(soundName: string, options: {
   }
 
   // Build file path - add .mp3 extension if not present
-  const fileName = soundName.endsWith('.mp3') ? soundName : `${soundName}.mp3`;
+  const fileName = soundName.endsWith(".mp3") ? soundName : `${soundName}.mp3`;
   const filePath = `${defaultConfig.basePath}${fileName}`;
 
   // Merge default config with provided options

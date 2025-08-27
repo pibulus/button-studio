@@ -19,7 +19,7 @@ export default function SoundDemoPage(props: PageProps) {
             Modular sound packs for beautiful webapps
           </p>
         </div>
-        
+
         <GradientSoundDemo />
       </div>
     </div>

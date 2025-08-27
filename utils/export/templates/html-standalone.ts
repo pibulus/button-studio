@@ -21,13 +21,13 @@ export function generateStandaloneHTML(
   const buttonStylesObj = generateButtonStyles(customization);
   // Convert style object to inline CSS string, filtering out CSS variables
   const buttonStyles = Object.entries(buttonStylesObj)
-    .filter(([key]) => !key.startsWith('--')) // Filter out CSS variables
+    .filter(([key]) => !key.startsWith("--")) // Filter out CSS variables
     .map(([key, value]) => {
       // Convert camelCase to kebab-case for CSS properties
-      const cssKey = key.replace(/([A-Z])/g, '-$1').toLowerCase();
+      const cssKey = key.replace(/([A-Z])/g, "-$1").toLowerCase();
       return `${cssKey}: ${value}`;
     })
-    .join('; ');
+    .join("; ");
   const buttonId = `voice-button-${Date.now()}`;
 
   return `<!DOCTYPE html>
@@ -88,9 +88,11 @@ export function generateStandaloneHTML(
             onclick="handleButtonClick()"
         >
             <span class="button-content">
-                ${customization.content.type === 'emoji' 
-                  ? customization.content.value 
-                  : customization.content.value || 'Boop me!'}
+                ${
+    customization.content.type === "emoji"
+      ? customization.content.value
+      : customization.content.value || "Boop me!"
+  }
             </span>
         </button>
         
@@ -539,7 +541,7 @@ export function generateStandaloneHTML(
 function getCustomCSS(customization: ButtonCustomization): string {
   // Generate custom CSS based on customization
   const { appearance, interactions, effects } = customization;
-  
+
   // Calculate sizes based on scale (match VoiceButton component sizing)
   const baseSize = appearance.shape === "circle" ? 120 : 160;
   const buttonSize = baseSize * appearance.scale;
@@ -555,28 +557,32 @@ function getCustomCSS(customization: ButtonCustomization): string {
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: ${interactions.fontWeight || 'bold'};
-      text-transform: ${interactions.textTransform || 'none'};
+      font-weight: ${interactions.fontWeight || "bold"};
+      text-transform: ${interactions.textTransform || "none"};
       transition: all ${interactions.animationSpeed || 1}s;
-      ${appearance.borderStyle ? `border-style: ${appearance.borderStyle};` : ''}
+      ${
+    appearance.borderStyle ? `border-style: ${appearance.borderStyle};` : ""
+  }
     }
     
     .voice-button:hover {
       transform: ${
-        interactions.hoverEffect === "squish"
-          ? `scale(${1 - (interactions.squishPower || 6) / 100})`
-          : interactions.hoverEffect === "grow"
-          ? "scale(1.05)"
-          : interactions.hoverEffect === "bright"
-          ? "brightness(1.1)"
-          : interactions.hoverEffect === "tilt"
-          ? "rotate(2deg)"
-          : `translateY(-${interactions.hoverLift || 2}px)`
-      };
+    interactions.hoverEffect === "squish"
+      ? `scale(${1 - (interactions.squishPower || 6) / 100})`
+      : interactions.hoverEffect === "grow"
+      ? "scale(1.05)"
+      : interactions.hoverEffect === "bright"
+      ? "brightness(1.1)"
+      : interactions.hoverEffect === "tilt"
+      ? "rotate(2deg)"
+      : `translateY(-${interactions.hoverLift || 2}px)`
+  };
     }
     
     .voice-button:active {
-      transform: scale(${1 - (interactions.squishPower || 6) / 100}) translateY(2px);
+      transform: scale(${
+    1 - (interactions.squishPower || 6) / 100
+  }) translateY(2px);
     }
     
     .button-content {
@@ -587,7 +593,9 @@ function getCustomCSS(customization: ButtonCustomization): string {
     }
     
     /* Effects */
-    ${effects.breathing ? `
+    ${
+    effects.breathing
+      ? `
     .voice-button {
       animation: breathing 3s ease-in-out infinite;
     }
@@ -595,9 +603,13 @@ function getCustomCSS(customization: ButtonCustomization): string {
       0%, 100% { transform: scale(1); }
       50% { transform: scale(1.05); }
     }
-    ` : ''}
+    `
+      : ""
+  }
     
-    ${effects.bounce ? `
+    ${
+    effects.bounce
+      ? `
     .voice-button {
       animation: bounce 2s ease-in-out infinite;
     }
@@ -605,9 +617,13 @@ function getCustomCSS(customization: ButtonCustomization): string {
       0%, 100% { transform: translateY(0); }
       50% { transform: translateY(-10px); }
     }
-    ` : ''}
+    `
+      : ""
+  }
     
-    ${effects.glow ? `
+    ${
+    effects.glow
+      ? `
     .voice-button {
       animation: glow 2s ease-in-out infinite;
     }
@@ -615,9 +631,13 @@ function getCustomCSS(customization: ButtonCustomization): string {
       0%, 100% { box-shadow: 0 0 20px rgba(255, 107, 157, 0.5); }
       50% { box-shadow: 0 0 40px rgba(255, 107, 157, 0.8); }
     }
-    ` : ''}
+    `
+      : ""
+  }
     
-    ${effects.pulse ? `
+    ${
+    effects.pulse
+      ? `
     .voice-button {
       animation: pulse 1.5s ease-in-out infinite;
     }
@@ -625,9 +645,13 @@ function getCustomCSS(customization: ButtonCustomization): string {
       0%, 100% { opacity: 1; }
       50% { opacity: 0.8; }
     }
-    ` : ''}
+    `
+      : ""
+  }
     
-    ${effects.shine ? `
+    ${
+    effects.shine
+      ? `
     .voice-button::after {
       content: '';
       position: absolute;
@@ -642,6 +666,8 @@ function getCustomCSS(customization: ButtonCustomization): string {
       0% { left: -100%; }
       50%, 100% { left: 100%; }
     }
-    ` : ''}
+    `
+      : ""
+  }
   `;
 }

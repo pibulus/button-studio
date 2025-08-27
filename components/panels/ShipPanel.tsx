@@ -135,7 +135,7 @@ export default function ShipPanel(
           )}
         </ul>
       </div>
-      
+
       {/* PWA Share Modal */}
       <PWAShareModal
         isOpen={showPWAModal.value}

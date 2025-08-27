@@ -30,7 +30,7 @@ import { buttonSounds } from "./synthEngine.ts";
 function createSoundMapping() {
   const mapping: Record<string, any> = {};
 
-  // Map each category from config to actual sound functions  
+  // Map each category from config to actual sound functions
   for (
     const [categoryName, categoryConfig] of Object.entries(SOUND_CATEGORIES)
   ) {
@@ -42,7 +42,7 @@ function createSoundMapping() {
         mapping[categoryName][actionName] = () => {
           // Get the sound file path from config
           const soundFile = soundGetter();
-          
+
           // Play the sound file directly using soundService
           soundService.playCustomSound(soundFile)?.catch(() => {});
         };

@@ -21,7 +21,7 @@
 export const SOUND_LIBRARY = {
   // INTERACTION SOUNDS - User interface feedback
   interactions: {
-    hover: "scroll-haptic", // Gentle hover feedback  
+    hover: "scroll-haptic", // Gentle hover feedback
     clickLight: "kenney/variations/click_001", // Light button clicks
     clickMedium: "kenney/variations/click_001_high", // Medium emphasis clicks
     clickHeavy: "echo-button", // Important action clicks
