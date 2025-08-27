@@ -78,9 +78,12 @@ sound-packs/
 - [x] Build convert-sounds.sh with ffmpeg pipeline
 - [x] Create GradientSoundDemo.tsx interactive showcase
 
-### Phase 2: Integration 🚀 NEXT STEPS FOR NEW CLAUDE
-- [ ] Run `./scripts/convert-sounds.sh` to process Kenney sounds
-- [ ] Create route `/sound-demo` for GradientSoundDemo
+### Phase 2: Integration ✅ IN PROGRESS!
+- [x] Run `./scripts/convert-sounds.sh` to process Kenney sounds
+- [x] Create route `/sound-demo` for GradientSoundDemo
+- [x] Create manifest.json with proper ButtonStudio mappings
+- [x] Fix import syntax for Deno compatibility (assert → with)
+- [x] Test demo at http://localhost:8001/sound-demo
 - [ ] Update ButtonStudio components to use SoundPack system
 - [ ] Replace current soundService calls with new system
 - [ ] Add pack switcher UI in CustomizationPanel
@@ -202,7 +205,19 @@ utils/audio/
 - ✅ Developer experience: Intuitive, discoverable API
 
 ## 💭 Future Claude Notes - START HERE! 
-Hey future Claude! You're picking up the **sounds branch** with the core modular sound system built:
+Hey future Claude! You're picking up the **sounds branch** with Phase 2 partially complete:
+
+### 🎯 Current Status (Dec 27, 2024)
+**What's Working:**
+- ✅ Sound pack system fully functional
+- ✅ 100 Kenney sounds converted and organized
+- ✅ Demo page at http://localhost:8001/sound-demo showing the modular system
+- ✅ Manifest properly maps sounds to ButtonStudio UI categories
+
+**What's NOT Done:**
+- ❌ ButtonStudio still uses old soundService (not SoundPack)
+- ❌ No UI for switching between sound packs
+- ❌ Export system doesn't include new sound packs
 
 ### 🎯 Main Goal: Modular Sound Pack System
 **Primary Mission**: Create a portable sound system that can be dropped into ANY webapp (especially Deno/Fresh projects). Think "npm install @softstack/sounds" simplicity.
@@ -214,12 +229,25 @@ Hey future Claude! You're picking up the **sounds branch** with the core modular
 4. **Manifest structure** - JSON-based pack configuration
 5. **Pitch variations** - Bonus feature for UI gradients (not the main focus)
 
-### 🚀 Your Priority Tasks:
-1. **Convert sounds**: Run `./scripts/convert-sounds.sh` to process Kenney pack
-2. **Integration**: Wire up SoundPack system to replace current soundService
-3. **Simple API**: Ensure `sounds.play('click')` just works everywhere
-4. **Pack switching**: Basic UI to swap between sound packs
-5. **Export ready**: Make it extractable to standalone package
+### 🚀 Your IMMEDIATE Next Steps:
+1. **Create SoundService adapter**: Bridge between old API and new SoundPack system
+   - Keep existing `playSound` calls working
+   - Load Kenney pack on app init
+   - Gradually migrate components
+
+2. **Add to ButtonStudio main app**: 
+   - Initialize SoundPackManager in ButtonStudio.tsx
+   - Keep old system as fallback during transition
+   
+3. **Simple pack switcher UI**:
+   - Add dropdown in CustomizationPanel
+   - Just "Classic" vs "Kenney" to start
+   - Store preference in localStorage
+
+4. **Test thoroughly**:
+   - Ensure all UI interactions have sounds
+   - Check performance with pack switching
+   - Verify export still works
 
 ### 🔧 Key Files to Know:
 ```
