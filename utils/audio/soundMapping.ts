@@ -102,11 +102,16 @@ function createPlaySoundInterface(): PlaySoundInterface {
       ) {
         if (typeof actionFunction === "function") {
           // Create camelCase function names: primaryButtons.click -> primaryClick
-          const functionName =
-            categoryName.replace("Controls", "").replace("Buttons", "").replace(
-              "Actions",
-              "",
-            ) +
+          // BUT keep "Panels" for gradientPanels!
+          let cleanCategoryName = categoryName;
+          if (categoryName !== "gradientPanels") {
+            cleanCategoryName = categoryName
+              .replace("Controls", "")
+              .replace("Buttons", "")
+              .replace("Actions", "")
+              .replace("Panels", "");
+          }
+          const functionName = cleanCategoryName + 
             actionName.charAt(0).toUpperCase() + actionName.slice(1);
           playSound[functionName] = actionFunction;
         }

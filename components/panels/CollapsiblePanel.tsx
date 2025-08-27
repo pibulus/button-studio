@@ -51,8 +51,7 @@ export default function CollapsiblePanel({
     return { backgroundColor: colors[colorKey] || colors.light };
   };
 
-  // 🎵 Play gradient sound based on panel color
-  // Now using the improved helper function - so much cleaner!
+  // 🎵 Play gradient sound based on panel color - each panel gets its unique tone!
   const playGradientSound = throttleSound(
     () => playSound.gradientPanel(color as any),
     200,
