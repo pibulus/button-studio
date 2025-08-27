@@ -9,7 +9,6 @@ import {
   defaultCustomization,
   sliderConfig,
 } from "../types/customization.ts";
-import { soundService } from "../utils/audio/soundService.ts";
 import { hapticService } from "../utils/audio/hapticService.ts";
 import { playSound } from "../utils/audio/soundMapping.ts";
 
@@ -113,7 +112,7 @@ export default function ButtonStudio() {
   // Welcome sound
   useEffect(() => {
     const timer = setTimeout(() => {
-      soundService.playSuccess();
+      playSound.primaryClick();
     }, 800);
     return () => clearTimeout(timer);
   }, []);
@@ -186,7 +185,7 @@ export default function ButtonStudio() {
       customization.value = newCustomization;
 
       setTimeout(() => {
-        soundService.playSuccess();
+        playSound.success();
         hapticService.celebration();
       }, 300);
     };
@@ -327,7 +326,7 @@ export default function ButtonStudio() {
                       playSound.primaryClick();
                       hapticService.buttonPress();
                     }}
-                    onMouseEnter={() => soundService.playButtonHover()}
+                    onMouseEnter={() => playSound.hover()}
                     class={`px-6 py-3 rounded-full border-3 border-black font-black text-base transition-all hover:scale-105 active:scale-95 flex items-center gap-3 ${
                       voiceEnabled.value
                         ? "bg-green-300 hover:bg-green-400 shadow-lg"
@@ -378,7 +377,7 @@ export default function ButtonStudio() {
                     {/* Shuffle Button */}
                     <button
                       onClick={(e) => {
-                        soundService.playDiceRoll();
+                        playSound.primaryClick();
                         hapticService.diceRoll();
 
                         const btn = e.currentTarget;
@@ -394,7 +393,7 @@ export default function ButtonStudio() {
                         document.dispatchEvent(event);
                       }}
                       onMouseEnter={(e) => {
-                        soundService.playButtonHover();
+                        playSound.hover();
                         e.currentTarget.style.transform =
                           "scale(1.08) rotate(3deg)";
                       }}
@@ -438,7 +437,7 @@ export default function ButtonStudio() {
                           playSound.primaryClick();
                           hapticService.buttonPress();
                         }}
-                        onMouseEnter={() => soundService.playButtonHover()}
+                        onMouseEnter={() => playSound.hover()}
                         placeholder="Type your button text..."
                         maxLength={25}
                         class="w-full px-5 py-4 text-xl font-black bg-white border-4 border-black rounded-2xl focus:bg-orange-50 focus:shadow-lg hover:bg-pink-50 hover:shadow-md hover:-translate-y-0.5 focus:outline-none transition-all duration-300 text-center"
@@ -454,14 +453,14 @@ export default function ButtonStudio() {
                       onClick={() => {
                         handleVoiceToggle(!voiceEnabled.value);
                         if (!voiceEnabled.value) {
-                          soundService.playSuccess();
+                          playSound.success();
                           hapticService.toggleOn();
                         } else {
                           playSound.primaryClick();
                           hapticService.toggleOff();
                         }
                       }}
-                      onMouseEnter={() => soundService.playButtonHover()}
+                      onMouseEnter={() => playSound.hover()}
                       class={`px-8 py-4 rounded-2xl border-4 border-black transition-all duration-300 font-black text-xl hover:scale-105 active:scale-95 ${
                         voiceEnabled.value
                           ? "bg-green-300 hover:bg-green-400 text-black"

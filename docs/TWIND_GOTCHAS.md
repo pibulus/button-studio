@@ -2,26 +2,30 @@
 
 ## The Dynamic Class Problem That Will Drive You Insane
 
-**DATE**: 2025-08-27
-**TIME WASTED**: ~1 hour
-**FRUSTRATION LEVEL**: 🤬🤬🤬🤬🤬
+**DATE**: 2025-08-27 **TIME WASTED**: ~1 hour **FRUSTRATION LEVEL**: 🤬🤬🤬🤬🤬
 
 ### The Problem
 
-Twind (Tailwind CSS-in-JS) DOES NOT process dynamic classes reliably across different component contexts in Fresh/Deno.
+Twind (Tailwind CSS-in-JS) DOES NOT process dynamic classes reliably across
+different component contexts in Fresh/Deno.
 
-**What happened**: 
-- CollapsiblePanel component with `bg-${color}-200` classes worked in CustomizationPanel.tsx
+**What happened**:
+
+- CollapsiblePanel component with `bg-${color}-200` classes worked in
+  CustomizationPanel.tsx
 - SAME EXACT component with SAME EXACT props didn't work in ButtonStudio.tsx
-- Classes were in the safelist, server was restarted, everything "should" have worked
+- Classes were in the safelist, server was restarted, everything "should" have
+  worked
 - But the panels stayed white. Forever. Until we added inline styles.
 
 ### Why This Happens
 
 1. **Twind only processes classes it can "see" at build time**
-2. **Dynamic string interpolation breaks this** - `bg-${color}-200` is invisible to Twind
+2. **Dynamic string interpolation breaks this** - `bg-${color}-200` is invisible
+   to Twind
 3. **Safelist only partially helps** - works in some contexts, not others
-4. **Fresh's island architecture makes it worse** - different components get different processing
+4. **Fresh's island architecture makes it worse** - different components get
+   different processing
 
 ### The Solution That Actually Works
 
@@ -92,4 +96,6 @@ Check this file first. Add inline styles. Save an hour of your life.
 
 ---
 
-*"The definition of insanity is doing the same thing over and over and expecting different results. With Twind, the definition of sanity is using inline styles as backup."* - Claude, after an hour of debugging
+_"The definition of insanity is doing the same thing over and over and expecting
+different results. With Twind, the definition of sanity is using inline styles
+as backup."_ - Claude, after an hour of debugging

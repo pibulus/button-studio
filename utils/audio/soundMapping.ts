@@ -18,6 +18,7 @@
 import { SOUND_CATEGORIES } from "./soundConfig.ts";
 import { soundService } from "./soundService.ts";
 import { buttonSounds } from "./synthEngine.ts";
+import { throttleSound } from "./throttledSound.ts";
 
 /**
  * Dynamic Sound Mapping - Connects config to actual playback
@@ -111,6 +112,25 @@ function createPlaySoundInterface() {
 
   // Add special convenience functions
   playSound.soundPreview = SOUND_MAPPING.soundPreview.preview;
+
+  // Add throttled versions for high-frequency sounds
+  playSound.sliderStepThrottled = throttleSound(
+    playSound.sliderStep || (() => {}),
+    150,
+    "slider-step",
+  );
+
+  playSound.hoverThrottled = throttleSound(
+    playSound.hover || (() => {}),
+    200,
+    "hover",
+  );
+
+  playSound.gradientPanelThrottled = throttleSound(
+    playSound.gradientPanel || (() => {}),
+    300,
+    "gradient-panel",
+  );
 
   return playSound;
 }

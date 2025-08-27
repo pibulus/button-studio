@@ -1,6 +1,6 @@
 import { ComponentChildren } from "preact";
 import { playSound } from "../../utils/audio/soundMapping.ts";
-import { soundService } from "../../utils/audio/soundService.ts";
+import { throttleSound } from "../../utils/audio/throttledSound.ts";
 
 interface CollapsiblePanelProps {
   id: string;
@@ -52,20 +52,25 @@ export default function CollapsiblePanel({
   };
 
   // 🎵 Play gradient sound based on panel color
-  const playGradientSound = () => {
-    // Map panel colors to their gradient sound files
-    const gradientSounds: Record<string, string> = {
-      red: "kenney/variations/pluck_001_low",
-      orange: "kenney/variations/pluck_001",
-      yellow: "kenney/variations/pluck_001_high",
-      purple: "kenney/variations/glass_001_high",
-      cyan: "kenney/variations/glass_001",
-      green: "kenney/variations/glass_001_low",
-    };
+  // Using the sound system's built-in gradient panel sounds!
+  const playGradientSound = throttleSound(
+    () => {
+      // The sound system has gradient functions for each color
+      const gradientFunctionName = `gradientPanels${
+        color.charAt(0).toUpperCase()
+      }${color.slice(1)}`;
+      const soundFunction = (playSound as any)[gradientFunctionName];
 
-    const soundFile = gradientSounds[color] || "scroll-haptic";
-    soundService.playCustomSound(soundFile)?.catch(() => {});
-  };
+      if (soundFunction && typeof soundFunction === "function") {
+        soundFunction();
+      } else {
+        // Fallback to generic hover sound if color not found
+        playSound.hover();
+      }
+    },
+    200,
+    `gradient-panel-${id}`,
+  ); // Throttle per panel with unique key
 
   return (
     <div class="bg-white rounded-3xl shadow-lg border-4 border-black overflow-hidden">

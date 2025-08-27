@@ -175,18 +175,18 @@ export default {
         // Our panel colors
         panel: {
           red: "#fecaca",
-          orange: "#fed7aa", 
+          orange: "#fed7aa",
           yellow: "#fef3c7",
           purple: "#e9d5ff",
           cyan: "#cffafe",
           green: "#d1fae5",
-        }
+        },
       },
 
       // Additional border widths for chunky borders
       borderWidth: {
-        '3': '3px',
-        '5': '5px',
+        "3": "3px",
+        "5": "5px",
       },
     },
   },
