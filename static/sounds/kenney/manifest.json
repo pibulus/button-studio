@@ -1,0 +1,81 @@
+{
+  "name": "kenney",
+  "version": "1.0.0",
+  "author": "Kenney.nl",
+  "license": "CC0",
+  "description": "High-quality interface sounds",
+  "formats": {
+    "preferred": ["mp3", "ogg", "wav"],
+    "fallback": "synth"
+  },
+  "sounds": {
+    "click": {
+      "primary": {
+        "default": "original/click_003",
+        "variants": ["original/click_001", "original/click_002", "original/click_004", "original/click_005"]
+      },
+      "secondary": "original/click_001",
+      "soft": "original/tick_001"
+    },
+    "hover": {
+      "default": "original/scroll_001",
+      "gentle": "original/tick_002",
+      "quick": "original/select_001"
+    },
+    "panel": {
+      "open": "original/open_002",
+      "close": "original/close_002",
+      "toggle": "original/switch_003"
+    },
+    "record": {
+      "start": "original/maximize_001",
+      "stop": "original/minimize_001",
+      "cancel": "original/back_001"
+    },
+    "feedback": {
+      "success": "original/confirmation_002",
+      "error": "original/error_003",
+      "warning": "original/question_002"
+    },
+    "navigation": {
+      "forward": "original/select_003",
+      "back": "original/back_002",
+      "switch": "original/switch_001"
+    },
+    "slider": {
+      "step": "original/tick_004",
+      "drag": "original/scroll_003"
+    },
+    "toggle": {
+      "on": "original/toggle_001",
+      "off": "original/toggle_002"
+    },
+    "special": {
+      "glass": "original/glass_001",
+      "pluck": "original/pluck_001",
+      "bong": "original/bong_001",
+      "glitch": "original/glitch_001"
+    }
+  },
+  "gradients": {
+    "click.primary": {
+      "baseSound": "original/click_003",
+      "type": "pitch",
+      "range": 8,
+      "scale": "pentatonic"
+    },
+    "panel.toggle": {
+      "baseSound": "original/switch_003",
+      "type": "pitch",
+      "range": 12,
+      "scale": "major"
+    }
+  },
+  "haptics": {
+    "click": "light",
+    "panel": "medium",
+    "record": "heavy",
+    "success": "medium",
+    "error": "heavy"
+  }
+}

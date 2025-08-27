@@ -7,7 +7,9 @@ import * as $_app from "./routes/_app.tsx";
 import * as $b_id_ from "./routes/b/[id].tsx";
 import * as $button_lab from "./routes/button-lab.tsx";
 import * as $index from "./routes/index.tsx";
+import * as $sound_demo from "./routes/sound-demo.tsx";
 import * as $ButtonStudio from "./islands/ButtonStudio.tsx";
+import * as $GradientSoundDemo from "./islands/GradientSoundDemo.tsx";
 import type { Manifest } from "$fresh/server.ts";
 
 const manifest = {
@@ -17,9 +19,11 @@ const manifest = {
     "./routes/b/[id].tsx": $b_id_,
     "./routes/button-lab.tsx": $button_lab,
     "./routes/index.tsx": $index,
+    "./routes/sound-demo.tsx": $sound_demo,
   },
   islands: {
     "./islands/ButtonStudio.tsx": $ButtonStudio,
+    "./islands/GradientSoundDemo.tsx": $GradientSoundDemo,
   },
   baseUrl: import.meta.url,
 } satisfies Manifest;
