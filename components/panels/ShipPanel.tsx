@@ -83,6 +83,7 @@ export default function ShipPanel(
         <div class="space-y-3">
           <button
             onClick={() => handleExport("html")}
+            onMouseEnter={() => playSound.hover()}
             type="button"
             class="w-full px-6 py-4 rounded-2xl border-3 border-black font-black transition-all shadow-lg hover:shadow-xl active:scale-95 bg-white text-black hover:bg-yellow-50"
           >
@@ -91,6 +92,7 @@ export default function ShipPanel(
 
           <button
             onClick={() => handleExport("pwa")}
+            onMouseEnter={() => playSound.hover()}
             type="button"
             class="w-full px-6 py-4 rounded-2xl border-3 border-black font-black transition-all shadow-lg hover:shadow-xl active:scale-95 bg-white text-black hover:bg-yellow-50"
           >
@@ -103,6 +105,7 @@ export default function ShipPanel(
               playSound.primaryClick();
               showPWAModal.value = true;
             }}
+            onMouseEnter={() => playSound.hover()}
             type="button"
             class="w-full px-6 py-4 rounded-2xl border-3 border-black font-black transition-all shadow-lg hover:shadow-xl active:scale-95 bg-gradient-to-r from-purple-500 to-pink-500 text-white"
           >
@@ -111,6 +114,7 @@ export default function ShipPanel(
 
           <button
             onClick={() => handleExport("share")}
+            onMouseEnter={() => playSound.hover()}
             type="button"
             class="w-full px-6 py-4 rounded-2xl border-3 border-black font-black transition-all shadow-lg hover:shadow-xl active:scale-95 bg-white text-black hover:bg-yellow-50"
           >

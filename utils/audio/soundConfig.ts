@@ -21,61 +21,73 @@
 export const SOUND_LIBRARY = {
   // INTERACTION SOUNDS - User interface feedback
   interactions: {
-    hover: "scroll-haptic.mp3", // Gentle hover feedback
-    clickLight: "echo-button.mp3", // Light button clicks
-    clickMedium: "computer-ready.mp3", // Medium emphasis clicks
-    clickHeavy: "KidsCheer.mp3", // Important action clicks
-    toggleOn: "toggle-on.mp3", // Switch/toggle activation
-    toggleOff: "toggle-off.mp3", // Switch/toggle deactivation
+    hover: "scroll-haptic", // Gentle hover feedback  
+    clickLight: "kenney/variations/click_001", // Light button clicks
+    clickMedium: "kenney/variations/click_001_high", // Medium emphasis clicks
+    clickHeavy: "echo-button", // Important action clicks
+    toggleOn: "pop-on", // Switch/toggle activation
+    toggleOff: "pop-off", // Switch/toggle deactivation
   },
 
   // NAVIGATION SOUNDS - Panel and section changes
   navigation: {
-    panelOpen: "panel-swoosh.mp3", // Opening panels/sections
-    panelClose: "panel-close.mp3", // Closing panels/sections
-    tabSwitch: "tab-switch.mp3", // Switching between tabs
-    pageTransition: "page-transition.mp3", // Major page changes
+    panelOpen: "kenney/variations/maximize_001", // Opening panels/sections
+    panelClose: "kenney/variations/minimize_001", // Closing panels/sections
+    tabSwitch: "kenney/variations/switch_001", // Switching between tabs
+    pageTransition: "kenney/variations/open_001", // Major page changes
   },
 
   // SELECTION SOUNDS - Choosing options and values
   selection: {
-    colorPick: "echo-button.mp3", // Color selection
-    shapeSelect: "shape-select.mp3", // Shape/option selection
-    themeChange: "theme-change.mp3", // Theme switching
-    presetSelect: "preset-select.mp3", // Preset selection
+    colorPick: "paste-drop", // Color selection
+    shapeSelect: "kenney/variations/select_001", // Shape/option selection
+    themeChange: "kenney/variations/confirmation_001", // Theme switching
+    presetSelect: "kenney/variations/select_001_high", // Preset selection
   },
 
   // CONTROL SOUNDS - Sliders and input controls
   controls: {
-    sliderStep: "slider-step.mp3", // Slider movement steps
-    sliderRelease: "slider-release.mp3", // Slider release
-    inputFocus: "input-focus.mp3", // Input field focus
-    inputBlur: "input-blur.mp3", // Input field blur
+    sliderStep: "kenney/variations/tick_001", // Slider movement steps
+    sliderRelease: "grab-pop", // Slider release
+    inputFocus: "kenney/variations/open_001", // Input field focus
+    inputBlur: "kenney/variations/close_001", // Input field blur
   },
 
   // FEEDBACK SOUNDS - Success, error, completion
   feedback: {
-    success: "computer-ready.mp3", // Successful actions
-    error: "error-beep.mp3", // Error states
-    warning: "warning-chime.mp3", // Warning states
-    completion: "task-complete.mp3", // Task completion
-    celebration: "KidsCheer.mp3", // Special celebrations
+    success: "download", // Successful actions
+    error: "sweet-error", // Error states
+    warning: "error-banjo", // Warning states
+    completion: "computer-ready", // Task completion
+    celebration: "KidsCheer", // Special celebrations
   },
 
   // EXPORT SOUNDS - Copy, save, export actions
   export: {
-    copy: "copy-success.mp3", // Clipboard copy
-    save: "save-success.mp3", // Save operations
-    export: "export-complete.mp3", // Export operations
-    share: "share-success.mp3", // Share operations
+    copy: "download", // Clipboard copy
+    save: "kenney/variations/confirmation_001", // Save operations
+    export: "computer-ready", // Export operations
+    share: "kenney/variations/glass_001", // Share operations
   },
 
   // SPECIAL SOUNDS - App-specific unique actions
   special: {
-    diceRoll: "dice-roll.mp3", // Random/surprise actions
-    magic: "magic-sparkle.mp3", // Special effects
-    unlock: "unlock-feature.mp3", // Feature unlocks
-    achievement: "achievement.mp3", // Achievements
+    diceRoll: "grab-pop", // Random/surprise actions
+    magic: "kenney/variations/bong_001", // Special effects
+    unlock: "kenney/variations/glass_001_high", // Feature unlocks
+    achievement: "KidsCheer", // Achievements
+  },
+
+  // GRADIENT SOUNDS - Progressive pitch variations for color-coded panels
+  gradient: {
+    red: "kenney/variations/pluck_001_low", // Deepest tone
+    orange: "kenney/variations/pluck_001", // Mid-low tone
+    yellow: "kenney/variations/pluck_001_high", // Mid-high tone
+    purple: "kenney/variations/glass_001_high", // Highest tone
+    green: "kenney/variations/select_001", // Alternative mid tone
+    blue: "kenney/variations/select_001_high", // Alternative high tone
+    pink: "kenney/variations/glass_001", // Alternative glass tone
+    cyan: "kenney/variations/glass_001_low", // Alternative low glass
   },
 };
 
@@ -159,6 +171,19 @@ export const SOUND_CATEGORIES = {
     celebration: () => SOUND_LIBRARY.feedback.celebration,
     hover: () => SOUND_LIBRARY.interactions.hover,
     description: "Dice rolls, surprise actions, celebrations",
+  },
+
+  // GRADIENT PANEL SOUNDS - Progressive tones for color-coded panels
+  gradientPanels: {
+    red: () => SOUND_LIBRARY.gradient.red,
+    orange: () => SOUND_LIBRARY.gradient.orange,
+    yellow: () => SOUND_LIBRARY.gradient.yellow,
+    purple: () => SOUND_LIBRARY.gradient.purple,
+    green: () => SOUND_LIBRARY.gradient.green,
+    blue: () => SOUND_LIBRARY.gradient.blue,
+    pink: () => SOUND_LIBRARY.gradient.pink,
+    cyan: () => SOUND_LIBRARY.gradient.cyan,
+    description: "Progressive pitch variations for colored UI panels",
   },
 };
 

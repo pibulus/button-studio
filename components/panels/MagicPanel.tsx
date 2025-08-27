@@ -33,6 +33,7 @@ export default function MagicPanel({
               playSound.toggleOn();
               hapticService.buttonPress();
             }}
+            onMouseEnter={() => playSound.hover()}
             class={`w-full px-6 py-4 rounded-2xl border-3 border-black font-black transition-all shadow-lg hover:shadow-xl active:scale-95 ${
               voiceEnabled
                 ? "bg-purple-200 text-black shadow-xl scale-105"

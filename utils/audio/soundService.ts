@@ -208,11 +208,67 @@ if (typeof window !== "undefined") {
   initSoundSettings();
 }
 
+// Play a custom sound file by name (without extension)
+function playCustomSound(soundName: string, options: {
+  volume?: number;
+  delay?: number;
+} = {}): Promise<void> {
+  // Skip if sounds are disabled or audio not supported
+  if (!soundsEnabled || !hasAudioSupport) {
+    return Promise.resolve();
+  }
+
+  // Build file path - add .mp3 extension if not present
+  const fileName = soundName.endsWith('.mp3') ? soundName : `${soundName}.mp3`;
+  const filePath = `${defaultConfig.basePath}${fileName}`;
+
+  // Merge default config with provided options
+  const config = {
+    volume: options.volume ?? defaultConfig.volume,
+    delay: options.delay ?? defaultConfig.delay,
+  };
+
+  return new Promise((resolve, reject) => {
+    try {
+      // Create audio element
+      const audio = new Audio(filePath);
+      audio.volume = config.volume;
+
+      // Setup event listeners
+      audio.addEventListener("ended", () => {
+        resolve();
+      });
+
+      audio.addEventListener("error", (error) => {
+        console.warn(`Error playing custom sound "${soundName}":`, error);
+        reject(error);
+      });
+
+      // Play with delay
+      setTimeout(() => {
+        audio.play().catch((error) => {
+          // Silently ignore autoplay policy errors
+          if (error.name === "NotAllowedError") {
+            resolve();
+          } else {
+            console.warn(`Error playing custom sound "${soundName}":`, error);
+            reject(error);
+          }
+        });
+      }, config.delay * 1000);
+    } catch (error) {
+      console.warn("Audio playback error:", error);
+      reject(error);
+    }
+  });
+}
+
 // Export the main sound service
 export const soundService = {
   init: initSoundSettings,
   isSoundEnabled,
   setSoundEnabled,
   playSound,
+  playCustomSound,
   ...buttonStudioSounds,
 };

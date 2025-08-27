@@ -1,5 +1,6 @@
 import { ComponentChildren } from "preact";
 import { playSound } from "../../utils/audio/soundMapping.ts";
+import { soundService } from "../../utils/audio/soundService.ts";
 
 interface CollapsiblePanelProps {
   id: string;
@@ -30,13 +31,27 @@ export default function CollapsiblePanel({
     return colors[colorKey as keyof typeof colors] || colors.light;
   };
 
+  // 🎵 Play gradient sound based on panel color
+  const playGradientSound = () => {
+    // Map panel colors to their gradient sound files
+    const gradientSounds: Record<string, string> = {
+      red: "kenney/variations/pluck_001_low",
+      orange: "kenney/variations/pluck_001", 
+      yellow: "kenney/variations/pluck_001_high",
+      purple: "kenney/variations/glass_001_high",
+    };
+    
+    const soundFile = gradientSounds[color] || "scroll-haptic";
+    soundService.playCustomSound(soundFile)?.catch(() => {});
+  };
+
 
   return (
     <div class="bg-white rounded-3xl shadow-lg border-4 border-black overflow-hidden">
       <button
         type="button"
         onClick={() => onToggle(id)}
-        onMouseEnter={() => playSound.hover()}
+        onMouseEnter={() => playGradientSound()}
         class={`w-full px-8 py-6 text-left font-black text-black transition-all duration-200 ${
           getBackgroundColor(color)
         } shadow-sm hover:shadow-md active:shadow-sm`}

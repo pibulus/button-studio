@@ -34,14 +34,21 @@ export default function FeelPanel({
               type="button"
               key={effect}
               onClick={() => {
+                const isCurrentlyOn = customization
+                  .effects[effect as keyof ButtonCustomization["effects"]];
                 updateEffect(
                   effect as keyof ButtonCustomization["effects"],
-                  !customization
-                    .effects[effect as keyof ButtonCustomization["effects"]],
+                  !isCurrentlyOn,
                 );
-                playSound.toggleOn();
+                // Play appropriate sound based on toggle state
+                if (isCurrentlyOn) {
+                  playSound.toggleOff();
+                } else {
+                  playSound.toggleOn();
+                }
                 hapticService.buttonPress();
               }}
+              onMouseEnter={() => playSound.hover()}
               class={`px-6 py-4 rounded-2xl border-3 border-black font-black transition-all shadow-lg hover:shadow-xl active:scale-95 ${
                 customization
                     .effects[effect as keyof ButtonCustomization["effects"]]
@@ -68,14 +75,21 @@ export default function FeelPanel({
               type="button"
               key={effect}
               onClick={() => {
+                const isCurrentlyOn = customization
+                  .effects[effect as keyof ButtonCustomization["effects"]];
                 updateEffect(
                   effect as keyof ButtonCustomization["effects"],
-                  !customization
-                    .effects[effect as keyof ButtonCustomization["effects"]],
+                  !isCurrentlyOn,
                 );
-                playSound.toggleOn();
+                // Play appropriate sound based on toggle state
+                if (isCurrentlyOn) {
+                  playSound.toggleOff();
+                } else {
+                  playSound.toggleOn();
+                }
                 hapticService.buttonPress();
               }}
+              onMouseEnter={() => playSound.hover()}
               class={`px-6 py-4 rounded-2xl border-3 border-black font-black transition-all shadow-lg hover:shadow-xl active:scale-95 ${
                 customization
                     .effects[effect as keyof ButtonCustomization["effects"]]

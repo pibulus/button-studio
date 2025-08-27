@@ -30,7 +30,7 @@ import { buttonSounds } from "./synthEngine.ts";
 function createSoundMapping() {
   const mapping: Record<string, any> = {};
 
-  // Map each category from config to actual sound functions
+  // Map each category from config to actual sound functions  
   for (
     const [categoryName, categoryConfig] of Object.entries(SOUND_CATEGORIES)
   ) {
@@ -39,54 +39,12 @@ function createSoundMapping() {
     // For each action in the category, create the actual function call
     for (const [actionName, soundGetter] of Object.entries(categoryConfig)) {
       if (typeof soundGetter === "function" && actionName !== "description") {
-        const soundFile = soundGetter();
         mapping[categoryName][actionName] = () => {
-          // Wrap all sound calls to handle autoplay errors gracefully
-          try {
-            // Map sound files to soundService functions
-            if (soundFile.includes("panel")) {
-              if (actionName === "expand") {
-                soundService.playPanelOpen()?.catch(() => {});
-              } else soundService.playPanelClose()?.catch(() => {});
-            } else if (soundFile.includes("toggle")) {
-              if (actionName === "on") {
-                soundService.playToggleOn()?.catch(() => {});
-              } else soundService.playToggleOff()?.catch(() => {});
-            } else if (soundFile.includes("slider")) {
-              if (actionName === "step") {
-                soundService.playSliderStep()?.catch(() => {});
-              } else soundService.playSliderRelease()?.catch(() => {});
-            } else if (soundFile.includes("color")) {
-              soundService.playColorSelect()?.catch(() => {});
-            } else if (soundFile.includes("copy")) {
-              buttonSounds.playSage()?.catch(() => {});
-            } else if (soundFile.includes("export")) {
-              buttonSounds.playPearl()?.catch(() => {});
-            } else if (soundFile.includes("dice")) {
-              soundService.playDiceRoll()?.catch(() => {});
-            } else if (soundFile.includes("celebration")) {
-              soundService.playCelebration()?.catch(() => {});
-            } else if (soundFile.includes("hover")) {
-              soundService.playButtonHover()?.catch(() => {});
-            } else {
-              // Default mappings based on action type
-              if (actionName === "click") {
-                if (categoryName === "primaryButtons") {
-                  buttonSounds.playCoral()?.catch(() => {});
-                } else if (categoryName === "secondaryButtons") {
-                  buttonSounds.playAmber()?.catch(() => {});
-                } else soundService.playButtonClick()?.catch(() => {});
-              } else if (actionName === "select") {
-                buttonSounds.playAmber()?.catch(() => {});
-              } else if (actionName === "deselect") {
-                buttonSounds.playSlate()?.catch(() => {});
-              } else if (actionName === "hover") {
-                soundService.playButtonHover()?.catch(() => {});
-              }
-            }
-          } catch (error) {
-            // Silently ignore any sound errors
-          }
+          // Get the sound file path from config
+          const soundFile = soundGetter();
+          
+          // Play the sound file directly using soundService
+          soundService.playCustomSound(soundFile)?.catch(() => {});
         };
       }
     }

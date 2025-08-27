@@ -31,6 +31,7 @@ export default function DesignPanel(
                 playSound.selectionSelect();
                 hapticService.buttonPress();
               }}
+              onMouseEnter={() => playSound.hover()}
               aria-label={`Select ${label} shape`}
               aria-pressed={customization.appearance.shape === shape}
               class={`px-6 py-4 rounded-2xl border-3 border-black font-black transition-all shadow-lg hover:shadow-xl active:scale-95 ${
@@ -63,6 +64,7 @@ export default function DesignPanel(
                 playSound.selectionSelect();
                 hapticService.buttonPress();
               }}
+              onMouseEnter={() => playSound.hover()}
               aria-label={`Select ${label} border style`}
               aria-pressed={customization.appearance.borderStyle === value}
               class={`px-6 py-4 rounded-2xl border-3 border-black font-black transition-all shadow-lg hover:shadow-xl active:scale-95 ${
