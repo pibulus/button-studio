@@ -202,30 +202,24 @@ utils/audio/
 - ✅ Developer experience: Intuitive, discoverable API
 
 ## 💭 Future Claude Notes - START HERE! 
-Hey future Claude! You're picking up the **sounds branch** with major architecture complete:
+Hey future Claude! You're picking up the **sounds branch** with the core modular sound system built:
+
+### 🎯 Main Goal: Modular Sound Pack System
+**Primary Mission**: Create a portable sound system that can be dropped into ANY webapp (especially Deno/Fresh projects). Think "npm install @softstack/sounds" simplicity.
 
 ### ✅ What Previous Claude Built:
-1. **AudioProcessor.ts** - Web Audio API with pitch shifting, gradients, effects
-2. **SoundPack.ts** - Modular pack system with manifest-based loading
-3. **GradientSoundMapper** - Maps visual gradients to audio pitches (Pablo's idea!)
-4. **convert-sounds.sh** - FFmpeg pipeline for processing
-5. **GradientSoundDemo.tsx** - Interactive demo component
+1. **SoundPack.ts** - CORE: Modular pack system with manifest-based loading
+2. **AudioProcessor.ts** - Processing engine (format conversion, pitch shifting, effects)
+3. **convert-sounds.sh** - FFmpeg pipeline for batch processing sounds
+4. **Manifest structure** - JSON-based pack configuration
+5. **Pitch variations** - Bonus feature for UI gradients (not the main focus)
 
-### 🎯 Pablo's Vision Realized:
-> "id like the ability to pitch a sound too so we can use the same sound across different elements but just like with like different tones etc, so like a gradient set of buttons say for example 4 buttons in a gradient color scheme, can use the same sound but at different tones or octaves"
-
-**THIS IS NOW BUILT!** The gradient system works beautifully:
-- Visual gradients → Audio pitch gradients
-- Harmonic modes for musical intervals
-- Real-time pitch shifting without speed changes
-- Range control (2-24 semitones)
-
-### 🚀 Your Next Steps:
-1. **Run conversion**: `./scripts/convert-sounds.sh` (converts Kenney sounds)
-2. **Test the demo**: Create route for GradientSoundDemo.tsx
-3. **Integration**: Replace current soundService with new SoundPack system
-4. **UI**: Add pack switcher to CustomizationPanel
-5. **Export**: Make buttons use gradient sounds when exported
+### 🚀 Your Priority Tasks:
+1. **Convert sounds**: Run `./scripts/convert-sounds.sh` to process Kenney pack
+2. **Integration**: Wire up SoundPack system to replace current soundService
+3. **Simple API**: Ensure `sounds.play('click')` just works everywhere
+4. **Pack switching**: Basic UI to swap between sound packs
+5. **Export ready**: Make it extractable to standalone package
 
 ### 🔧 Key Files to Know:
 ```
@@ -243,16 +237,20 @@ scripts/
 └── convert-sounds.sh      # Run this first! (NEW)
 ```
 
-### 💡 Architecture Decisions:
-- **Web Audio API** for real-time pitch shifting (no server needed!)
-- **Manifest-based** packs for easy theme switching
-- **Format detection** - auto-picks mp3/ogg based on browser
-- **Gradient mapping** - visual→audio with musical scales
+### 💡 Core Architecture:
+- **Manifest-based packs** - Easy theme switching via JSON config
+- **Format auto-detection** - mp3/ogg/wav based on browser support  
+- **Simple API** - `sounds.play('click')` with optional variants
+- **Portable** - Works with Deno, Node, vanilla JS
+- **Bonus features** - Pitch shifting, effects (nice to have, not core)
 
-### 🎪 The Magic Is Working:
-The system is **80/20 perfect** - simple API but powerful capabilities. Pablo wanted gradient sounds and we delivered! Keep it simple, keep it magical.
-
-**Remember**: This is a living system - improve it, but keep the core vision!
+### 🎯 Remember the Focus:
+This is about creating a **reusable sound system** for ALL SoftStack apps:
+- Drop-in replacement for any webapp's sound needs
+- Pack-based for easy customization
+- Simple enough for `sounds.play('click')`
+- Powerful enough for complex apps
+- **Not** just about gradients (that's just one cool feature)
 
 ## 🔥 Quick Start Commands
 ```bash
