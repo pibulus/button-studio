@@ -25,8 +25,8 @@ interface CustomizationPanelProps {
 const expandedPanels = signal<Record<string, boolean>>({
   design: true,
   feel: false,
-  magic: false,
   ship: false,
+  magic: false,
 });
 
 export default function CustomizationPanel({
@@ -144,6 +144,19 @@ export default function CustomizationPanel({
       </CollapsiblePanel>
 
       <CollapsiblePanel
+        id="ship"
+        title="Ship"
+        color="yellow"
+        isExpanded={expandedPanels.value.ship}
+        onToggle={togglePanel}
+      >
+        <ShipPanel
+          customization={customization}
+          apiKeyValue={apiKeyValue}
+        />
+      </CollapsiblePanel>
+
+      <CollapsiblePanel
         id="magic"
         title="Magic"
         color="purple"
@@ -157,19 +170,6 @@ export default function CustomizationPanel({
           onApiKeyChange={onApiKeyChange}
           customPromptValue={customPromptValue}
           onCustomPromptChange={onCustomPromptChange}
-        />
-      </CollapsiblePanel>
-
-      <CollapsiblePanel
-        id="ship"
-        title="Ship"
-        color="yellow"
-        isExpanded={expandedPanels.value.ship}
-        onToggle={togglePanel}
-      >
-        <ShipPanel
-          customization={customization}
-          apiKeyValue={apiKeyValue}
         />
       </CollapsiblePanel>
     </>
