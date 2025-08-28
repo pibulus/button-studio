@@ -82,13 +82,13 @@ export default function CollapsiblePanel({
         class="h-12 w-full px-4 flex items-center justify-between rounded-t-2xl border-b-2 border-black/80 font-semibold hover:-translate-y-[1px] hover:shadow-md transition-all duration-120 ease-out"
         style={getInlineStyle(color)}
       >
-        <span>{title}</span>
+        <span class="text-sm">{title}</span>
         <span class={`transition-transform duration-300 ${isExpanded ? "rotate-180" : ""}`}>
           ▾
         </span>
       </button>
       {isExpanded && (
-        <div class="p-6 bg-white">
+        <div class="p-4 bg-white">
           {children}
         </div>
       )}

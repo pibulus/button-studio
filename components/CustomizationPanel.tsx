@@ -115,7 +115,7 @@ export default function CustomizationPanel({
   };
 
   return (
-    <>
+    <div class="space-y-4">
       <CollapsiblePanel
         id="design"
         title="Design"
@@ -172,6 +172,6 @@ export default function CustomizationPanel({
           onCustomPromptChange={onCustomPromptChange}
         />
       </CollapsiblePanel>
-    </>
+    </div>
   );
 }

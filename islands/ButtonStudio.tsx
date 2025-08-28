@@ -278,14 +278,20 @@ export default function ButtonStudio() {
         </div>
       )}
 
-      {/* Header */}
-      <header class="container mx-auto px-6 pt-12 pb-6">
+      {/* Header - Restored typography with proper font weight */}
+      <header class="container mx-auto px-6 pt-12 pb-3">
         <div class="flex items-center justify-between">
           <div>
-            <h1 class="text-6xl font-extrabold tracking-tight leading-none">
+            <h1 class="text-6xl font-black tracking-tighter leading-none" style={{
+              fontWeight: 900,
+              letterSpacing: "-0.02em", 
+              lineHeight: 1,
+              WebkitFontSmoothing: "antialiased",
+              textRendering: "optimizeLegibility"
+            }}>
               ButtonStudio<span class="text-fuchsia-500">.app</span>
             </h1>
-            <p class="mt-2 text-neutral-700">
+            <p class="mt-2 text-neutral-700" style={{ marginTop: "8px" }}>
               Beautiful, customizable button generator.
             </p>
           </div>
@@ -295,17 +301,21 @@ export default function ButtonStudio() {
         </div>
       </header>
 
-      {/* Main Layout - No scroll */}
-      <main class="container mx-auto px-6 flex-1 overflow-hidden">
-        <div class="grid grid-cols-12 gap-6 h-full items-start">
+      {/* Main Layout - No scroll at 1280×800 */}
+      <main class="container mx-auto px-6 flex-1 overflow-hidden mb-6">
+        <div class="grid grid-cols-12 gap-6 h-full">
           
-          {/* Left Stage - 7/12 columns */}
-          <section class="col-span-7 h-full flex flex-col">
-            <div class="h-full rounded-3xl border-2 border-black/80 bg-white shadow-[0_8px_0_0_rgba(0,0,0,0.12),0_24px_48px_-20px_rgba(0,0,0,0.25)] flex flex-col">
+          {/* Left Stage - Fixed height, no rubber-banding */}
+          <section class="col-span-7">
+            <div class="rounded-2xl border-2 border-black/80 bg-white shadow-[0_8px_0_0_rgba(0,0,0,0.12),0_24px_48px_-12px_rgba(0,0,0,0.25)] flex flex-col" style={{
+              minHeight: "520px",
+              height: "calc(100vh - 240px)",
+              maxHeight: "720px"
+            }}>
               
-              {/* Stage Header - 48px height */}
-              <div class="h-12 px-4 border-b-2 border-black/80 flex items-center justify-between rounded-t-3xl bg-gradient-to-b from-purple-50/40 to-transparent">
-                <span class="text-xs font-semibold tracking-wide uppercase">STAGE VIEW</span>
+              {/* Stage Header - Exactly 48px */}
+              <div class="h-12 px-4 border-b-2 border-black/80 flex items-center justify-between rounded-t-2xl bg-gradient-to-b from-purple-50/40 to-transparent">
+                <span class="text-[11px] font-semibold tracking-wider uppercase opacity-70">STAGE VIEW</span>
                 <button
                   onClick={() => {
                     handleVoiceToggle(!voiceEnabled.value);
@@ -313,18 +323,18 @@ export default function ButtonStudio() {
                     hapticService.buttonPress();
                   }}
                   onMouseEnter={() => playSound.hover()}
-                  class="h-7 px-3 rounded-full border-2 border-black/80 bg-white text-xs font-semibold flex items-center gap-1 active:translate-y-[1px]"
+                  class="h-7 px-3 rounded-full border-2 border-black/80 bg-white text-xs font-semibold flex items-center gap-1.5 hover:-translate-y-[1px] transition-transform"
                 >
                   <span class={`h-2 w-2 rounded-full transition-colors ${
                     voiceEnabled.value ? "bg-emerald-500" : "bg-neutral-400"
                   }`} />
-                  {voiceEnabled.value ? "LIVE" : "OFF"}
+                  <span>{voiceEnabled.value ? "LIVE" : "OFF"}</span>
                 </button>
               </div>
 
-              {/* Stage Body - Flexible height, no scroll at baseline */}
-              <div class="flex-1 p-6 overflow-hidden flex flex-col">
-                <div class="h-full min-h-[260px] rounded-2xl border-2 border-black/70 p-6 flex items-center justify-center relative bg-[radial-gradient(100%_100%_at_50%_0%,#FFF7F0,rgba(255,255,255,0))]">
+              {/* Stage Body - Consistent padding */}
+              <div class="flex-1 p-4 overflow-hidden flex flex-col">
+                <div class="h-full rounded-xl border-2 border-black/70 p-6 flex items-center justify-center relative bg-[radial-gradient(100%_100%_at_50%_0%,#FFF7F0,rgba(255,255,255,0))]">
                   <VoiceButton
                     customization={customization.value}
                     onCustomizationChange={handleCustomizationChange}
@@ -373,7 +383,7 @@ export default function ButtonStudio() {
               </div>
 
               {/* Stage Actions - 64px height */}
-              <div class="h-16 border-t-2 border-black/80 p-4 rounded-b-3xl">
+              <div class="h-16 border-t-2 border-black/80 p-3 rounded-b-2xl">
                 <input
                   type="text"
                   value={customization.value.content.value}
@@ -394,14 +404,16 @@ export default function ButtonStudio() {
                   onMouseEnter={() => playSound.hover()}
                   placeholder="Boop me!"
                   maxLength={25}
-                  class="w-full h-full rounded-xl border-2 border-black/80 bg-white font-semibold px-4 text-center hover:bg-gray-50 focus:bg-amber-50 focus:outline-none transition-colors active:translate-y-[1px]"
+                  class="w-full h-full rounded-lg border-2 border-black/80 bg-white font-semibold px-4 text-center hover:bg-gray-50 focus:bg-amber-50 focus:outline-none transition-colors active:translate-y-[1px]"
                 />
               </div>
             </div>
           </section>
 
-          {/* Right Controls - 5/12 columns */}
-          <aside class="col-span-5 h-full overflow-auto pr-1">
+          {/* Right Controls - Internal scroll */}
+          <aside class="col-span-5 overflow-auto pr-1" style={{
+            maxHeight: "calc(100vh - 240px)"
+          }}>
             <div class="space-y-4">
               {/* Colors Panel */}
               <CollapsiblePanel
