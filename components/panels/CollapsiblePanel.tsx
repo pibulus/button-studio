@@ -1,6 +1,7 @@
 import { ComponentChildren } from "preact";
 import { playSound } from "../../utils/audio/soundMapping.ts";
 import { throttleSound } from "../../utils/audio/throttledSound.ts";
+import { gradientSynth } from "../../utils/audio/gradientSynth.ts";
 
 interface CollapsiblePanelProps {
   id: string;
@@ -53,7 +54,11 @@ export default function CollapsiblePanel({
 
   // 🎵 Play gradient sound based on panel color - each panel gets its unique tone!
   const playGradientSound = throttleSound(
-    () => playSound.gradientPanel(color as any),
+    () => {
+      console.log(`🎵 Playing gradient sound for panel: ${id} with color: ${color}`);
+      // Use synthetic gradient tones for guaranteed pitch differences
+      gradientSynth.playGradientTone(color);
+    },
     200,
     `gradient-panel-${id}`,
   ); // Throttle per panel with unique key

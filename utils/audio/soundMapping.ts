@@ -50,6 +50,11 @@ function createSoundMapping() {
         mapping[categoryName][actionName] = () => {
           // Get the sound file path from config
           const soundFile = soundGetter();
+          
+          // Debug logging for gradient panels
+          if (categoryName === "gradientPanels") {
+            console.log(`🔊 Playing gradient sound: ${actionName} -> ${soundFile}`);
+          }
 
           // Play the sound file directly using soundService
           soundService.playCustomSound(soundFile)?.catch(() => {});
@@ -152,10 +157,13 @@ function createPlaySoundInterface(): PlaySoundInterface {
     const functionName = `gradientPanels${color.charAt(0).toUpperCase()}${
       color.slice(1)
     }`;
+    console.log(`🎨 Gradient panel helper called with color: ${color}, looking for function: ${functionName}`);
     const fn = playSound[functionName];
     if (fn && typeof fn === "function") {
+      console.log(`✅ Found and calling: ${functionName}`);
       fn();
     } else {
+      console.log(`⚠️ Function not found, falling back to hover`);
       // Fallback to hover if color not found
       playSound.hover();
     }
