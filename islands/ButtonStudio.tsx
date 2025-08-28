@@ -233,7 +233,7 @@ export default function ButtonStudio() {
   };
 
   return (
-    <div class="min-h-screen bg-[#FBF6EB] flex flex-col">
+    <body class="min-h-screen bg-[#F7F0E2] flex flex-col">
       {/* Transcript Modal */}
       {showTranscriptModal.value && (
         <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -279,8 +279,8 @@ export default function ButtonStudio() {
       )}
 
       {/* Header */}
-      <header class="container mx-auto px-6 pt-12 pb-4">
-        <div class="flex items-start justify-between">
+      <header class="container mx-auto px-6 pt-12 pb-6">
+        <div class="flex items-center justify-between">
           <div>
             <h1 class="text-6xl font-extrabold tracking-tight leading-none">
               ButtonStudio<span class="text-fuchsia-500">.app</span>
@@ -289,7 +289,9 @@ export default function ButtonStudio() {
               Beautiful, customizable button generator.
             </p>
           </div>
-          <AudioSettings />
+          <div class="flex items-center gap-2">
+            <AudioSettings />
+          </div>
         </div>
       </header>
 
@@ -298,12 +300,12 @@ export default function ButtonStudio() {
         <div class="grid grid-cols-12 gap-6 h-full items-start">
           
           {/* Left Stage - 7/12 columns */}
-          <section class="col-span-7 h-full">
-            <div class="h-full rounded-3xl border-2 border-black/80 bg-white shadow-[0_8px_0_0_rgba(0,0,0,0.12),0_20px_40px_-20px_rgba(0,0,0,0.25)]">
+          <section class="col-span-7 h-full flex flex-col">
+            <div class="h-full rounded-3xl border-2 border-black/80 bg-white shadow-[0_8px_0_0_rgba(0,0,0,0.12),0_24px_48px_-20px_rgba(0,0,0,0.25)] flex flex-col">
               
-              {/* Stage Header */}
-              <div class="h-12 px-4 border-b-2 border-black/80 flex items-center justify-between bg-gradient-to-b from-purple-50/60 to-white/0 rounded-t-3xl">
-                <span class="text-xs font-semibold tracking-wide uppercase text-gray-700">Stage View</span>
+              {/* Stage Header - 48px height */}
+              <div class="h-12 px-4 border-b-2 border-black/80 flex items-center justify-between rounded-t-3xl bg-gradient-to-b from-purple-50/40 to-transparent">
+                <span class="text-xs font-semibold tracking-wide uppercase">STAGE VIEW</span>
                 <button
                   onClick={() => {
                     handleVoiceToggle(!voiceEnabled.value);
@@ -311,24 +313,18 @@ export default function ButtonStudio() {
                     hapticService.buttonPress();
                   }}
                   onMouseEnter={() => playSound.hover()}
-                  class={`h-7 px-3 rounded-full border-2 border-black/80 text-xs font-semibold flex items-center gap-1.5 transition-all hover:scale-105 active:scale-95 ${
-                    voiceEnabled.value
-                      ? "bg-white"
-                      : "bg-white"
-                  }`}
+                  class="h-7 px-3 rounded-full border-2 border-black/80 bg-white text-xs font-semibold flex items-center gap-1 active:translate-y-[1px]"
                 >
-                  <span class={`inline-block h-2 w-2 rounded-full ${
-                    voiceEnabled.value ? "bg-emerald-500" : "bg-gray-400"
+                  <span class={`h-2 w-2 rounded-full transition-colors ${
+                    voiceEnabled.value ? "bg-emerald-500" : "bg-neutral-400"
                   }`} />
-                  <span class={voiceEnabled.value ? "text-black" : "text-gray-600"}>
-                    {voiceEnabled.value ? "LIVE" : "OFF"}
-                  </span>
+                  {voiceEnabled.value ? "LIVE" : "OFF"}
                 </button>
               </div>
 
-              {/* Stage Viewport */}
-              <div class="p-6 h-[calc(100%-12rem)] overflow-auto">
-                <div class="rounded-2xl border-2 border-black/70 p-6 min-h-[220px] flex items-center justify-center bg-gradient-to-b from-amber-50/30 to-pink-50/30">
+              {/* Stage Body - Flexible height, no scroll at baseline */}
+              <div class="flex-1 p-6 overflow-hidden flex flex-col">
+                <div class="h-full min-h-[260px] rounded-2xl border-2 border-black/70 p-6 flex items-center justify-center relative bg-[radial-gradient(100%_100%_at_50%_0%,#FFF7F0,rgba(255,255,255,0))]">
                   <VoiceButton
                     customization={customization.value}
                     onCustomizationChange={handleCustomizationChange}
@@ -341,6 +337,7 @@ export default function ButtonStudio() {
                       showTranscriptModal.value = true;
                     }}
                   />
+                  
                   
                   {/* Shuffle Button */}
                   <button
@@ -360,22 +357,22 @@ export default function ButtonStudio() {
                     }}
                     onMouseEnter={(e) => {
                       playSound.hover();
-                      e.currentTarget.style.transform = "scale(1.08) rotate(3deg)";
+                      e.currentTarget.style.transform = "scale(1.05) rotate(3deg)";
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.transform = "scale(1) rotate(0deg)";
                     }}
-                    class="absolute top-4 right-4 w-10 h-10 bg-white/90 hover:bg-amber-100 border-2 border-black/70 rounded-xl flex items-center justify-center group transition-all duration-200 ease-out cursor-pointer"
+                    class="absolute top-3 right-3 w-9 h-9 bg-white/90 hover:bg-amber-50 border-2 border-black/60 rounded-lg flex items-center justify-center transition-all duration-200"
                     title="Shuffle design 🎲"
                   >
-                    <svg class="w-5 h-5 text-black" fill="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zM7.5 6a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm9 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zM12 10.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zM7.5 15a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm9 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z" />
                     </svg>
                   </button>
                 </div>
               </div>
 
-              {/* Stage Actions */}
+              {/* Stage Actions - 64px height */}
               <div class="h-16 border-t-2 border-black/80 p-4 rounded-b-3xl">
                 <input
                   type="text"
@@ -395,9 +392,9 @@ export default function ButtonStudio() {
                     hapticService.buttonPress();
                   }}
                   onMouseEnter={() => playSound.hover()}
-                  placeholder="Type your button text..."
+                  placeholder="Boop me!"
                   maxLength={25}
-                  class="w-full h-full rounded-xl border-2 border-black/80 bg-white font-semibold px-4 text-center hover:bg-gray-50 focus:bg-amber-50 focus:outline-none transition-colors"
+                  class="w-full h-full rounded-xl border-2 border-black/80 bg-white font-semibold px-4 text-center hover:bg-gray-50 focus:bg-amber-50 focus:outline-none transition-colors active:translate-y-[1px]"
                 />
               </div>
             </div>
@@ -597,28 +594,16 @@ export default function ButtonStudio() {
         </div>
       </main>
 
-      {/* Footer - Always visible */}
-      <footer class="mt-8 border-t bg-white">
-        <div class="container mx-auto px-6 h-12 flex items-center justify-between text-xs text-neutral-500">
+      {/* Footer - Fixed 48px height */}
+      <footer class="border-t bg-white h-12 shrink-0">
+        <div class="container mx-auto h-full px-6 flex items-center justify-between text-xs text-neutral-500">
           <span>Made with 🔥 by Pablo • v1.0.0</span>
           <nav class="space-x-4">
-            <a 
-              href="https://github.com/pablojosalvarado" 
-              target="_blank"
-              rel="noopener noreferrer"
-              class="hover:text-neutral-700 transition-colors"
-            >
-              GitHub
-            </a>
-            <a 
-              href="mailto:pablo@buttonstudio.app" 
-              class="hover:text-neutral-700 transition-colors"
-            >
-              Feedback
-            </a>
+            <a href="https://github.com/pablojosalvarado" target="_blank" rel="noopener noreferrer" class="hover:text-neutral-700 transition-colors">GitHub</a>
+            <a href="mailto:pablo@buttonstudio.app" class="hover:text-neutral-700 transition-colors">Feedback</a>
           </nav>
         </div>
       </footer>
-    </div>
+    </body>
   );
 }

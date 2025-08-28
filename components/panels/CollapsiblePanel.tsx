@@ -74,12 +74,12 @@ export default function CollapsiblePanel({
   };
 
   return (
-    <div class="rounded-2xl border-2 border-black/80 bg-white shadow-[0_6px_0_0_rgba(0,0,0,0.12)] overflow-hidden">
+    <div class="rounded-2xl border-2 border-black/80 bg-white shadow-[0_6px_0_0_rgba(0,0,0,0.12)] overflow-hidden group">
       <button
         type="button"
         onClick={() => onToggle(id)}
         onMouseEnter={() => playGradientSound()}
-        class="h-12 w-full px-4 flex items-center justify-between rounded-t-2xl border-b-2 border-black/80 font-semibold hover:translate-y-[2px] transition-transform duration-120 ease-out"
+        class="h-12 w-full px-4 flex items-center justify-between rounded-t-2xl border-b-2 border-black/80 font-semibold hover:-translate-y-[1px] hover:shadow-md transition-all duration-120 ease-out"
         style={getInlineStyle(color)}
       >
         <span>{title}</span>
