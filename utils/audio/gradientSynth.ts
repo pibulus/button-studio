@@ -71,8 +71,10 @@ class GradientSynthesizer {
       // Play the tone
       oscillator.start(context.currentTime);
       oscillator.stop(context.currentTime + 0.15);
-    } catch (error) {
-      console.error("Failed to play gradient tone:", error);
+    } catch (_error) {
+      // Silent failure - audio playback errors are non-critical
+      // Most common cause: user hasn't interacted with page yet (browser policy)
+      // The sound will play on next interaction
     }
   }
 

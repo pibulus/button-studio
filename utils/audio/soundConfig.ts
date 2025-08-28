@@ -78,17 +78,21 @@ export const SOUND_LIBRARY = {
     achievement: "KidsCheer", // Achievements
   },
 
-  // GRADIENT SOUNDS - Now using synthetic tones via gradientSynth.ts
-  // Keeping file references for backward compatibility but they're not used
+  // GRADIENT SOUNDS - DEPRECATED!
+  // WARNING: File-based gradient sounds don't work! The "_low" and "_high"
+  // variations have NO audible pitch difference. We now use gradientSynth.ts
+  // for synthetic tone generation with guaranteed pitch differences.
+  // This section is kept only to prevent breaking the soundMapping structure.
+  // DO NOT USE THESE - use gradientSynth.playGradientTone() instead!
   gradient: {
-    red: "scroll-haptic", // Placeholder - using synthetic C4 (261Hz)
-    orange: "scroll-haptic", // Placeholder - using synthetic D4 (293Hz)
-    yellow: "scroll-haptic", // Placeholder - using synthetic E4 (329Hz)
-    purple: "scroll-haptic", // Placeholder - using synthetic G4 (392Hz)
-    cyan: "scroll-haptic", // Placeholder - using synthetic A4 (440Hz)
-    green: "scroll-haptic", // Placeholder - using synthetic B4 (493Hz)
-    blue: "scroll-haptic", // Placeholder
-    pink: "scroll-haptic", // Placeholder
+    red: "deprecated", // Use gradientSynth - C4 (261Hz)
+    orange: "deprecated", // Use gradientSynth - D4 (293Hz)
+    yellow: "deprecated", // Use gradientSynth - E4 (329Hz)
+    purple: "deprecated", // Use gradientSynth - G4 (392Hz)
+    cyan: "deprecated", // Use gradientSynth - A4 (440Hz)
+    green: "deprecated", // Use gradientSynth - B4 (493Hz)
+    blue: "deprecated", // Use gradientSynth
+    pink: "deprecated", // Use gradientSynth
   },
 };
 

@@ -144,7 +144,10 @@ function createPlaySoundInterface(): PlaySoundInterface {
     "gradient-panel",
   );
 
-  // Add helper function for gradient panels - MUCH easier to use!
+  // DEPRECATED: Gradient panel helper - DO NOT USE!
+  // This function exists for backward compatibility but doesn't work properly.
+  // File-based gradient sounds have no pitch difference!
+  // Use gradientSynth.playGradientTone(color) instead!
   playSound.gradientPanel = (color: GradientPanelColor) => {
     const functionName = `gradientPanels${color.charAt(0).toUpperCase()}${
       color.slice(1)
