@@ -23,7 +23,7 @@ export default function CollapsiblePanel({
   isExpanded,
   onToggle,
 }: CollapsiblePanelProps) {
-  // 🌈 HARMONIOUS PANEL HEADERS - Each panel gets distinct pastel color!
+  // 🌈 HARMONIOUS PANEL HEADERS - Each panel gets distinct pastel gradient!
   // These map to our custom panel colors in tailwind.config.ts
   const getBackgroundColor = (colorKey: string) => {
     const colors = {
@@ -38,18 +38,18 @@ export default function CollapsiblePanel({
     return colors[colorKey as keyof typeof colors] || colors.light;
   };
 
-  // Inline style safety net - keeping for absolute reliability
+  // Inline gradient styles for subtle visual flow
   const getInlineStyle = (colorKey: string) => {
-    const colors: Record<string, string> = {
-      red: "#fecaca",
-      orange: "#fed7aa",
-      yellow: "#fef3c7",
-      purple: "#e9d5ff",
-      cyan: "#cffafe",
-      green: "#d1fae5",
-      light: "#e5e7eb",
+    const gradients: Record<string, string> = {
+      red: "linear-gradient(135deg, #fecaca 0%, #fdb4b4 100%)",
+      orange: "linear-gradient(135deg, #fed7aa 0%, #fdc499 100%)",
+      yellow: "linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)",
+      purple: "linear-gradient(135deg, #e9d5ff 0%, #dbb6fc 100%)",
+      cyan: "linear-gradient(135deg, #cffafe 0%, #a5f3fc 100%)",
+      green: "linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%)",
+      light: "linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%)",
     };
-    return { backgroundColor: colors[colorKey] || colors.light };
+    return { background: gradients[colorKey] || gradients.light };
   };
 
   // 🎵 Play gradient sound based on panel color - each panel gets its unique tone!
@@ -63,34 +63,34 @@ export default function CollapsiblePanel({
   ); // Throttle per panel with unique key
 
   return (
-    <div class="bg-white rounded-3xl shadow-lg border-4 border-black overflow-hidden group">
+    <div class="bg-white rounded-2xl shadow-md border-3 border-black overflow-hidden group">
       <button
         type="button"
         onClick={() => onToggle(id)}
         onMouseEnter={() => playGradientSound()}
-        class={`w-full px-8 py-6 text-left font-black text-black 
+        class={`w-full px-7 py-5 text-left font-black text-black 
           transition-all duration-200 ease-out
-          shadow-sm hover:shadow-xl 
-          hover:scale-[1.02] hover:brightness-110 hover:saturate-150
+          hover:shadow-lg 
+          hover:scale-[1.01] hover:brightness-105
           hover:border-opacity-80
-          active:scale-[0.98] active:shadow-sm
+          active:scale-[0.99] active:shadow-sm
           transform-gpu
           ${getBackgroundColor(color)}`}
         style={getInlineStyle(color)}
       >
         <div class="flex items-center justify-between">
-          <span class="text-xl transition-transform duration-200">{title}</span>
+          <span class="text-lg transition-transform duration-200">{title}</span>
           <span
-            class={`text-2xl transition-all duration-300 ease-in-out 
+            class={`text-xl transition-all duration-300 ease-in-out 
               ${isExpanded ? "rotate-180" : "group-hover:rotate-12"}
-              group-hover:scale-125`}
+              group-hover:scale-110`}
           >
             ▼
           </span>
         </div>
       </button>
       {isExpanded && (
-        <div class="p-8 border-t-4 border-black">
+        <div class="p-6 border-t-3 border-black">
           {children}
         </div>
       )}

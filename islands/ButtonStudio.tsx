@@ -286,24 +286,26 @@ export default function ButtonStudio() {
       )}
 
       {/* Header */}
-      <header class="pt-16 pb-8 px-6">
+      <header class="pt-16 pb-12 px-6">
         <div class="max-w-7xl mx-auto text-center relative">
-          <h1 class="text-7xl md:text-8xl font-black text-black tracking-tight leading-none mb-2">
-            ButtonStudio
-            <span
-              class="text-transparent bg-clip-text"
-              style={{
-                background: "linear-gradient(135deg, #ff6b9d 0%, #a855f7 100%)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}
-            >
-              .app
-            </span>
-          </h1>
-          <p class="text-xl text-black font-bold">
-            Beautiful, customizable button generator.
-          </p>
+          <div class="inline-block">
+            <h1 class="text-7xl md:text-8xl font-black text-black tracking-tight leading-none">
+              ButtonStudio
+              <span
+                class="text-transparent bg-clip-text"
+                style={{
+                  background: "linear-gradient(135deg, #ff6b9d 0%, #a855f7 100%)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                }}
+              >
+                .app
+              </span>
+            </h1>
+            <p class="text-xl text-black font-bold mt-1">
+              Beautiful, customizable button generator.
+            </p>
+          </div>
           <div class="absolute top-0 right-0">
             <AudioSettings />
           </div>
@@ -313,51 +315,49 @@ export default function ButtonStudio() {
       {/* Main Layout */}
       <section class="px-4 sm:px-6 pb-16">
         <div class="max-w-7xl mx-auto">
-          <div class="flex flex-col lg:flex-row gap-6 lg:gap-8">
+          <div class="flex flex-col lg:flex-row gap-8 lg:gap-10">
             {/* Left Column - Button Preview Area */}
             <div class="lg:flex-1 lg:sticky lg:top-4 lg:h-fit">
-              {/* Button Preview Canvas with Background Frame */}
+              {/* Enhanced Preview Canvas */}
               <div 
-                class="bg-gradient-to-br from-cream-100 to-cream-200 rounded-3xl p-6 shadow-inner"
+                class="relative rounded-3xl p-8"
                 style={{
-                  background: "linear-gradient(135deg, #fef8f0 0%, #fdf5eb 100%)",
-                  boxShadow: "inset 0 2px 12px rgba(251, 191, 36, 0.08), 0 4px 24px rgba(251, 146, 60, 0.06)"
+                  background: "linear-gradient(135deg, #fef9f3 0%, #fdf6ed 50%, #fef9f3 100%)",
+                  boxShadow: "0 8px 32px rgba(251, 146, 60, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04)"
                 }}
               >
-                <div class="bg-white rounded-3xl shadow-lg border-4 border-black overflow-hidden">
-                  {/* Mode Toggle */}
-                  <div class="px-6 py-5 border-b-4 border-black bg-gradient-to-r from-purple-50 to-pink-50 flex justify-center">
-                    <button
-                      onClick={() => {
-                        handleVoiceToggle(!voiceEnabled.value);
-                        playSound.primaryClick();
-                        hapticService.buttonPress();
-                      }}
-                      onMouseEnter={() => playSound.hover()}
-                      class={`px-6 py-3 rounded-full border-3 border-black font-black text-base transition-all hover:scale-105 active:scale-95 flex items-center gap-3 ${
+                {/* Preview Mode Toggle - Above the canvas */}
+                <div class="absolute -top-5 left-1/2 -translate-x-1/2 z-10">
+                  <button
+                    onClick={() => {
+                      handleVoiceToggle(!voiceEnabled.value);
+                      playSound.primaryClick();
+                      hapticService.buttonPress();
+                    }}
+                    onMouseEnter={() => playSound.hover()}
+                    class={`px-5 py-2 rounded-full border-2 border-black font-bold text-sm transition-all hover:scale-105 active:scale-95 flex items-center gap-2 bg-white ${
+                      voiceEnabled.value
+                        ? "shadow-lg"
+                        : ""
+                    }`}
+                    style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }}
+                  >
+                    <div
+                      class={`w-2 h-2 rounded-full ${
                         voiceEnabled.value
-                          ? "bg-green-300 hover:bg-green-400 shadow-lg"
-                          : "bg-amber-200 hover:bg-amber-300"
+                          ? "bg-green-500 animate-pulse"
+                          : "bg-gray-400"
                       }`}
-                      style={{ boxShadow: "3px 3px 0px #000000" }}
-                    >
-                      <div
-                        class={`w-3 h-3 rounded-full ${
-                          voiceEnabled.value
-                            ? "bg-green-600 animate-pulse"
-                            : "bg-amber-600"
-                        }`}
-                      >
-                      </div>
-                      <span>
-                        {voiceEnabled.value ? "Recording Mode" : "Preview Mode"}
-                      </span>
-                      <span class="text-xs opacity-60">ON</span>
-                    </button>
-                  </div>
+                    />
+                    <span class="text-gray-700">
+                      {voiceEnabled.value ? "Recording" : "Preview"}
+                    </span>
+                  </button>
+                </div>
 
+                <div class="bg-white rounded-3xl shadow-xl border-4 border-black overflow-hidden transform scale-105">
                   {/* Preview Stage */}
-                  <div class="p-8 bg-gradient-to-br from-amber-50/30 to-pink-50/30">
+                  <div class="p-10 bg-gradient-to-br from-amber-50/30 to-pink-50/30">
                     <div
                       class="rounded-3xl border-4 border-black bg-gradient-to-br from-amber-50/50 to-pink-50/50 p-12 flex items-center justify-center min-h-[320px] relative"
                       style={{
@@ -424,59 +424,36 @@ export default function ButtonStudio() {
                   </div>
 
                   {/* Text Input Area */}
-                  <div class="px-4 py-5 border-t-4 border-black bg-gradient-to-r from-blue-50 to-purple-50">
-                    <div class="flex items-center gap-3">
-                      <div class="flex-1 relative">
-                        <input
-                          type="text"
-                          value={customization.value.content.value}
-                          onInput={(e) => {
-                            const newValue = (e.target as HTMLInputElement).value;
-                            handleCustomizationChange({
-                              ...customization.value,
-                              content: {
-                                ...customization.value.content,
-                                value: newValue,
-                              },
-                            });
-                          }}
-                          onFocus={() => {
-                            playSound.primaryClick();
-                            hapticService.buttonPress();
-                          }}
-                          onMouseEnter={() => playSound.hover()}
-                          placeholder="Type your button text..."
-                          maxLength={25}
-                          class="w-full px-5 py-4 text-xl font-black bg-white border-4 border-black rounded-2xl focus:bg-orange-50 focus:shadow-lg hover:bg-pink-50 hover:shadow-md hover:-translate-y-0.5 focus:outline-none transition-all duration-300 text-center"
-                          style={{ boxShadow: "3px 3px 0px #000000" }}
-                        />
-                        {customization.value.content.value.length > 18 && (
-                          <div class="absolute -bottom-6 right-2 text-xs font-bold text-gray-500">
-                            {customization.value.content.value.length}/25
-                          </div>
-                        )}
-                      </div>
-                      <button
-                        onClick={() => {
-                          handleVoiceToggle(!voiceEnabled.value);
-                          if (!voiceEnabled.value) {
-                            playSound.success();
-                            hapticService.toggleOn();
-                          } else {
-                            playSound.primaryClick();
-                            hapticService.toggleOff();
-                          }
+                  <div class="px-6 py-6 border-t-3 border-black bg-gradient-to-r from-blue-50/60 to-purple-50/60">
+                    <div class="relative">
+                      <input
+                        type="text"
+                        value={customization.value.content.value}
+                        onInput={(e) => {
+                          const newValue = (e.target as HTMLInputElement).value;
+                          handleCustomizationChange({
+                            ...customization.value,
+                            content: {
+                              ...customization.value.content,
+                              value: newValue,
+                            },
+                          });
+                        }}
+                        onFocus={() => {
+                          playSound.primaryClick();
+                          hapticService.buttonPress();
                         }}
                         onMouseEnter={() => playSound.hover()}
-                        class={`px-8 py-4 rounded-2xl border-4 border-black transition-all duration-300 font-black text-xl hover:scale-105 active:scale-95 ${
-                          voiceEnabled.value
-                            ? "bg-green-300 hover:bg-green-400 text-black"
-                            : "bg-amber-200 hover:bg-amber-300 text-black"
-                        }`}
-                        style={{ boxShadow: "3px 3px 0px #000000" }}
-                      >
-                        {voiceEnabled.value ? "Live" : "Test"}
-                      </button>
+                        placeholder="Type your button text..."
+                        maxLength={25}
+                        class="w-full px-5 py-4 text-xl font-black bg-white border-3 border-black rounded-2xl focus:bg-orange-50 focus:shadow-lg hover:bg-pink-50 hover:shadow-md hover:-translate-y-0.5 focus:outline-none transition-all duration-300 text-center"
+                        style={{ boxShadow: "2px 2px 0px #000000" }}
+                      />
+                      {customization.value.content.value.length > 18 && (
+                        <div class="absolute -bottom-5 right-2 text-xs font-bold text-gray-500">
+                          {customization.value.content.value.length}/25
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -484,7 +461,7 @@ export default function ButtonStudio() {
             </div>
 
             {/* Right Column - All Control Panels */}
-            <div class="lg:w-[420px] xl:w-[480px] space-y-4 sm:space-y-6">
+            <div class="lg:w-[420px] xl:w-[480px] space-y-5">
               {/* Color Mode Selector */}
               <CollapsiblePanel
                 id="colors"
@@ -677,34 +654,27 @@ export default function ButtonStudio() {
       </section>
 
       {/* Minimal Footer */}
-      <footer class="px-4 sm:px-6 py-8 mt-16 border-t-4 border-black bg-gradient-to-r from-pink-50 to-purple-50">
-        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div class="flex items-center gap-2 text-sm font-bold text-gray-700">
-            <span>Made with 🔥 by Pablo</span>
-            <span class="text-gray-400">•</span>
-            <span class="text-gray-500">v1.0.0</span>
-          </div>
-          <div class="flex items-center gap-4">
+      <footer class="px-4 sm:px-6 py-4 mt-20 border-t border-gray-200">
+        <div class="max-w-7xl mx-auto text-center">
+          <p class="text-xs text-gray-500">
+            Made with 🔥 by Pablo • v1.0.0 • 
             <a 
               href="https://github.com/pablojosalvarado" 
               target="_blank"
               rel="noopener noreferrer"
               onMouseEnter={() => playSound.hover()}
-              onClick={() => playSound.primaryClick()}
-              class="text-gray-600 hover:text-black transition-colors font-bold"
+              class="hover:text-gray-700 transition-colors"
             >
               GitHub
-            </a>
-            <span class="text-gray-400">•</span>
+            </a> • 
             <a 
               href="mailto:pablo@buttonstudio.app" 
               onMouseEnter={() => playSound.hover()}
-              onClick={() => playSound.primaryClick()}
-              class="text-gray-600 hover:text-black transition-colors font-bold"
+              class="hover:text-gray-700 transition-colors"
             >
               Feedback
             </a>
-          </div>
+          </p>
         </div>
       </footer>
     </div>
