@@ -180,6 +180,8 @@ export const buttonStudioSounds = {
   playCopy: () => playSound("copy"),
   playUndo: () => playSound("undo"),
   playProcessing: () => playSound("processing", { volume: 0.1 }),
+  playWarning: () => playSound("error-banjo"),
+  playCompletion: () => playSound("computer-ready"),
 };
 
 // Check if sounds are enabled (from localStorage + memory)

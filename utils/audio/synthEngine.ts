@@ -33,7 +33,17 @@ export interface AudioEnvelope {
 
 // Sound synthesis configuration
 export interface SynthConfig {
-  type: "bloop" | "chime" | "pop" | "ding" | "candy";
+  type:
+    | "bloop"
+    | "chime"
+    | "pop"
+    | "ding"
+    | "candy"
+    | "slate"
+    | "amber"
+    | "coral"
+    | "sage"
+    | "pearl";
   frequency: number; // Base frequency in Hz
   envelope: AudioEnvelope;
   modulation?: {

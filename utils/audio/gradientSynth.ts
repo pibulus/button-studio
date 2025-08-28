@@ -22,17 +22,15 @@
  * @version 1.0.0 - Synthetic gradient system
  */
 
-// Musical scale frequencies (in Hz) - C major scale
-const GRADIENT_FREQUENCIES = {
-  red: 261.63, // C4 - lowest
-  orange: 293.66, // D4
-  yellow: 329.63, // E4
-  purple: 392.00, // G4
-  cyan: 440.00, // A4
-  green: 493.88, // B4 - highest
-  blue: 349.23, // F4 (backup)
-  pink: 369.99, // F#4 (backup)
-};
+import { SYNTHETIC_SOUNDS } from "./soundConfig.ts";
+
+// Extract frequencies from config for easy access
+const GRADIENT_FREQUENCIES = Object.entries(
+  SYNTHETIC_SOUNDS.gradientPanels,
+).reduce((acc, [color, config]) => {
+  acc[color] = config.frequency;
+  return acc;
+}, {} as Record<string, number>);
 
 class GradientSynthesizer {
   private audioContext: AudioContext | null = null;

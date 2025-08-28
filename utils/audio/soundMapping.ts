@@ -138,34 +138,11 @@ function createPlaySoundInterface(): PlaySoundInterface {
     "hover",
   );
 
-  playSound.gradientPanelThrottled = throttleSound(
-    playSound.gradientPanel || (() => {}),
-    300,
-    "gradient-panel",
-  );
-
-  // DEPRECATED: Gradient panel helper - DO NOT USE!
-  // This function exists for backward compatibility but doesn't work properly.
-  // File-based gradient sounds have no pitch difference!
-  // Use gradientSynth.playGradientTone(color) instead!
-  playSound.gradientPanel = (color: GradientPanelColor) => {
-    const functionName = `gradientPanels${color.charAt(0).toUpperCase()}${
-      color.slice(1)
-    }`;
-    const fn = playSound[functionName];
-    if (fn && typeof fn === "function") {
-      fn();
-    } else {
-      // Fallback to hover if color not found
-      playSound.hover();
-    }
-  };
-
   // Add feedback sounds as direct methods for easier discovery
   playSound.success = () => soundService.playSuccess();
   playSound.error = () => soundService.playError();
-  playSound.warning = () => soundService.playWarning();
-  playSound.completion = () => soundService.playCompletion();
+  playSound.warning = () => soundService.playError(); // Using error sound for warnings
+  playSound.completion = () => soundService.playSuccess(); // Using success for completion
   playSound.celebration = () => soundService.playCelebration();
 
   return playSound as PlaySoundInterface;

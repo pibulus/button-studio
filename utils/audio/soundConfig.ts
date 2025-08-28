@@ -22,8 +22,8 @@ export const SOUND_LIBRARY = {
   // INTERACTION SOUNDS - User interface feedback
   interactions: {
     hover: "scroll-haptic", // Gentle hover feedback
-    clickLight: "kenney/variations/click_001", // Light button clicks
-    clickMedium: "kenney/variations/click_001_high", // Medium emphasis clicks
+    clickLight: "kenney/original/click_001", // Light button clicks
+    clickMedium: "kenney/original/click_002", // Medium emphasis clicks
     clickHeavy: "echo-button", // Important action clicks
     toggleOn: "pop-on", // Switch/toggle activation
     toggleOff: "pop-off", // Switch/toggle deactivation
@@ -31,26 +31,26 @@ export const SOUND_LIBRARY = {
 
   // NAVIGATION SOUNDS - Panel and section changes
   navigation: {
-    panelOpen: "kenney/variations/maximize_001", // Opening panels/sections
-    panelClose: "kenney/variations/minimize_001", // Closing panels/sections
-    tabSwitch: "kenney/variations/switch_001", // Switching between tabs
-    pageTransition: "kenney/variations/open_001", // Major page changes
+    panelOpen: "kenney/original/maximize_001", // Opening panels/sections
+    panelClose: "kenney/original/minimize_001", // Closing panels/sections
+    tabSwitch: "kenney/original/switch_001", // Switching between tabs
+    pageTransition: "kenney/original/open_001", // Major page changes
   },
 
   // SELECTION SOUNDS - Choosing options and values
   selection: {
     colorPick: "paste-drop", // Color selection
-    shapeSelect: "kenney/variations/select_001", // Shape/option selection
-    themeChange: "kenney/variations/confirmation_001", // Theme switching
-    presetSelect: "kenney/variations/select_001_high", // Preset selection
+    shapeSelect: "kenney/original/select_001", // Shape/option selection
+    themeChange: "kenney/original/confirmation_001", // Theme switching
+    presetSelect: "kenney/original/select_002", // Preset selection
   },
 
   // CONTROL SOUNDS - Sliders and input controls
   controls: {
-    sliderStep: "kenney/variations/tick_001", // Slider movement steps
+    sliderStep: "kenney/original/tick_001", // Slider movement steps
     sliderRelease: "grab-pop", // Slider release
-    inputFocus: "kenney/variations/open_001", // Input field focus
-    inputBlur: "kenney/variations/close_001", // Input field blur
+    inputFocus: "kenney/original/open_001", // Input field focus
+    inputBlur: "kenney/original/close_001", // Input field blur
   },
 
   // FEEDBACK SOUNDS - Success, error, completion
@@ -65,7 +65,7 @@ export const SOUND_LIBRARY = {
   // EXPORT SOUNDS - Copy, save, export actions
   export: {
     copy: "download", // Clipboard copy
-    save: "kenney/variations/confirmation_001", // Save operations
+    save: "kenney/original/confirmation_002", // Save operations
     export: "computer-ready", // Export operations
     share: "kenney/variations/glass_001", // Share operations
   },
@@ -73,28 +73,17 @@ export const SOUND_LIBRARY = {
   // SPECIAL SOUNDS - App-specific unique actions
   special: {
     diceRoll: "grab-pop", // Random/surprise actions
-    magic: "kenney/variations/bong_001", // Special effects
-    unlock: "kenney/variations/glass_001_high", // Feature unlocks
+    magic: "kenney/original/bong_001", // Special effects
+    unlock: "kenney/original/glass_001", // Feature unlocks
     achievement: "KidsCheer", // Achievements
   },
-
-  // GRADIENT SOUNDS - DEPRECATED!
-  // WARNING: File-based gradient sounds don't work! The "_low" and "_high"
-  // variations have NO audible pitch difference. We now use gradientSynth.ts
-  // for synthetic tone generation with guaranteed pitch differences.
-  // This section is kept only to prevent breaking the soundMapping structure.
-  // DO NOT USE THESE - use gradientSynth.playGradientTone() instead!
-  gradient: {
-    red: "deprecated", // Use gradientSynth - C4 (261Hz)
-    orange: "deprecated", // Use gradientSynth - D4 (293Hz)
-    yellow: "deprecated", // Use gradientSynth - E4 (329Hz)
-    purple: "deprecated", // Use gradientSynth - G4 (392Hz)
-    cyan: "deprecated", // Use gradientSynth - A4 (440Hz)
-    green: "deprecated", // Use gradientSynth - B4 (493Hz)
-    blue: "deprecated", // Use gradientSynth
-    pink: "deprecated", // Use gradientSynth
-  },
 };
+
+// Type definitions for better IDE support
+interface SoundCategoryConfig {
+  description?: string;
+  [key: string]: (() => string) | string | undefined;
+}
 
 // ===================================================================
 // SOUND CATEGORIES - Logical groupings for different UI elements
@@ -106,6 +95,21 @@ export const SOUND_LIBRARY = {
  * Maps UI element types to appropriate sounds from the library.
  * Easy to reassign entire categories to different sounds.
  */
+// Synthetic sound configuration for gradient panels
+export const SYNTHETIC_SOUNDS = {
+  gradientPanels: {
+    // Musical scale frequencies mapped to panel colors
+    red: { frequency: 261.63, note: "C4" },
+    orange: { frequency: 293.66, note: "D4" },
+    yellow: { frequency: 329.63, note: "E4" },
+    purple: { frequency: 392.00, note: "G4" },
+    cyan: { frequency: 440.00, note: "A4" },
+    green: { frequency: 493.88, note: "B4" },
+    blue: { frequency: 349.23, note: "F4" },
+    pink: { frequency: 369.99, note: "F#4" },
+  },
+};
+
 export const SOUND_CATEGORIES = {
   // PRIMARY ACTION BUTTONS - Main call-to-action buttons
   primaryButtons: {
@@ -178,16 +182,17 @@ export const SOUND_CATEGORIES = {
     description: "Dice rolls, surprise actions, celebrations",
   },
 
-  // GRADIENT PANEL SOUNDS - Progressive tones for color-coded panels
+  // GRADIENT PANELS - Synthetic tones (handled by gradientSynth.ts)
+  // This mapping exists for compatibility with soundMapping.ts
   gradientPanels: {
-    red: () => SOUND_LIBRARY.gradient.red,
-    orange: () => SOUND_LIBRARY.gradient.orange,
-    yellow: () => SOUND_LIBRARY.gradient.yellow,
-    purple: () => SOUND_LIBRARY.gradient.purple,
-    green: () => SOUND_LIBRARY.gradient.green,
-    blue: () => SOUND_LIBRARY.gradient.blue,
-    pink: () => SOUND_LIBRARY.gradient.pink,
-    cyan: () => SOUND_LIBRARY.gradient.cyan,
+    red: () => "synthetic",
+    orange: () => "synthetic",
+    yellow: () => "synthetic",
+    purple: () => "synthetic",
+    cyan: () => "synthetic",
+    green: () => "synthetic",
+    blue: () => "synthetic",
+    pink: () => "synthetic",
     description: "Progressive pitch variations for colored UI panels",
   },
 };
