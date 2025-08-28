@@ -71,7 +71,7 @@ export default function CollapsiblePanel({
         class={`w-full px-8 py-6 text-left font-black text-black 
           transition-all duration-200 ease-out
           shadow-sm hover:shadow-xl 
-          hover:scale-[1.02] hover:brightness-110
+          hover:scale-[1.02] hover:brightness-110 hover:saturate-150
           hover:border-opacity-80
           active:scale-[0.98] active:shadow-sm
           transform-gpu

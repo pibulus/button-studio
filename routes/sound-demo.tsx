@@ -2,12 +2,12 @@ import { Handlers, PageProps } from "$fresh/server.ts";
 import GradientSoundDemo from "../islands/GradientSoundDemo.tsx";
 
 export const handler: Handlers = {
-  GET(req, ctx) {
+  GET(_req, ctx) {
     return ctx.render();
   },
 };
 
-export default function SoundDemoPage(props: PageProps) {
+export default function SoundDemoPage(_props: PageProps) {
   return (
     <div class="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50 p-8">
       <div class="max-w-6xl mx-auto">
