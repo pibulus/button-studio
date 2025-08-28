@@ -115,7 +115,7 @@ export default function CustomizationPanel({
   };
 
   return (
-    <div class="space-y-4">
+    <div class="space-y-5">
       <CollapsiblePanel
         id="design"
         title="Design"

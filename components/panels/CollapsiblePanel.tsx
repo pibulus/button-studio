@@ -74,21 +74,27 @@ export default function CollapsiblePanel({
   };
 
   return (
-    <div class="rounded-2xl border-2 border-black/80 bg-white shadow-[0_6px_0_0_rgba(0,0,0,0.12)] overflow-hidden group">
+    <div class="rounded-[20px] border-2 bg-white overflow-hidden group" style={{
+      borderColor: "rgba(0,0,0,0.85)",
+      boxShadow: "0 8px 0 0 rgba(0,0,0,0.12)"
+    }}>
       <button
         type="button"
         onClick={() => onToggle(id)}
         onMouseEnter={() => playGradientSound()}
-        class="h-12 w-full px-4 flex items-center justify-between rounded-t-2xl border-b-2 border-black/80 font-semibold hover:-translate-y-[1px] hover:shadow-md transition-all duration-120 ease-out"
-        style={getInlineStyle(color)}
+        class="h-14 w-full px-5 flex items-center justify-between rounded-t-[20px] border-b-2 font-semibold hover:-translate-y-[1px] hover:shadow-md transition-all duration-120 ease-out"
+        style={{
+          ...getInlineStyle(color),
+          borderColor: "rgba(0,0,0,0.85)"
+        }}
       >
-        <span class="text-sm">{title}</span>
-        <span class={`transition-transform duration-300 ${isExpanded ? "rotate-180" : ""}`}>
+        <span class="text-sm font-semibold" style={{ fontSize: "14px", fontWeight: 600 }}>{title}</span>
+        <span class={`transition-transform duration-300 text-lg ${isExpanded ? "rotate-180" : ""}`}>
           ▾
         </span>
       </button>
       {isExpanded && (
-        <div class="p-4 bg-white">
+        <div class="p-5 bg-white">
           {children}
         </div>
       )}

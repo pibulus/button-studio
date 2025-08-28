@@ -278,8 +278,8 @@ export default function ButtonStudio() {
         </div>
       )}
 
-      {/* Header - Restored typography with proper font weight */}
-      <header class="container mx-auto px-6 pt-12 pb-3">
+      {/* Header - CHONK typography restored */}
+      <header class="max-w-[1280px] mx-auto w-full px-6 pt-10 pb-6">
         <div class="flex items-center justify-between">
           <div>
             <h1 class="text-6xl font-black tracking-tighter leading-none" style={{
@@ -291,7 +291,7 @@ export default function ButtonStudio() {
             }}>
               ButtonStudio<span class="text-fuchsia-500">.app</span>
             </h1>
-            <p class="mt-2 text-neutral-700" style={{ marginTop: "8px" }}>
+            <p class="text-neutral-700" style={{ marginTop: "10px" }}>
               Beautiful, customizable button generator.
             </p>
           </div>
@@ -301,21 +301,24 @@ export default function ButtonStudio() {
         </div>
       </header>
 
-      {/* Main Layout - No scroll at 1280×800 */}
-      <main class="container mx-auto px-6 flex-1 overflow-hidden mb-6">
-        <div class="grid grid-cols-12 gap-6 h-full">
+      {/* Main Layout - Balanced CHONK proportions */}
+      <main class="max-w-[1280px] mx-auto w-full px-6 flex-1 overflow-hidden">
+        <div class="flex gap-6 h-full">
           
-          {/* Left Stage - Fixed height, no rubber-banding */}
-          <section class="col-span-7">
-            <div class="rounded-2xl border-2 border-black/80 bg-white shadow-[0_8px_0_0_rgba(0,0,0,0.12),0_24px_48px_-12px_rgba(0,0,0,0.25)] flex flex-col" style={{
-              minHeight: "520px",
-              height: "calc(100vh - 240px)",
-              maxHeight: "720px"
+          {/* Left Stage - Fluid width with chunky presence */}
+          <section class="flex-1">
+            <div class="rounded-[20px] border-2 bg-white flex flex-col" style={{
+              borderColor: "rgba(0,0,0,0.85)",
+              boxShadow: "0 10px 0 0 rgba(0,0,0,0.12), 0 28px 48px -18px rgba(0,0,0,0.28)",
+              minHeight: "clamp(560px, calc(100vh - 232px), 760px)",
+              height: "clamp(560px, calc(100vh - 232px), 760px)"
             }}>
               
-              {/* Stage Header - Exactly 48px */}
-              <div class="h-12 px-4 border-b-2 border-black/80 flex items-center justify-between rounded-t-2xl bg-gradient-to-b from-purple-50/40 to-transparent">
-                <span class="text-[11px] font-semibold tracking-wider uppercase opacity-70">STAGE VIEW</span>
+              {/* Stage Header - 56px CHONK */}
+              <div class="h-14 px-5 border-b-2 flex items-center justify-between rounded-t-[20px] bg-gradient-to-b from-purple-50/40 to-transparent" style={{
+                borderColor: "rgba(0,0,0,0.85)"
+              }}>
+                <span class="text-sm font-semibold tracking-wider uppercase opacity-70">STAGE VIEW</span>
                 <button
                   onClick={() => {
                     handleVoiceToggle(!voiceEnabled.value);
@@ -323,8 +326,9 @@ export default function ButtonStudio() {
                     hapticService.buttonPress();
                   }}
                   onMouseEnter={() => playSound.hover()}
-                  class="h-7 px-3 rounded-full border-2 border-black/80 bg-white text-xs font-semibold flex items-center gap-1.5 hover:-translate-y-[1px] transition-transform"
-                >
+                  class="h-7 px-3 rounded-full border-2 bg-white text-xs font-semibold flex items-center gap-1.5 hover:-translate-y-[1px] transition-transform" style={{
+                    borderColor: "rgba(0,0,0,0.85)"
+                  }}>
                   <span class={`h-2 w-2 rounded-full transition-colors ${
                     voiceEnabled.value ? "bg-emerald-500" : "bg-neutral-400"
                   }`} />
@@ -332,21 +336,29 @@ export default function ButtonStudio() {
                 </button>
               </div>
 
-              {/* Stage Body - Consistent padding */}
-              <div class="flex-1 p-4 overflow-hidden flex flex-col">
-                <div class="h-full rounded-xl border-2 border-black/70 p-6 flex items-center justify-center relative bg-[radial-gradient(100%_100%_at_50%_0%,#FFF7F0,rgba(255,255,255,0))]">
-                  <VoiceButton
-                    customization={customization.value}
-                    onCustomizationChange={handleCustomizationChange}
-                    voiceEnabled={voiceEnabled.value}
-                    apiKey={apiKey.value}
-                    customPrompt={customPrompt.value}
-                    showWaveform={false}
-                    onComplete={(result) => {
-                      transcriptResult.value = result.text;
-                      showTranscriptModal.value = true;
-                    }}
-                  />
+              {/* Stage Body - No more white tundra */}
+              <div class="flex-1 p-5 overflow-hidden flex flex-col">
+                <div class="h-full rounded-2xl border-2 p-6 flex items-center justify-center relative" style={{
+                  borderColor: "rgba(0,0,0,0.75)",
+                  background: "radial-gradient(120% 120% at 50% 0%, #FFF4EC 0%, #FFFFFF 60%)",
+                  backgroundImage: `radial-gradient(120% 120% at 50% 0%, #FFF4EC 0%, #FFFFFF 60%), 
+                    repeating-linear-gradient(0deg, transparent, transparent 7px, rgba(0,0,0,0.03) 7px, rgba(0,0,0,0.03) 8px),
+                    repeating-linear-gradient(90deg, transparent, transparent 7px, rgba(0,0,0,0.03) 7px, rgba(0,0,0,0.03) 8px)`
+                }}>
+                  <div style={{ transform: "scale(1.15)" }}>
+                    <VoiceButton
+                      customization={customization.value}
+                      onCustomizationChange={handleCustomizationChange}
+                      voiceEnabled={voiceEnabled.value}
+                      apiKey={apiKey.value}
+                      customPrompt={customPrompt.value}
+                      showWaveform={false}
+                      onComplete={(result) => {
+                        transcriptResult.value = result.text;
+                        showTranscriptModal.value = true;
+                      }}
+                    />
+                  </div>
                   
                   
                   {/* Shuffle Button */}
@@ -382,8 +394,10 @@ export default function ButtonStudio() {
                 </div>
               </div>
 
-              {/* Stage Actions - 64px height */}
-              <div class="h-16 border-t-2 border-black/80 p-3 rounded-b-2xl">
+              {/* Stage Actions - 64px CHONK */}
+              <div class="h-16 border-t-2 p-3 rounded-b-[20px]" style={{
+                borderColor: "rgba(0,0,0,0.85)"
+              }}>
                 <input
                   type="text"
                   value={customization.value.content.value}
@@ -404,18 +418,21 @@ export default function ButtonStudio() {
                   onMouseEnter={() => playSound.hover()}
                   placeholder="Boop me!"
                   maxLength={25}
-                  class="w-full h-full rounded-lg border-2 border-black/80 bg-white font-semibold px-4 text-center hover:bg-gray-50 focus:bg-amber-50 focus:outline-none transition-colors active:translate-y-[1px]"
+                  class="w-full h-full rounded-xl border-2 bg-white font-bold text-base px-4 text-center hover:bg-gray-50 focus:bg-amber-50 focus:outline-none transition-colors active:translate-y-[1px]" style={{
+                    borderColor: "rgba(0,0,0,0.85)"
+                  }}
                 />
               </div>
             </div>
           </section>
 
-          {/* Right Controls - Internal scroll */}
-          <aside class="col-span-5 overflow-auto pr-1" style={{
-            maxHeight: "calc(100vh - 240px)"
+          {/* Right Sidebar - Fixed 560px CHONK */}
+          <aside class="overflow-auto pr-1" style={{
+            width: "560px",
+            maxHeight: "clamp(560px, calc(100vh - 232px), 760px)"
           }}>
-            <div class="space-y-4">
-              {/* Colors Panel */}
+            <div class="space-y-5">
+              {/* Colors Panel - CHONKY */}
               <CollapsiblePanel
                 id="colors"
                 title="Colors"
@@ -423,7 +440,7 @@ export default function ButtonStudio() {
                 isExpanded={expandedLeftPanels.value.colors}
                 onToggle={toggleLeftPanel}
               >
-                <div class="grid grid-cols-2 gap-3 mb-6">
+                <div class="grid grid-cols-2 gap-4 mb-6">
                   {(["pastel", "neon", "classic", "gradient"] as const).map((
                     mode,
                   ) => (
@@ -443,15 +460,16 @@ export default function ButtonStudio() {
                         hapticService.buttonPress();
                       }}
                       onMouseEnter={() => playSound.hover()}
-                      class={`px-6 py-3 rounded-2xl border-3 border-black font-black transition-all capitalize shadow-sm hover:shadow-md active:scale-95 ${
+                      class={`h-12 px-6 rounded-2xl border-2 font-bold text-sm transition-all capitalize hover:shadow-md active:scale-95 ${
                         colorMode.value === mode
-                          ? "bg-purple-200 hover:bg-purple-300 text-black shadow-md scale-105"
+                          ? "bg-purple-200 hover:bg-purple-300 text-black scale-105"
                           : "bg-white hover:bg-purple-50 text-black"
                       }`}
                       style={{
+                        borderColor: "rgba(0,0,0,0.85)",
                         boxShadow: colorMode.value === mode
-                          ? "3px 3px 0px #000000"
-                          : "2px 2px 0px #000000",
+                          ? "4px 4px 0px rgba(0,0,0,0.85)"
+                          : "2px 2px 0px rgba(0,0,0,0.85)",
                       }}
                     >
                       {colorModes[mode].name}
@@ -493,7 +511,7 @@ export default function ButtonStudio() {
                         hapticService.buttonPress();
                       }}
                       onMouseEnter={() => playSound.hover()}
-                      class="h-12 w-full rounded-xl border-3 border-black hover:scale-110 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95"
+                      class="h-14 w-full rounded-2xl border-2 hover:scale-110 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95"
                       style={{
                         background:
                           colorModes[colorMode.value].fillType === "solid"
@@ -501,7 +519,8 @@ export default function ButtonStudio() {
                             : `linear-gradient(135deg, ${
                               (color as string[])[0]
                             }, ${(color as string[])[1]})`,
-                        boxShadow: "2px 2px 0px #000000",
+                        borderColor: "rgba(0,0,0,0.85)",
+                        boxShadow: "3px 3px 0px rgba(0,0,0,0.85)",
                       }}
                     />
                   ))}
@@ -606,9 +625,11 @@ export default function ButtonStudio() {
         </div>
       </main>
 
-      {/* Footer - Fixed 48px height */}
-      <footer class="border-t bg-white h-12 shrink-0">
-        <div class="container mx-auto h-full px-6 flex items-center justify-between text-xs text-neutral-500">
+      {/* Footer - Clean and visible */}
+      <footer class="bg-white h-12 shrink-0 mt-6" style={{
+        borderTop: "1px solid rgba(0,0,0,0.08)"
+      }}>
+        <div class="max-w-[1280px] mx-auto h-full px-6 flex items-center justify-between text-xs text-neutral-500">
           <span>Made with 🔥 by Pablo • v1.0.0</span>
           <nav class="space-x-4">
             <a href="https://github.com/pablojosalvarado" target="_blank" rel="noopener noreferrer" class="hover:text-neutral-700 transition-colors">GitHub</a>
