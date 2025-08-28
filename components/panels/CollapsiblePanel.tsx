@@ -10,6 +10,7 @@ interface CollapsiblePanelProps {
   color?: string;
   isExpanded: boolean;
   onToggle: (id: string) => void;
+  size?: "small" | "medium" | "large";
 }
 
 // 🎨 Using proper Tailwind CSS with custom panel colors defined in tailwind.config.ts
@@ -22,6 +23,7 @@ export default function CollapsiblePanel({
   color = "light",
   isExpanded,
   onToggle,
+  size = "medium",
 }: CollapsiblePanelProps) {
   // 🌈 HARMONIOUS PANEL HEADERS - Each panel gets distinct pastel gradient!
   // These map to our custom panel colors in tailwind.config.ts
@@ -62,38 +64,58 @@ export default function CollapsiblePanel({
     `gradient-panel-${id}`,
   ); // Throttle per panel with unique key
 
+  // Size-based padding
+  const getPadding = () => {
+    switch(size) {
+      case "small": return "px-6 py-4";
+      case "large": return "px-8 py-6";
+      default: return "px-7 py-5";
+    }
+  };
+
   return (
-    <div class="bg-white rounded-2xl shadow-md border-3 border-black overflow-hidden group">
-      <button
-        type="button"
-        onClick={() => onToggle(id)}
-        onMouseEnter={() => playGradientSound()}
-        class={`w-full px-7 py-5 text-left font-black text-black 
-          transition-all duration-200 ease-out
-          hover:shadow-lg 
-          hover:scale-[1.01] hover:brightness-105
-          hover:border-opacity-80
-          active:scale-[0.99] active:shadow-sm
-          transform-gpu
-          ${getBackgroundColor(color)}`}
-        style={getInlineStyle(color)}
-      >
-        <div class="flex items-center justify-between">
-          <span class="text-lg transition-transform duration-200">{title}</span>
-          <span
-            class={`text-xl transition-all duration-300 ease-in-out 
-              ${isExpanded ? "rotate-180" : "group-hover:rotate-12"}
-              group-hover:scale-110`}
-          >
-            ▼
-          </span>
-        </div>
-      </button>
-      {isExpanded && (
-        <div class="p-6 border-t-3 border-black">
-          {children}
-        </div>
-      )}
+    <div class="relative">
+      {/* Hover Glow Effect */}
+      <div class={`absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-xl ${
+        isExpanded ? 'opacity-30' : ''
+      }`}
+        style={{
+          background: getInlineStyle(color).background,
+          transform: "scale(1.05)",
+        }}
+      />
+      
+      <div class="relative bg-white rounded-2xl shadow-md border-3 border-black overflow-hidden group hover:shadow-xl transition-all duration-300">
+        <button
+          type="button"
+          onClick={() => onToggle(id)}
+          onMouseEnter={() => playGradientSound()}
+          class={`w-full ${getPadding()} text-left font-black text-black 
+            transition-all duration-200 ease-out
+            hover:scale-[1.01] hover:brightness-105
+            hover:border-opacity-80
+            active:scale-[0.99] active:shadow-sm
+            transform-gpu
+            ${getBackgroundColor(color)}`}
+          style={getInlineStyle(color)}
+        >
+          <div class="flex items-center justify-between">
+            <span class="text-lg transition-transform duration-200">{title}</span>
+            <span
+              class={`text-xl transition-all duration-300 ease-in-out 
+                ${isExpanded ? "rotate-180" : "group-hover:rotate-12"}
+                group-hover:scale-110`}
+            >
+              ▼
+            </span>
+          </div>
+        </button>
+        {isExpanded && (
+          <div class={`${size === "small" ? "p-5" : size === "large" ? "p-7" : "p-6"} border-t-3 border-black`}>
+            {children}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

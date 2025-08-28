@@ -318,55 +318,57 @@ export default function ButtonStudio() {
           <div class="flex flex-col lg:flex-row gap-8 lg:gap-10">
             {/* Left Column - Button Preview Area */}
             <div class="lg:flex-1 lg:sticky lg:top-4 lg:h-fit">
-              {/* Enhanced Preview Canvas */}
+              {/* Enhanced Preview Canvas - The Main Stage */}
               <div 
-                class="relative rounded-3xl p-8"
+                class="relative rounded-3xl p-10 transform scale-110 lg:scale-115"
                 style={{
-                  background: "linear-gradient(135deg, #fef9f3 0%, #fdf6ed 50%, #fef9f3 100%)",
-                  boxShadow: "0 8px 32px rgba(251, 146, 60, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04)"
+                  background: "radial-gradient(ellipse at center, #fffdf8 0%, #fef9f3 40%, #fdf6ed 100%)",
+                  boxShadow: "0 20px 60px rgba(251, 146, 60, 0.12), 0 8px 24px rgba(0, 0, 0, 0.06), inset 0 2px 8px rgba(255, 255, 255, 0.9)"
                 }}
               >
-                {/* Preview Mode Toggle - Above the canvas */}
-                <div class="absolute -top-5 left-1/2 -translate-x-1/2 z-10">
-                  <button
-                    onClick={() => {
-                      handleVoiceToggle(!voiceEnabled.value);
-                      playSound.primaryClick();
-                      hapticService.buttonPress();
-                    }}
-                    onMouseEnter={() => playSound.hover()}
-                    class={`px-5 py-2 rounded-full border-2 border-black font-bold text-sm transition-all hover:scale-105 active:scale-95 flex items-center gap-2 bg-white ${
-                      voiceEnabled.value
-                        ? "shadow-lg"
-                        : ""
-                    }`}
-                    style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }}
-                  >
-                    <div
-                      class={`w-2 h-2 rounded-full ${
-                        voiceEnabled.value
-                          ? "bg-green-500 animate-pulse"
-                          : "bg-gray-400"
-                      }`}
-                    />
-                    <span class="text-gray-700">
-                      {voiceEnabled.value ? "Recording" : "Preview"}
+                <div class="bg-white rounded-3xl shadow-2xl border-[5px] border-black overflow-hidden">
+                  {/* Mode Toggle - Integrated in header */}
+                  <div class="px-6 py-4 border-b-4 border-black bg-gradient-to-r from-purple-50/80 to-pink-50/80 flex items-center justify-between">
+                    <span class="text-sm font-black text-gray-600 uppercase tracking-wide">
+                      Stage View
                     </span>
-                  </button>
-                </div>
-
-                <div class="bg-white rounded-3xl shadow-xl border-4 border-black overflow-hidden transform scale-105">
+                    <button
+                      onClick={() => {
+                        handleVoiceToggle(!voiceEnabled.value);
+                        playSound.primaryClick();
+                        hapticService.buttonPress();
+                      }}
+                      onMouseEnter={() => playSound.hover()}
+                      class={`px-4 py-2 rounded-full border-3 border-black font-black text-xs transition-all hover:scale-105 active:scale-95 flex items-center gap-2 ${
+                        voiceEnabled.value
+                          ? "bg-green-400 hover:bg-green-500 text-black"
+                          : "bg-gray-200 hover:bg-gray-300 text-gray-700"
+                      }`}
+                      style={{ boxShadow: "2px 2px 0px #000000" }}
+                    >
+                      <div
+                        class={`w-2 h-2 rounded-full ${
+                          voiceEnabled.value
+                            ? "bg-green-700 animate-pulse"
+                            : "bg-gray-500"
+                        }`}
+                      />
+                      <span>
+                        {voiceEnabled.value ? "LIVE" : "OFF"}
+                      </span>
+                    </button>
+                  </div>
                   {/* Preview Stage */}
-                  <div class="p-10 bg-gradient-to-br from-amber-50/30 to-pink-50/30">
+                  <div class="p-12 bg-gradient-to-br from-amber-50/30 to-pink-50/30">
                     <div
-                      class="rounded-3xl border-4 border-black bg-gradient-to-br from-amber-50/50 to-pink-50/50 p-12 flex items-center justify-center min-h-[320px] relative"
+                      class="rounded-3xl border-4 border-black bg-gradient-to-br from-amber-50/50 to-pink-50/50 p-14 flex items-center justify-center min-h-[360px] relative"
                       style={{
                         backgroundImage:
                           'url("data:image/svg+xml,%3Csvg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23fbbf24" fill-opacity="0.03"%3E%3Ccircle cx="20" cy="20" r="1.5"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
                         boxShadow: "inset 0 2px 4px rgba(0,0,0,0.06)",
                       }}
                     >
-                      <div class="transform scale-110">
+                      <div class="transform scale-125">
                         <VoiceButton
                           customization={customization.value}
                           onCustomizationChange={handleCustomizationChange}
@@ -461,14 +463,15 @@ export default function ButtonStudio() {
             </div>
 
             {/* Right Column - All Control Panels */}
-            <div class="lg:w-[420px] xl:w-[480px] space-y-5">
-              {/* Color Mode Selector */}
+            <div class="lg:w-[420px] xl:w-[460px] space-y-6 lg:mt-8">
+              {/* Color Mode Selector - Larger Panel */}
               <CollapsiblePanel
                 id="colors"
                 title="Colors"
                 color="cyan"
                 isExpanded={expandedLeftPanels.value.colors}
                 onToggle={toggleLeftPanel}
+                size="large"
               >
                 <div class="grid grid-cols-2 gap-3 mb-6">
                   {(["pastel", "neon", "classic", "gradient"] as const).map((
@@ -555,13 +558,14 @@ export default function ButtonStudio() {
                 </div>
               </CollapsiblePanel>
 
-              {/* Size & Shape Controls */}
+              {/* Size & Shape Controls - Larger Panel */}
               <CollapsiblePanel
                 id="size"
                 title="Size & Shape"
                 color="green"
                 isExpanded={expandedLeftPanels.value.size}
                 onToggle={toggleLeftPanel}
+                size="large"
               >
                 <div class="space-y-8">
                   {sliderConfig
@@ -653,24 +657,22 @@ export default function ButtonStudio() {
         </div>
       </section>
 
-      {/* Minimal Footer */}
-      <footer class="px-4 sm:px-6 py-4 mt-20 border-t border-gray-200">
-        <div class="max-w-7xl mx-auto text-center">
-          <p class="text-xs text-gray-500">
+      {/* Whisper Footer */}
+      <footer class="px-4 sm:px-6 py-2 mt-24">
+        <div class="max-w-7xl mx-auto text-center border-t border-gray-100 pt-2">
+          <p class="text-[10px] text-gray-400 font-medium">
             Made with 🔥 by Pablo • v1.0.0 • 
             <a 
               href="https://github.com/pablojosalvarado" 
               target="_blank"
               rel="noopener noreferrer"
-              onMouseEnter={() => playSound.hover()}
-              class="hover:text-gray-700 transition-colors"
+              class="hover:text-gray-500 transition-colors"
             >
               GitHub
             </a> • 
             <a 
               href="mailto:pablo@buttonstudio.app" 
-              onMouseEnter={() => playSound.hover()}
-              class="hover:text-gray-700 transition-colors"
+              class="hover:text-gray-500 transition-colors"
             >
               Feedback
             </a>
