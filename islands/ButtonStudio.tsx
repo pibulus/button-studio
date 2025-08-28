@@ -26,9 +26,9 @@ const customPrompt = signal<string>("");
 // Color mode state
 const colorMode = signal<"pastel" | "neon" | "classic" | "gradient">("pastel");
 
-// Panel expansion state for left column
+// Panel expansion state for right column controls
 const expandedLeftPanels = signal<Record<string, boolean>>({
-  colors: true,
+  colors: false,  // Start collapsed for cleaner initial view
   size: false,
 });
 
@@ -286,9 +286,9 @@ export default function ButtonStudio() {
       )}
 
       {/* Header */}
-      <header class="pt-20 pb-12 px-6">
-        <div class="max-w-5xl mx-auto text-center relative">
-          <h1 class="text-7xl md:text-8xl font-black text-black tracking-tight leading-none mb-4">
+      <header class="pt-16 pb-8 px-6">
+        <div class="max-w-7xl mx-auto text-center relative">
+          <h1 class="text-7xl md:text-8xl font-black text-black tracking-tight leading-none mb-2">
             ButtonStudio
             <span
               class="text-transparent bg-clip-text"
@@ -313,167 +313,178 @@ export default function ButtonStudio() {
       {/* Main Layout */}
       <section class="px-4 sm:px-6 pb-16">
         <div class="max-w-7xl mx-auto">
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
-            {/* Left Column - Button Preview + Controls */}
-            <div class="space-y-4 sm:space-y-6">
-              {/* Button Preview Panel */}
-              <div class="bg-white rounded-3xl shadow-lg border-4 border-black overflow-hidden">
-                {/* Mode Toggle */}
-                <div class="px-6 py-5 border-b-4 border-black bg-gradient-to-r from-purple-50 to-pink-50 flex justify-center">
-                  <button
-                    onClick={() => {
-                      handleVoiceToggle(!voiceEnabled.value);
-                      playSound.primaryClick();
-                      hapticService.buttonPress();
-                    }}
-                    onMouseEnter={() => playSound.hover()}
-                    class={`px-6 py-3 rounded-full border-3 border-black font-black text-base transition-all hover:scale-105 active:scale-95 flex items-center gap-3 ${
-                      voiceEnabled.value
-                        ? "bg-green-300 hover:bg-green-400 shadow-lg"
-                        : "bg-amber-200 hover:bg-amber-300"
-                    }`}
-                    style={{ boxShadow: "3px 3px 0px #000000" }}
-                  >
-                    <div
-                      class={`w-3 h-3 rounded-full ${
-                        voiceEnabled.value
-                          ? "bg-green-600 animate-pulse"
-                          : "bg-amber-600"
-                      }`}
-                    >
-                    </div>
-                    <span>
-                      {voiceEnabled.value ? "Recording Mode" : "Preview Mode"}
-                    </span>
-                    <span class="text-xs opacity-60">ON</span>
-                  </button>
-                </div>
-
-                {/* Preview Stage */}
-                <div class="p-6 bg-gradient-to-br from-amber-50/30 to-pink-50/30">
-                  <div
-                    class="rounded-3xl border-4 border-black bg-gradient-to-br from-amber-50/50 to-pink-50/50 p-10 flex items-center justify-center min-h-[280px] relative"
-                    style={{
-                      backgroundImage:
-                        'url("data:image/svg+xml,%3Csvg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23fbbf24" fill-opacity="0.03"%3E%3Ccircle cx="20" cy="20" r="1.5"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
-                      boxShadow: "inset 0 2px 4px rgba(0,0,0,0.06)",
-                    }}
-                  >
-                    <div class="transform scale-110">
-                      <VoiceButton
-                        customization={customization.value}
-                        onCustomizationChange={handleCustomizationChange}
-                        voiceEnabled={voiceEnabled.value}
-                        apiKey={apiKey.value}
-                        customPrompt={customPrompt.value}
-                        showWaveform={false}
-                        onComplete={(result) => {
-                          transcriptResult.value = result.text;
-                          showTranscriptModal.value = true;
-                        }}
-                      />
-                    </div>
-
-                    {/* Shuffle Button */}
-                    <button
-                      onClick={(e) => {
-                        playSound.primaryClick();
-                        hapticService.diceRoll();
-
-                        const btn = e.currentTarget;
-                        btn.style.transform = "scale(0.9)";
-                        setTimeout(() => {
-                          btn.style.transform = "scale(1.1)";
-                        }, 80);
-                        setTimeout(() => {
-                          btn.style.transform = "scale(1)";
-                        }, 200);
-
-                        const event = new CustomEvent("surpriseMe");
-                        document.dispatchEvent(event);
-                      }}
-                      onMouseEnter={(e) => {
-                        playSound.hover();
-                        e.currentTarget.style.transform =
-                          "scale(1.08) rotate(3deg)";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.transform =
-                          "scale(1) rotate(0deg)";
-                      }}
-                      class="absolute top-4 right-4 w-12 h-12 bg-white/90 hover:bg-amber-100 border-3 border-black rounded-xl flex items-center justify-center group transition-all duration-200 ease-out cursor-pointer"
-                      title="Shuffle design 🎲"
-                      style={{ boxShadow: "2px 2px 0px #000000" }}
-                    >
-                      <svg
-                        class="w-6 h-6 text-black"
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zM7.5 6a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm9 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zM12 10.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zM7.5 15a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm9 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z" />
-                      </svg>
-                    </button>
-                  </div>
-                </div>
-
-                {/* Text Input Area */}
-                <div class="px-4 py-5 border-t-4 border-black bg-gradient-to-r from-blue-50 to-purple-50">
-                  <div class="flex items-center gap-3">
-                    <div class="flex-1 relative">
-                      <input
-                        type="text"
-                        value={customization.value.content.value}
-                        onInput={(e) => {
-                          const newValue = (e.target as HTMLInputElement).value;
-                          handleCustomizationChange({
-                            ...customization.value,
-                            content: {
-                              ...customization.value.content,
-                              value: newValue,
-                            },
-                          });
-                        }}
-                        onFocus={() => {
-                          playSound.primaryClick();
-                          hapticService.buttonPress();
-                        }}
-                        onMouseEnter={() => playSound.hover()}
-                        placeholder="Type your button text..."
-                        maxLength={25}
-                        class="w-full px-5 py-4 text-xl font-black bg-white border-4 border-black rounded-2xl focus:bg-orange-50 focus:shadow-lg hover:bg-pink-50 hover:shadow-md hover:-translate-y-0.5 focus:outline-none transition-all duration-300 text-center"
-                        style={{ boxShadow: "3px 3px 0px #000000" }}
-                      />
-                      {customization.value.content.value.length > 18 && (
-                        <div class="absolute -bottom-6 right-2 text-xs font-bold text-gray-500">
-                          {customization.value.content.value.length}/25
-                        </div>
-                      )}
-                    </div>
+          <div class="flex flex-col lg:flex-row gap-6 lg:gap-8">
+            {/* Left Column - Button Preview Area */}
+            <div class="lg:flex-1 lg:sticky lg:top-4 lg:h-fit">
+              {/* Button Preview Canvas with Background Frame */}
+              <div 
+                class="bg-gradient-to-br from-cream-100 to-cream-200 rounded-3xl p-6 shadow-inner"
+                style={{
+                  background: "linear-gradient(135deg, #fef8f0 0%, #fdf5eb 100%)",
+                  boxShadow: "inset 0 2px 12px rgba(251, 191, 36, 0.08), 0 4px 24px rgba(251, 146, 60, 0.06)"
+                }}
+              >
+                <div class="bg-white rounded-3xl shadow-lg border-4 border-black overflow-hidden">
+                  {/* Mode Toggle */}
+                  <div class="px-6 py-5 border-b-4 border-black bg-gradient-to-r from-purple-50 to-pink-50 flex justify-center">
                     <button
                       onClick={() => {
                         handleVoiceToggle(!voiceEnabled.value);
-                        if (!voiceEnabled.value) {
-                          playSound.success();
-                          hapticService.toggleOn();
-                        } else {
-                          playSound.primaryClick();
-                          hapticService.toggleOff();
-                        }
+                        playSound.primaryClick();
+                        hapticService.buttonPress();
                       }}
                       onMouseEnter={() => playSound.hover()}
-                      class={`px-8 py-4 rounded-2xl border-4 border-black transition-all duration-300 font-black text-xl hover:scale-105 active:scale-95 ${
+                      class={`px-6 py-3 rounded-full border-3 border-black font-black text-base transition-all hover:scale-105 active:scale-95 flex items-center gap-3 ${
                         voiceEnabled.value
-                          ? "bg-green-300 hover:bg-green-400 text-black"
-                          : "bg-amber-200 hover:bg-amber-300 text-black"
+                          ? "bg-green-300 hover:bg-green-400 shadow-lg"
+                          : "bg-amber-200 hover:bg-amber-300"
                       }`}
                       style={{ boxShadow: "3px 3px 0px #000000" }}
                     >
-                      {voiceEnabled.value ? "Live" : "Test"}
+                      <div
+                        class={`w-3 h-3 rounded-full ${
+                          voiceEnabled.value
+                            ? "bg-green-600 animate-pulse"
+                            : "bg-amber-600"
+                        }`}
+                      >
+                      </div>
+                      <span>
+                        {voiceEnabled.value ? "Recording Mode" : "Preview Mode"}
+                      </span>
+                      <span class="text-xs opacity-60">ON</span>
                     </button>
+                  </div>
+
+                  {/* Preview Stage */}
+                  <div class="p-8 bg-gradient-to-br from-amber-50/30 to-pink-50/30">
+                    <div
+                      class="rounded-3xl border-4 border-black bg-gradient-to-br from-amber-50/50 to-pink-50/50 p-12 flex items-center justify-center min-h-[320px] relative"
+                      style={{
+                        backgroundImage:
+                          'url("data:image/svg+xml,%3Csvg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23fbbf24" fill-opacity="0.03"%3E%3Ccircle cx="20" cy="20" r="1.5"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
+                        boxShadow: "inset 0 2px 4px rgba(0,0,0,0.06)",
+                      }}
+                    >
+                      <div class="transform scale-110">
+                        <VoiceButton
+                          customization={customization.value}
+                          onCustomizationChange={handleCustomizationChange}
+                          voiceEnabled={voiceEnabled.value}
+                          apiKey={apiKey.value}
+                          customPrompt={customPrompt.value}
+                          showWaveform={false}
+                          onComplete={(result) => {
+                            transcriptResult.value = result.text;
+                            showTranscriptModal.value = true;
+                          }}
+                        />
+                      </div>
+
+                      {/* Shuffle Button */}
+                      <button
+                        onClick={(e) => {
+                          playSound.primaryClick();
+                          hapticService.diceRoll();
+
+                          const btn = e.currentTarget;
+                          btn.style.transform = "scale(0.9)";
+                          setTimeout(() => {
+                            btn.style.transform = "scale(1.1)";
+                          }, 80);
+                          setTimeout(() => {
+                            btn.style.transform = "scale(1)";
+                          }, 200);
+
+                          const event = new CustomEvent("surpriseMe");
+                          document.dispatchEvent(event);
+                        }}
+                        onMouseEnter={(e) => {
+                          playSound.hover();
+                          e.currentTarget.style.transform =
+                            "scale(1.08) rotate(3deg)";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.transform =
+                            "scale(1) rotate(0deg)";
+                        }}
+                        class="absolute top-4 right-4 w-12 h-12 bg-white/90 hover:bg-amber-100 border-3 border-black rounded-xl flex items-center justify-center group transition-all duration-200 ease-out cursor-pointer"
+                        title="Shuffle design 🎲"
+                        style={{ boxShadow: "2px 2px 0px #000000" }}
+                      >
+                        <svg
+                          class="w-6 h-6 text-black"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zM7.5 6a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm9 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zM12 10.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zM7.5 15a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm9 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Text Input Area */}
+                  <div class="px-4 py-5 border-t-4 border-black bg-gradient-to-r from-blue-50 to-purple-50">
+                    <div class="flex items-center gap-3">
+                      <div class="flex-1 relative">
+                        <input
+                          type="text"
+                          value={customization.value.content.value}
+                          onInput={(e) => {
+                            const newValue = (e.target as HTMLInputElement).value;
+                            handleCustomizationChange({
+                              ...customization.value,
+                              content: {
+                                ...customization.value.content,
+                                value: newValue,
+                              },
+                            });
+                          }}
+                          onFocus={() => {
+                            playSound.primaryClick();
+                            hapticService.buttonPress();
+                          }}
+                          onMouseEnter={() => playSound.hover()}
+                          placeholder="Type your button text..."
+                          maxLength={25}
+                          class="w-full px-5 py-4 text-xl font-black bg-white border-4 border-black rounded-2xl focus:bg-orange-50 focus:shadow-lg hover:bg-pink-50 hover:shadow-md hover:-translate-y-0.5 focus:outline-none transition-all duration-300 text-center"
+                          style={{ boxShadow: "3px 3px 0px #000000" }}
+                        />
+                        {customization.value.content.value.length > 18 && (
+                          <div class="absolute -bottom-6 right-2 text-xs font-bold text-gray-500">
+                            {customization.value.content.value.length}/25
+                          </div>
+                        )}
+                      </div>
+                      <button
+                        onClick={() => {
+                          handleVoiceToggle(!voiceEnabled.value);
+                          if (!voiceEnabled.value) {
+                            playSound.success();
+                            hapticService.toggleOn();
+                          } else {
+                            playSound.primaryClick();
+                            hapticService.toggleOff();
+                          }
+                        }}
+                        onMouseEnter={() => playSound.hover()}
+                        class={`px-8 py-4 rounded-2xl border-4 border-black transition-all duration-300 font-black text-xl hover:scale-105 active:scale-95 ${
+                          voiceEnabled.value
+                            ? "bg-green-300 hover:bg-green-400 text-black"
+                            : "bg-amber-200 hover:bg-amber-300 text-black"
+                        }`}
+                        style={{ boxShadow: "3px 3px 0px #000000" }}
+                      >
+                        {voiceEnabled.value ? "Live" : "Test"}
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
+            </div>
 
+            {/* Right Column - All Control Panels */}
+            <div class="lg:w-[420px] xl:w-[480px] space-y-4 sm:space-y-6">
               {/* Color Mode Selector */}
               <CollapsiblePanel
                 id="colors"
@@ -567,7 +578,7 @@ export default function ButtonStudio() {
                 </div>
               </CollapsiblePanel>
 
-              {/* Size Controls */}
+              {/* Size & Shape Controls */}
               <CollapsiblePanel
                 id="size"
                 title="Size & Shape"
@@ -644,10 +655,8 @@ export default function ButtonStudio() {
                     })}
                 </div>
               </CollapsiblePanel>
-            </div>
 
-            {/* Right Column - Customization Panels */}
-            <div class="space-y-4 sm:space-y-6">
+              {/* Other Customization Panels */}
               <CustomizationPanel
                 customization={customization.value}
                 onChange={handleCustomizationChange}
@@ -666,6 +675,38 @@ export default function ButtonStudio() {
           </div>
         </div>
       </section>
+
+      {/* Minimal Footer */}
+      <footer class="px-4 sm:px-6 py-8 mt-16 border-t-4 border-black bg-gradient-to-r from-pink-50 to-purple-50">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div class="flex items-center gap-2 text-sm font-bold text-gray-700">
+            <span>Made with 🔥 by Pablo</span>
+            <span class="text-gray-400">•</span>
+            <span class="text-gray-500">v1.0.0</span>
+          </div>
+          <div class="flex items-center gap-4">
+            <a 
+              href="https://github.com/pablojosalvarado" 
+              target="_blank"
+              rel="noopener noreferrer"
+              onMouseEnter={() => playSound.hover()}
+              onClick={() => playSound.primaryClick()}
+              class="text-gray-600 hover:text-black transition-colors font-bold"
+            >
+              GitHub
+            </a>
+            <span class="text-gray-400">•</span>
+            <a 
+              href="mailto:pablo@buttonstudio.app" 
+              onMouseEnter={() => playSound.hover()}
+              onClick={() => playSound.primaryClick()}
+              class="text-gray-600 hover:text-black transition-colors font-bold"
+            >
+              Feedback
+            </a>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

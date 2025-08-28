@@ -23,7 +23,7 @@ interface CustomizationPanelProps {
 
 // Collapsible panel state - Updated for 4 consolidated panels
 const expandedPanels = signal<Record<string, boolean>>({
-  design: true,
+  design: false,  // Start collapsed for cleaner initial view
   feel: false,
   ship: false,
   magic: false,
