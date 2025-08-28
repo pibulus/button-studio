@@ -55,7 +55,6 @@ export default function CollapsiblePanel({
   // 🎵 Play gradient sound based on panel color - each panel gets its unique tone!
   const playGradientSound = throttleSound(
     () => {
-      console.log(`🎵 Playing gradient sound for panel: ${id} with color: ${color}`);
       // Use synthetic gradient tones for guaranteed pitch differences
       gradientSynth.playGradientTone(color);
     },

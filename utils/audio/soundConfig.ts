@@ -78,17 +78,17 @@ export const SOUND_LIBRARY = {
     achievement: "KidsCheer", // Achievements
   },
 
-  // GRADIENT SOUNDS - Progressive pitch variations for color-coded panels
-  // Using a mix of glass and pluck sounds for distinct pitch progression
+  // GRADIENT SOUNDS - Now using synthetic tones via gradientSynth.ts
+  // Keeping file references for backward compatibility but they're not used
   gradient: {
-    red: "kenney/variations/glass_001_low", // Deepest tone (Design panel) - low glass
-    orange: "kenney/variations/glass_001", // Low-mid tone (Feel panel) - normal glass
-    yellow: "kenney/variations/glass_001_high", // Mid tone (Ship panel) - high glass
-    purple: "kenney/variations/pluck_001_low", // Mid-high tone (Magic panel) - low pluck
-    cyan: "kenney/variations/pluck_001", // High tone (Colors panel) - normal pluck
-    green: "kenney/variations/pluck_001_high", // Highest tone (Size & Shape) - high pluck
-    blue: "kenney/variations/glass_001", // Backup mid tone
-    pink: "kenney/variations/pluck_001", // Backup mid tone
+    red: "scroll-haptic", // Placeholder - using synthetic C4 (261Hz)
+    orange: "scroll-haptic", // Placeholder - using synthetic D4 (293Hz)
+    yellow: "scroll-haptic", // Placeholder - using synthetic E4 (329Hz)
+    purple: "scroll-haptic", // Placeholder - using synthetic G4 (392Hz)
+    cyan: "scroll-haptic", // Placeholder - using synthetic A4 (440Hz)
+    green: "scroll-haptic", // Placeholder - using synthetic B4 (493Hz)
+    blue: "scroll-haptic", // Placeholder
+    pink: "scroll-haptic", // Placeholder
   },
 };
 

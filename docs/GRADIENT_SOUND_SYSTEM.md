@@ -2,13 +2,16 @@
 
 ## Overview
 
-ButtonStudio features a sophisticated gradient sound system where different colored UI panels play distinct tones, creating a musical interface that provides spatial awareness and enhances the user experience.
+ButtonStudio features a sophisticated gradient sound system where different
+colored UI panels play distinct tones, creating a musical interface that
+provides spatial awareness and enhances the user experience.
 
 ## Architecture
 
 ### Sound Mapping System
 
-The gradient sounds are part of the unified sound system defined in three key files:
+The gradient sounds are part of the unified sound system defined in three key
+files:
 
 1. **`soundConfig.ts`** - Defines the sound file mappings:
    ```typescript
@@ -34,12 +37,14 @@ The gradient sounds are part of the unified sound system defined in three key fi
 ## Panel Color Usage
 
 ### CustomizationPanel (Right side panels)
+
 - **Design Panel**: `red` - Deepest pluck tone
-- **Feel Panel**: `orange` - Mid-low pluck tone  
+- **Feel Panel**: `orange` - Mid-low pluck tone
 - **Ship Panel**: `yellow` - Mid-high pluck tone
 - **Magic Panel**: `purple` - Highest glass tone
 
 ### ButtonStudio (Left side panels)
+
 - **Colors Panel**: `cyan` - Low glass tone
 - **Size & Shape Panel**: `green` - Mid select tone
 
@@ -61,6 +66,7 @@ const playGradientSound = throttleSound(
 ### Throttling System
 
 Each panel has its own throttle with a unique key to prevent:
+
 - Sound spam when moving mouse quickly
 - Overlapping sounds from the same panel
 - Audio fatigue from excessive feedback
@@ -73,7 +79,8 @@ The gradient system creates a **musical interface** where:
 
 1. **Spatial Awareness**: Users learn which panel is which by tone
 2. **Progressive Pitch**: Related panels have related tones
-3. **Distinct Categories**: Different sound families (pluck vs glass) for different panel groups
+3. **Distinct Categories**: Different sound families (pluck vs glass) for
+   different panel groups
 4. **Accessibility**: Audio feedback helps users navigate without looking
 
 ## Testing
@@ -91,7 +98,7 @@ All these functions are available via `playSound`:
 
 - `playSound.gradientPanelsRed()` - Deepest pluck
 - `playSound.gradientPanelsOrange()` - Mid-low pluck
-- `playSound.gradientPanelsYellow()` - Mid-high pluck  
+- `playSound.gradientPanelsYellow()` - Mid-high pluck
 - `playSound.gradientPanelsPurple()` - Highest glass
 - `playSound.gradientPanelsGreen()` - Mid select
 - `playSound.gradientPanelsCyan()` - Low glass

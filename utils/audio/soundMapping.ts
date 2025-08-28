@@ -50,11 +50,6 @@ function createSoundMapping() {
         mapping[categoryName][actionName] = () => {
           // Get the sound file path from config
           const soundFile = soundGetter();
-          
-          // Debug logging for gradient panels
-          if (categoryName === "gradientPanels") {
-            console.log(`🔊 Playing gradient sound: ${actionName} -> ${soundFile}`);
-          }
 
           // Play the sound file directly using soundService
           soundService.playCustomSound(soundFile)?.catch(() => {});
@@ -67,9 +62,6 @@ function createSoundMapping() {
 }
 
 export const SOUND_MAPPING = createSoundMapping();
-
-// Debug: Log the structure
-console.log("🎵 Sound mapping categories:", Object.keys(SOUND_MAPPING));
 
 // Special sound preview function for sound picker
 SOUND_MAPPING.soundPreview = {
@@ -119,7 +111,7 @@ function createPlaySoundInterface(): PlaySoundInterface {
               .replace("Actions", "")
               .replace("Panels", "");
           }
-          const functionName = cleanCategoryName + 
+          const functionName = cleanCategoryName +
             actionName.charAt(0).toUpperCase() + actionName.slice(1);
           playSound[functionName] = actionFunction;
         }
@@ -157,13 +149,10 @@ function createPlaySoundInterface(): PlaySoundInterface {
     const functionName = `gradientPanels${color.charAt(0).toUpperCase()}${
       color.slice(1)
     }`;
-    console.log(`🎨 Gradient panel helper called with color: ${color}, looking for function: ${functionName}`);
     const fn = playSound[functionName];
     if (fn && typeof fn === "function") {
-      console.log(`✅ Found and calling: ${functionName}`);
       fn();
     } else {
-      console.log(`⚠️ Function not found, falling back to hover`);
       // Fallback to hover if color not found
       playSound.hover();
     }
@@ -180,12 +169,6 @@ function createPlaySoundInterface(): PlaySoundInterface {
 }
 
 export const playSound: PlaySoundInterface = createPlaySoundInterface();
-
-// Debug: Log all available gradient functions
-console.log("🎨 Available gradient functions:");
-Object.keys(playSound)
-  .filter(key => key.includes("gradient") || key.includes("Gradient"))
-  .forEach(key => console.log(`  - playSound.${key}()`));
 
 // ===================================================================
 // SOUND AUDIT HELPERS - For systematic sound application
