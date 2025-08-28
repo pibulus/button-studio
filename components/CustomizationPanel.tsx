@@ -149,7 +149,6 @@ export default function CustomizationPanel({
         color="yellow"
         isExpanded={expandedPanels.value.ship}
         onToggle={togglePanel}
-        size="small"
       >
         <ShipPanel
           customization={customization}
@@ -163,7 +162,6 @@ export default function CustomizationPanel({
         color="purple"
         isExpanded={expandedPanels.value.magic}
         onToggle={togglePanel}
-        size="small"
       >
         <MagicPanel
           voiceEnabled={voiceEnabled}

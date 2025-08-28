@@ -40,16 +40,16 @@ export default function CollapsiblePanel({
     return colors[colorKey as keyof typeof colors] || colors.light;
   };
 
-  // Inline gradient styles for subtle visual flow
+  // Inline gradient styles matching spec colors
   const getInlineStyle = (colorKey: string) => {
     const gradients: Record<string, string> = {
-      red: "linear-gradient(135deg, #fecaca 0%, #fdb4b4 100%)",
-      orange: "linear-gradient(135deg, #fed7aa 0%, #fdc499 100%)",
-      yellow: "linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)",
-      purple: "linear-gradient(135deg, #e9d5ff 0%, #dbb6fc 100%)",
-      cyan: "linear-gradient(135deg, #cffafe 0%, #a5f3fc 100%)",
-      green: "linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%)",
-      light: "linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%)",
+      cyan: "linear-gradient(90deg, #C9F2FF 0%, #C6F8E3 100%)",
+      green: "linear-gradient(90deg, #C6F8E3 0%, #EAF7D5 100%)",
+      red: "linear-gradient(90deg, #FAD1D7 0%, #F9D5E5 100%)",
+      orange: "linear-gradient(90deg, #FFD8A8 0%, #FFE7B4 100%)",
+      yellow: "linear-gradient(90deg, #FFE7B4 0%, #FFF1C9 100%)",
+      purple: "linear-gradient(90deg, #D9C6FF 0%, #E7D2FF 100%)",
+      light: "linear-gradient(90deg, #f3f4f6 0%, #e5e7eb 100%)",
     };
     return { background: gradients[colorKey] || gradients.light };
   };
@@ -74,48 +74,24 @@ export default function CollapsiblePanel({
   };
 
   return (
-    <div class="relative">
-      {/* Hover Glow Effect */}
-      <div class={`absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-xl ${
-        isExpanded ? 'opacity-30' : ''
-      }`}
-        style={{
-          background: getInlineStyle(color).background,
-          transform: "scale(1.05)",
-        }}
-      />
-      
-      <div class="relative bg-white rounded-2xl shadow-md border-3 border-black overflow-hidden group hover:shadow-xl transition-all duration-300">
-        <button
-          type="button"
-          onClick={() => onToggle(id)}
-          onMouseEnter={() => playGradientSound()}
-          class={`w-full ${getPadding()} text-left font-black text-black 
-            transition-all duration-200 ease-out
-            hover:scale-[1.01] hover:brightness-105
-            hover:border-opacity-80
-            active:scale-[0.99] active:shadow-sm
-            transform-gpu
-            ${getBackgroundColor(color)}`}
-          style={getInlineStyle(color)}
-        >
-          <div class="flex items-center justify-between">
-            <span class="text-lg transition-transform duration-200">{title}</span>
-            <span
-              class={`text-xl transition-all duration-300 ease-in-out 
-                ${isExpanded ? "rotate-180" : "group-hover:rotate-12"}
-                group-hover:scale-110`}
-            >
-              ▼
-            </span>
-          </div>
-        </button>
-        {isExpanded && (
-          <div class={`${size === "small" ? "p-5" : size === "large" ? "p-7" : "p-6"} border-t-3 border-black`}>
-            {children}
-          </div>
-        )}
-      </div>
+    <div class="rounded-2xl border-2 border-black/80 bg-white shadow-[0_6px_0_0_rgba(0,0,0,0.12)] overflow-hidden">
+      <button
+        type="button"
+        onClick={() => onToggle(id)}
+        onMouseEnter={() => playGradientSound()}
+        class="h-12 w-full px-4 flex items-center justify-between rounded-t-2xl border-b-2 border-black/80 font-semibold hover:translate-y-[2px] transition-transform duration-120 ease-out"
+        style={getInlineStyle(color)}
+      >
+        <span>{title}</span>
+        <span class={`transition-transform duration-300 ${isExpanded ? "rotate-180" : ""}`}>
+          ▾
+        </span>
+      </button>
+      {isExpanded && (
+        <div class="p-6 bg-white">
+          {children}
+        </div>
+      )}
     </div>
   );
 }

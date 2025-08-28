@@ -233,14 +233,7 @@ export default function ButtonStudio() {
   };
 
   return (
-    <div
-      class="min-h-screen"
-      style={{
-        background: "radial-gradient(circle at top right, #fefbf3, #faf6ed)",
-        backgroundImage:
-          'url("data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23f5ead6" fill-opacity="0.3"%3E%3Ccircle cx="7" cy="7" r="1.5"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
-      }}
-    >
+    <div class="min-h-screen bg-[#FBF6EB] flex flex-col">
       {/* Transcript Modal */}
       {showTranscriptModal.value && (
         <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -286,192 +279,140 @@ export default function ButtonStudio() {
       )}
 
       {/* Header */}
-      <header class="pt-16 pb-12 px-6">
-        <div class="max-w-7xl mx-auto text-center relative">
-          <div class="inline-block">
-            <h1 class="text-7xl md:text-8xl font-black text-black tracking-tight leading-none">
-              ButtonStudio
-              <span
-                class="text-transparent bg-clip-text"
-                style={{
-                  background: "linear-gradient(135deg, #ff6b9d 0%, #a855f7 100%)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                }}
-              >
-                .app
-              </span>
+      <header class="container mx-auto px-6 pt-12 pb-4">
+        <div class="flex items-start justify-between">
+          <div>
+            <h1 class="text-6xl font-extrabold tracking-tight leading-none">
+              ButtonStudio<span class="text-fuchsia-500">.app</span>
             </h1>
-            <p class="text-xl text-black font-bold mt-1">
+            <p class="mt-2 text-neutral-700">
               Beautiful, customizable button generator.
             </p>
           </div>
-          <div class="absolute top-0 right-0">
-            <AudioSettings />
-          </div>
+          <AudioSettings />
         </div>
       </header>
 
-      {/* Main Layout */}
-      <section class="px-4 sm:px-6 pb-16">
-        <div class="max-w-7xl mx-auto">
-          <div class="flex flex-col lg:flex-row gap-8 lg:gap-10">
-            {/* Left Column - Button Preview Area */}
-            <div class="lg:flex-1 lg:sticky lg:top-4 lg:h-fit">
-              {/* Enhanced Preview Canvas - The Main Stage */}
-              <div 
-                class="relative rounded-3xl p-10 transform scale-110 lg:scale-115"
-                style={{
-                  background: "radial-gradient(ellipse at center, #fffdf8 0%, #fef9f3 40%, #fdf6ed 100%)",
-                  boxShadow: "0 20px 60px rgba(251, 146, 60, 0.12), 0 8px 24px rgba(0, 0, 0, 0.06), inset 0 2px 8px rgba(255, 255, 255, 0.9)"
-                }}
-              >
-                <div class="bg-white rounded-3xl shadow-2xl border-[5px] border-black overflow-hidden">
-                  {/* Mode Toggle - Integrated in header */}
-                  <div class="px-6 py-4 border-b-4 border-black bg-gradient-to-r from-purple-50/80 to-pink-50/80 flex items-center justify-between">
-                    <span class="text-sm font-black text-gray-600 uppercase tracking-wide">
-                      Stage View
-                    </span>
-                    <button
-                      onClick={() => {
-                        handleVoiceToggle(!voiceEnabled.value);
-                        playSound.primaryClick();
-                        hapticService.buttonPress();
-                      }}
-                      onMouseEnter={() => playSound.hover()}
-                      class={`px-4 py-2 rounded-full border-3 border-black font-black text-xs transition-all hover:scale-105 active:scale-95 flex items-center gap-2 ${
-                        voiceEnabled.value
-                          ? "bg-green-400 hover:bg-green-500 text-black"
-                          : "bg-gray-200 hover:bg-gray-300 text-gray-700"
-                      }`}
-                      style={{ boxShadow: "2px 2px 0px #000000" }}
-                    >
-                      <div
-                        class={`w-2 h-2 rounded-full ${
-                          voiceEnabled.value
-                            ? "bg-green-700 animate-pulse"
-                            : "bg-gray-500"
-                        }`}
-                      />
-                      <span>
-                        {voiceEnabled.value ? "LIVE" : "OFF"}
-                      </span>
-                    </button>
-                  </div>
-                  {/* Preview Stage */}
-                  <div class="p-12 bg-gradient-to-br from-amber-50/30 to-pink-50/30">
-                    <div
-                      class="rounded-3xl border-4 border-black bg-gradient-to-br from-amber-50/50 to-pink-50/50 p-14 flex items-center justify-center min-h-[360px] relative"
-                      style={{
-                        backgroundImage:
-                          'url("data:image/svg+xml,%3Csvg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23fbbf24" fill-opacity="0.03"%3E%3Ccircle cx="20" cy="20" r="1.5"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
-                        boxShadow: "inset 0 2px 4px rgba(0,0,0,0.06)",
-                      }}
-                    >
-                      <div class="transform scale-125">
-                        <VoiceButton
-                          customization={customization.value}
-                          onCustomizationChange={handleCustomizationChange}
-                          voiceEnabled={voiceEnabled.value}
-                          apiKey={apiKey.value}
-                          customPrompt={customPrompt.value}
-                          showWaveform={false}
-                          onComplete={(result) => {
-                            transcriptResult.value = result.text;
-                            showTranscriptModal.value = true;
-                          }}
-                        />
-                      </div>
+      {/* Main Layout - No scroll */}
+      <main class="container mx-auto px-6 flex-1 overflow-hidden">
+        <div class="grid grid-cols-12 gap-6 h-full items-start">
+          
+          {/* Left Stage - 7/12 columns */}
+          <section class="col-span-7 h-full">
+            <div class="h-full rounded-3xl border-2 border-black/80 bg-white shadow-[0_8px_0_0_rgba(0,0,0,0.12),0_20px_40px_-20px_rgba(0,0,0,0.25)]">
+              
+              {/* Stage Header */}
+              <div class="h-12 px-4 border-b-2 border-black/80 flex items-center justify-between bg-gradient-to-b from-purple-50/60 to-white/0 rounded-t-3xl">
+                <span class="text-xs font-semibold tracking-wide uppercase text-gray-700">Stage View</span>
+                <button
+                  onClick={() => {
+                    handleVoiceToggle(!voiceEnabled.value);
+                    playSound.primaryClick();
+                    hapticService.buttonPress();
+                  }}
+                  onMouseEnter={() => playSound.hover()}
+                  class={`h-7 px-3 rounded-full border-2 border-black/80 text-xs font-semibold flex items-center gap-1.5 transition-all hover:scale-105 active:scale-95 ${
+                    voiceEnabled.value
+                      ? "bg-white"
+                      : "bg-white"
+                  }`}
+                >
+                  <span class={`inline-block h-2 w-2 rounded-full ${
+                    voiceEnabled.value ? "bg-emerald-500" : "bg-gray-400"
+                  }`} />
+                  <span class={voiceEnabled.value ? "text-black" : "text-gray-600"}>
+                    {voiceEnabled.value ? "LIVE" : "OFF"}
+                  </span>
+                </button>
+              </div>
 
-                      {/* Shuffle Button */}
-                      <button
-                        onClick={(e) => {
-                          playSound.primaryClick();
-                          hapticService.diceRoll();
-
-                          const btn = e.currentTarget;
-                          btn.style.transform = "scale(0.9)";
-                          setTimeout(() => {
-                            btn.style.transform = "scale(1.1)";
-                          }, 80);
-                          setTimeout(() => {
-                            btn.style.transform = "scale(1)";
-                          }, 200);
-
-                          const event = new CustomEvent("surpriseMe");
-                          document.dispatchEvent(event);
-                        }}
-                        onMouseEnter={(e) => {
-                          playSound.hover();
-                          e.currentTarget.style.transform =
-                            "scale(1.08) rotate(3deg)";
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.transform =
-                            "scale(1) rotate(0deg)";
-                        }}
-                        class="absolute top-4 right-4 w-12 h-12 bg-white/90 hover:bg-amber-100 border-3 border-black rounded-xl flex items-center justify-center group transition-all duration-200 ease-out cursor-pointer"
-                        title="Shuffle design 🎲"
-                        style={{ boxShadow: "2px 2px 0px #000000" }}
-                      >
-                        <svg
-                          class="w-6 h-6 text-black"
-                          fill="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zM7.5 6a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm9 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zM12 10.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zM7.5 15a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm9 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z" />
-                        </svg>
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Text Input Area */}
-                  <div class="px-6 py-6 border-t-3 border-black bg-gradient-to-r from-blue-50/60 to-purple-50/60">
-                    <div class="relative">
-                      <input
-                        type="text"
-                        value={customization.value.content.value}
-                        onInput={(e) => {
-                          const newValue = (e.target as HTMLInputElement).value;
-                          handleCustomizationChange({
-                            ...customization.value,
-                            content: {
-                              ...customization.value.content,
-                              value: newValue,
-                            },
-                          });
-                        }}
-                        onFocus={() => {
-                          playSound.primaryClick();
-                          hapticService.buttonPress();
-                        }}
-                        onMouseEnter={() => playSound.hover()}
-                        placeholder="Type your button text..."
-                        maxLength={25}
-                        class="w-full px-5 py-4 text-xl font-black bg-white border-3 border-black rounded-2xl focus:bg-orange-50 focus:shadow-lg hover:bg-pink-50 hover:shadow-md hover:-translate-y-0.5 focus:outline-none transition-all duration-300 text-center"
-                        style={{ boxShadow: "2px 2px 0px #000000" }}
-                      />
-                      {customization.value.content.value.length > 18 && (
-                        <div class="absolute -bottom-5 right-2 text-xs font-bold text-gray-500">
-                          {customization.value.content.value.length}/25
-                        </div>
-                      )}
-                    </div>
-                  </div>
+              {/* Stage Viewport */}
+              <div class="p-6 h-[calc(100%-12rem)] overflow-auto">
+                <div class="rounded-2xl border-2 border-black/70 p-6 min-h-[220px] flex items-center justify-center bg-gradient-to-b from-amber-50/30 to-pink-50/30">
+                  <VoiceButton
+                    customization={customization.value}
+                    onCustomizationChange={handleCustomizationChange}
+                    voiceEnabled={voiceEnabled.value}
+                    apiKey={apiKey.value}
+                    customPrompt={customPrompt.value}
+                    showWaveform={false}
+                    onComplete={(result) => {
+                      transcriptResult.value = result.text;
+                      showTranscriptModal.value = true;
+                    }}
+                  />
+                  
+                  {/* Shuffle Button */}
+                  <button
+                    onClick={(e) => {
+                      playSound.primaryClick();
+                      hapticService.diceRoll();
+                      const btn = e.currentTarget;
+                      btn.style.transform = "scale(0.9)";
+                      setTimeout(() => {
+                        btn.style.transform = "scale(1.1)";
+                      }, 80);
+                      setTimeout(() => {
+                        btn.style.transform = "scale(1)";
+                      }, 200);
+                      const event = new CustomEvent("surpriseMe");
+                      document.dispatchEvent(event);
+                    }}
+                    onMouseEnter={(e) => {
+                      playSound.hover();
+                      e.currentTarget.style.transform = "scale(1.08) rotate(3deg)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = "scale(1) rotate(0deg)";
+                    }}
+                    class="absolute top-4 right-4 w-10 h-10 bg-white/90 hover:bg-amber-100 border-2 border-black/70 rounded-xl flex items-center justify-center group transition-all duration-200 ease-out cursor-pointer"
+                    title="Shuffle design 🎲"
+                  >
+                    <svg class="w-5 h-5 text-black" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zM7.5 6a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm9 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zM12 10.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zM7.5 15a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm9 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z" />
+                    </svg>
+                  </button>
                 </div>
               </div>
-            </div>
 
-            {/* Right Column - All Control Panels */}
-            <div class="lg:w-[420px] xl:w-[460px] space-y-6 lg:mt-8">
-              {/* Color Mode Selector - Larger Panel */}
+              {/* Stage Actions */}
+              <div class="h-16 border-t-2 border-black/80 p-4 rounded-b-3xl">
+                <input
+                  type="text"
+                  value={customization.value.content.value}
+                  onInput={(e) => {
+                    const newValue = (e.target as HTMLInputElement).value;
+                    handleCustomizationChange({
+                      ...customization.value,
+                      content: {
+                        ...customization.value.content,
+                        value: newValue,
+                      },
+                    });
+                  }}
+                  onFocus={() => {
+                    playSound.primaryClick();
+                    hapticService.buttonPress();
+                  }}
+                  onMouseEnter={() => playSound.hover()}
+                  placeholder="Type your button text..."
+                  maxLength={25}
+                  class="w-full h-full rounded-xl border-2 border-black/80 bg-white font-semibold px-4 text-center hover:bg-gray-50 focus:bg-amber-50 focus:outline-none transition-colors"
+                />
+              </div>
+            </div>
+          </section>
+
+          {/* Right Controls - 5/12 columns */}
+          <aside class="col-span-5 h-full overflow-auto pr-1">
+            <div class="space-y-4">
+              {/* Colors Panel */}
               <CollapsiblePanel
                 id="colors"
                 title="Colors"
                 color="cyan"
                 isExpanded={expandedLeftPanels.value.colors}
                 onToggle={toggleLeftPanel}
-                size="large"
               >
                 <div class="grid grid-cols-2 gap-3 mb-6">
                   {(["pastel", "neon", "classic", "gradient"] as const).map((
@@ -558,14 +499,13 @@ export default function ButtonStudio() {
                 </div>
               </CollapsiblePanel>
 
-              {/* Size & Shape Controls - Larger Panel */}
+              {/* Size & Shape Panel */}
               <CollapsiblePanel
                 id="size"
                 title="Size & Shape"
                 color="green"
                 isExpanded={expandedLeftPanels.value.size}
                 onToggle={toggleLeftPanel}
-                size="large"
               >
                 <div class="space-y-8">
                   {sliderConfig
@@ -653,30 +593,30 @@ export default function ButtonStudio() {
                 }}
               />
             </div>
-          </div>
+          </aside>
         </div>
-      </section>
+      </main>
 
-      {/* Whisper Footer */}
-      <footer class="px-4 sm:px-6 py-2 mt-24">
-        <div class="max-w-7xl mx-auto text-center border-t border-gray-100 pt-2">
-          <p class="text-[10px] text-gray-400 font-medium">
-            Made with 🔥 by Pablo • v1.0.0 • 
+      {/* Footer - Always visible */}
+      <footer class="mt-8 border-t bg-white">
+        <div class="container mx-auto px-6 h-12 flex items-center justify-between text-xs text-neutral-500">
+          <span>Made with 🔥 by Pablo • v1.0.0</span>
+          <nav class="space-x-4">
             <a 
               href="https://github.com/pablojosalvarado" 
               target="_blank"
               rel="noopener noreferrer"
-              class="hover:text-gray-500 transition-colors"
+              class="hover:text-neutral-700 transition-colors"
             >
               GitHub
-            </a> • 
+            </a>
             <a 
               href="mailto:pablo@buttonstudio.app" 
-              class="hover:text-gray-500 transition-colors"
+              class="hover:text-neutral-700 transition-colors"
             >
               Feedback
             </a>
-          </p>
+          </nav>
         </div>
       </footer>
     </div>
