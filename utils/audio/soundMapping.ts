@@ -63,6 +63,9 @@ function createSoundMapping() {
 
 export const SOUND_MAPPING = createSoundMapping();
 
+// Debug: Log the structure
+console.log("🎵 Sound mapping categories:", Object.keys(SOUND_MAPPING));
+
 // Special sound preview function for sound picker
 SOUND_MAPPING.soundPreview = {
   preview: (soundType: string) => {
@@ -169,6 +172,12 @@ function createPlaySoundInterface(): PlaySoundInterface {
 }
 
 export const playSound: PlaySoundInterface = createPlaySoundInterface();
+
+// Debug: Log all available gradient functions
+console.log("🎨 Available gradient functions:");
+Object.keys(playSound)
+  .filter(key => key.includes("gradient") || key.includes("Gradient"))
+  .forEach(key => console.log(`  - playSound.${key}()`));
 
 // ===================================================================
 // SOUND AUDIT HELPERS - For systematic sound application
