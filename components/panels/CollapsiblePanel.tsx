@@ -63,22 +63,27 @@ export default function CollapsiblePanel({
   ); // Throttle per panel with unique key
 
   return (
-    <div class="bg-white rounded-3xl shadow-lg border-4 border-black overflow-hidden">
+    <div class="bg-white rounded-3xl shadow-lg border-4 border-black overflow-hidden group">
       <button
         type="button"
         onClick={() => onToggle(id)}
         onMouseEnter={() => playGradientSound()}
-        class={`w-full px-8 py-6 text-left font-black text-black transition-all duration-200 shadow-sm hover:shadow-md active:shadow-sm ${
-          getBackgroundColor(color)
-        }`}
+        class={`w-full px-8 py-6 text-left font-black text-black 
+          transition-all duration-200 ease-out
+          shadow-sm hover:shadow-xl 
+          hover:scale-[1.02] hover:brightness-110
+          hover:border-opacity-80
+          active:scale-[0.98] active:shadow-sm
+          transform-gpu
+          ${getBackgroundColor(color)}`}
         style={getInlineStyle(color)}
       >
         <div class="flex items-center justify-between">
-          <span class="text-xl">{title}</span>
+          <span class="text-xl transition-transform duration-200">{title}</span>
           <span
-            class={`text-2xl transition-transform duration-200 ${
-              isExpanded ? "rotate-180" : ""
-            }`}
+            class={`text-2xl transition-all duration-300 ease-in-out 
+              ${isExpanded ? "rotate-180" : "group-hover:rotate-12"}
+              group-hover:scale-125`}
           >
             ▼
           </span>
