@@ -314,11 +314,12 @@ export default function ButtonStudio() {
               height: "clamp(560px, calc(100vh - 232px), 760px)"
             }}>
               
-              {/* Stage Header - 56px CHONK */}
-              <div class="h-14 px-5 border-b-2 flex items-center justify-between rounded-t-[20px] bg-gradient-to-b from-purple-50/40 to-transparent" style={{
-                borderColor: "rgba(0,0,0,0.85)"
+              {/* Stage Header - 56px CHONK with colorful gradient */}
+              <div class="h-14 px-5 border-b-2 flex items-center justify-between rounded-t-[20px]" style={{
+                borderColor: "rgba(0,0,0,0.85)",
+                background: "linear-gradient(135deg, #E7D2FF 0%, #D9C6FF 50%, #C9F2FF 100%)"
               }}>
-                <span class="text-sm font-semibold tracking-wider uppercase opacity-70">STAGE VIEW</span>
+                <span class="text-sm font-bold tracking-wider uppercase text-black/70">STAGE VIEW</span>
                 <button
                   onClick={() => {
                     handleVoiceToggle(!voiceEnabled.value);
@@ -361,35 +362,42 @@ export default function ButtonStudio() {
                   </div>
                   
                   
-                  {/* Shuffle Button */}
+                  {/* Magic Shuffle Button - BIG AND MAGICAL */}
                   <button
                     onClick={(e) => {
-                      playSound.primaryClick();
+                      playSound.diceRoll?.() || playSound.primaryClick();
                       hapticService.diceRoll();
                       const btn = e.currentTarget;
-                      btn.style.transform = "scale(0.9)";
+                      btn.classList.add("animate-bounce");
+                      btn.style.transform = "scale(0.9) rotate(-15deg)";
                       setTimeout(() => {
-                        btn.style.transform = "scale(1.1)";
-                      }, 80);
+                        btn.style.transform = "scale(1.2) rotate(15deg)";
+                      }, 100);
                       setTimeout(() => {
-                        btn.style.transform = "scale(1)";
-                      }, 200);
+                        btn.style.transform = "scale(1) rotate(0deg)";
+                        btn.classList.remove("animate-bounce");
+                      }, 300);
                       const event = new CustomEvent("surpriseMe");
                       document.dispatchEvent(event);
                     }}
                     onMouseEnter={(e) => {
                       playSound.hover();
-                      e.currentTarget.style.transform = "scale(1.05) rotate(3deg)";
+                      e.currentTarget.style.transform = "scale(1.1) rotate(5deg)";
+                      e.currentTarget.style.background = "linear-gradient(135deg, #FFF3B8 0%, #FFD4A3 100%)";
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.transform = "scale(1) rotate(0deg)";
+                      e.currentTarget.style.background = "linear-gradient(135deg, #FFFFFF 0%, #FFF3B8 100%)";
                     }}
-                    class="absolute top-3 right-3 w-9 h-9 bg-white/90 hover:bg-amber-50 border-2 border-black/60 rounded-lg flex items-center justify-center transition-all duration-200"
-                    title="Shuffle design 🎲"
+                    class="absolute top-4 right-4 w-12 h-12 border-2 rounded-xl flex items-center justify-center transition-all duration-200 shadow-lg hover:shadow-xl"
+                    style={{
+                      background: "linear-gradient(135deg, #FFFFFF 0%, #FFF3B8 100%)",
+                      borderColor: "rgba(0,0,0,0.85)",
+                      boxShadow: "0 4px 0 0 rgba(0,0,0,0.12), 0 8px 16px -4px rgba(0,0,0,0.2)"
+                    }}
+                    title="Shuffle design ✨🎲✨"
                   >
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zM7.5 6a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm9 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zM12 10.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zM7.5 15a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm9 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z" />
-                    </svg>
+                    <span class="text-2xl animate-pulse">🎲</span>
                   </button>
                 </div>
               </div>
@@ -426,10 +434,11 @@ export default function ButtonStudio() {
             </div>
           </section>
 
-          {/* Right Sidebar - Fixed 560px CHONK */}
-          <aside class="overflow-auto pr-1" style={{
+          {/* Right Sidebar - Fixed 560px CHONK with smooth scroll */}
+          <aside class="overflow-y-auto overflow-x-hidden pr-1 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent hover:scrollbar-thumb-gray-400" style={{
             width: "560px",
-            maxHeight: "clamp(560px, calc(100vh - 232px), 760px)"
+            maxHeight: "clamp(560px, calc(100vh - 232px), 760px)",
+            scrollBehavior: "smooth"
           }}>
             <div class="space-y-5">
               {/* Colors Panel - CHONKY */}
@@ -625,9 +634,10 @@ export default function ButtonStudio() {
         </div>
       </main>
 
-      {/* Footer - Clean and visible */}
-      <footer class="bg-white h-12 shrink-0 mt-6" style={{
-        borderTop: "1px solid rgba(0,0,0,0.08)"
+      {/* Footer - Actually fixed at bottom */}
+      <footer class="bg-white h-12 shrink-0" style={{
+        borderTop: "1px solid rgba(0,0,0,0.08)",
+        marginTop: "auto"
       }}>
         <div class="max-w-[1280px] mx-auto h-full px-6 flex items-center justify-between text-xs text-neutral-500">
           <span>Made with 🔥 by Pablo • v1.0.0</span>
