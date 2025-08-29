@@ -297,7 +297,7 @@ export default function ButtonStudio() {
               color: "rgba(0,0,0,0.75)",
               textShadow: "0 1px 0 rgba(255,255,255,0.6)"
             }}>
-              The Figma for voice buttons
+              Voice buttons that actually work
             </p>
           </div>
           <div class="flex items-center gap-2">
