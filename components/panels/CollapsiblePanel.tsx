@@ -12,6 +12,7 @@ interface CollapsiblePanelProps {
   onToggle: (id: string) => void;
   size?: "small" | "medium" | "large";
   index?: number;
+  special?: boolean;
 }
 
 // 🎨 Using proper Tailwind CSS with custom panel colors defined in tailwind.config.ts
@@ -26,6 +27,7 @@ export default function CollapsiblePanel({
   onToggle,
   size = "medium",
   index = 0,
+  special = false,
 }: CollapsiblePanelProps) {
   // 🌈 HARMONIOUS PANEL HEADERS - Each panel gets distinct pastel gradient!
   // These map to our custom panel colors in tailwind.config.ts
@@ -42,18 +44,12 @@ export default function CollapsiblePanel({
     return colors[colorKey as keyof typeof colors] || colors.light;
   };
 
-  // Inline gradient styles matching spec colors
+  // Subtle cream background for all headers - let the chips own the color
   const getInlineStyle = (colorKey: string) => {
-    const gradients: Record<string, string> = {
-      cyan: "linear-gradient(90deg, #C9F2FF 0%, #C6F8E3 100%)",
-      green: "linear-gradient(90deg, #C6F8E3 0%, #EAF7D5 100%)",
-      red: "linear-gradient(90deg, #FAD1D7 0%, #F9D5E5 100%)",
-      orange: "linear-gradient(90deg, #FFD8A8 0%, #FFE7B4 100%)",
-      yellow: "linear-gradient(90deg, #FFE7B4 0%, #FFF1C9 100%)",
-      purple: "linear-gradient(90deg, #D9C6FF 0%, #E7D2FF 100%)",
-      light: "linear-gradient(90deg, #f3f4f6 0%, #e5e7eb 100%)",
+    // All panels get the same subtle cream gradient - no color competition
+    return { 
+      background: "linear-gradient(90deg, #FFF9F2 0%, #FFF5E8 100%)"
     };
-    return { background: gradients[colorKey] || gradients.light };
   };
 
   // 🎵 Play gradient sound based on panel color - each panel gets its unique tone!
@@ -76,11 +72,15 @@ export default function CollapsiblePanel({
   };
 
   return (
-    <div class="rounded-3xl border-4 bg-white overflow-hidden group animate-in fade-in slide-in-from-bottom-2" style={{
-      borderColor: "rgba(0,0,0,0.9)",
+    <div class={`rounded-3xl ${special ? "border-[5px]" : "border-4"} bg-white overflow-hidden group animate-in fade-in slide-in-from-bottom-2 ${special ? "shadow-lg" : ""}`} style={{
+      borderColor: special ? "rgba(139,92,246,0.6)" : "rgba(0,0,0,0.6)",
       animationDelay: `${index * 50}ms`,
       animationDuration: "200ms",
-      animationFillMode: "both"
+      animationFillMode: "both",
+      ...(special && { 
+        background: "linear-gradient(135deg, #FFFFFF 0%, #FAF5FF 100%)",
+        transform: "scale(1.02)"
+      })
     }}>
       <button
         type="button"
@@ -89,7 +89,7 @@ export default function CollapsiblePanel({
         class="h-16 w-full px-7 py-5 flex items-center justify-between rounded-t-3xl border-b-3 font-black hover:brightness-110 active:brightness-95 transition-all duration-150 ease-out"
         style={{
           ...getInlineStyle(color),
-          borderColor: "rgba(0,0,0,0.9)",
+          borderColor: "rgba(0,0,0,0.6)",
           willChange: "transform"
         }}
       >

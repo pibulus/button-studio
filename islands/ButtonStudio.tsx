@@ -291,8 +291,8 @@ export default function ButtonStudio() {
             }}>
               ButtonStudio<span class="text-fuchsia-500">.app</span>
             </h1>
-            <p class="text-neutral-700" style={{ marginTop: "10px" }}>
-              Beautiful, customizable button generator.
+            <p class="text-lg text-neutral-600 font-medium italic" style={{ marginTop: "12px", letterSpacing: "-0.01em" }}>
+              Beautiful, customizable button generator
             </p>
           </div>
           <div class="flex items-center gap-2">
@@ -308,15 +308,15 @@ export default function ButtonStudio() {
           {/* Left Stage - Fluid width with EXTRA chunky presence */}
           <section class="flex-1">
             <div class="rounded-3xl border-4 bg-white flex flex-col" style={{
-              borderColor: "rgba(0,0,0,0.9)",
-              boxShadow: "0 12px 0 0 rgba(0,0,0,0.25), 0 30px 50px -20px rgba(0,0,0,0.3)",
+              borderColor: "rgba(0,0,0,0.6)",
+              boxShadow: "0 8px 0 0 rgba(0,0,0,0.1), 0 20px 30px -10px rgba(0,0,0,0.15)",
               minHeight: "clamp(560px, calc(100vh - 232px), 760px)",
               height: "clamp(560px, calc(100vh - 232px), 760px)"
             }}>
               
               {/* Stage Header - 64px CHONK with colorful gradient */}
               <div class="h-16 px-6 border-b-4 flex items-center justify-between rounded-t-3xl" style={{
-                borderColor: "rgba(0,0,0,0.9)",
+                borderColor: "rgba(0,0,0,0.6)",
                 background: "linear-gradient(135deg, #E7D2FF 0%, #D9C6FF 50%, #C9F2FF 100%)"
               }}>
                 <span class="text-sm font-bold tracking-wider uppercase text-black/70">STAGE VIEW</span>
@@ -327,13 +327,13 @@ export default function ButtonStudio() {
                     hapticService.buttonPress();
                   }}
                   onMouseEnter={() => playSound.hover()}
-                  class="h-7 px-3 rounded-full border-2 bg-white text-xs font-semibold flex items-center gap-1.5 hover:-translate-y-[1px] transition-transform" style={{
-                    borderColor: "rgba(0,0,0,0.85)"
+                  class="h-6 px-2.5 rounded-full border bg-white/80 text-[10px] font-medium flex items-center gap-1 hover:bg-white transition-all" style={{
+                    borderColor: "rgba(0,0,0,0.3)"
                   }}>
-                  <span class={`h-2 w-2 rounded-full transition-colors ${
+                  <span class={`h-1.5 w-1.5 rounded-full transition-colors ${
                     voiceEnabled.value ? "bg-emerald-500" : "bg-neutral-400"
                   }`} />
-                  <span>{voiceEnabled.value ? "LIVE" : "OFF"}</span>
+                  <span>Stage: {voiceEnabled.value ? "ON" : "OFF"}</span>
                 </button>
               </div>
 
@@ -346,7 +346,7 @@ export default function ButtonStudio() {
                     repeating-linear-gradient(0deg, transparent, transparent 7px, rgba(0,0,0,0.03) 7px, rgba(0,0,0,0.03) 8px),
                     repeating-linear-gradient(90deg, transparent, transparent 7px, rgba(0,0,0,0.03) 7px, rgba(0,0,0,0.03) 8px)`
                 }}>
-                  <div style={{ transform: "scale(1.15)" }}>
+                  <div style={{ transform: "scale(1.35)" }}>
                     <VoiceButton
                       customization={customization.value}
                       onCustomizationChange={handleCustomizationChange}
@@ -438,7 +438,7 @@ export default function ButtonStudio() {
           <aside class="overflow-x-hidden" style={{
             width: "560px"
           }}>
-            <div class="space-y-5">
+            <div class="space-y-6">
               {/* Colors Panel - CHONKY */}
               <CollapsiblePanel
                 id="colors"

@@ -158,10 +158,11 @@ export default function CustomizationPanel({
 
       <CollapsiblePanel
         id="magic"
-        title="Magic"
+        title="✨ Magic"
         color="purple"
         isExpanded={expandedPanels.value.magic}
         onToggle={togglePanel}
+        special={true}
       >
         <MagicPanel
           voiceEnabled={voiceEnabled}

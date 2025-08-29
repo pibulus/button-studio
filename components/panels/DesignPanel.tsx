@@ -34,7 +34,7 @@ export default function DesignPanel(
               onMouseEnter={() => playSound.hover()}
               aria-label={`Select ${label} shape`}
               aria-pressed={customization.appearance.shape === shape}
-              class={`px-6 py-4 rounded-2xl border-3 border-black font-black transition-all shadow-lg hover:shadow-xl active:scale-95 ${
+              class={`px-6 py-5 rounded-2xl border-3 border-black font-black transition-all shadow-lg hover:shadow-xl active:scale-95 ${
                 customization.appearance.shape === shape
                   ? "bg-red-200 text-black shadow-xl scale-105"
                   : "bg-white text-black hover:bg-red-50"
@@ -67,7 +67,7 @@ export default function DesignPanel(
               onMouseEnter={() => playSound.hover()}
               aria-label={`Select ${label} border style`}
               aria-pressed={customization.appearance.borderStyle === value}
-              class={`px-6 py-4 rounded-2xl border-3 border-black font-black transition-all shadow-lg hover:shadow-xl active:scale-95 ${
+              class={`px-6 py-5 rounded-2xl border-3 border-black font-black transition-all shadow-lg hover:shadow-xl active:scale-95 ${
                 customization.appearance.borderStyle === value
                   ? "bg-red-200 text-black shadow-xl scale-105"
                   : "bg-white text-black hover:bg-red-50"
