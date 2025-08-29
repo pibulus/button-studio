@@ -3,11 +3,9 @@ import { useEffect } from "preact/hooks";
 import VoiceButton from "../components/VoiceButton.tsx";
 import CustomizationPanel from "../components/CustomizationPanel.tsx";
 import AudioSettings from "../components/AudioSettings.tsx";
-import CollapsiblePanel from "../components/panels/CollapsiblePanel.tsx";
 import {
   ButtonCustomization,
   defaultCustomization,
-  sliderConfig,
 } from "../types/customization.ts";
 import { hapticService } from "../utils/audio/hapticService.ts";
 import { playSound } from "../utils/audio/soundMapping.ts";
@@ -23,91 +21,6 @@ const showTranscriptModal = signal<boolean>(false);
 const apiKey = signal<string>("");
 const customPrompt = signal<string>("");
 
-// Color mode state
-const colorMode = signal<"pastel" | "neon" | "classic" | "gradient">("pastel");
-
-// Panel expansion state for right column controls
-const expandedLeftPanels = signal<Record<string, boolean>>({
-  colors: false,  // Start collapsed for cleaner initial view
-  size: false,
-});
-
-// Color system
-const colorModes = {
-  pastel: {
-    name: "Pastel",
-    fillType: "solid" as const,
-    colors: [
-      "#ff9eb5",
-      "#ffb08a",
-      "#ffd4a3",
-      "#fff3b8",
-      "#c8e6c9",
-      "#a8d8d1",
-      "#b8d8e0",
-      "#d1c4e0",
-      "#e6a8d6",
-      "#ffb3d1",
-      "#ffc4e1",
-      "#ff9a8b",
-    ],
-  },
-  neon: {
-    name: "Neon",
-    fillType: "solid" as const,
-    colors: [
-      "#ff1493",
-      "#ff4500",
-      "#ffff00",
-      "#7fff00",
-      "#00ff7f",
-      "#00ffff",
-      "#1e90ff",
-      "#ff00ff",
-      "#ff6347",
-      "#ffd700",
-      "#00fa9a",
-      "#ff69b4",
-    ],
-  },
-  classic: {
-    name: "Classic",
-    fillType: "solid" as const,
-    colors: [
-      "#f87171",
-      "#fb923c",
-      "#fbbf24",
-      "#a3e635",
-      "#4ade80",
-      "#22d3ee",
-      "#60a5fa",
-      "#818cf8",
-      "#a78bfa",
-      "#e879f9",
-      "#f472b6",
-      "#facc15",
-    ],
-  },
-  gradient: {
-    name: "Gradient",
-    fillType: "gradient" as const,
-    colors: [
-      ["#ff9a9e", "#fecfef"],
-      ["#ffecd2", "#fcb69f"],
-      ["#a8edea", "#fed6e3"],
-      ["#8fd3f4", "#84fab0"],
-      ["#a1c4fd", "#c2e9fb"],
-      ["#4facfe", "#00f2fe"],
-      ["#fbc2eb", "#a6c1ee"],
-      ["#667eea", "#764ba2"],
-      ["#f093fb", "#f5576c"],
-      ["#ff8a80", "#ff80ab"],
-      ["#fdcbf1", "#e6dee9"],
-      ["#cbb4d4", "#ddd6fe"],
-    ],
-  },
-};
-
 export default function ButtonStudio() {
   // Welcome sound
   useEffect(() => {
@@ -119,82 +32,28 @@ export default function ButtonStudio() {
 
   // Shuffle handler
   useEffect(() => {
-    const handleSurpriseMe = () => {
-      const currentMode = colorModes[colorMode.value];
-      const randomColorIndex = Math.floor(
-        Math.random() * currentMode.colors.length,
-      );
-      const randomColor = currentMode.colors[randomColorIndex];
+    const handleSurprise = () => {
+      // Random themes
+      const themes = ["soft", "flamingo", "voice"];
+      const randomTheme = themes[Math.floor(Math.random() * themes.length)];
 
-      const shapes = ["circle", "square"] as const;
-      const randomShape = shapes[Math.floor(Math.random() * shapes.length)];
-
-      const effectKeys = [
-        "breathing",
-        "bounce",
-        "glow",
-        "shadow",
-        "shine",
-        "pulse",
-      ] as const;
-      const newEffects = { ...defaultCustomization.effects };
-
-      effectKeys.forEach((key) => {
-        newEffects[key as keyof typeof newEffects] = false;
-      });
-
-      const numEffects = Math.random() < 0.6 ? 1 : 2;
-      for (let i = 0; i < numEffects; i++) {
-        const randomEffect =
-          effectKeys[Math.floor(Math.random() * effectKeys.length)];
-        newEffects[randomEffect as keyof typeof newEffects] = true;
-      }
-
-      const newCustomization: ButtonCustomization = {
-        ...customization.value,
+      // Apply random theme
+      customization.value = {
+        ...defaultCustomization,
         appearance: {
-          ...customization.value.appearance,
-          shape: randomShape,
-          scale: Math.round((0.8 + Math.random() * 1.0) * 10) / 10,
-          roundness: Math.floor(Math.random() * 40) + 5,
-          borderWidth: Math.floor(Math.random() * 6) + 2,
-          borderStyle: Math.random() > 0.5 ? "solid" : "dashed",
-          fillType: currentMode.fillType,
-          ...(currentMode.fillType === "solid"
-            ? { solidColor: randomColor as string }
-            : {
-              gradient: {
-                start: (randomColor as string[])[0],
-                end: (randomColor as string[])[1],
-                direction: Math.floor(Math.random() * 8) * 45,
-              },
-            }),
-        },
-        effects: newEffects,
-        interactions: {
-          ...customization.value.interactions,
-          hoverEffect: [
-            "squish",
-            "grow",
-            "bright",
-            "tilt",
-          ][Math.floor(Math.random() * 4)] as any,
+          ...defaultCustomization.appearance,
+          theme: randomTheme as ButtonCustomization["appearance"]["theme"],
         },
       };
-
-      customization.value = newCustomization;
-
-      setTimeout(() => {
-        playSound.success();
-        hapticService.celebration();
-      }, 300);
     };
 
-    document.addEventListener("surpriseMe", handleSurpriseMe);
-    return () => {
-      document.removeEventListener("surpriseMe", handleSurpriseMe);
-    };
-  }, [colorMode.value]);
+    document.addEventListener("surpriseMe", handleSurprise);
+    return () => document.removeEventListener("surpriseMe", handleSurprise);
+  }, []);
+
+  // ===================================================================
+  // EVENT HANDLERS
+  // ===================================================================
 
   const handleCustomizationChange = (newCustomization: ButtonCustomization) => {
     customization.value = newCustomization;
@@ -215,21 +74,6 @@ export default function ButtonStudio() {
         [key]: value,
       },
     };
-  };
-
-  const toggleLeftPanel = (panelId: string) => {
-    const isExpanding = !expandedLeftPanels.value[panelId];
-    expandedLeftPanels.value = {
-      ...expandedLeftPanels.value,
-      [panelId]: isExpanding,
-    };
-    // Use correct sound based on expand/collapse action
-    if (isExpanding) {
-      playSound.panelsExpand?.() || playSound.primaryClick();
-    } else {
-      playSound.panelsCollapse?.() || playSound.secondaryClick();
-    }
-    hapticService.lightTap();
   };
 
   return (
@@ -310,11 +154,11 @@ export default function ButtonStudio() {
       <main class="max-w-[1280px] mx-auto w-full px-6 flex-1 overflow-y-auto">
         <div class="flex gap-6">
           
-          {/* Left Stage - Narrower for better balance */}
+          {/* Left Stage - Centered and balanced */}
           <section style={{ maxWidth: "540px", flex: "0 0 540px" }}>
             <div class="rounded-[22px] border-[4px] flex flex-col" style={{
               borderColor: "rgba(0,0,0,0.92)",
-              boxShadow: "-6px 8px 0 rgba(0,0,0,0.88), 0 14px 32px -16px rgba(0,0,0,0.24)",
+              boxShadow: "-6px 8px 0 rgba(0,0,0,0.9)",
               minHeight: "520px",
               height: "520px",
               background: "#FFFDFB"
@@ -326,33 +170,36 @@ export default function ButtonStudio() {
                 background: "linear-gradient(135deg, #E7D2FF 0%, #D9C6FF 50%, #C9F2FF 100%)"
               }}>
                 <span class="text-sm font-bold tracking-wider uppercase text-black/70">STAGE VIEW</span>
-                <div class="rounded-full border-[3px] px-3 py-1.5 bg-white flex items-center gap-2" style={{
-                  borderColor: "rgba(0,0,0,0.88)"
-                }}>
-                  <span class="text-xs font-medium">Stage</span>
-                  <span class={`h-2 w-2 rounded-full transition-colors ${
-                    voiceEnabled.value ? "bg-emerald-500" : "bg-gray-400"
+                {/* Compact Stage Pill - badge style */}
+                <button
+                  onClick={() => {
+                    handleVoiceToggle(!voiceEnabled.value);
+                    playSound.primaryClick();
+                    hapticService.buttonPress();
+                  }}
+                  onMouseEnter={() => playSound.hover()}
+                  class="h-7 min-w-[76px] rounded-full border-[3px] px-[10px] bg-white flex items-center gap-[6px] text-[13px] font-semibold hover:bg-gray-50 active:scale-95 transition-all"
+                  style={{
+                    borderColor: "rgba(0,0,0,0.88)",
+                    boxShadow: "2px 2px 0px rgba(0,0,0,0.75)"
+                  }}
+                >
+                  <span>Stage</span>
+                  <span class={`w-2 h-2 rounded-full border-2 border-black transition-colors ${
+                    voiceEnabled.value ? "bg-green-500" : "bg-gray-300"
                   }`} />
-                  <button
-                    onClick={() => {
-                      handleVoiceToggle(!voiceEnabled.value);
-                      playSound.primaryClick();
-                      hapticService.buttonPress();
-                    }}
-                    onMouseEnter={() => playSound.hover()}
-                    class="text-xs font-bold"
-                  >
+                  <span class="font-bold">
                     {voiceEnabled.value ? "ON" : "OFF"}
-                  </button>
-                </div>
+                  </span>
+                </button>
               </div>
 
               {/* Stage Body with better padding */}
               <div class="flex-1 p-[30px] overflow-hidden flex flex-col">
-                <div class="h-full rounded-[18px] border-[3px] p-8 flex items-center justify-center relative" style={{
+                <div class="h-full rounded-[18px] border-[3px] flex items-center justify-center relative" style={{
                   borderColor: "rgba(0,0,0,0.9)",
-                  background: `radial-gradient(60% 60% at 50% 40%, rgba(0,0,0,0.025), transparent 60%),
-                              linear-gradient(180deg, #F9CEE1 0%, #FFE7BF 28%, #DDF3EA 56%, #D9F0FA 78%, #E7E0FB 100%)`
+                  background: "linear-gradient(180deg, #fffaf4 0%, #fff2e3 100%)",
+                  position: "relative"
                 }}>
                   <div style={{ width: "240px" }}>
                     <VoiceButton
@@ -397,246 +244,73 @@ export default function ButtonStudio() {
                       e.currentTarget.style.transform = "scale(1) rotate(0deg)";
                       e.currentTarget.style.background = "linear-gradient(135deg, #FFFFFF 0%, #FFF3B8 100%)";
                     }}
-                    class="absolute -top-20 -right-20 w-12 h-12 border-2 rounded-xl flex items-center justify-center transition-all duration-200 shadow-lg hover:shadow-xl"
+                    class="absolute bottom-4 right-4 h-[56px] w-[56px] rounded-[20px] border-[3px] flex items-center justify-center text-[28px] font-black transition-all duration-200 active:scale-95"
                     style={{
+                      borderColor: "rgba(0,0,0,0.88)",
                       background: "linear-gradient(135deg, #FFFFFF 0%, #FFF3B8 100%)",
-                      borderColor: "rgba(0,0,0,0.85)",
-                      boxShadow: "0 4px 0 0 rgba(0,0,0,0.12), 0 8px 16px -4px rgba(0,0,0,0.2)"
+                      boxShadow: "4px 4px 0px rgba(0,0,0,0.88), 0 8px 24px -12px rgba(255,200,0,0.4)"
                     }}
-                    title="Shuffle design ✨🎲✨"
+                    title="Surprise Me!"
                   >
-                    <span class="text-2xl animate-pulse">🎲</span>
+                    🎲
                   </button>
                 </div>
-              </div>
-
-              {/* Stage Actions */}
-              <div class="h-18 border-t-[3px] p-4 rounded-b-[20px]" style={{
-                borderColor: "rgba(0,0,0,0.88)"
-              }}>
-                <input
-                  type="text"
-                  value={customization.value.content.value}
-                  onInput={(e) => {
-                    const newValue = (e.target as HTMLInputElement).value;
-                    handleCustomizationChange({
-                      ...customization.value,
-                      content: {
-                        ...customization.value.content,
-                        value: newValue,
-                      },
-                    });
-                  }}
-                  onFocus={() => {
-                    playSound.primaryClick();
-                    hapticService.buttonPress();
-                  }}
-                  onMouseEnter={() => playSound.hover()}
-                  placeholder="Boop me!"
-                  maxLength={25}
-                  class="w-full h-full rounded-[14px] border-[3px] bg-white font-black text-lg px-4 text-center hover:bg-gray-50 focus:bg-amber-50 focus:outline-none transition-colors active:translate-y-[1px]" style={{
-                    borderColor: "rgba(0,0,0,0.88)"
-                  }}
-                />
+                
+                {/* JUICE Slider/Text Input - Narrower, more refined */}
+                <div class="mt-5 h-14 rounded-[18px] border-[3px]" style={{
+                  borderColor: "rgba(0,0,0,0.88)"
+                }}>
+                  <input
+                    type="text"
+                    value={customization.value.content.value}
+                    onInput={(e) => {
+                      const newValue = (e.target as HTMLInputElement).value;
+                      handleCustomizationChange({
+                        ...customization.value,
+                        content: {
+                          ...customization.value.content,
+                          value: newValue,
+                        },
+                      });
+                    }}
+                    onFocus={() => {
+                      playSound.primaryClick();
+                      hapticService.buttonPress();
+                    }}
+                    onMouseEnter={() => playSound.hover()}
+                    placeholder="Boop me!"
+                    maxLength={25}
+                    class="w-full h-full rounded-[14px] border-[3px] bg-white font-black text-lg px-4 text-center hover:bg-gray-50 focus:bg-amber-50 focus:outline-none transition-colors active:translate-y-[1px]" style={{
+                      borderColor: "rgba(0,0,0,0.88)"
+                    }}
+                  />
+                </div>
               </div>
             </div>
           </section>
 
-          {/* Right Sidebar - Wider panels */}
-          <aside class="overflow-x-hidden" style={{
+          {/* Right Sidebar - Wider panels with padding for shadows */}
+          <aside style={{
             width: "480px",
-            flex: "0 0 480px"
+            flex: "0 0 480px",
+            paddingBottom: "20px",
+            paddingRight: "12px"
           }}>
-            <div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
-              {/* Colors Panel - CHONKY */}
-              <CollapsiblePanel
-                id="colors"
-                title="Colors"
-                color="cyan"
-                isExpanded={expandedLeftPanels.value.colors}
-                onToggle={toggleLeftPanel}
-              >
-                <div class="grid grid-cols-2 gap-4 mb-6">
-                  {(["pastel", "neon", "classic", "gradient"] as const).map((
-                    mode,
-                  ) => (
-                    <button
-                      key={mode}
-                      onClick={() => {
-                        colorMode.value = mode;
-                        const modeConfig = colorModes[mode];
-                        customization.value = {
-                          ...customization.value,
-                          appearance: {
-                            ...customization.value.appearance,
-                            fillType: modeConfig.fillType,
-                          },
-                        };
-                        playSound.selectionSelect();
-                        hapticService.buttonPress();
-                      }}
-                      onMouseEnter={() => playSound.hover()}
-                      class={`h-12 px-6 rounded-2xl border-2 font-bold text-sm transition-all capitalize hover:shadow-md active:scale-95 ${
-                        colorMode.value === mode
-                          ? "bg-purple-200 hover:bg-purple-300 text-black scale-105"
-                          : "bg-white hover:bg-purple-50 text-black"
-                      }`}
-                      style={{
-                        borderColor: "rgba(0,0,0,0.85)",
-                        boxShadow: colorMode.value === mode
-                          ? "4px 4px 0px rgba(0,0,0,0.85)"
-                          : "2px 2px 0px rgba(0,0,0,0.85)",
-                      }}
-                    >
-                      {colorModes[mode].name}
-                    </button>
-                  ))}
-                </div>
-
-                <div class="grid grid-cols-6 gap-3">
-                  {colorModes[colorMode.value].colors.map((color, index) => (
-                    <button
-                      key={index}
-                      onClick={() => {
-                        const currentMode = colorModes[colorMode.value];
-                        if (currentMode.fillType === "solid") {
-                          customization.value = {
-                            ...customization.value,
-                            appearance: {
-                              ...customization.value.appearance,
-                              fillType: "solid",
-                              solidColor: color as string,
-                            },
-                          };
-                        } else {
-                          const gradientColors = color as string[];
-                          customization.value = {
-                            ...customization.value,
-                            appearance: {
-                              ...customization.value.appearance,
-                              fillType: "gradient",
-                              gradient: {
-                                ...customization.value.appearance.gradient,
-                                start: gradientColors[0],
-                                end: gradientColors[1],
-                              },
-                            },
-                          };
-                        }
-                        playSound.colorSelect();
-                        hapticService.buttonPress();
-                      }}
-                      onMouseEnter={() => playSound.hover()}
-                      class="h-14 w-full rounded-2xl border-2 hover:scale-110 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95"
-                      style={{
-                        background:
-                          colorModes[colorMode.value].fillType === "solid"
-                            ? color as string
-                            : `linear-gradient(135deg, ${
-                              (color as string[])[0]
-                            }, ${(color as string[])[1]})`,
-                        borderColor: "rgba(0,0,0,0.85)",
-                        boxShadow: "3px 3px 0px rgba(0,0,0,0.85)",
-                      }}
-                    />
-                  ))}
-                </div>
-              </CollapsiblePanel>
-
-              {/* Size & Shape Panel */}
-              <CollapsiblePanel
-                id="size"
-                title="Size & Shape"
-                color="green"
-                isExpanded={expandedLeftPanels.value.size}
-                onToggle={toggleLeftPanel}
-              >
-                <div class="space-y-8">
-                  {sliderConfig
-                    .filter((slider) => {
-                      if (slider.id === "roundness") {
-                        return customization.value.appearance.shape ===
-                          "square";
-                      }
-                      return true;
-                    })
-                    .map((slider) => {
-                      const rawValue =
-                        customization.value.appearance[slider.id];
-                      const formatValue = (val: number, unit: string) => {
-                        if (unit === "x") {
-                          return `${Math.round(val * 10) / 10}${unit}`;
-                        }
-                        return `${Math.round(val)}${unit}`;
-                      };
-                      const cleanValue = formatValue(rawValue, slider.unit);
-                      const percentage =
-                        ((rawValue - slider.min) / (slider.max - slider.min)) *
-                        100;
-
-                      return (
-                        <div key={slider.id} class="space-y-3">
-                          <div class="flex items-center justify-between">
-                            <h3 class="text-xl font-black text-gray-900">
-                              {slider.label}
-                            </h3>
-                            <div class="bg-gradient-to-r from-gray-50 to-gray-100 border-2 border-black px-3 py-1 rounded-lg shadow-sm">
-                              <span class="text-sm font-bold text-gray-800 font-mono">
-                                {cleanValue}
-                              </span>
-                            </div>
-                          </div>
-                          <div class="relative">
-                            <input
-                              type="range"
-                              min={slider.min}
-                              max={slider.max}
-                              step={slider.step || 1}
-                              value={rawValue}
-                              onInput={(e) => {
-                                updateAppearance(
-                                  slider.id,
-                                  parseFloat(
-                                    (e.target as HTMLInputElement).value,
-                                  ),
-                                );
-                                playSound.sliderStep();
-                                hapticService.sliderStep();
-                              }}
-                              onMouseUp={() => {
-                                playSound.sliderRelease();
-                                hapticService.sliderRelease();
-                              }}
-                              class="w-full h-6 bg-white border-3 border-black rounded-full appearance-none cursor-grab hover:cursor-grabbing transition-all shadow-sm hover:shadow-md"
-                              style={{
-                                background:
-                                  `linear-gradient(to right, #ff9eb5 0%, #ff9eb5 ${percentage}%, #f0f0f0 ${percentage}%, #f0f0f0 100%)`,
-                                border: "3px solid #000000",
-                              }}
-                            />
-                          </div>
-                        </div>
-                      );
-                    })}
-                </div>
-              </CollapsiblePanel>
-
-              {/* Other Customization Panels */}
-              <CustomizationPanel
-                customization={customization.value}
-                onChange={handleCustomizationChange}
-                voiceEnabled={voiceEnabled.value}
-                onVoiceToggle={handleVoiceToggle}
-                apiKeyValue={apiKey.value}
-                onApiKeyChange={(newApiKey) => {
-                  apiKey.value = newApiKey;
-                }}
-                customPromptValue={customPrompt.value}
-                onCustomPromptChange={(newPrompt) => {
-                  customPrompt.value = newPrompt;
-                }}
-              />
-            </div>
+            {/* All 6 panels now in CustomizationPanel */}
+            <CustomizationPanel
+              customization={customization.value}
+              onChange={handleCustomizationChange}
+              voiceEnabled={voiceEnabled.value}
+              onVoiceToggle={handleVoiceToggle}
+              apiKeyValue={apiKey.value}
+              onApiKeyChange={(newApiKey) => {
+                apiKey.value = newApiKey;
+              }}
+              customPromptValue={customPrompt.value}
+              onCustomPromptChange={(newPrompt) => {
+                customPrompt.value = newPrompt;
+              }}
+            />
           </aside>
         </div>
       </main>

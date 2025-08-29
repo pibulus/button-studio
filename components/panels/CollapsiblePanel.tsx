@@ -44,49 +44,36 @@ export default function CollapsiblePanel({
     return colors[colorKey as keyof typeof colors] || colors.light;
   };
 
-  // LO-FI BROADCAST CANDY - Each panel gets ONE hue with gentle same-hue gradient
+  // FLAT STRIPE BLOCKS - Each panel gets one solid color, no gradients
   const getInlineStyle = (colorKey: string, index: number = 0) => {
-    // Design tokens from spec - lo-fi refined colors
-    const colors = {
-      pink: "#F35C9F",
-      coral: "#FF7A66", 
-      amber: "#FFB84D",
-      mint: "#7ED7B6",
-      aqua: "#7ACFEA",
-      lilac: "#B9A5F4",
-    };
-    
-    const tints = {
-      pink: "#F9CEE1",
-      coral: "#FFD5CB",
-      amber: "#FFE7BF",
-      mint: "#DDF3EA",
-      aqua: "#D9F0FA",
-      lilac: "#E7E0FB",
-    };
-    
-    // Each panel gets a single-hue gradient from tint to base
-    const panelGradients = {
+    // Flat color blocks from spec - confident single colors
+    const panelColors = {
+      // Colors panel - Violet
+      violet: "#e263fb",
+      
+      // Size & Shape panel - Pink  
+      pink: "#fb63c8",
+      
       // Design panel - Coral
-      red: `linear-gradient(180deg, ${tints.coral}, ${colors.coral})`,
+      red: "#fb637c",
       
-      // Feel panel - Amber
-      orange: `linear-gradient(180deg, ${tints.amber}, ${colors.amber})`,
+      // Feel panel - Orange
+      orange: "#fb9663",
       
-      // Ship panel - Mint to lime
-      yellow: `linear-gradient(180deg, ${tints.mint}, #D9FF78)`,
+      // Ship panel - Yellow
+      yellow: "#fbe263",
       
-      // Magic panel - Lilac
-      purple: `linear-gradient(180deg, ${tints.lilac}, ${colors.lilac})`,
+      // Magic panel - Lime
+      purple: "#d1f77e",
       
-      // Extra panels
-      cyan: `linear-gradient(180deg, ${tints.aqua}, ${colors.aqua})`,
-      green: `linear-gradient(180deg, ${tints.mint}, ${colors.mint})`,
-      light: "linear-gradient(180deg, #FFF9F2, #FFF9F2)",
+      // Extra color mappings for backwards compat
+      cyan: "#e263fb",
+      green: "#fb63c8",
+      light: "#FFF9F2",
     };
     
     return { 
-      background: panelGradients[colorKey as keyof typeof panelGradients] || panelGradients.light
+      background: panelColors[colorKey as keyof typeof panelColors] || panelColors.light
     };
   };
 
@@ -115,7 +102,7 @@ export default function CollapsiblePanel({
       animationDelay: `${index * 50}ms`,
       animationDuration: "200ms",
       animationFillMode: "both",
-      boxShadow: "-6px 8px 0 rgba(0,0,0,0.88), 0 14px 32px -16px rgba(0,0,0,0.24)"
+      boxShadow: "-6px 8px 0 rgba(0,0,0,0.9)"
     }}>
       {/* Gradient hairline for open panels */}
       {isExpanded && (

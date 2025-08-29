@@ -9,6 +9,8 @@ import DesignPanel from "./panels/DesignPanel.tsx";
 import FeelPanel from "./panels/FeelPanel.tsx";
 import MagicPanel from "./panels/MagicPanel.tsx";
 import ShipPanel from "./panels/ShipPanel.tsx";
+import ColorsPanel from "./panels/ColorsPanel.tsx";
+import SizeShapePanel from "./panels/SizeShapePanel.tsx";
 
 interface CustomizationPanelProps {
   customization: ButtonCustomization;
@@ -21,9 +23,11 @@ interface CustomizationPanelProps {
   onCustomPromptChange?: (prompt: string) => void;
 }
 
-// Collapsible panel state - Updated for 4 consolidated panels
+// Collapsible panel state - 6 panels with gradient stripes
 const expandedPanels = signal<Record<string, boolean>>({
-  design: false,  // Start collapsed for cleaner initial view
+  colors: false,     // Start collapsed for cleaner initial view
+  sizeShape: false,
+  design: false,
   feel: false,
   ship: false,
   magic: false,
@@ -115,14 +119,45 @@ export default function CustomizationPanel({
   };
 
   return (
-    <div>
+    <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+      {/* Colors Panel - Gradient 1: Violet → Pink */}
+      <CollapsiblePanel
+        id="colors"
+        title="Colors"
+        color="violet"
+        isExpanded={expandedPanels.value.colors}
+        onToggle={togglePanel}
+        index={0}
+      >
+        <ColorsPanel
+          customization={customization}
+          onChange={onChange}
+        />
+      </CollapsiblePanel>
+
+      {/* Size & Shape Panel - Gradient 2: Pink → Coral */}
+      <CollapsiblePanel
+        id="sizeShape"
+        title="Size & Shape"
+        color="pink"
+        isExpanded={expandedPanels.value.sizeShape}
+        onToggle={togglePanel}
+        index={1}
+      >
+        <SizeShapePanel
+          customization={customization}
+          updateAppearance={updateAppearance}
+        />
+      </CollapsiblePanel>
+
+      {/* Design Panel - Gradient 3: Coral → Orange */}
       <CollapsiblePanel
         id="design"
         title="Design"
         color="red"
         isExpanded={expandedPanels.value.design}
         onToggle={togglePanel}
-        index={0}
+        index={2}
       >
         <DesignPanel
           customization={customization}
@@ -130,48 +165,46 @@ export default function CustomizationPanel({
         />
       </CollapsiblePanel>
 
-      <div style={{ marginTop: "16px" }}>
-        <CollapsiblePanel
-          id="feel"
+      {/* Feel Panel - Gradient 4: Orange → Yellow */}
+      <CollapsiblePanel
+        id="feel"
         title="Feel"
         color="orange"
         isExpanded={expandedPanels.value.feel}
         onToggle={togglePanel}
-        index={1}
+        index={3}
       >
         <FeelPanel
           customization={customization}
           updateEffect={updateEffect}
           applyTheme={applyTheme}
         />
-        </CollapsiblePanel>
-      </div>
+      </CollapsiblePanel>
 
-      <div style={{ marginTop: "16px" }}>
-        <CollapsiblePanel
-          id="ship"
+      {/* Ship Panel - Gradient 5: Yellow → Lime */}
+      <CollapsiblePanel
+        id="ship"
         title="Ship"
         color="yellow"
         isExpanded={expandedPanels.value.ship}
         onToggle={togglePanel}
-        index={2}
+        index={4}
       >
         <ShipPanel
           customization={customization}
           apiKeyValue={apiKeyValue}
         />
-        </CollapsiblePanel>
-      </div>
+      </CollapsiblePanel>
 
-      <div style={{ marginTop: "16px" }}>
-        <CollapsiblePanel
-          id="magic"
+      {/* Magic Panel - Gradient 6: Lime → Aqua */}
+      <CollapsiblePanel
+        id="magic"
         title="Magic"
         color="purple"
         isExpanded={expandedPanels.value.magic}
         onToggle={togglePanel}
         special={true}
-        index={3}
+        index={5}
       >
         <MagicPanel
           voiceEnabled={voiceEnabled}
@@ -181,8 +214,7 @@ export default function CustomizationPanel({
           customPromptValue={customPromptValue}
           onCustomPromptChange={onCustomPromptChange}
         />
-        </CollapsiblePanel>
-      </div>
+      </CollapsiblePanel>
     </div>
   );
 }
