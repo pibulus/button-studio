@@ -305,18 +305,18 @@ export default function ButtonStudio() {
       <main class="max-w-[1280px] mx-auto w-full px-6 flex-1 overflow-y-auto">
         <div class="flex gap-6">
           
-          {/* Left Stage - Fluid width with chunky presence */}
+          {/* Left Stage - Fluid width with EXTRA chunky presence */}
           <section class="flex-1">
-            <div class="rounded-[20px] border-2 bg-white flex flex-col" style={{
-              borderColor: "rgba(0,0,0,0.85)",
-              boxShadow: "0 10px 0 0 rgba(0,0,0,0.12), 0 28px 48px -18px rgba(0,0,0,0.28)",
+            <div class="rounded-3xl border-4 bg-white flex flex-col" style={{
+              borderColor: "rgba(0,0,0,0.9)",
+              boxShadow: "0 12px 0 0 rgba(0,0,0,0.25), 0 30px 50px -20px rgba(0,0,0,0.3)",
               minHeight: "clamp(560px, calc(100vh - 232px), 760px)",
               height: "clamp(560px, calc(100vh - 232px), 760px)"
             }}>
               
-              {/* Stage Header - 56px CHONK with colorful gradient */}
-              <div class="h-14 px-5 border-b-2 flex items-center justify-between rounded-t-[20px]" style={{
-                borderColor: "rgba(0,0,0,0.85)",
+              {/* Stage Header - 64px CHONK with colorful gradient */}
+              <div class="h-16 px-6 border-b-4 flex items-center justify-between rounded-t-3xl" style={{
+                borderColor: "rgba(0,0,0,0.9)",
                 background: "linear-gradient(135deg, #E7D2FF 0%, #D9C6FF 50%, #C9F2FF 100%)"
               }}>
                 <span class="text-sm font-bold tracking-wider uppercase text-black/70">STAGE VIEW</span>
@@ -402,9 +402,9 @@ export default function ButtonStudio() {
                 </div>
               </div>
 
-              {/* Stage Actions - 64px CHONK */}
-              <div class="h-16 border-t-2 p-3 rounded-b-[20px]" style={{
-                borderColor: "rgba(0,0,0,0.85)"
+              {/* Stage Actions - 72px EXTRA CHONK */}
+              <div class="h-18 border-t-4 p-4 rounded-b-3xl" style={{
+                borderColor: "rgba(0,0,0,0.9)"
               }}>
                 <input
                   type="text"
@@ -426,8 +426,8 @@ export default function ButtonStudio() {
                   onMouseEnter={() => playSound.hover()}
                   placeholder="Boop me!"
                   maxLength={25}
-                  class="w-full h-full rounded-xl border-2 bg-white font-bold text-base px-4 text-center hover:bg-gray-50 focus:bg-amber-50 focus:outline-none transition-colors active:translate-y-[1px]" style={{
-                    borderColor: "rgba(0,0,0,0.85)"
+                  class="w-full h-full rounded-2xl border-3 bg-white font-black text-lg px-4 text-center hover:bg-gray-50 focus:bg-amber-50 focus:outline-none transition-colors active:translate-y-[1px]" style={{
+                    borderColor: "rgba(0,0,0,0.9)"
                   }}
                 />
               </div>
