@@ -72,24 +72,34 @@ export default function CollapsiblePanel({
   };
 
   return (
-    <div class="rounded-3xl border-4 bg-white overflow-hidden group animate-in fade-in slide-in-from-bottom-2" style={{
-      borderColor: "rgba(0,0,0,0.7)",
+    <div class="relative rounded-[20px] border-[3px] bg-white overflow-hidden group animate-in fade-in slide-in-from-bottom-2" style={{
+      borderColor: "rgba(0,0,0,0.88)",
       animationDelay: `${index * 50}ms`,
       animationDuration: "200ms",
-      animationFillMode: "both"
+      animationFillMode: "both",
+      boxShadow: "-6px 8px 0 0 rgba(0,0,0,0.9), 0 12px 30px -12px rgba(0,0,0,0.28)"
     }}>
+      {/* Gradient hairline for open panels */}
+      {isExpanded && (
+        <div class="absolute -top-[3px] left-[3px] right-[3px] h-[6px] rounded-t-xl bg-gradient-to-r from-[#C9C0FF] via-[#FFCBAA] to-[#BFF4E6]" />
+      )}
       <button
         type="button"
         onClick={() => onToggle(id)}
         onMouseEnter={() => playGradientSound()}
-        class="h-16 w-full px-7 py-5 flex items-center justify-between rounded-t-3xl border-b-3 font-black hover:brightness-110 active:brightness-95 transition-all duration-150 ease-out"
+        class="h-auto w-full px-[22px] py-[18px] flex items-center justify-between rounded-t-[20px] border-b-[3px] font-bold hover:brightness-110 active:brightness-95 transition-all duration-150 ease-out"
         style={{
-          ...getInlineStyle(color),
-          borderColor: "rgba(0,0,0,0.7)",
+          background: "linear-gradient(180deg, rgba(255,252,248,1) 0%, rgba(255,248,242,1) 50%, rgba(255,245,235,1) 100%)",
+          borderColor: "rgba(0,0,0,0.88)",
           willChange: "transform"
         }}
       >
-        <span class="text-xl font-black tracking-tight">{title}</span>
+        <div class="flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full opacity-60" style={{
+            background: `linear-gradient(90deg, #CBB7FF, #FFCBAA, #BFF4E6)`
+          }} />
+          <span class="text-lg font-bold tracking-tight">{title}</span>
+        </div>
         <span class={`inline-block transition-transform duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] text-2xl ${isExpanded ? "rotate-180" : ""}`} style={{ willChange: "transform" }}>
           ▾
         </span>
@@ -97,9 +107,15 @@ export default function CollapsiblePanel({
       <div class={`overflow-hidden transition-[max-height,opacity] duration-200 ease-[cubic-bezier(0.4,0.0,0.2,1)] ${
         isExpanded ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0"
       }`} style={{ willChange: "max-height" }}>
-        <div class={`p-5 bg-white transform transition-transform duration-200 ease-out origin-top ${
+        <div class={`p-[20px] bg-white transform transition-transform duration-200 ease-out origin-top ${
           isExpanded ? "translate-y-0 scale-100" : "-translate-y-2 scale-[0.98]"
-        }`}>
+        }`} style={{
+          ...(special && id === "magic" && {
+            backgroundImage: `radial-gradient(circle at 20% 80%, rgba(203,183,255,0.02) 0%, transparent 50%),
+                             radial-gradient(circle at 80% 20%, rgba(255,203,170,0.02) 0%, transparent 50%),
+                             radial-gradient(circle at 40% 40%, rgba(191,244,230,0.02) 0%, transparent 50%)`
+          })
+        }}>
           {children}
         </div>
       </div>

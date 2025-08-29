@@ -115,7 +115,7 @@ export default function CustomizationPanel({
   };
 
   return (
-    <div class="space-y-5">
+    <div>
       <CollapsiblePanel
         id="design"
         title="Design"
@@ -129,8 +129,9 @@ export default function CustomizationPanel({
         />
       </CollapsiblePanel>
 
-      <CollapsiblePanel
-        id="feel"
+      <div style={{ marginTop: "20px" }}>
+        <CollapsiblePanel
+          id="feel"
         title="Feel"
         color="orange"
         isExpanded={expandedPanels.value.feel}
@@ -141,10 +142,12 @@ export default function CustomizationPanel({
           updateEffect={updateEffect}
           applyTheme={applyTheme}
         />
-      </CollapsiblePanel>
+        </CollapsiblePanel>
+      </div>
 
-      <CollapsiblePanel
-        id="ship"
+      <div style={{ marginTop: "32px" }}>
+        <CollapsiblePanel
+          id="ship"
         title="Ship"
         color="yellow"
         isExpanded={expandedPanels.value.ship}
@@ -154,14 +157,17 @@ export default function CustomizationPanel({
           customization={customization}
           apiKeyValue={apiKeyValue}
         />
-      </CollapsiblePanel>
+        </CollapsiblePanel>
+      </div>
 
-      <CollapsiblePanel
-        id="magic"
+      <div style={{ marginTop: "24px" }}>
+        <CollapsiblePanel
+          id="magic"
         title="Magic"
         color="purple"
         isExpanded={expandedPanels.value.magic}
         onToggle={togglePanel}
+        special={true}
       >
         <MagicPanel
           voiceEnabled={voiceEnabled}
@@ -171,7 +177,8 @@ export default function CustomizationPanel({
           customPromptValue={customPromptValue}
           onCustomPromptChange={onCustomPromptChange}
         />
-      </CollapsiblePanel>
+        </CollapsiblePanel>
+      </div>
     </div>
   );
 }

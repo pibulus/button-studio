@@ -34,11 +34,14 @@ export default function DesignPanel(
               onMouseEnter={() => playSound.hover()}
               aria-label={`Select ${label} shape`}
               aria-pressed={customization.appearance.shape === shape}
-              class={`px-6 py-5 rounded-2xl border-3 border-black font-black transition-all shadow-lg hover:shadow-xl active:scale-95 ${
+              class={`relative px-6 py-6 rounded-2xl border-3 border-black font-bold transition-all shadow-lg hover:shadow-xl active:scale-95 ${
                 customization.appearance.shape === shape
                   ? "bg-red-200 text-black shadow-xl scale-105"
                   : "bg-white text-black hover:bg-red-50"
               }`}
+              style={customization.appearance.shape === shape ? {
+                boxShadow: "0 0 0 2px transparent, 0 0 0 4px rgba(203,183,255,0.5), 0 0 0 6px rgba(255,203,170,0.3), -6px 8px 0 0 rgba(0,0,0,0.9), 0 12px 30px -12px rgba(0,0,0,0.28)"
+              } : {}}
             >
               {label}
             </button>
@@ -67,11 +70,14 @@ export default function DesignPanel(
               onMouseEnter={() => playSound.hover()}
               aria-label={`Select ${label} border style`}
               aria-pressed={customization.appearance.borderStyle === value}
-              class={`px-6 py-5 rounded-2xl border-3 border-black font-black transition-all shadow-lg hover:shadow-xl active:scale-95 ${
+              class={`relative px-6 py-6 rounded-2xl border-3 border-black font-bold transition-all shadow-lg hover:shadow-xl active:scale-95 ${
                 customization.appearance.borderStyle === value
                   ? "bg-red-200 text-black shadow-xl scale-105"
                   : "bg-white text-black hover:bg-red-50"
               }`}
+              style={customization.appearance.borderStyle === value ? {
+                boxShadow: "0 0 0 2px transparent, 0 0 0 4px rgba(203,183,255,0.5), 0 0 0 6px rgba(255,203,170,0.3), -6px 8px 0 0 rgba(0,0,0,0.9), 0 12px 30px -12px rgba(0,0,0,0.28)"
+              } : {}}
             >
               {label}
             </button>

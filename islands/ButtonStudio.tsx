@@ -291,7 +291,11 @@ export default function ButtonStudio() {
             }}>
               ButtonStudio<span class="text-fuchsia-500">.app</span>
             </h1>
-            <p class="text-lg text-neutral-600 font-medium italic" style={{ marginTop: "12px", letterSpacing: "-0.01em" }}>
+            <p class="text-base font-medium" style={{ 
+              marginTop: "12px", 
+              letterSpacing: "-0.02em",
+              color: "rgba(109,91,208,0.8)"
+            }}>
               Beautiful, customizable button generator
             </p>
           </div>
@@ -301,52 +305,56 @@ export default function ButtonStudio() {
         </div>
       </header>
 
-      {/* Main Layout - Balanced CHONK proportions */}
+      {/* Main Layout - 60/40 proportions */}
       <main class="max-w-[1280px] mx-auto w-full px-6 flex-1 overflow-y-auto">
         <div class="flex gap-6">
           
-          {/* Left Stage - Fluid width with EXTRA chunky presence */}
-          <section class="flex-1">
-            <div class="rounded-3xl border-4 bg-white flex flex-col" style={{
-              borderColor: "rgba(0,0,0,0.7)",
-              boxShadow: "0 8px 0 0 rgba(0,0,0,0.15)",
+          {/* Left Stage - 60% with proper presence */}
+          <section style={{ maxWidth: "720px", flex: "1 1 60%" }}>
+            <div class="rounded-[20px] border-[4px] bg-white flex flex-col" style={{
+              borderColor: "rgba(0,0,0,0.88)",
+              boxShadow: "-6px 8px 0 0 rgba(0,0,0,0.9), 0 12px 30px -12px rgba(0,0,0,0.28)",
               minHeight: "clamp(560px, calc(100vh - 232px), 760px)",
               height: "clamp(560px, calc(100vh - 232px), 760px)"
             }}>
               
-              {/* Stage Header - 64px CHONK with colorful gradient */}
-              <div class="h-16 px-6 border-b-4 flex items-center justify-between rounded-t-3xl" style={{
-                borderColor: "rgba(0,0,0,0.7)",
+              {/* Stage Header with gradient */}
+              <div class="h-16 px-7 border-b-[3px] flex items-center justify-between rounded-t-[20px]" style={{
+                borderColor: "rgba(0,0,0,0.88)",
                 background: "linear-gradient(135deg, #E7D2FF 0%, #D9C6FF 50%, #C9F2FF 100%)"
               }}>
                 <span class="text-sm font-bold tracking-wider uppercase text-black/70">STAGE VIEW</span>
-                <button
-                  onClick={() => {
-                    handleVoiceToggle(!voiceEnabled.value);
-                    playSound.primaryClick();
-                    hapticService.buttonPress();
-                  }}
-                  onMouseEnter={() => playSound.hover()}
-                  class="h-6 px-2.5 rounded-full border bg-white/80 text-[10px] font-medium flex items-center gap-1 hover:bg-white transition-all" style={{
-                    borderColor: "rgba(0,0,0,0.3)"
-                  }}>
-                  <span class={`h-1.5 w-1.5 rounded-full transition-colors ${
-                    voiceEnabled.value ? "bg-emerald-500" : "bg-neutral-400"
+                <div class="rounded-full border-[3px] px-3 py-1.5 bg-white flex items-center gap-2" style={{
+                  borderColor: "rgba(0,0,0,0.88)"
+                }}>
+                  <span class="text-xs font-medium">Stage</span>
+                  <span class={`h-2 w-2 rounded-full transition-colors ${
+                    voiceEnabled.value ? "bg-emerald-500" : "bg-gray-400"
                   }`} />
-                  <span>Stage: {voiceEnabled.value ? "ON" : "OFF"}</span>
-                </button>
+                  <button
+                    onClick={() => {
+                      handleVoiceToggle(!voiceEnabled.value);
+                      playSound.primaryClick();
+                      hapticService.buttonPress();
+                    }}
+                    onMouseEnter={() => playSound.hover()}
+                    class="text-xs font-bold"
+                  >
+                    {voiceEnabled.value ? "ON" : "OFF"}
+                  </button>
+                </div>
               </div>
 
-              {/* Stage Body - No more white tundra */}
-              <div class="flex-1 p-5 overflow-hidden flex flex-col">
-                <div class="h-full rounded-2xl border-2 p-6 flex items-center justify-center relative" style={{
-                  borderColor: "rgba(0,0,0,0.75)",
+              {/* Stage Body with better padding */}
+              <div class="flex-1 p-7 overflow-hidden flex flex-col">
+                <div class="h-full rounded-[14px] border-[3px] p-8 flex items-center justify-center relative" style={{
+                  borderColor: "rgba(0,0,0,0.88)",
                   background: "radial-gradient(120% 120% at 50% 0%, #FFF4EC 0%, #FFFFFF 60%)",
                   backgroundImage: `radial-gradient(120% 120% at 50% 0%, #FFF4EC 0%, #FFFFFF 60%), 
                     repeating-linear-gradient(0deg, transparent, transparent 7px, rgba(0,0,0,0.03) 7px, rgba(0,0,0,0.03) 8px),
                     repeating-linear-gradient(90deg, transparent, transparent 7px, rgba(0,0,0,0.03) 7px, rgba(0,0,0,0.03) 8px)`
                 }}>
-                  <div style={{ transform: "scale(1.35)" }}>
+                  <div style={{ transform: "scale(1.2)", position: "absolute", top: "48%" }}>
                     <VoiceButton
                       customization={customization.value}
                       onCustomizationChange={handleCustomizationChange}
@@ -402,9 +410,9 @@ export default function ButtonStudio() {
                 </div>
               </div>
 
-              {/* Stage Actions - 72px EXTRA CHONK */}
-              <div class="h-18 border-t-4 p-4 rounded-b-3xl" style={{
-                borderColor: "rgba(0,0,0,0.7)"
+              {/* Stage Actions */}
+              <div class="h-18 border-t-[3px] p-4 rounded-b-[20px]" style={{
+                borderColor: "rgba(0,0,0,0.88)"
               }}>
                 <input
                   type="text"
@@ -426,19 +434,20 @@ export default function ButtonStudio() {
                   onMouseEnter={() => playSound.hover()}
                   placeholder="Boop me!"
                   maxLength={25}
-                  class="w-full h-full rounded-2xl border-3 bg-white font-black text-lg px-4 text-center hover:bg-gray-50 focus:bg-amber-50 focus:outline-none transition-colors active:translate-y-[1px]" style={{
-                    borderColor: "rgba(0,0,0,0.7)"
+                  class="w-full h-full rounded-[14px] border-[3px] bg-white font-black text-lg px-4 text-center hover:bg-gray-50 focus:bg-amber-50 focus:outline-none transition-colors active:translate-y-[1px]" style={{
+                    borderColor: "rgba(0,0,0,0.88)"
                   }}
                 />
               </div>
             </div>
           </section>
 
-          {/* Right Sidebar - Fixed 560px CHONK without height constraints */}
+          {/* Right Sidebar - 40% with proper constraints */}
           <aside class="overflow-x-hidden" style={{
-            width: "560px"
+            width: "480px",
+            flex: "1 1 40%"
           }}>
-            <div class="space-y-6">
+            <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
               {/* Colors Panel - CHONKY */}
               <CollapsiblePanel
                 id="colors"

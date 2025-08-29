@@ -49,12 +49,15 @@ export default function FeelPanel({
                 hapticService.buttonPress();
               }}
               onMouseEnter={() => playSound.hover()}
-              class={`px-6 py-4 rounded-2xl border-3 border-black font-black transition-all shadow-lg hover:shadow-xl active:scale-95 ${
+              class={`relative px-6 py-6 rounded-2xl border-3 border-black font-bold transition-all shadow-lg hover:shadow-xl active:scale-95 ${
                 customization
                     .effects[effect as keyof ButtonCustomization["effects"]]
                   ? "bg-orange-200 text-black shadow-xl scale-105"
                   : "bg-white text-black hover:bg-orange-50"
               }`}
+              style={customization.effects[effect as keyof ButtonCustomization["effects"]] ? {
+                boxShadow: "0 0 0 2px transparent, 0 0 0 4px rgba(203,183,255,0.5), 0 0 0 6px rgba(255,203,170,0.3), -6px 8px 0 0 rgba(0,0,0,0.9), 0 12px 30px -12px rgba(0,0,0,0.28)"
+              } : {}}
             >
               {label}
             </button>
@@ -90,12 +93,15 @@ export default function FeelPanel({
                 hapticService.buttonPress();
               }}
               onMouseEnter={() => playSound.hover()}
-              class={`px-6 py-4 rounded-2xl border-3 border-black font-black transition-all shadow-lg hover:shadow-xl active:scale-95 ${
+              class={`relative px-6 py-6 rounded-2xl border-3 border-black font-bold transition-all shadow-lg hover:shadow-xl active:scale-95 ${
                 customization
                     .effects[effect as keyof ButtonCustomization["effects"]]
                   ? "bg-orange-200 text-black shadow-xl scale-105"
                   : "bg-white text-black hover:bg-orange-50"
               }`}
+              style={customization.effects[effect as keyof ButtonCustomization["effects"]] ? {
+                boxShadow: "0 0 0 2px transparent, 0 0 0 4px rgba(203,183,255,0.5), 0 0 0 6px rgba(255,203,170,0.3), -6px 8px 0 0 rgba(0,0,0,0.9), 0 12px 30px -12px rgba(0,0,0,0.28)"
+              } : {}}
             >
               {label}
             </button>
@@ -116,7 +122,7 @@ export default function FeelPanel({
                 playSound.selectionSelect();
                 hapticService.success();
               }}
-              class="px-6 py-4 rounded-2xl border-3 border-black font-black transition-all shadow-lg hover:shadow-xl active:scale-95 bg-white text-black hover:bg-orange-50"
+              class="px-6 py-6 rounded-2xl border-3 border-black font-bold transition-all shadow-lg hover:shadow-xl active:scale-95 bg-white text-black hover:bg-orange-50"
             >
               {theme.name}
             </button>
