@@ -233,7 +233,7 @@ export default function ButtonStudio() {
   };
 
   return (
-    <body class="min-h-screen bg-[#F7F0E2] flex flex-col">
+    <div class="min-h-screen bg-[#F7F0E2] flex flex-col">
       {/* Transcript Modal */}
       {showTranscriptModal.value && (
         <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -647,6 +647,6 @@ export default function ButtonStudio() {
           </nav>
         </div>
       </footer>
-    </body>
+    </div>
   );
 }
