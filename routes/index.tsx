@@ -14,11 +14,7 @@ export default function Home() {
           content="Design and customize beautiful voice recording buttons with real-time transcription. Export as HTML, PWA, or share your designs. The Figma for voice buttons."
         />
 
-        {/* Viewport and Mobile */}
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes"
-        />
+        {/* Mobile */}
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta
