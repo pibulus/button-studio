@@ -302,8 +302,8 @@ export default function ButtonStudio() {
       </header>
 
       {/* Main Layout - Balanced CHONK proportions */}
-      <main class="max-w-[1280px] mx-auto w-full px-6 flex-1 overflow-hidden">
-        <div class="flex gap-6 h-full">
+      <main class="max-w-[1280px] mx-auto w-full px-6 flex-1 overflow-y-auto">
+        <div class="flex gap-6">
           
           {/* Left Stage - Fluid width with chunky presence */}
           <section class="flex-1">
@@ -434,11 +434,9 @@ export default function ButtonStudio() {
             </div>
           </section>
 
-          {/* Right Sidebar - Fixed 560px CHONK with smooth scroll */}
-          <aside class="overflow-y-auto overflow-x-hidden pr-1 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent hover:scrollbar-thumb-gray-400" style={{
-            width: "560px",
-            maxHeight: "clamp(560px, calc(100vh - 232px), 760px)",
-            scrollBehavior: "smooth"
+          {/* Right Sidebar - Fixed 560px CHONK without height constraints */}
+          <aside class="overflow-x-hidden" style={{
+            width: "560px"
           }}>
             <div class="space-y-5">
               {/* Colors Panel - CHONKY */}

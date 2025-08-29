@@ -82,14 +82,14 @@ export default function CollapsiblePanel({
         type="button"
         onClick={() => onToggle(id)}
         onMouseEnter={() => playGradientSound()}
-        class="h-14 w-full px-5 flex items-center justify-between rounded-t-[20px] border-b-2 font-semibold hover:-translate-y-[1px] hover:shadow-md transition-all duration-120 ease-out"
+        class="h-14 w-full px-7 py-5 flex items-center justify-between rounded-t-[20px] border-b-2 font-black hover:-translate-y-[1px] hover:shadow-md transition-all duration-120 ease-out"
         style={{
           ...getInlineStyle(color),
           borderColor: "rgba(0,0,0,0.85)"
         }}
       >
-        <span class="text-sm font-semibold" style={{ fontSize: "14px", fontWeight: 600 }}>{title}</span>
-        <span class={`transition-transform duration-300 text-lg ${isExpanded ? "rotate-180" : ""}`}>
+        <span class="text-lg font-black">{title}</span>
+        <span class={`transition-transform duration-300 text-xl ${isExpanded ? "rotate-180" : ""}`}>
           ▾
         </span>
       </button>
