@@ -401,7 +401,7 @@ export default function ButtonStudio() {
                       e.currentTarget.style.transform = "scale(1) rotate(0deg)";
                       e.currentTarget.style.background = "linear-gradient(135deg, #FFFFFF 0%, #FFF3B8 100%)";
                     }}
-                    class="absolute top-4 right-4 w-12 h-12 border-2 rounded-xl flex items-center justify-center transition-all duration-200 shadow-lg hover:shadow-xl"
+                    class="absolute -top-20 -right-20 w-12 h-12 border-2 rounded-xl flex items-center justify-center transition-all duration-200 shadow-lg hover:shadow-xl"
                     style={{
                       background: "linear-gradient(135deg, #FFFFFF 0%, #FFF3B8 100%)",
                       borderColor: "rgba(0,0,0,0.85)",
@@ -448,8 +448,8 @@ export default function ButtonStudio() {
 
           {/* Right Sidebar - 40% with proper constraints */}
           <aside class="overflow-x-hidden" style={{
-            width: "480px",
-            flex: "1 1 40%"
+            width: "420px",
+            flex: "0 0 420px"
           }}>
             <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
               {/* Colors Panel - CHONKY */}

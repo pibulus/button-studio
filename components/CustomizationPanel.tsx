@@ -129,7 +129,7 @@ export default function CustomizationPanel({
         />
       </CollapsiblePanel>
 
-      <div style={{ marginTop: "20px" }}>
+      <div style={{ marginTop: "16px" }}>
         <CollapsiblePanel
           id="feel"
         title="Feel"
@@ -145,7 +145,7 @@ export default function CustomizationPanel({
         </CollapsiblePanel>
       </div>
 
-      <div style={{ marginTop: "32px" }}>
+      <div style={{ marginTop: "16px" }}>
         <CollapsiblePanel
           id="ship"
         title="Ship"
@@ -160,7 +160,7 @@ export default function CustomizationPanel({
         </CollapsiblePanel>
       </div>
 
-      <div style={{ marginTop: "24px" }}>
+      <div style={{ marginTop: "16px" }}>
         <CollapsiblePanel
           id="magic"
         title="Magic"
