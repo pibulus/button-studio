@@ -88,8 +88,8 @@ export default function CollapsiblePanel({
           borderColor: "rgba(0,0,0,0.85)"
         }}
       >
-        <span class="text-base font-bold tracking-tight" style={{ fontSize: "15px", fontWeight: 700 }}>{title}</span>
-        <span class={`transition-transform duration-300 text-xl font-bold ${isExpanded ? "rotate-180" : ""}`}>
+        <span class="text-sm font-semibold" style={{ fontSize: "14px", fontWeight: 600 }}>{title}</span>
+        <span class={`transition-transform duration-300 text-lg ${isExpanded ? "rotate-180" : ""}`}>
           ▾
         </span>
       </button>

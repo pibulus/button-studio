@@ -314,12 +314,11 @@ export default function ButtonStudio() {
               height: "clamp(560px, calc(100vh - 232px), 760px)"
             }}>
               
-              {/* Stage Header - 56px CHONK with gradient */}
-              <div class="h-14 px-5 border-b-2 flex items-center justify-between rounded-t-[20px]" style={{
-                borderColor: "rgba(0,0,0,0.85)",
-                background: "linear-gradient(135deg, #E7D2FF 0%, #D9C6FF 50%, #C9F2FF 100%)"
+              {/* Stage Header - 56px CHONK */}
+              <div class="h-14 px-5 border-b-2 flex items-center justify-between rounded-t-[20px] bg-gradient-to-b from-purple-50/40 to-transparent" style={{
+                borderColor: "rgba(0,0,0,0.85)"
               }}>
-                <span class="text-sm font-bold tracking-wider uppercase text-black/70">STAGE VIEW</span>
+                <span class="text-sm font-semibold tracking-wider uppercase opacity-70">STAGE VIEW</span>
                 <button
                   onClick={() => {
                     handleVoiceToggle(!voiceEnabled.value);
@@ -362,42 +361,35 @@ export default function ButtonStudio() {
                   </div>
                   
                   
-                  {/* Magic Shuffle Button - RESTORED */}
+                  {/* Shuffle Button */}
                   <button
                     onClick={(e) => {
-                      playSound.diceRoll?.() || playSound.primaryClick();
+                      playSound.primaryClick();
                       hapticService.diceRoll();
                       const btn = e.currentTarget;
-                      btn.classList.add("animate-bounce");
-                      btn.style.transform = "scale(0.9) rotate(-15deg)";
+                      btn.style.transform = "scale(0.9)";
                       setTimeout(() => {
-                        btn.style.transform = "scale(1.2) rotate(15deg)";
-                      }, 100);
+                        btn.style.transform = "scale(1.1)";
+                      }, 80);
                       setTimeout(() => {
-                        btn.style.transform = "scale(1) rotate(0deg)";
-                        btn.classList.remove("animate-bounce");
-                      }, 300);
+                        btn.style.transform = "scale(1)";
+                      }, 200);
                       const event = new CustomEvent("surpriseMe");
                       document.dispatchEvent(event);
                     }}
                     onMouseEnter={(e) => {
                       playSound.hover();
-                      e.currentTarget.style.transform = "scale(1.1) rotate(5deg)";
-                      e.currentTarget.style.background = "linear-gradient(135deg, #FFF3B8 0%, #FFD4A3 100%)";
+                      e.currentTarget.style.transform = "scale(1.05) rotate(3deg)";
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.transform = "scale(1) rotate(0deg)";
-                      e.currentTarget.style.background = "linear-gradient(135deg, #FFFFFF 0%, #FFF3B8 100%)";
                     }}
-                    class="absolute top-4 right-4 w-12 h-12 border-2 rounded-xl flex items-center justify-center transition-all duration-200 shadow-lg hover:shadow-xl"
-                    style={{
-                      background: "linear-gradient(135deg, #FFFFFF 0%, #FFF3B8 100%)",
-                      borderColor: "rgba(0,0,0,0.85)",
-                      boxShadow: "0 4px 0 0 rgba(0,0,0,0.12), 0 8px 16px -4px rgba(0,0,0,0.2)"
-                    }}
-                    title="Shuffle design ✨🎲✨"
+                    class="absolute top-3 right-3 w-9 h-9 bg-white/90 hover:bg-amber-50 border-2 border-black/60 rounded-lg flex items-center justify-center transition-all duration-200"
+                    title="Shuffle design 🎲"
                   >
-                    <span class="text-2xl animate-pulse">🎲</span>
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zM7.5 6a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm9 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zM12 10.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zM7.5 15a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm9 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z" />
+                    </svg>
                   </button>
                 </div>
               </div>
@@ -434,14 +426,186 @@ export default function ButtonStudio() {
             </div>
           </section>
 
-          {/* Right Sidebar - Fixed 560px CHONK with smooth scroll */}
-          <aside class="overflow-y-auto overflow-x-hidden pr-1 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent hover:scrollbar-thumb-gray-400" style={{
+          {/* Right Sidebar - Fixed 560px CHONK */}
+          <aside class="overflow-auto pr-1" style={{
             width: "560px",
-            maxHeight: "clamp(560px, calc(100vh - 232px), 760px)",
-            scrollBehavior: "smooth"
+            maxHeight: "clamp(560px, calc(100vh - 232px), 760px)"
           }}>
             <div class="space-y-5">
-              {/* All Customization Panels */}
+              {/* Colors Panel - CHONKY */}
+              <CollapsiblePanel
+                id="colors"
+                title="Colors"
+                color="cyan"
+                isExpanded={expandedLeftPanels.value.colors}
+                onToggle={toggleLeftPanel}
+              >
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                  {(["pastel", "neon", "classic", "gradient"] as const).map((
+                    mode,
+                  ) => (
+                    <button
+                      key={mode}
+                      onClick={() => {
+                        colorMode.value = mode;
+                        const modeConfig = colorModes[mode];
+                        customization.value = {
+                          ...customization.value,
+                          appearance: {
+                            ...customization.value.appearance,
+                            fillType: modeConfig.fillType,
+                          },
+                        };
+                        playSound.selectionSelect();
+                        hapticService.buttonPress();
+                      }}
+                      onMouseEnter={() => playSound.hover()}
+                      class={`h-12 px-6 rounded-2xl border-2 font-bold text-sm transition-all capitalize hover:shadow-md active:scale-95 ${
+                        colorMode.value === mode
+                          ? "bg-purple-200 hover:bg-purple-300 text-black scale-105"
+                          : "bg-white hover:bg-purple-50 text-black"
+                      }`}
+                      style={{
+                        borderColor: "rgba(0,0,0,0.85)",
+                        boxShadow: colorMode.value === mode
+                          ? "4px 4px 0px rgba(0,0,0,0.85)"
+                          : "2px 2px 0px rgba(0,0,0,0.85)",
+                      }}
+                    >
+                      {colorModes[mode].name}
+                    </button>
+                  ))}
+                </div>
+
+                <div class="grid grid-cols-6 gap-3">
+                  {colorModes[colorMode.value].colors.map((color, index) => (
+                    <button
+                      key={index}
+                      onClick={() => {
+                        const currentMode = colorModes[colorMode.value];
+                        if (currentMode.fillType === "solid") {
+                          customization.value = {
+                            ...customization.value,
+                            appearance: {
+                              ...customization.value.appearance,
+                              fillType: "solid",
+                              solidColor: color as string,
+                            },
+                          };
+                        } else {
+                          const gradientColors = color as string[];
+                          customization.value = {
+                            ...customization.value,
+                            appearance: {
+                              ...customization.value.appearance,
+                              fillType: "gradient",
+                              gradient: {
+                                ...customization.value.appearance.gradient,
+                                start: gradientColors[0],
+                                end: gradientColors[1],
+                              },
+                            },
+                          };
+                        }
+                        playSound.colorSelect();
+                        hapticService.buttonPress();
+                      }}
+                      onMouseEnter={() => playSound.hover()}
+                      class="h-14 w-full rounded-2xl border-2 hover:scale-110 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95"
+                      style={{
+                        background:
+                          colorModes[colorMode.value].fillType === "solid"
+                            ? color as string
+                            : `linear-gradient(135deg, ${
+                              (color as string[])[0]
+                            }, ${(color as string[])[1]})`,
+                        borderColor: "rgba(0,0,0,0.85)",
+                        boxShadow: "3px 3px 0px rgba(0,0,0,0.85)",
+                      }}
+                    />
+                  ))}
+                </div>
+              </CollapsiblePanel>
+
+              {/* Size & Shape Panel */}
+              <CollapsiblePanel
+                id="size"
+                title="Size & Shape"
+                color="green"
+                isExpanded={expandedLeftPanels.value.size}
+                onToggle={toggleLeftPanel}
+              >
+                <div class="space-y-8">
+                  {sliderConfig
+                    .filter((slider) => {
+                      if (slider.id === "roundness") {
+                        return customization.value.appearance.shape ===
+                          "square";
+                      }
+                      return true;
+                    })
+                    .map((slider) => {
+                      const rawValue =
+                        customization.value.appearance[slider.id];
+                      const formatValue = (val: number, unit: string) => {
+                        if (unit === "x") {
+                          return `${Math.round(val * 10) / 10}${unit}`;
+                        }
+                        return `${Math.round(val)}${unit}`;
+                      };
+                      const cleanValue = formatValue(rawValue, slider.unit);
+                      const percentage =
+                        ((rawValue - slider.min) / (slider.max - slider.min)) *
+                        100;
+
+                      return (
+                        <div key={slider.id} class="space-y-3">
+                          <div class="flex items-center justify-between">
+                            <h3 class="text-xl font-black text-gray-900">
+                              {slider.label}
+                            </h3>
+                            <div class="bg-gradient-to-r from-gray-50 to-gray-100 border-2 border-black px-3 py-1 rounded-lg shadow-sm">
+                              <span class="text-sm font-bold text-gray-800 font-mono">
+                                {cleanValue}
+                              </span>
+                            </div>
+                          </div>
+                          <div class="relative">
+                            <input
+                              type="range"
+                              min={slider.min}
+                              max={slider.max}
+                              step={slider.step || 1}
+                              value={rawValue}
+                              onInput={(e) => {
+                                updateAppearance(
+                                  slider.id,
+                                  parseFloat(
+                                    (e.target as HTMLInputElement).value,
+                                  ),
+                                );
+                                playSound.sliderStep();
+                                hapticService.sliderStep();
+                              }}
+                              onMouseUp={() => {
+                                playSound.sliderRelease();
+                                hapticService.sliderRelease();
+                              }}
+                              class="w-full h-6 bg-white border-3 border-black rounded-full appearance-none cursor-grab hover:cursor-grabbing transition-all shadow-sm hover:shadow-md"
+                              style={{
+                                background:
+                                  `linear-gradient(to right, #ff9eb5 0%, #ff9eb5 ${percentage}%, #f0f0f0 ${percentage}%, #f0f0f0 100%)`,
+                                border: "3px solid #000000",
+                              }}
+                            />
+                          </div>
+                        </div>
+                      );
+                    })}
+                </div>
+              </CollapsiblePanel>
+
+              {/* Other Customization Panels */}
               <CustomizationPanel
                 customization={customization.value}
                 onChange={handleCustomizationChange}

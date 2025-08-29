@@ -17,7 +17,7 @@ export default function DesignPanel(
     <div class="space-y-4">
       {/* Button Shape */}
       <div>
-        <h4 class="text-base font-bold text-gray-900 mb-4">Button Shape</h4>
+        <h4 class="text-lg font-black text-gray-900 mb-4">Button Shape</h4>
         <div class="grid grid-cols-2 gap-4">
           {[
             { shape: "circle", label: "Circle" },
@@ -34,17 +34,11 @@ export default function DesignPanel(
               onMouseEnter={() => playSound.hover()}
               aria-label={`Select ${label} shape`}
               aria-pressed={customization.appearance.shape === shape}
-              class={`h-12 px-6 rounded-2xl border-2 font-bold text-sm transition-all hover:shadow-lg active:scale-95 ${
+              class={`px-6 py-4 rounded-2xl border-3 border-black font-black transition-all shadow-lg hover:shadow-xl active:scale-95 ${
                 customization.appearance.shape === shape
-                  ? "bg-red-200 text-black shadow-lg scale-105"
+                  ? "bg-red-200 text-black shadow-xl scale-105"
                   : "bg-white text-black hover:bg-red-50"
               }`}
-              style={{
-                borderColor: "rgba(0,0,0,0.85)",
-                boxShadow: customization.appearance.shape === shape
-                  ? "4px 4px 0px rgba(0,0,0,0.85)"
-                  : "2px 2px 0px rgba(0,0,0,0.85)"
-              }}
             >
               {label}
             </button>
@@ -54,7 +48,7 @@ export default function DesignPanel(
 
       {/* Border Style */}
       <div>
-        <h4 class="text-base font-bold text-gray-900 mb-4">Border Style</h4>
+        <h4 class="text-lg font-black text-gray-900 mb-4">Border Style</h4>
         <div class="grid grid-cols-2 gap-4">
           {[
             { value: "solid", label: "Solid" },
@@ -73,17 +67,11 @@ export default function DesignPanel(
               onMouseEnter={() => playSound.hover()}
               aria-label={`Select ${label} border style`}
               aria-pressed={customization.appearance.borderStyle === value}
-              class={`h-12 px-6 rounded-2xl border-2 font-bold text-sm transition-all hover:shadow-lg active:scale-95 ${
+              class={`px-6 py-4 rounded-2xl border-3 border-black font-black transition-all shadow-lg hover:shadow-xl active:scale-95 ${
                 customization.appearance.borderStyle === value
-                  ? "bg-red-200 text-black shadow-lg scale-105"
+                  ? "bg-red-200 text-black shadow-xl scale-105"
                   : "bg-white text-black hover:bg-red-50"
               }`}
-              style={{
-                borderColor: "rgba(0,0,0,0.85)",
-                boxShadow: customization.appearance.borderStyle === value
-                  ? "4px 4px 0px rgba(0,0,0,0.85)"
-                  : "2px 2px 0px rgba(0,0,0,0.85)"
-              }}
             >
               {label}
             </button>
