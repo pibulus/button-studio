@@ -75,14 +75,13 @@ export default function CollapsiblePanel({
 
   return (
     <div class="rounded-3xl border-4 bg-white overflow-hidden group" style={{
-      borderColor: "rgba(0,0,0,0.9)",
-      boxShadow: "0 10px 0 0 rgba(0,0,0,0.2), 0 20px 25px -5px rgba(0,0,0,0.1)"
+      borderColor: "rgba(0,0,0,0.9)"
     }}>
       <button
         type="button"
         onClick={() => onToggle(id)}
         onMouseEnter={() => playGradientSound()}
-        class="h-16 w-full px-7 py-5 flex items-center justify-between rounded-t-3xl border-b-4 font-black hover:-translate-y-[1px] hover:shadow-lg transition-all duration-120 ease-out"
+        class="h-16 w-full px-7 py-5 flex items-center justify-between rounded-t-3xl border-b-4 font-black hover:brightness-105 transition-all duration-120 ease-out"
         style={{
           ...getInlineStyle(color),
           borderColor: "rgba(0,0,0,0.9)"
