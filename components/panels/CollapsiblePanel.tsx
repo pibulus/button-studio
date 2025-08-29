@@ -44,27 +44,27 @@ export default function CollapsiblePanel({
     return colors[colorKey as keyof typeof colors] || colors.light;
   };
 
-  // RETRO LO-FI RAINBOW - Subtle VHS cassette gradient flowing downwards
+  // RETRO LO-FI RAINBOW - More colorful headers with flatter gradients
   const getInlineStyle = (colorKey: string, index: number = 0) => {
-    // Rainbow spectrum positions for each panel (like VHS tape labels)
+    // Rainbow spectrum with higher opacity for headers (0.65-0.75)
     const rainbowStops = [
-      "rgba(255, 179, 186, 0.25)", // soft pink
-      "rgba(255, 223, 186, 0.25)", // peach
-      "rgba(255, 255, 186, 0.25)", // butter yellow
-      "rgba(186, 255, 201, 0.25)", // mint green
-      "rgba(186, 225, 255, 0.25)", // sky blue
-      "rgba(203, 186, 255, 0.25)", // lavender
-      "rgba(255, 186, 255, 0.25)", // soft magenta
+      "rgba(255, 179, 186, 0.7)", // soft pink
+      "rgba(255, 223, 186, 0.7)", // peach
+      "rgba(255, 255, 186, 0.7)", // butter yellow
+      "rgba(186, 255, 201, 0.7)", // mint green
+      "rgba(186, 225, 255, 0.7)", // sky blue
+      "rgba(203, 186, 255, 0.7)", // lavender
+      "rgba(255, 186, 255, 0.7)", // soft magenta
     ];
     
-    // Map each panel to a segment of the rainbow
+    // Flatter gradients - smaller color shift within each panel
     const panelGradients = {
-      red: `linear-gradient(180deg, ${rainbowStops[0]} 0%, ${rainbowStops[1]} 100%)`,
-      orange: `linear-gradient(180deg, ${rainbowStops[1]} 0%, ${rainbowStops[2]} 100%)`,
-      yellow: `linear-gradient(180deg, ${rainbowStops[2]} 0%, ${rainbowStops[3]} 100%)`,
-      purple: `linear-gradient(180deg, ${rainbowStops[5]} 0%, ${rainbowStops[6]} 100%)`,
-      cyan: `linear-gradient(180deg, ${rainbowStops[3]} 0%, ${rainbowStops[4]} 100%)`,
-      green: `linear-gradient(180deg, ${rainbowStops[4]} 0%, ${rainbowStops[5]} 100%)`,
+      red: `linear-gradient(180deg, ${rainbowStops[0]} 0%, rgba(255, 200, 186, 0.65) 100%)`,
+      orange: `linear-gradient(180deg, ${rainbowStops[1]} 0%, rgba(255, 240, 186, 0.65) 100%)`,
+      yellow: `linear-gradient(180deg, ${rainbowStops[2]} 0%, rgba(220, 255, 186, 0.65) 100%)`,
+      purple: `linear-gradient(180deg, ${rainbowStops[5]} 0%, rgba(230, 186, 255, 0.65) 100%)`,
+      cyan: `linear-gradient(180deg, ${rainbowStops[3]} 0%, rgba(186, 240, 230, 0.65) 100%)`,
+      green: `linear-gradient(180deg, ${rainbowStops[4]} 0%, rgba(186, 210, 255, 0.65) 100%)`,
       light: "linear-gradient(180deg, #FFFBF7 0%, #FFF8F2 100%)",
     };
     

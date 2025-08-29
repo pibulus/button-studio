@@ -312,8 +312,8 @@ export default function ButtonStudio() {
       <main class="max-w-[1280px] mx-auto w-full px-6 flex-1 overflow-y-auto">
         <div class="flex gap-6">
           
-          {/* Left Stage - 60% with proper presence */}
-          <section style={{ maxWidth: "720px", flex: "1 1 60%" }}>
+          {/* Left Stage - Narrower for better balance */}
+          <section style={{ maxWidth: "540px", flex: "0 0 540px" }}>
             <div class="rounded-[24px] border-[4px] flex flex-col" style={{
               borderColor: "rgba(0,0,0,0.85)",
               boxShadow: "-6px 8px 0 0 rgba(0,0,0,0.85), 0 12px 20px rgba(0,0,0,0.12)",
@@ -446,10 +446,10 @@ export default function ButtonStudio() {
             </div>
           </section>
 
-          {/* Right Sidebar - 40% with proper constraints */}
+          {/* Right Sidebar - Wider panels */}
           <aside class="overflow-x-hidden" style={{
-            width: "420px",
-            flex: "0 0 420px"
+            width: "480px",
+            flex: "0 0 480px"
           }}>
             <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
               {/* Colors Panel - CHONKY */}
