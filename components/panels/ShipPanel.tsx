@@ -85,7 +85,12 @@ export default function ShipPanel(
             onClick={() => handleExport("html")}
             onMouseEnter={() => playSound.hover()}
             type="button"
-            class="w-full px-6 py-6 rounded-2xl border-3 border-black font-bold transition-all shadow-lg hover:shadow-xl active:scale-95 bg-white text-black hover:bg-yellow-50"
+            class="w-full px-6 py-6 rounded-2xl border-[4px] font-black transition-all shadow-lg hover:shadow-xl active:scale-95 text-white"
+            style={{
+              background: "linear-gradient(135deg, #FFD93D 0%, #FFB6C1 100%)",
+              borderColor: "rgba(0,0,0,0.85)",
+              boxShadow: "-4px 6px 0 0 rgba(0,0,0,0.85), 0 8px 16px rgba(0,0,0,0.15)"
+            }}
           >
             📄 Export as HTML
           </button>
@@ -94,7 +99,12 @@ export default function ShipPanel(
             onClick={() => handleExport("pwa")}
             onMouseEnter={() => playSound.hover()}
             type="button"
-            class="w-full px-6 py-6 rounded-2xl border-3 border-black font-bold transition-all shadow-lg hover:shadow-xl active:scale-95 bg-white text-black hover:bg-yellow-50"
+            class="w-full px-6 py-6 rounded-2xl border-[4px] font-black transition-all shadow-lg hover:shadow-xl active:scale-95 text-white"
+            style={{
+              background: "linear-gradient(135deg, #4ECDC4 0%, #44A3D7 100%)",
+              borderColor: "rgba(0,0,0,0.85)",
+              boxShadow: "-4px 6px 0 0 rgba(0,0,0,0.85), 0 8px 16px rgba(0,0,0,0.15)"
+            }}
           >
             📦 Export PWA (ZIP)
           </button>
@@ -107,7 +117,12 @@ export default function ShipPanel(
             }}
             onMouseEnter={() => playSound.hover()}
             type="button"
-            class="w-full px-6 py-6 rounded-2xl border-3 border-black font-bold transition-all shadow-lg hover:shadow-xl active:scale-95 bg-gradient-to-r from-purple-500 to-pink-500 text-white"
+            class="w-full px-6 py-6 rounded-2xl border-[4px] font-black transition-all shadow-lg hover:shadow-xl active:scale-95 text-white"
+            style={{
+              background: "linear-gradient(135deg, #FF6B6B 0%, #FF00FF 50%, #4ECDC4 100%)",
+              borderColor: "rgba(0,0,0,0.85)",
+              boxShadow: "-4px 6px 0 0 rgba(0,0,0,0.85), 0 8px 16px rgba(0,0,0,0.15)"
+            }}
           >
             📱 Save to Phone
           </button>
@@ -116,7 +131,12 @@ export default function ShipPanel(
             onClick={() => handleExport("share")}
             onMouseEnter={() => playSound.hover()}
             type="button"
-            class="w-full px-6 py-6 rounded-2xl border-3 border-black font-bold transition-all shadow-lg hover:shadow-xl active:scale-95 bg-white text-black hover:bg-yellow-50"
+            class="w-full px-6 py-6 rounded-2xl border-[4px] font-black transition-all shadow-lg hover:shadow-xl active:scale-95 text-white"
+            style={{
+              background: "linear-gradient(135deg, #667EEA 0%, #764BA2 100%)",
+              borderColor: "rgba(0,0,0,0.85)",
+              boxShadow: "-4px 6px 0 0 rgba(0,0,0,0.85), 0 8px 16px rgba(0,0,0,0.15)"
+            }}
           >
             🔗 Copy Share Link
           </button>

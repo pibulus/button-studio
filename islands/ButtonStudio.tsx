@@ -291,12 +291,15 @@ export default function ButtonStudio() {
             }}>
               ButtonStudio<span class="text-fuchsia-500">.app</span>
             </h1>
-            <p class="text-base font-medium" style={{ 
+            <p class="text-lg font-bold italic" style={{ 
               marginTop: "12px", 
-              letterSpacing: "-0.02em",
-              color: "rgba(109,91,208,0.8)"
+              letterSpacing: "-0.01em",
+              background: "linear-gradient(135deg, #FF6B6B, #FF00FF, #4ECDC4)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text"
             }}>
-              Beautiful, customizable button generator
+              The Figma for voice buttons
             </p>
           </div>
           <div class="flex items-center gap-2">
@@ -311,11 +314,12 @@ export default function ButtonStudio() {
           
           {/* Left Stage - 60% with proper presence */}
           <section style={{ maxWidth: "720px", flex: "1 1 60%" }}>
-            <div class="rounded-[20px] border-[4px] bg-white flex flex-col" style={{
-              borderColor: "rgba(0,0,0,0.88)",
-              boxShadow: "-6px 8px 0 0 rgba(0,0,0,0.9), 0 12px 30px -12px rgba(0,0,0,0.28)",
+            <div class="rounded-[24px] border-[4px] flex flex-col" style={{
+              borderColor: "rgba(0,0,0,0.85)",
+              boxShadow: "-6px 8px 0 0 rgba(0,0,0,0.85), 0 12px 20px rgba(0,0,0,0.12)",
               minHeight: "clamp(560px, calc(100vh - 232px), 760px)",
-              height: "clamp(560px, calc(100vh - 232px), 760px)"
+              height: "clamp(560px, calc(100vh - 232px), 760px)",
+              background: "radial-gradient(ellipse at center, rgba(203,183,255,0.04) 0%, rgba(255,255,255,1) 60%)"
             }}>
               
               {/* Stage Header with gradient */}
@@ -354,7 +358,7 @@ export default function ButtonStudio() {
                     repeating-linear-gradient(0deg, transparent, transparent 7px, rgba(0,0,0,0.03) 7px, rgba(0,0,0,0.03) 8px),
                     repeating-linear-gradient(90deg, transparent, transparent 7px, rgba(0,0,0,0.03) 7px, rgba(0,0,0,0.03) 8px)`
                 }}>
-                  <div style={{ transform: "scale(1.2)", position: "absolute", top: "48%" }}>
+                  <div style={{ transform: "scale(1.65)", position: "absolute", top: "45%", left: "50%", marginLeft: "-90px" }}>
                     <VoiceButton
                       customization={customization.value}
                       onCustomizationChange={handleCustomizationChange}
