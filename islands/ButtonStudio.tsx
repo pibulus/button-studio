@@ -291,13 +291,11 @@ export default function ButtonStudio() {
             }}>
               ButtonStudio<span class="text-fuchsia-500">.app</span>
             </h1>
-            <p class="text-lg font-bold italic" style={{ 
+            <p class="text-[16px] italic" style={{ 
               marginTop: "12px", 
-              letterSpacing: "-0.01em",
-              background: "linear-gradient(135deg, #FF6B6B, #FF00FF, #4ECDC4)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text"
+              letterSpacing: "0.02em",
+              color: "rgba(0,0,0,0.75)",
+              textShadow: "0 1px 0 rgba(255,255,255,0.6)"
             }}>
               The Figma for voice buttons
             </p>
@@ -314,12 +312,12 @@ export default function ButtonStudio() {
           
           {/* Left Stage - Narrower for better balance */}
           <section style={{ maxWidth: "540px", flex: "0 0 540px" }}>
-            <div class="rounded-[24px] border-[4px] flex flex-col" style={{
-              borderColor: "rgba(0,0,0,0.85)",
-              boxShadow: "-6px 8px 0 0 rgba(0,0,0,0.85), 0 12px 20px rgba(0,0,0,0.12)",
-              minHeight: "clamp(560px, calc(100vh - 232px), 760px)",
-              height: "clamp(560px, calc(100vh - 232px), 760px)",
-              background: "radial-gradient(ellipse at center, rgba(203,183,255,0.04) 0%, rgba(255,255,255,1) 60%)"
+            <div class="rounded-[22px] border-[4px] flex flex-col" style={{
+              borderColor: "rgba(0,0,0,0.92)",
+              boxShadow: "-6px 8px 0 rgba(0,0,0,0.88), 0 14px 32px -16px rgba(0,0,0,0.24)",
+              minHeight: "520px",
+              height: "520px",
+              background: "#FFFDFB"
             }}>
               
               {/* Stage Header with gradient */}
@@ -350,15 +348,13 @@ export default function ButtonStudio() {
               </div>
 
               {/* Stage Body with better padding */}
-              <div class="flex-1 p-7 overflow-hidden flex flex-col">
-                <div class="h-full rounded-[14px] border-[3px] p-8 flex items-center justify-center relative" style={{
-                  borderColor: "rgba(0,0,0,0.88)",
-                  background: "radial-gradient(120% 120% at 50% 0%, #FFF4EC 0%, #FFFFFF 60%)",
-                  backgroundImage: `radial-gradient(120% 120% at 50% 0%, #FFF4EC 0%, #FFFFFF 60%), 
-                    repeating-linear-gradient(0deg, transparent, transparent 7px, rgba(0,0,0,0.03) 7px, rgba(0,0,0,0.03) 8px),
-                    repeating-linear-gradient(90deg, transparent, transparent 7px, rgba(0,0,0,0.03) 7px, rgba(0,0,0,0.03) 8px)`
+              <div class="flex-1 p-[30px] overflow-hidden flex flex-col">
+                <div class="h-full rounded-[18px] border-[3px] p-8 flex items-center justify-center relative" style={{
+                  borderColor: "rgba(0,0,0,0.9)",
+                  background: `radial-gradient(60% 60% at 50% 40%, rgba(0,0,0,0.025), transparent 60%),
+                              linear-gradient(180deg, #F9CEE1 0%, #FFE7BF 28%, #DDF3EA 56%, #D9F0FA 78%, #E7E0FB 100%)`
                 }}>
-                  <div style={{ transform: "scale(1.65)", position: "absolute", top: "45%", left: "50%", marginLeft: "-90px" }}>
+                  <div style={{ width: "240px" }}>
                     <VoiceButton
                       customization={customization.value}
                       onCustomizationChange={handleCustomizationChange}
@@ -451,7 +447,7 @@ export default function ButtonStudio() {
             width: "480px",
             flex: "0 0 480px"
           }}>
-            <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
               {/* Colors Panel - CHONKY */}
               <CollapsiblePanel
                 id="colors"

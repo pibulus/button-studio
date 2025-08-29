@@ -44,26 +44,45 @@ export default function CollapsiblePanel({
     return colors[colorKey as keyof typeof colors] || colors.light;
   };
 
-  // RETRO LO-FI RAINBOW - Subtle gradient with proper rainbow descent
+  // LO-FI BROADCAST CANDY - Each panel gets ONE hue with gentle same-hue gradient
   const getInlineStyle = (colorKey: string, index: number = 0) => {
-    // Proper rainbow spectrum descent - each panel flows to the next color
+    // Design tokens from spec - lo-fi refined colors
+    const colors = {
+      pink: "#F35C9F",
+      coral: "#FF7A66", 
+      amber: "#FFB84D",
+      mint: "#7ED7B6",
+      aqua: "#7ACFEA",
+      lilac: "#B9A5F4",
+    };
+    
+    const tints = {
+      pink: "#F9CEE1",
+      coral: "#FFD5CB",
+      amber: "#FFE7BF",
+      mint: "#DDF3EA",
+      aqua: "#D9F0FA",
+      lilac: "#E7E0FB",
+    };
+    
+    // Each panel gets a single-hue gradient from tint to base
     const panelGradients = {
-      // Design: Red → Orange transition
-      red: "linear-gradient(180deg, rgba(255, 140, 140, 0.6) 0%, rgba(255, 180, 140, 0.55) 100%)",
+      // Design panel - Coral
+      red: `linear-gradient(180deg, ${tints.coral}, ${colors.coral})`,
       
-      // Feel: Orange → Yellow transition  
-      orange: "linear-gradient(180deg, rgba(255, 200, 140, 0.6) 0%, rgba(255, 235, 140, 0.55) 100%)",
+      // Feel panel - Amber
+      orange: `linear-gradient(180deg, ${tints.amber}, ${colors.amber})`,
       
-      // Ship: Yellow → Green transition
-      yellow: "linear-gradient(180deg, rgba(255, 255, 140, 0.6) 0%, rgba(200, 255, 140, 0.55) 100%)",
+      // Ship panel - Mint to lime
+      yellow: `linear-gradient(180deg, ${tints.mint}, #D9FF78)`,
       
-      // Magic: Blue → Purple transition (skipping green for better flow)
-      purple: "linear-gradient(180deg, rgba(140, 200, 255, 0.6) 0%, rgba(200, 140, 255, 0.55) 100%)",
+      // Magic panel - Lilac
+      purple: `linear-gradient(180deg, ${tints.lilac}, ${colors.lilac})`,
       
-      // Alternative mappings for consistency
-      cyan: "linear-gradient(180deg, rgba(140, 255, 200, 0.6) 0%, rgba(140, 255, 255, 0.55) 100%)",
-      green: "linear-gradient(180deg, rgba(140, 255, 140, 0.6) 0%, rgba(140, 255, 200, 0.55) 100%)",
-      light: "linear-gradient(180deg, #FFFBF7 0%, #FFF8F2 100%)",
+      // Extra panels
+      cyan: `linear-gradient(180deg, ${tints.aqua}, ${colors.aqua})`,
+      green: `linear-gradient(180deg, ${tints.mint}, ${colors.mint})`,
+      light: "linear-gradient(180deg, #FFF9F2, #FFF9F2)",
     };
     
     return { 
@@ -91,12 +110,12 @@ export default function CollapsiblePanel({
   };
 
   return (
-    <div class="relative rounded-[20px] border-[4px] bg-white overflow-hidden group animate-in fade-in slide-in-from-bottom-2" style={{
-      borderColor: "#000000",
+    <div class="relative rounded-[22px] border-[4px] bg-white overflow-hidden group animate-in fade-in slide-in-from-bottom-2" style={{
+      borderColor: "rgba(0,0,0,0.92)",
       animationDelay: `${index * 50}ms`,
       animationDuration: "200ms",
       animationFillMode: "both",
-      boxShadow: "4px 4px 0 0 rgba(0,0,0,0.8)"
+      boxShadow: "-6px 8px 0 rgba(0,0,0,0.88), 0 14px 32px -16px rgba(0,0,0,0.24)"
     }}>
       {/* Gradient hairline for open panels */}
       {isExpanded && (
@@ -106,17 +125,15 @@ export default function CollapsiblePanel({
         type="button"
         onClick={() => onToggle(id)}
         onMouseEnter={() => playGradientSound()}
-        class="h-auto w-full px-[24px] py-[20px] flex items-center justify-between rounded-t-[16px] font-black hover:brightness-110 active:brightness-95 transition-all duration-150 ease-out"
+        class="h-auto w-full px-[22px] py-[18px] flex items-center justify-between rounded-t-[18px] font-black hover:brightness-110 active:brightness-95 transition-all duration-120 ease-out"
         style={{
           ...getInlineStyle(color, index),
           willChange: "transform"
         }}
       >
         <div class="flex items-center gap-2">
-          <span class="w-2 h-2 rounded-full opacity-60" style={{
-            background: `linear-gradient(90deg, #CBB7FF, #FFCBAA, #BFF4E6)`
-          }} />
-          <span class="text-xl font-black tracking-tight">{title}</span>
+          <span class="w-[6px] h-[6px] rounded-full bg-black opacity-40" />
+          <span class="text-[18px] font-bold leading-none" style={{ color: "rgba(0,0,0,0.88)" }}>{title}</span>
         </div>
         <span class={`inline-block transition-transform duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] text-2xl ${isExpanded ? "rotate-180" : ""}`} style={{ willChange: "transform" }}>
           ▾
@@ -125,7 +142,7 @@ export default function CollapsiblePanel({
       <div class={`overflow-hidden transition-[max-height,opacity] duration-200 ease-[cubic-bezier(0.4,0.0,0.2,1)] ${
         isExpanded ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0"
       }`} style={{ willChange: "max-height" }}>
-        <div class={`p-[24px] bg-white transform transition-transform duration-200 ease-out origin-top ${
+        <div class={`p-[22px] bg-[#FFF9F2] transform transition-transform duration-140 ease-out origin-top ${
           isExpanded ? "translate-y-0 scale-100" : "-translate-y-2 scale-[0.98]"
         }`} style={{
           ...(special && id === "magic" && {
