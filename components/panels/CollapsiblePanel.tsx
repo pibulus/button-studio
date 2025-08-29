@@ -11,6 +11,7 @@ interface CollapsiblePanelProps {
   isExpanded: boolean;
   onToggle: (id: string) => void;
   size?: "small" | "medium" | "large";
+  index?: number;
 }
 
 // 🎨 Using proper Tailwind CSS with custom panel colors defined in tailwind.config.ts
@@ -24,6 +25,7 @@ export default function CollapsiblePanel({
   isExpanded,
   onToggle,
   size = "medium",
+  index = 0,
 }: CollapsiblePanelProps) {
   // 🌈 HARMONIOUS PANEL HEADERS - Each panel gets distinct pastel gradient!
   // These map to our custom panel colors in tailwind.config.ts
@@ -74,29 +76,33 @@ export default function CollapsiblePanel({
   };
 
   return (
-    <div class="rounded-3xl border-4 bg-white overflow-hidden group" style={{
-      borderColor: "rgba(0,0,0,0.9)"
+    <div class="rounded-3xl border-4 bg-white overflow-hidden group animate-in fade-in slide-in-from-bottom-2" style={{
+      borderColor: "rgba(0,0,0,0.9)",
+      animationDelay: `${index * 50}ms`,
+      animationDuration: "200ms",
+      animationFillMode: "both"
     }}>
       <button
         type="button"
         onClick={() => onToggle(id)}
         onMouseEnter={() => playGradientSound()}
-        class="h-16 w-full px-7 py-5 flex items-center justify-between rounded-t-3xl border-b-3 font-black hover:brightness-110 transition-all duration-200 ease-out"
+        class="h-16 w-full px-7 py-5 flex items-center justify-between rounded-t-3xl border-b-3 font-black hover:brightness-110 active:brightness-95 transition-all duration-150 ease-out"
         style={{
           ...getInlineStyle(color),
-          borderColor: "rgba(0,0,0,0.9)"
+          borderColor: "rgba(0,0,0,0.9)",
+          willChange: "transform"
         }}
       >
         <span class="text-xl font-black tracking-tight">{title}</span>
-        <span class={`transition-transform duration-500 ease-[cubic-bezier(0.68,-0.55,0.265,1.55)] text-2xl ${isExpanded ? "rotate-180" : ""}`}>
+        <span class={`inline-block transition-transform duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] text-2xl ${isExpanded ? "rotate-180" : ""}`} style={{ willChange: "transform" }}>
           ▾
         </span>
       </button>
-      <div class={`overflow-hidden transition-all duration-300 ease-[cubic-bezier(0.4,0.0,0.2,1)] ${
+      <div class={`overflow-hidden transition-[max-height,opacity] duration-200 ease-[cubic-bezier(0.4,0.0,0.2,1)] ${
         isExpanded ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0"
-      }`}>
-        <div class={`p-5 bg-white transition-transform duration-300 ease-out origin-top ${
-          isExpanded ? "scale-y-100" : "scale-y-95"
+      }`} style={{ willChange: "max-height" }}>
+        <div class={`p-5 bg-white transform transition-transform duration-200 ease-out origin-top ${
+          isExpanded ? "translate-y-0 scale-100" : "-translate-y-2 scale-[0.98]"
         }`}>
           {children}
         </div>
