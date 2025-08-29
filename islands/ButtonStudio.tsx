@@ -308,15 +308,15 @@ export default function ButtonStudio() {
           {/* Left Stage - Fluid width with EXTRA chunky presence */}
           <section class="flex-1">
             <div class="rounded-3xl border-4 bg-white flex flex-col" style={{
-              borderColor: "rgba(0,0,0,0.6)",
-              boxShadow: "0 8px 0 0 rgba(0,0,0,0.1), 0 20px 30px -10px rgba(0,0,0,0.15)",
+              borderColor: "rgba(0,0,0,0.7)",
+              boxShadow: "0 8px 0 0 rgba(0,0,0,0.15)",
               minHeight: "clamp(560px, calc(100vh - 232px), 760px)",
               height: "clamp(560px, calc(100vh - 232px), 760px)"
             }}>
               
               {/* Stage Header - 64px CHONK with colorful gradient */}
               <div class="h-16 px-6 border-b-4 flex items-center justify-between rounded-t-3xl" style={{
-                borderColor: "rgba(0,0,0,0.6)",
+                borderColor: "rgba(0,0,0,0.7)",
                 background: "linear-gradient(135deg, #E7D2FF 0%, #D9C6FF 50%, #C9F2FF 100%)"
               }}>
                 <span class="text-sm font-bold tracking-wider uppercase text-black/70">STAGE VIEW</span>
@@ -404,7 +404,7 @@ export default function ButtonStudio() {
 
               {/* Stage Actions - 72px EXTRA CHONK */}
               <div class="h-18 border-t-4 p-4 rounded-b-3xl" style={{
-                borderColor: "rgba(0,0,0,0.9)"
+                borderColor: "rgba(0,0,0,0.7)"
               }}>
                 <input
                   type="text"
@@ -427,7 +427,7 @@ export default function ButtonStudio() {
                   placeholder="Boop me!"
                   maxLength={25}
                   class="w-full h-full rounded-2xl border-3 bg-white font-black text-lg px-4 text-center hover:bg-gray-50 focus:bg-amber-50 focus:outline-none transition-colors active:translate-y-[1px]" style={{
-                    borderColor: "rgba(0,0,0,0.9)"
+                    borderColor: "rgba(0,0,0,0.7)"
                   }}
                 />
               </div>

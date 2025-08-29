@@ -72,15 +72,11 @@ export default function CollapsiblePanel({
   };
 
   return (
-    <div class={`rounded-3xl ${special ? "border-[5px]" : "border-4"} bg-white overflow-hidden group animate-in fade-in slide-in-from-bottom-2 ${special ? "shadow-lg" : ""}`} style={{
-      borderColor: special ? "rgba(139,92,246,0.6)" : "rgba(0,0,0,0.6)",
+    <div class="rounded-3xl border-4 bg-white overflow-hidden group animate-in fade-in slide-in-from-bottom-2" style={{
+      borderColor: "rgba(0,0,0,0.7)",
       animationDelay: `${index * 50}ms`,
       animationDuration: "200ms",
-      animationFillMode: "both",
-      ...(special && { 
-        background: "linear-gradient(135deg, #FFFFFF 0%, #FAF5FF 100%)",
-        transform: "scale(1.02)"
-      })
+      animationFillMode: "both"
     }}>
       <button
         type="button"
@@ -89,7 +85,7 @@ export default function CollapsiblePanel({
         class="h-16 w-full px-7 py-5 flex items-center justify-between rounded-t-3xl border-b-3 font-black hover:brightness-110 active:brightness-95 transition-all duration-150 ease-out"
         style={{
           ...getInlineStyle(color),
-          borderColor: "rgba(0,0,0,0.6)",
+          borderColor: "rgba(0,0,0,0.7)",
           willChange: "transform"
         }}
       >
