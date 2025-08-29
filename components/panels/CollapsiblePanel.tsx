@@ -44,20 +44,32 @@ export default function CollapsiblePanel({
     return colors[colorKey as keyof typeof colors] || colors.light;
   };
 
-  // LOUD CANDY GRADIENTS - Each panel is a different flavor of bubblegum!
-  const getInlineStyle = (colorKey: string) => {
-    const gradients = {
-      red: "linear-gradient(135deg, rgba(203,183,255,0.8) 0%, rgba(255,182,193,0.8) 100%)", // lilac → pink LOUD
-      orange: "linear-gradient(135deg, rgba(255,218,117,0.8) 0%, rgba(255,182,193,0.8) 100%)", // amber → sherbet LOUD  
-      yellow: "linear-gradient(135deg, rgba(77,205,196,0.8) 0%, rgba(147,112,219,0.8) 100%)", // teal → purple LOUD
-      purple: "linear-gradient(135deg, rgba(255,105,180,0.9) 0%, rgba(203,183,255,0.9) 100%)", // HOT PINK → lilac sparkle
-      cyan: "linear-gradient(135deg, rgba(191,244,230,0.8) 0%, rgba(127,206,255,0.8) 100%)", // mint → aqua LOUD
-      green: "linear-gradient(135deg, rgba(255,218,185,0.8) 0%, rgba(203,183,255,0.8) 100%)", // peach → lilac LOUD
-      light: "linear-gradient(135deg, #FFF9F2 0%, #FFF5E8 100%)", // default cream
+  // RETRO LO-FI RAINBOW - Subtle VHS cassette gradient flowing downwards
+  const getInlineStyle = (colorKey: string, index: number = 0) => {
+    // Rainbow spectrum positions for each panel (like VHS tape labels)
+    const rainbowStops = [
+      "rgba(255, 179, 186, 0.25)", // soft pink
+      "rgba(255, 223, 186, 0.25)", // peach
+      "rgba(255, 255, 186, 0.25)", // butter yellow
+      "rgba(186, 255, 201, 0.25)", // mint green
+      "rgba(186, 225, 255, 0.25)", // sky blue
+      "rgba(203, 186, 255, 0.25)", // lavender
+      "rgba(255, 186, 255, 0.25)", // soft magenta
+    ];
+    
+    // Map each panel to a segment of the rainbow
+    const panelGradients = {
+      red: `linear-gradient(180deg, ${rainbowStops[0]} 0%, ${rainbowStops[1]} 100%)`,
+      orange: `linear-gradient(180deg, ${rainbowStops[1]} 0%, ${rainbowStops[2]} 100%)`,
+      yellow: `linear-gradient(180deg, ${rainbowStops[2]} 0%, ${rainbowStops[3]} 100%)`,
+      purple: `linear-gradient(180deg, ${rainbowStops[5]} 0%, ${rainbowStops[6]} 100%)`,
+      cyan: `linear-gradient(180deg, ${rainbowStops[3]} 0%, ${rainbowStops[4]} 100%)`,
+      green: `linear-gradient(180deg, ${rainbowStops[4]} 0%, ${rainbowStops[5]} 100%)`,
+      light: "linear-gradient(180deg, #FFFBF7 0%, #FFF8F2 100%)",
     };
     
     return { 
-      background: gradients[colorKey as keyof typeof gradients] || gradients.light
+      background: panelGradients[colorKey as keyof typeof panelGradients] || panelGradients.light
     };
   };
 
@@ -86,7 +98,7 @@ export default function CollapsiblePanel({
       animationDelay: `${index * 50}ms`,
       animationDuration: "200ms",
       animationFillMode: "both",
-      boxShadow: "6px 6px 0 0 #000000"
+      boxShadow: "4px 4px 0 0 rgba(0,0,0,0.8)"
     }}>
       {/* Gradient hairline for open panels */}
       {isExpanded && (
@@ -98,7 +110,7 @@ export default function CollapsiblePanel({
         onMouseEnter={() => playGradientSound()}
         class="h-auto w-full px-[24px] py-[20px] flex items-center justify-between rounded-t-[16px] font-black hover:brightness-110 active:brightness-95 transition-all duration-150 ease-out"
         style={{
-          ...getInlineStyle(color),
+          ...getInlineStyle(color, index),
           willChange: "transform"
         }}
       >
