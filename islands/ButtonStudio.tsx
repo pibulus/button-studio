@@ -156,17 +156,19 @@ export default function ButtonStudio() {
           
           {/* Left Stage - Centered and balanced */}
           <section class="w-full">
-            <div class="rounded-[22px] border-[4px] flex flex-col" style={{
-              borderColor: "rgba(0,0,0,0.92)",
-              filter: "drop-shadow(-6px 8px 0 rgba(0,0,0,0.9))",
+            <div class="flex flex-col" style={{
+              borderRadius: "var(--r, 22px)",
+              border: "var(--b, 3px) solid rgba(0,0,0,0.92)",
+              filter: "drop-shadow(0 4px 0 rgba(0,0,0,0.35))",
               minHeight: "520px",
               height: "520px",
-              background: "#FFFDFB"
+              background: "var(--panel, #FFF9F2)"
             }}>
               
               {/* Stage Header with subtle gradient */}
-              <div class="h-16 px-7 border-b-[3px] flex items-center justify-between rounded-t-[20px]" style={{
-                borderColor: "rgba(0,0,0,0.88)",
+              <div class="h-16 px-7 flex items-center justify-between" style={{
+                borderBottom: "var(--b, 3px) solid rgba(0,0,0,0.12)",
+                borderRadius: "calc(var(--r, 22px) - var(--b, 3px)) calc(var(--r, 22px) - var(--b, 3px)) 0 0",
                 background: "var(--stage-grad, linear-gradient(180deg, #ECE6FB 0%, #F9EAE7 60%, #FBF7ED 100%))"
               }}>
                 <span class="text-sm font-bold tracking-wider uppercase text-black/70">STAGE VIEW</span>
@@ -178,10 +180,10 @@ export default function ButtonStudio() {
                     hapticService.buttonPress();
                   }}
                   onMouseEnter={() => playSound.hover()}
-                  class="h-9 min-w-[80px] rounded-full border-[3px] px-3 bg-white flex items-center gap-[6px] text-[13px] font-semibold hover:bg-gray-50 active:scale-95 transition-all"
+                  class="h-9 min-w-[80px] rounded-full px-3 bg-white flex items-center gap-[6px] text-[13px] font-semibold hover:bg-gray-50 active:scale-95 transition-all"
                   style={{
-                    borderColor: "rgba(0,0,0,0.88)",
-                    boxShadow: "2px 2px 0px rgba(0,0,0,0.75)"
+                    border: "var(--b, 3px) solid rgba(0,0,0,0.88)",
+                    filter: "drop-shadow(2px 2px 0px rgba(0,0,0,0.35))"
                   }}
                 >
                   <span>Stage</span>
@@ -196,10 +198,10 @@ export default function ButtonStudio() {
 
               {/* Stage Body with better padding */}
               <div class="flex-1 p-[30px] overflow-hidden flex flex-col">
-                <div class="h-full rounded-[18px] border-[3px] flex items-center justify-center relative" style={{
-                  borderColor: "rgba(0,0,0,0.9)",
-                  background: "linear-gradient(180deg, #fffaf4 0%, #fff2e3 100%)",
-                  position: "relative"
+                <div class="h-full flex items-center justify-center relative" style={{
+                  borderRadius: "var(--r-inner, 18px)",
+                  border: "var(--b, 3px) solid rgba(0,0,0,0.9)",
+                  background: "linear-gradient(180deg, #fffaf4 0%, #fff2e3 100%)"
                 }}>
                   <div style={{ width: "240px" }}>
                     <VoiceButton
@@ -244,11 +246,11 @@ export default function ButtonStudio() {
                       e.currentTarget.style.transform = "scale(1) rotate(0deg)";
                       e.currentTarget.style.background = "linear-gradient(135deg, #FFFFFF 0%, #FFF3B8 100%)";
                     }}
-                    class="absolute bottom-4 right-4 h-[56px] w-[56px] rounded-[20px] border-[3px] flex items-center justify-center text-[28px] font-black transition-all duration-200 active:scale-95"
+                    class="absolute bottom-4 right-4 h-[56px] w-[56px] rounded-[20px] flex items-center justify-center text-[28px] font-black transition-all duration-200 active:scale-95"
                     style={{
-                      borderColor: "rgba(0,0,0,0.88)",
+                      border: "var(--b, 3px) solid rgba(0,0,0,0.88)",
                       background: "linear-gradient(135deg, #FFFFFF 0%, #FFF3B8 100%)",
-                      boxShadow: "4px 4px 0px rgba(0,0,0,0.88), 0 8px 24px -12px rgba(255,200,0,0.4)"
+                      filter: "drop-shadow(4px 4px 0px rgba(0,0,0,0.35))"
                     }}
                     title="Surprise Me!"
                   >
@@ -257,9 +259,7 @@ export default function ButtonStudio() {
                 </div>
                 
                 {/* JUICE Slider/Text Input - Narrower, more refined */}
-                <div class="mt-5 h-14 rounded-[18px] border-[3px]" style={{
-                  borderColor: "rgba(0,0,0,0.88)"
-                }}>
+                <div class="mt-5">
                   <input
                     type="text"
                     value={customization.value.content.value}
@@ -280,8 +280,10 @@ export default function ButtonStudio() {
                     onMouseEnter={() => playSound.hover()}
                     placeholder="Boop me!"
                     maxLength={25}
-                    class="w-full h-full rounded-[14px] border-[3px] bg-white font-black text-lg px-4 text-center hover:bg-gray-50 focus:bg-amber-50 focus:outline-none transition-colors active:translate-y-[1px]" style={{
-                      borderColor: "rgba(0,0,0,0.88)"
+                    class="w-full h-14 bg-white font-black text-lg px-4 text-center hover:bg-gray-50 focus:bg-amber-50 focus:outline-none transition-colors active:translate-y-[1px]" 
+                    style={{
+                      borderRadius: "var(--r-inner, 18px)",
+                      border: "var(--b, 3px) solid rgba(0,0,0,0.88)"
                     }}
                   />
                 </div>

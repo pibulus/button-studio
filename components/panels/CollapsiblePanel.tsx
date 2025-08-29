@@ -15,8 +15,8 @@ interface CollapsiblePanelProps {
   special?: boolean;
 }
 
-// 🎨 Using inline styles for panel colors for absolute reliability
-// Flat color blocks create the "stacked candy bar" visual hierarchy
+// 🎨 Clean three-wrapper pattern for perfect rendering
+// No more jagged corners, shadow clipping, or double borders!
 
 export default function CollapsiblePanel({
   id,
@@ -29,99 +29,114 @@ export default function CollapsiblePanel({
   index = 0,
   special = false,
 }: CollapsiblePanelProps) {
-  // FLAT STRIPE BLOCKS - Each panel gets one solid color, no gradients
+  // Lo-fi rainbow palette - muted, harmonious colors
   const getPanelColor = (colorKey: string) => {
-    // Lo-fi rainbow palette - muted, harmonious colors
     const panelColors = {
-      // Colors panel - Violet
       violet: "var(--violet, #9D7CE2)",
-      
-      // Size & Shape panel - Magenta  
       pink: "var(--magenta, #DA7AD1)",
-      
-      // Design panel - Pink
       red: "var(--pink, #EA8FB4)",
-      
-      // Feel panel - Coral
       orange: "var(--coral, #E79A86)",
-      
-      // Ship panel - Amber
       yellow: "var(--amber, #E6BF6B)",
-      
-      // Magic panel - Lime
       purple: "var(--lime, #B4D47A)",
-      
-      // Default panel background
       light: "var(--panel, #FFF9F2)",
     };
     
-    return { 
-      background: panelColors[colorKey as keyof typeof panelColors] || panelColors.light
-    };
+    return panelColors[colorKey as keyof typeof panelColors] || panelColors.light;
   };
 
-  // 🎵 Play gradient sound based on panel color - each panel gets its unique tone!
+  // 🎵 Play gradient sound based on panel color
   const playGradientSound = throttleSound(
     () => {
-      // Use synthetic gradient tones for guaranteed pitch differences
       gradientSynth.playGradientTone(color);
     },
     200,
     `gradient-panel-${id}`,
-  ); // Throttle per panel with unique key
-
-  // Size-based padding
-  const getPadding = () => {
-    switch(size) {
-      case "small": return "px-6 py-4";
-      case "large": return "px-8 py-6";
-      default: return "px-7 py-5";
-    }
-  };
+  );
 
   return (
-    <div class="relative rounded-[22px] border-[4px] bg-white group animate-in fade-in slide-in-from-bottom-2" style={{
-      borderColor: "rgba(0,0,0,0.92)",
-      animationDelay: `${index * 50}ms`,
-      animationDuration: "200ms",
-      animationFillMode: "both",
-      filter: "drop-shadow(-6px 8px 0 rgba(0,0,0,0.9))"
-    }}>
-      {/* Gradient hairline for open panels */}
-      {isExpanded && (
-        <div class="absolute -top-[3px] left-[3px] right-[3px] h-[6px] rounded-t-xl bg-gradient-to-r from-[#C9C0FF] via-[#FFCBAA] to-[#BFF4E6]" />
-      )}
-      <button
-        type="button"
-        onClick={() => onToggle(id)}
-        onMouseEnter={() => playGradientSound()}
-        class="h-[52px] w-full px-[22px] flex items-center justify-between rounded-t-[18px] font-black hover:brightness-110 active:brightness-95 transition-all duration-120 ease-out"
+    <div 
+      class="group relative isolation-isolate" 
+      style={{
+        animationDelay: `${index * 50}ms`,
+        animationDuration: "200ms",
+        animationFillMode: "both",
+        zIndex: isExpanded ? 1 : 0,
+      }}
+    >
+      {/* Outer wrapper: owns the drop shadow only */}
+      <div 
+        class="panel-outer relative"
         style={{
-          ...getPanelColor(color),
-          willChange: "transform"
+          filter: "drop-shadow(0 4px 0 rgba(0,0,0,0.35))",
+          borderRadius: "var(--r, 22px)",
         }}
       >
-        <div class="flex items-center gap-2">
-          <span class="w-[6px] h-[6px] rounded-full bg-black opacity-40" />
-          <span class="text-[18px] font-bold leading-none" style={{ color: "rgba(0,0,0,0.88)" }}>{title}</span>
-        </div>
-        <span class={`inline-block transition-transform duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] text-2xl ${isExpanded ? "rotate-180" : ""}`} style={{ willChange: "transform" }}>
-          ▾
-        </span>
-      </button>
-      <div class={`overflow-hidden transition-[max-height,opacity] duration-200 ease-[cubic-bezier(0.4,0.0,0.2,1)] ${
-        isExpanded ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0"
-      }`} style={{ willChange: "max-height" }}>
-        <div class={`p-[22px] bg-[#FFF9F2] transform transition-transform duration-140 ease-out origin-top ${
-          isExpanded ? "translate-y-0 scale-100" : "-translate-y-2 scale-[0.98]"
-        }`} style={{
-          ...(special && id === "magic" && {
-            backgroundImage: `radial-gradient(circle at 20% 80%, rgba(203,183,255,0.02) 0%, transparent 50%),
-                             radial-gradient(circle at 80% 20%, rgba(255,203,170,0.02) 0%, transparent 50%),
-                             radial-gradient(circle at 40% 40%, rgba(191,244,230,0.02) 0%, transparent 50%)`
-          })
-        }}>
-          {children}
+        {/* Middle wrapper: has the border and clips content */}
+        <div 
+          class="panel-border bg-white overflow-hidden"
+          style={{
+            borderRadius: "var(--r, 22px)",
+            border: "var(--b, 3px) solid rgba(0,0,0,0.92)",
+            background: "var(--panel, #FFF9F2)",
+          }}
+        >
+          {/* Summary header */}
+          <button
+            type="button"
+            onClick={() => onToggle(id)}
+            onMouseEnter={() => playGradientSound()}
+            class="panel-summary list-none cursor-pointer h-[52px] w-full px-[22px] flex items-center justify-between select-none font-black hover:brightness-110 active:brightness-95 transition-all duration-120 ease-out"
+            style={{
+              background: getPanelColor(color),
+              borderRadius: isExpanded ? "0" : "calc(var(--r, 22px) - var(--b, 3px))",
+              borderBottom: isExpanded ? "var(--b, 3px) solid rgba(0,0,0,0.12)" : "none",
+            }}
+          >
+            <div class="flex items-center">
+              {/* Proper centered dot element */}
+              <span 
+                class="inline-block w-[6px] h-[6px] rounded-full mr-3"
+                style={{
+                  background: "rgba(0,0,0,0.4)",
+                  transform: "translateY(0.5px)",
+                }}
+              />
+              <span class="text-[18px] font-bold leading-none" style={{ color: "rgba(0,0,0,0.88)" }}>
+                {title}
+              </span>
+            </div>
+            <span 
+              class="transition-transform duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] text-2xl"
+              style={{
+                transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)",
+                willChange: "transform",
+              }}
+            >
+              ▾
+            </span>
+          </button>
+
+          {/* Content body */}
+          <div 
+            class={`panel-body overflow-hidden transition-[max-height,opacity] duration-200 ease-[cubic-bezier(0.4,0.0,0.2,1)] ${
+              isExpanded ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0"
+            }`}
+            style={{ willChange: "max-height" }}
+          >
+            <div 
+              class="p-[22px]"
+              style={{
+                background: special && id === "magic" 
+                  ? `radial-gradient(circle at 20% 80%, rgba(203,183,255,0.02) 0%, transparent 50%),
+                     radial-gradient(circle at 80% 20%, rgba(255,203,170,0.02) 0%, transparent 50%),
+                     radial-gradient(circle at 40% 40%, rgba(191,244,230,0.02) 0%, transparent 50%),
+                     var(--panel, #FFF9F2)`
+                  : "var(--panel, #FFF9F2)",
+              }}
+            >
+              {children}
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -119,7 +119,7 @@ export default function CustomizationPanel({
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+    <div class="flex flex-col gap-5">
       {/* Colors Panel - Gradient 1: Violet → Pink */}
       <CollapsiblePanel
         id="colors"
