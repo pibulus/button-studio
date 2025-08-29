@@ -150,24 +150,24 @@ export default function ButtonStudio() {
         </div>
       </header>
 
-      {/* Main Layout - 60/40 proportions */}
+      {/* Main Layout - Grid with stable proportions */}
       <main class="max-w-[1280px] mx-auto w-full px-6 flex-1 overflow-y-auto">
-        <div class="flex gap-6">
+        <div class="grid grid-cols-1 lg:grid-cols-[minmax(520px,1fr)_480px] gap-6 items-start">
           
           {/* Left Stage - Centered and balanced */}
-          <section style={{ maxWidth: "540px", flex: "0 0 540px" }}>
+          <section class="w-full">
             <div class="rounded-[22px] border-[4px] flex flex-col" style={{
               borderColor: "rgba(0,0,0,0.92)",
-              boxShadow: "-6px 8px 0 rgba(0,0,0,0.9)",
+              filter: "drop-shadow(-6px 8px 0 rgba(0,0,0,0.9))",
               minHeight: "520px",
               height: "520px",
               background: "#FFFDFB"
             }}>
               
-              {/* Stage Header with gradient */}
+              {/* Stage Header with subtle gradient */}
               <div class="h-16 px-7 border-b-[3px] flex items-center justify-between rounded-t-[20px]" style={{
                 borderColor: "rgba(0,0,0,0.88)",
-                background: "linear-gradient(135deg, #E7D2FF 0%, #D9C6FF 50%, #C9F2FF 100%)"
+                background: "var(--stage-grad, linear-gradient(180deg, #ECE6FB 0%, #F9EAE7 60%, #FBF7ED 100%))"
               }}>
                 <span class="text-sm font-bold tracking-wider uppercase text-black/70">STAGE VIEW</span>
                 {/* Compact Stage Pill - badge style */}
@@ -178,7 +178,7 @@ export default function ButtonStudio() {
                     hapticService.buttonPress();
                   }}
                   onMouseEnter={() => playSound.hover()}
-                  class="h-7 min-w-[76px] rounded-full border-[3px] px-[10px] bg-white flex items-center gap-[6px] text-[13px] font-semibold hover:bg-gray-50 active:scale-95 transition-all"
+                  class="h-9 min-w-[80px] rounded-full border-[3px] px-3 bg-white flex items-center gap-[6px] text-[13px] font-semibold hover:bg-gray-50 active:scale-95 transition-all"
                   style={{
                     borderColor: "rgba(0,0,0,0.88)",
                     boxShadow: "2px 2px 0px rgba(0,0,0,0.75)"
@@ -289,13 +289,8 @@ export default function ButtonStudio() {
             </div>
           </section>
 
-          {/* Right Sidebar - Wider panels with padding for shadows */}
-          <aside style={{
-            width: "480px",
-            flex: "0 0 480px",
-            paddingBottom: "20px",
-            paddingRight: "12px"
-          }}>
+          {/* Right Sidebar - Panels with proper shadow spacing */}
+          <aside class="w-full pb-5 pr-3">
             {/* All 6 panels now in CustomizationPanel */}
             <CustomizationPanel
               customization={customization.value}

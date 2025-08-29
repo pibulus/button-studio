@@ -170,19 +170,6 @@ export default {
         },
       },
 
-      // Custom colors for panels - explicitly define them
-      colors: {
-        // Our panel colors
-        panel: {
-          red: "#fecaca",
-          orange: "#fed7aa",
-          yellow: "#fef3c7",
-          purple: "#e9d5ff",
-          cyan: "#cffafe",
-          green: "#d1fae5",
-        },
-      },
-
       // Additional border widths for chunky borders
       borderWidth: {
         "3": "3px",

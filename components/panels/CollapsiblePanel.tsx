@@ -15,8 +15,8 @@ interface CollapsiblePanelProps {
   special?: boolean;
 }
 
-// 🎨 Using proper Tailwind CSS with custom panel colors defined in tailwind.config.ts
-// We still keep inline styles as a safety net for absolute reliability
+// 🎨 Using inline styles for panel colors for absolute reliability
+// Flat color blocks create the "stacked candy bar" visual hierarchy
 
 export default function CollapsiblePanel({
   id,
@@ -29,47 +29,30 @@ export default function CollapsiblePanel({
   index = 0,
   special = false,
 }: CollapsiblePanelProps) {
-  // 🌈 HARMONIOUS PANEL HEADERS - Each panel gets distinct pastel gradient!
-  // These map to our custom panel colors in tailwind.config.ts
-  const getBackgroundColor = (colorKey: string) => {
-    const colors = {
-      red: "bg-panel-red hover:bg-red-300",
-      orange: "bg-panel-orange hover:bg-orange-300",
-      yellow: "bg-panel-yellow hover:bg-yellow-300",
-      purple: "bg-panel-purple hover:bg-purple-300",
-      cyan: "bg-panel-cyan hover:bg-cyan-300",
-      green: "bg-panel-green hover:bg-green-300",
-      light: "bg-gray-200 hover:bg-gray-300",
-    };
-    return colors[colorKey as keyof typeof colors] || colors.light;
-  };
-
   // FLAT STRIPE BLOCKS - Each panel gets one solid color, no gradients
-  const getInlineStyle = (colorKey: string, index: number = 0) => {
-    // Flat color blocks from spec - confident single colors
+  const getPanelColor = (colorKey: string) => {
+    // Lo-fi rainbow palette - muted, harmonious colors
     const panelColors = {
       // Colors panel - Violet
-      violet: "#e263fb",
+      violet: "var(--violet, #9D7CE2)",
       
-      // Size & Shape panel - Pink  
-      pink: "#fb63c8",
+      // Size & Shape panel - Magenta  
+      pink: "var(--magenta, #DA7AD1)",
       
-      // Design panel - Coral
-      red: "#fb637c",
+      // Design panel - Pink
+      red: "var(--pink, #EA8FB4)",
       
-      // Feel panel - Orange
-      orange: "#fb9663",
+      // Feel panel - Coral
+      orange: "var(--coral, #E79A86)",
       
-      // Ship panel - Yellow
-      yellow: "#fbe263",
+      // Ship panel - Amber
+      yellow: "var(--amber, #E6BF6B)",
       
       // Magic panel - Lime
-      purple: "#d1f77e",
+      purple: "var(--lime, #B4D47A)",
       
-      // Extra color mappings for backwards compat
-      cyan: "#e263fb",
-      green: "#fb63c8",
-      light: "#FFF9F2",
+      // Default panel background
+      light: "var(--panel, #FFF9F2)",
     };
     
     return { 
@@ -97,12 +80,12 @@ export default function CollapsiblePanel({
   };
 
   return (
-    <div class="relative rounded-[22px] border-[4px] bg-white overflow-hidden group animate-in fade-in slide-in-from-bottom-2" style={{
+    <div class="relative rounded-[22px] border-[4px] bg-white group animate-in fade-in slide-in-from-bottom-2" style={{
       borderColor: "rgba(0,0,0,0.92)",
       animationDelay: `${index * 50}ms`,
       animationDuration: "200ms",
       animationFillMode: "both",
-      boxShadow: "-6px 8px 0 rgba(0,0,0,0.9)"
+      filter: "drop-shadow(-6px 8px 0 rgba(0,0,0,0.9))"
     }}>
       {/* Gradient hairline for open panels */}
       {isExpanded && (
@@ -112,9 +95,9 @@ export default function CollapsiblePanel({
         type="button"
         onClick={() => onToggle(id)}
         onMouseEnter={() => playGradientSound()}
-        class="h-auto w-full px-[22px] py-[18px] flex items-center justify-between rounded-t-[18px] font-black hover:brightness-110 active:brightness-95 transition-all duration-120 ease-out"
+        class="h-[52px] w-full px-[22px] flex items-center justify-between rounded-t-[18px] font-black hover:brightness-110 active:brightness-95 transition-all duration-120 ease-out"
         style={{
-          ...getInlineStyle(color, index),
+          ...getPanelColor(color),
           willChange: "transform"
         }}
       >
