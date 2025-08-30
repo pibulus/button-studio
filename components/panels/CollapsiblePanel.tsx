@@ -29,15 +29,15 @@ export default function CollapsiblePanel({
   index = 0,
   special = false,
 }: CollapsiblePanelProps) {
-  // Lo-fi rainbow palette - muted, harmonious colors
+  // Lo-fi rainbow palette - lighter, softer colors for better visibility
   const getPanelColor = (colorKey: string) => {
     const panelColors = {
-      violet: "var(--violet, #9D7CE2)",
-      pink: "var(--magenta, #DA7AD1)",
-      red: "var(--pink, #EA8FB4)",
-      orange: "var(--coral, #E79A86)",
-      yellow: "var(--amber, #E6BF6B)",
-      purple: "var(--lime, #B4D47A)",
+      violet: "var(--violet-light, #C8B9F2)",  // Lighter violet
+      pink: "var(--magenta-light, #EBABE6)",    // Lighter magenta
+      red: "var(--pink-light, #F4C0D5)",        // Lighter pink
+      orange: "var(--coral-light, #F2C1B3)",    // Lighter coral
+      yellow: "var(--amber-light, #F2D99B)",    // Lighter amber
+      purple: "var(--lime-light, #D4E6A8)",     // Lighter lime
       light: "var(--panel, #FFF9F2)",
     };
     
@@ -85,7 +85,7 @@ export default function CollapsiblePanel({
             type="button"
             onClick={() => onToggle(id)}
             onMouseEnter={() => playGradientSound()}
-            class="panel-summary list-none cursor-pointer h-[52px] w-full px-[22px] flex items-center justify-between select-none font-black hover:brightness-110 active:brightness-95 transition-all duration-120 ease-out"
+            class="panel-summary list-none cursor-pointer h-[58px] w-full px-[22px] flex items-center justify-between select-none font-black hover:brightness-105 active:brightness-95 transition-all duration-120 ease-out"
             style={{
               background: getPanelColor(color),
               borderRadius: isExpanded ? "0" : "calc(var(--r, 22px) - var(--b, 3px))",
@@ -101,7 +101,7 @@ export default function CollapsiblePanel({
                   transform: "translateY(0.5px)",
                 }}
               />
-              <span class="text-[18px] font-bold leading-none" style={{ color: "rgba(0,0,0,0.88)" }}>
+              <span class="text-[19px] font-bold leading-none" style={{ color: "rgba(0,0,0,0.85)" }}>
                 {title}
               </span>
             </div>

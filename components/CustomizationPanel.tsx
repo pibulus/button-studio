@@ -15,8 +15,6 @@ import SizeShapePanel from "./panels/SizeShapePanel.tsx";
 interface CustomizationPanelProps {
   customization: ButtonCustomization;
   onChange: (customization: ButtonCustomization) => void;
-  voiceEnabled?: boolean;
-  onVoiceToggle?: (enabled: boolean) => void;
   apiKeyValue?: string;
   onApiKeyChange?: (apiKey: string) => void;
   customPromptValue?: string;
@@ -36,8 +34,6 @@ const expandedPanels = signal<Record<string, boolean>>({
 export default function CustomizationPanel({
   customization,
   onChange,
-  voiceEnabled = false,
-  onVoiceToggle,
   apiKeyValue = "",
   onApiKeyChange,
   customPromptValue = "",
@@ -207,8 +203,6 @@ export default function CustomizationPanel({
         index={5}
       >
         <MagicPanel
-          voiceEnabled={voiceEnabled}
-          onVoiceToggle={onVoiceToggle}
           apiKeyValue={apiKeyValue}
           onApiKeyChange={onApiKeyChange}
           customPromptValue={customPromptValue}

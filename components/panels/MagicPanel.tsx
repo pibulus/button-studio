@@ -2,8 +2,6 @@ import { playSound } from "../../utils/audio/soundMapping.ts";
 import { hapticService } from "../../utils/audio/hapticService.ts";
 
 interface MagicPanelProps {
-  voiceEnabled?: boolean;
-  onVoiceToggle?: (enabled: boolean) => void;
   apiKeyValue?: string;
   onApiKeyChange?: (apiKey: string) => void;
   customPromptValue?: string;
@@ -11,8 +9,6 @@ interface MagicPanelProps {
 }
 
 export default function MagicPanel({
-  voiceEnabled = false,
-  onVoiceToggle,
   apiKeyValue = "",
   onApiKeyChange,
   customPromptValue = "",
@@ -20,44 +16,19 @@ export default function MagicPanel({
 }: MagicPanelProps) {
   return (
     <div class="space-y-4">
-      {/* Voice Toggle */}
-      {onVoiceToggle && (
-        <div>
-          <h4 class="text-lg font-black text-gray-900 mb-4">
-            Voice Transcription
-          </h4>
-          <button
-            type="button"
-            onClick={() => {
-              onVoiceToggle(!voiceEnabled);
-              playSound.toggleOn();
-              hapticService.buttonPress();
-            }}
-            onMouseEnter={() => playSound.hover()}
-            class={`w-full px-6 py-4 rounded-2xl border-3 border-black font-black transition-all shadow-lg hover:shadow-xl active:scale-95 ${
-              voiceEnabled
-                ? "bg-purple-200 text-black shadow-xl scale-105"
-                : "bg-white text-black hover:bg-purple-50"
-            }`}
-          >
-            {voiceEnabled ? "Voice Enabled ✨" : "Enable Voice"}
-          </button>
-        </div>
-      )}
-
       {/* API Key Input */}
-      {voiceEnabled && onApiKeyChange && (
+      {onApiKeyChange && (
         <div>
           <h4 class="text-lg font-black text-gray-900 mb-2">
             Gemini API Key
             {apiKeyValue && apiKeyValue.trim() !== "" && (
-              <span class="ml-2 text-green-600">✓ Configured</span>
+              <span class="ml-2 text-green-600">✓ Voice Active</span>
             )}
           </h4>
           <p class="text-sm text-gray-600 mb-3">
             {!apiKeyValue || apiKeyValue.trim() === ""
-              ? "⚠️ API key required for transcription - Get one at makersuite.google.com/app/apikey"
-              : "Your API key is configured and ready to use"}
+              ? "⚠️ Add your API key to enable voice transcription - Get one at makersuite.google.com/app/apikey"
+              : "Voice transcription is automatically enabled with your API key"}
           </p>
           <input
             type="password"
@@ -75,7 +46,7 @@ export default function MagicPanel({
       )}
 
       {/* Custom Prompt */}
-      {voiceEnabled && onCustomPromptChange && (
+      {onCustomPromptChange && (
         <div>
           <h4 class="text-lg font-black text-gray-900 mb-2">
             Custom Instructions

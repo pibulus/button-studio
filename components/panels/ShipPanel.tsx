@@ -75,21 +75,20 @@ export default function ShipPanel(
   };
 
   return (
-    <div class="space-y-4">
+    <div class="space-y-2">
       <div>
-        <h4 class="text-lg font-black text-gray-900 mb-4">Export Options</h4>
+        <h4 class="text-lg font-black text-gray-900 mb-2">Export Options</h4>
 
         {/* Export Buttons */}
-        <div class="space-y-3">
+        <div class="space-y-2">
           <button
             onClick={() => handleExport("html")}
             onMouseEnter={() => playSound.hover()}
             type="button"
-            class="w-full px-6 py-6 rounded-2xl border-[4px] font-black transition-all shadow-lg hover:shadow-xl active:scale-95 text-white"
+            class="w-full h-12 px-6 rounded-2xl border-2 font-bold text-sm transition-all hover:shadow-md active:scale-95 bg-yellow-200 hover:bg-yellow-300 text-black"
             style={{
-              background: "linear-gradient(135deg, #FFD93D 0%, #FFB6C1 100%)",
               borderColor: "rgba(0,0,0,0.85)",
-              boxShadow: "-4px 6px 0 0 rgba(0,0,0,0.85), 0 8px 16px rgba(0,0,0,0.15)"
+              boxShadow: "4px 4px 0px rgba(0,0,0,0.85)"
             }}
           >
             📄 Export as HTML
@@ -99,11 +98,10 @@ export default function ShipPanel(
             onClick={() => handleExport("pwa")}
             onMouseEnter={() => playSound.hover()}
             type="button"
-            class="w-full px-6 py-6 rounded-2xl border-[4px] font-black transition-all shadow-lg hover:shadow-xl active:scale-95 text-white"
+            class="w-full h-12 px-6 rounded-2xl border-2 font-bold text-sm transition-all hover:shadow-md active:scale-95 bg-yellow-200 hover:bg-yellow-300 text-black"
             style={{
-              background: "linear-gradient(135deg, #4ECDC4 0%, #44A3D7 100%)",
               borderColor: "rgba(0,0,0,0.85)",
-              boxShadow: "-4px 6px 0 0 rgba(0,0,0,0.85), 0 8px 16px rgba(0,0,0,0.15)"
+              boxShadow: "4px 4px 0px rgba(0,0,0,0.85)"
             }}
           >
             📦 Export PWA (ZIP)
@@ -117,11 +115,10 @@ export default function ShipPanel(
             }}
             onMouseEnter={() => playSound.hover()}
             type="button"
-            class="w-full px-6 py-6 rounded-2xl border-[4px] font-black transition-all shadow-lg hover:shadow-xl active:scale-95 text-white"
+            class="w-full h-12 px-6 rounded-2xl border-2 font-bold text-sm transition-all hover:shadow-md active:scale-95 bg-yellow-200 hover:bg-yellow-300 text-black"
             style={{
-              background: "linear-gradient(135deg, #FF6B6B 0%, #FF00FF 50%, #4ECDC4 100%)",
               borderColor: "rgba(0,0,0,0.85)",
-              boxShadow: "-4px 6px 0 0 rgba(0,0,0,0.85), 0 8px 16px rgba(0,0,0,0.15)"
+              boxShadow: "4px 4px 0px rgba(0,0,0,0.85)"
             }}
           >
             📱 Save to Phone
@@ -131,11 +128,10 @@ export default function ShipPanel(
             onClick={() => handleExport("share")}
             onMouseEnter={() => playSound.hover()}
             type="button"
-            class="w-full px-6 py-6 rounded-2xl border-[4px] font-black transition-all shadow-lg hover:shadow-xl active:scale-95 text-white"
+            class="w-full h-12 px-6 rounded-2xl border-2 font-bold text-sm transition-all hover:shadow-md active:scale-95 bg-yellow-200 hover:bg-yellow-300 text-black"
             style={{
-              background: "linear-gradient(135deg, #667EEA 0%, #764BA2 100%)",
               borderColor: "rgba(0,0,0,0.85)",
-              boxShadow: "-4px 6px 0 0 rgba(0,0,0,0.85), 0 8px 16px rgba(0,0,0,0.15)"
+              boxShadow: "4px 4px 0px rgba(0,0,0,0.85)"
             }}
           >
             🔗 Copy Share Link
@@ -143,10 +139,10 @@ export default function ShipPanel(
         </div>
       </div>
 
-      {/* Export Info */}
-      <div class="mt-6 p-4 bg-yellow-50 rounded-xl border-2 border-yellow-300">
-        <h5 class="font-bold text-sm mb-2">Export Features:</h5>
-        <ul class="text-sm space-y-1">
+      {/* Export Info - More compact */}
+      <div class="mt-2 p-2 bg-yellow-50 rounded-xl border-2 border-yellow-300">
+        <h5 class="font-bold text-xs mb-1">Export Features:</h5>
+        <ul class="text-xs space-y-0.5">
           <li>• HTML: Self-contained single file</li>
           <li>• PWA: Installable web app with icons</li>
           <li>• Share: URL with encoded design</li>

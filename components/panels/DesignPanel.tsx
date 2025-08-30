@@ -18,7 +18,7 @@ export default function DesignPanel(
       {/* Button Shape */}
       <div>
         <h4 class="text-lg font-black text-gray-900 mb-4">Button Shape</h4>
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-2 gap-3">
           {[
             { shape: "circle", label: "Circle" },
             { shape: "square", label: "Square" },
@@ -34,16 +34,16 @@ export default function DesignPanel(
               onMouseEnter={() => playSound.hover()}
               aria-label={`Select ${label} shape`}
               aria-pressed={customization.appearance.shape === shape}
-              class={`relative px-[14px] py-[10px] rounded-[14px] border-[3px] font-bold text-[15px] transition-all duration-120 hover:-translate-y-[2px] active:scale-95 ${
+              class={`h-12 px-6 rounded-2xl border-2 font-bold text-sm transition-all capitalize hover:shadow-md active:scale-95 ${
                 customization.appearance.shape === shape
-                  ? "bg-gradient-to-b from-[#FFD5CB] to-[#FF7A66] text-black shadow-xl scale-105"
-                  : "bg-white text-black hover:bg-red-50"
+                  ? "bg-pink-200 hover:bg-pink-300 text-black scale-105"
+                  : "bg-white hover:bg-pink-50 text-black"
               }`}
               style={{
-                borderColor: "rgba(0,0,0,0.92)",
-                boxShadow: customization.appearance.shape === shape 
-                  ? "-6px 8px 0 rgba(0,0,0,0.88)"
-                  : "-4px 6px 0 rgba(0,0,0,0.88)"
+                borderColor: "rgba(0,0,0,0.85)",
+                boxShadow: customization.appearance.shape === shape
+                  ? "4px 4px 0px rgba(0,0,0,0.85)"
+                  : "2px 2px 0px rgba(0,0,0,0.85)",
               }}
             >
               {label}
@@ -55,7 +55,7 @@ export default function DesignPanel(
       {/* Border Style */}
       <div>
         <h4 class="text-lg font-black text-gray-900 mb-4">Border Style</h4>
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-2 gap-3">
           {[
             { value: "solid", label: "Solid" },
             { value: "dashed", label: "Dashed" },
@@ -73,16 +73,16 @@ export default function DesignPanel(
               onMouseEnter={() => playSound.hover()}
               aria-label={`Select ${label} border style`}
               aria-pressed={customization.appearance.borderStyle === value}
-              class={`relative px-[14px] py-[10px] rounded-[14px] border-[3px] font-bold text-[15px] transition-all duration-120 hover:-translate-y-[2px] active:scale-95 ${
+              class={`h-12 px-6 rounded-2xl border-2 font-bold text-sm transition-all capitalize hover:shadow-md active:scale-95 ${
                 customization.appearance.borderStyle === value
-                  ? "bg-gradient-to-b from-[#FFD5CB] to-[#FF7A66] text-black shadow-xl scale-105"
-                  : "bg-white text-black hover:bg-red-50"
+                  ? "bg-pink-200 hover:bg-pink-300 text-black scale-105"
+                  : "bg-white hover:bg-pink-50 text-black"
               }`}
               style={{
-                borderColor: "rgba(0,0,0,0.92)",
-                boxShadow: customization.appearance.borderStyle === value 
-                  ? "-6px 8px 0 rgba(0,0,0,0.88)"
-                  : "-4px 6px 0 rgba(0,0,0,0.88)"
+                borderColor: "rgba(0,0,0,0.85)",
+                boxShadow: customization.appearance.borderStyle === value
+                  ? "4px 4px 0px rgba(0,0,0,0.85)"
+                  : "2px 2px 0px rgba(0,0,0,0.85)",
               }}
             >
               {label}

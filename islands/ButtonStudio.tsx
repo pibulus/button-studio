@@ -15,7 +15,6 @@ import { playSound } from "../utils/audio/soundMapping.ts";
 // ===================================================================
 
 const customization = signal<ButtonCustomization>(defaultCustomization);
-const voiceEnabled = signal<boolean>(false);
 const transcriptResult = signal<string>("");
 const showTranscriptModal = signal<boolean>(false);
 const apiKey = signal<string>("");
@@ -59,10 +58,6 @@ export default function ButtonStudio() {
     customization.value = newCustomization;
   };
 
-  const handleVoiceToggle = (enabled: boolean) => {
-    voiceEnabled.value = enabled;
-  };
-
   const updateAppearance = (
     key: keyof ButtonCustomization["appearance"],
     value: number | string,
@@ -77,7 +72,7 @@ export default function ButtonStudio() {
   };
 
   return (
-    <div class="min-h-screen bg-[#F7F0E2] flex flex-col">
+    <div class="h-screen bg-[#F7F0E2] flex flex-col overflow-hidden">
       {/* Transcript Modal */}
       {showTranscriptModal.value && (
         <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -122,23 +117,29 @@ export default function ButtonStudio() {
         </div>
       )}
 
-      {/* Header - CHONK typography restored */}
-      <header class="max-w-[1280px] mx-auto w-full px-6 pt-10 pb-6">
+      {/* Header - Enhanced with better presence */}
+      <header class="max-w-[1280px] mx-auto w-full px-6 pt-12 pb-8 shrink-0">
         <div class="flex items-center justify-between">
           <div>
-            <h1 class="text-6xl font-black tracking-tighter leading-none" style={{
+            <h1 class="text-8xl font-black tracking-tighter leading-none" style={{
               fontWeight: 900,
-              letterSpacing: "-0.02em", 
-              lineHeight: 1,
+              letterSpacing: "-0.03em", 
+              lineHeight: 0.9,
               WebkitFontSmoothing: "antialiased",
-              textRendering: "optimizeLegibility"
+              textRendering: "optimizeLegibility",
+              textShadow: "4px 4px 0px rgba(255,183,255,0.2)"
             }}>
-              ButtonStudio<span class="text-fuchsia-500">.app</span>
+              ButtonStudio<span class="text-6xl text-fuchsia-500" style={{
+                background: "linear-gradient(135deg, #FF00FF 0%, #FF69B4 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                filter: "drop-shadow(2px 2px 0px rgba(0,0,0,0.1))"
+              }}>.app</span>
             </h1>
-            <p class="text-[16px] italic" style={{ 
-              marginTop: "12px", 
+            <p class="text-[18px] italic font-medium" style={{ 
+              marginTop: "16px", 
               letterSpacing: "0.02em",
-              color: "rgba(0,0,0,0.75)",
+              color: "rgba(0,0,0,0.7)",
               textShadow: "0 1px 0 rgba(255,255,255,0.6)"
             }}>
               Voice buttons that actually work
@@ -150,64 +151,56 @@ export default function ButtonStudio() {
         </div>
       </header>
 
-      {/* Main Layout - Grid with stable proportions */}
-      <main class="max-w-[1280px] mx-auto w-full px-6 flex-1 overflow-y-auto">
-        <div class="grid grid-cols-1 lg:grid-cols-[minmax(520px,1fr)_480px] gap-6 items-start">
+      {/* Main Layout - Grid with better spacing */}
+      <main class="max-w-[1280px] mx-auto w-full px-6 pt-6 pb-8 flex-1 overflow-hidden min-h-0">
+        <div class="grid grid-cols-1 lg:grid-cols-[minmax(520px,1fr)_480px] gap-8 h-full items-start">
           
-          {/* Left Stage - Centered and balanced */}
-          <section class="w-full">
+          {/* Left Stage - Better proportioned */}
+          <section class="w-full flex flex-col">
             <div class="flex flex-col" style={{
               borderRadius: "var(--r, 22px)",
               border: "var(--b, 3px) solid rgba(0,0,0,0.92)",
               filter: "drop-shadow(0 4px 0 rgba(0,0,0,0.35))",
-              minHeight: "520px",
-              height: "520px",
-              background: "var(--panel, #FFF9F2)"
+              background: "var(--panel, #FFF9F2)",
+              height: "440px"
             }}>
               
-              {/* Stage Header with subtle gradient */}
-              <div class="h-16 px-7 flex items-center justify-between" style={{
+              {/* Stage Header - matching right panels */}
+              <div class="h-[58px] px-[22px] flex items-center shrink-0" style={{
                 borderBottom: "var(--b, 3px) solid rgba(0,0,0,0.12)",
                 borderRadius: "calc(var(--r, 22px) - var(--b, 3px)) calc(var(--r, 22px) - var(--b, 3px)) 0 0",
-                background: "var(--stage-grad, linear-gradient(180deg, #ECE6FB 0%, #F9EAE7 60%, #FBF7ED 100%))"
+                background: "#F4E8FF"
               }}>
-                <span class="text-sm font-bold tracking-wider uppercase text-black/70">STAGE VIEW</span>
-                {/* Compact Stage Pill - badge style */}
-                <button
-                  onClick={() => {
-                    handleVoiceToggle(!voiceEnabled.value);
-                    playSound.primaryClick();
-                    hapticService.buttonPress();
-                  }}
-                  onMouseEnter={() => playSound.hover()}
-                  class="h-9 min-w-[80px] rounded-full px-3 bg-white flex items-center gap-[6px] text-[13px] font-semibold hover:bg-gray-50 active:scale-95 transition-all"
-                  style={{
-                    border: "var(--b, 3px) solid rgba(0,0,0,0.88)",
-                    filter: "drop-shadow(2px 2px 0px rgba(0,0,0,0.35))"
-                  }}
-                >
-                  <span>Stage</span>
-                  <span class={`w-2 h-2 rounded-full border-2 border-black transition-colors ${
-                    voiceEnabled.value ? "bg-green-500" : "bg-gray-300"
-                  }`} />
-                  <span class="font-bold">
-                    {voiceEnabled.value ? "ON" : "OFF"}
+                <div class="flex items-center">
+                  {/* Dot to match right panels */}
+                  <span 
+                    class="inline-block w-[6px] h-[6px] rounded-full mr-3"
+                    style={{
+                      background: "rgba(0,0,0,0.4)",
+                      transform: "translateY(0.5px)",
+                    }}
+                  />
+                  <span class="text-[19px] font-bold leading-none" style={{ color: "rgba(0,0,0,0.85)" }}>
+                    Stage View
                   </span>
-                </button>
+                </div>
               </div>
 
               {/* Stage Body with better padding */}
-              <div class="flex-1 p-[30px] overflow-hidden flex flex-col">
+              <div class="flex-1 p-[24px] overflow-hidden flex flex-col">
                 <div class="h-full flex items-center justify-center relative" style={{
                   borderRadius: "var(--r-inner, 18px)",
                   border: "var(--b, 3px) solid rgba(0,0,0,0.9)",
-                  background: "linear-gradient(180deg, #fffaf4 0%, #fff2e3 100%)"
+                  background: `radial-gradient(ellipse at top left, rgba(255,230,250,0.4) 0%, transparent 40%),
+                              radial-gradient(ellipse at bottom right, rgba(230,240,255,0.4) 0%, transparent 40%),
+                              radial-gradient(circle at center, rgba(255,248,230,0.3) 0%, transparent 60%),
+                              linear-gradient(135deg, #FFF8F5 0%, #FFF5FA 50%, #F8F5FF 100%)`
                 }}>
                   <div style={{ width: "240px" }}>
                     <VoiceButton
                       customization={customization.value}
                       onCustomizationChange={handleCustomizationChange}
-                      voiceEnabled={voiceEnabled.value}
+                      voiceEnabled={!!apiKey.value}
                       apiKey={apiKey.value}
                       customPrompt={customPrompt.value}
                       showWaveform={false}
@@ -292,13 +285,18 @@ export default function ButtonStudio() {
           </section>
 
           {/* Right Sidebar - Panels with proper shadow spacing */}
-          <aside class="w-full pb-5 pr-3">
+          <aside 
+            class="w-full h-full overflow-y-auto pr-1 custom-scrollbar" 
+            style={{ 
+              maxHeight: "calc(100vh - 260px)",
+              overflowY: "auto",
+              overflowX: "hidden",
+              paddingRight: "8px"
+            }}>
             {/* All 6 panels now in CustomizationPanel */}
             <CustomizationPanel
               customization={customization.value}
               onChange={handleCustomizationChange}
-              voiceEnabled={voiceEnabled.value}
-              onVoiceToggle={handleVoiceToggle}
               apiKeyValue={apiKey.value}
               onApiKeyChange={(newApiKey) => {
                 apiKey.value = newApiKey;
@@ -312,16 +310,16 @@ export default function ButtonStudio() {
         </div>
       </main>
 
-      {/* Footer - Actually fixed at bottom */}
-      <footer class="bg-white h-12 shrink-0" style={{
-        borderTop: "1px solid rgba(0,0,0,0.08)",
-        marginTop: "auto"
+      {/* Footer - Better balanced height */}
+      <footer class="bg-white h-14 shrink-0" style={{
+        borderTop: "2px solid rgba(0,0,0,0.08)",
+        background: "linear-gradient(to bottom, #FFFFFF 0%, #FAFAFA 100%)"
       }}>
-        <div class="max-w-[1280px] mx-auto h-full px-6 flex items-center justify-between text-xs text-neutral-500">
-          <span>Made with 🔥 by Pablo • v1.0.0</span>
-          <nav class="space-x-4">
-            <a href="https://github.com/pablojosalvarado" target="_blank" rel="noopener noreferrer" class="hover:text-neutral-700 transition-colors">GitHub</a>
-            <a href="mailto:pablo@buttonstudio.app" class="hover:text-neutral-700 transition-colors">Feedback</a>
+        <div class="max-w-[1280px] mx-auto h-full px-6 flex items-center justify-between text-sm text-neutral-600">
+          <span class="font-medium">Made with 🔥 by Pablo • v1.0.0</span>
+          <nav class="space-x-6">
+            <a href="https://github.com/pablojosalvarado" target="_blank" rel="noopener noreferrer" class="hover:text-neutral-900 transition-colors font-medium">GitHub</a>
+            <a href="mailto:pablo@buttonstudio.app" class="hover:text-neutral-900 transition-colors font-medium">Feedback</a>
           </nav>
         </div>
       </footer>
