@@ -1,5 +1,7 @@
 import { signal } from "@preact/signals";
 import { useEffect, useRef } from "preact/hooks";
+import { playSound } from "../utils/audio/soundMapping.ts";
+import { hapticService } from "../utils/audio/hapticService.ts";
 
 interface EmojiPickerProps {
   value: string;
@@ -45,6 +47,8 @@ export default function EmojiPicker(
   function selectEmoji(emoji: string) {
     onChange(emoji);
     isOpen.value = false;
+    playSound.selectionSelect();
+    hapticService.buttonPress();
   }
 
   return (
@@ -52,7 +56,12 @@ export default function EmojiPicker(
       {/* Current Value Button */}
       <button
         type="button"
-        onClick={() => isOpen.value = !isOpen.value}
+        onClick={() => {
+          isOpen.value = !isOpen.value;
+          playSound.panelOpen();
+          hapticService.buttonPress();
+        }}
+        onMouseEnter={() => playSound.hover()}
         class="w-full p-3 border-3 border-flamingo-primary rounded-chunky font-chunky text-center text-lg focus:outline-none focus:border-flamingo-purple hover:border-flamingo-purple transition-colors flex items-center justify-between"
       >
         <span class="text-2xl">{value || placeholder}</span>
@@ -76,6 +85,7 @@ export default function EmojiPicker(
                       key={emoji}
                       type="button"
                       onClick={() => selectEmoji(emoji)}
+                      onMouseEnter={() => playSound.hover()}
                       class="w-8 h-8 flex items-center justify-center text-lg hover:bg-flamingo-cream rounded-md transition-colors"
                       title={emoji}
                     >
@@ -95,6 +105,10 @@ export default function EmojiPicker(
                 type="text"
                 placeholder="Type any text..."
                 class="w-full p-2 border-2 border-flamingo-concrete rounded-md text-sm focus:outline-none focus:border-flamingo-purple"
+                onFocus={() => {
+                  playSound.primaryClick();
+                  hapticService.buttonPress();
+                }}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     const target = e.target as HTMLInputElement;

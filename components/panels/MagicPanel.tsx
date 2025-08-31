@@ -35,6 +35,10 @@ export default function MagicPanel({
             value={apiKeyValue}
             onChange={(e) =>
               onApiKeyChange((e.target as HTMLInputElement).value)}
+            onFocus={() => {
+              playSound.primaryClick();
+              hapticService.buttonPress();
+            }}
             placeholder="AIza..."
             class={`w-full px-4 py-3 rounded-xl border-3 font-mono text-sm focus:outline-none focus:ring-4 focus:ring-purple-300 ${
               apiKeyValue && apiKeyValue.trim() !== ""
@@ -58,6 +62,10 @@ export default function MagicPanel({
             value={customPromptValue}
             onChange={(e) =>
               onCustomPromptChange((e.target as HTMLTextAreaElement).value)}
+            onFocus={() => {
+              playSound.primaryClick();
+              hapticService.buttonPress();
+            }}
             placeholder="e.g., 'Format as bullet points' or 'Use proper capitalization'"
             rows={3}
             class="w-full px-4 py-3 rounded-xl border-3 border-black font-mono text-sm focus:outline-none focus:ring-4 focus:ring-purple-300 bg-white resize-none"

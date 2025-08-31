@@ -28,6 +28,8 @@ import {
 } from "../types/customization.ts";
 import { SOUND_PRESETS, synthEngine } from "../utils/audio/synthEngine.ts";
 import { toast } from "./Toast.tsx";
+import { playSound } from "../utils/audio/soundMapping.ts";
+import { hapticService } from "../utils/audio/hapticService.ts";
 
 // Signals for global state management (like Pablo's reactive Svelte stores)
 const buttonState = signal<ButtonState>("idle");
@@ -184,6 +186,10 @@ export default function VoiceButton({
       recordingDuration.value = 0;
 
       buttonState.value = "requesting";
+      
+      // Play recording start sound
+      playSound.recordingStart();
+      hapticService.recordingStart();
 
       if (enableHaptics) {
         triggerHapticFeedback(HapticPatterns.recordStart);
@@ -226,6 +232,10 @@ export default function VoiceButton({
       }, 1000);
     } catch (error) {
       buttonState.value = "error";
+      
+      // Play error sound
+      playSound.error();
+      hapticService.error();
 
       if (error instanceof VoiceButtonError) {
         errorMessage.value = error.message;
@@ -286,6 +296,10 @@ export default function VoiceButton({
       transcript.value = result.text;
 
       buttonState.value = "success";
+      
+      // Play success sound
+      playSound.success();
+      hapticService.success();
 
       if (enableHaptics) {
         triggerHapticFeedback(HapticPatterns.success);
@@ -305,6 +319,10 @@ export default function VoiceButton({
       }, 2000);
     } catch (error) {
       buttonState.value = "error";
+      
+      // Play error sound
+      playSound.error();
+      hapticService.error();
 
       if (error instanceof VoiceButtonError) {
         errorMessage.value = error.message;
@@ -330,15 +348,18 @@ export default function VoiceButton({
 
   // Play button sound using the configured sound type
   async function playClickSound() {
-    if (!voiceEnabled || !customization.sound.enabled) return; // No sound in design mode or if disabled
+    // Always play sound regardless of voice mode for better UX
+    if (!customization.sound.enabled) return;
 
     try {
-      const soundConfig = SOUND_PRESETS[customization.sound.type];
-      if (soundConfig) {
-        await synthEngine.playSound(soundConfig);
+      // Use universal playSound system
+      if (buttonState.value === "recording") {
+        playSound.recordingStop();
+      } else {
+        playSound.primaryClick();
       }
+      hapticService.buttonPress();
     } catch (error) {
-      // Silently fail if audio context not available
       // Silently fail if audio context not available
     }
   }
@@ -365,6 +386,8 @@ export default function VoiceButton({
       errorMessage.value = "";
       transcript.value = "";
       recordingDuration.value = 0;
+      playSound.secondaryClick();
+      hapticService.buttonPress();
     }
   }
 
@@ -815,6 +838,7 @@ export default function VoiceButton({
                 class={`${getButtonStyles().className} voice-button`}
                 style={getButtonStyles().style}
                 onClick={toggleRecording}
+                onMouseEnter={() => playSound.hover()}
                 disabled={buttonState.value === "processing" ||
                   buttonState.value === "requesting"}
                 aria-label={`Voice recording button - ${getButtonText()}`}
@@ -866,6 +890,7 @@ export default function VoiceButton({
               class={`${getButtonStyles().className} voice-button`}
               style={getButtonStyles().style}
               onClick={toggleRecording}
+              onMouseEnter={() => playSound.hover()}
               disabled={buttonState.value === "processing" ||
                 buttonState.value === "requesting"}
               aria-label={`Voice recording button - ${getButtonText()}`}
