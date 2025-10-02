@@ -4,12 +4,15 @@
   "description": "Design beautiful voice recording buttons with real-time transcription",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#FFF8F0",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "background_color": "#F7F0E2",
   "theme_color": "#FF69B4",
-  "orientation": "portrait-primary",
+  "orientation": "any",
   "scope": "/",
   "id": "buttonstudio-pwa",
   "categories": ["productivity", "utilities", "developer"],
+  "lang": "en-US",
+  "dir": "ltr",
   "icons": [
     {
       "src": "/icon-192.svg",

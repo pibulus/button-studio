@@ -4,6 +4,18 @@ export default {
   content: [
     "{routes,islands,components}/**/*.{ts,tsx,js,jsx}",
   ],
+  safelist: [
+    // Preserve arbitrary border values
+    { pattern: /border-\[.*\]/ },
+    // Preserve arbitrary shadow values
+    { pattern: /shadow-\[.*\]/ },
+    // Preserve arbitrary background values
+    { pattern: /bg-\[.*\]/ },
+    // Preserve rounded values
+    { pattern: /rounded-(3xl|full)/ },
+    // Grid columns
+    { pattern: /grid-cols-\d+/ },
+  ],
   theme: {
     extend: {
       // Custom fonts for chunky typography

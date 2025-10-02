@@ -23,7 +23,7 @@ interface CustomizationPanelProps {
 
 // Collapsible panel state - 6 panels with gradient stripes
 const expandedPanels = signal<Record<string, boolean>>({
-  colors: false,     // Start collapsed for cleaner initial view
+  colors: false, // Start collapsed for cleaner initial view
   sizeShape: false,
   design: false,
   feel: false,

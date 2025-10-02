@@ -186,7 +186,7 @@ export default function VoiceButton({
       recordingDuration.value = 0;
 
       buttonState.value = "requesting";
-      
+
       // Play recording start sound
       playSound.recordingStart();
       hapticService.recordingStart();
@@ -232,7 +232,7 @@ export default function VoiceButton({
       }, 1000);
     } catch (error) {
       buttonState.value = "error";
-      
+
       // Play error sound
       playSound.error();
       hapticService.error();
@@ -296,7 +296,7 @@ export default function VoiceButton({
       transcript.value = result.text;
 
       buttonState.value = "success";
-      
+
       // Play success sound
       playSound.success();
       hapticService.success();
@@ -319,7 +319,7 @@ export default function VoiceButton({
       }, 2000);
     } catch (error) {
       buttonState.value = "error";
-      
+
       // Play error sound
       playSound.error();
       hapticService.error();
@@ -835,7 +835,7 @@ export default function VoiceButton({
           ? (
             <div class="rainbow-wrapper">
               <button
-                class={`${getButtonStyles().className} voice-button`}
+                class={`${getButtonStyles().className} voice-button voice-button-main`}
                 style={getButtonStyles().style}
                 onClick={toggleRecording}
                 onMouseEnter={() => playSound.hover()}
@@ -887,7 +887,7 @@ export default function VoiceButton({
           )
           : (
             <button
-              class={`${getButtonStyles().className} voice-button`}
+              class={`${getButtonStyles().className} voice-button voice-button-main`}
               style={getButtonStyles().style}
               onClick={toggleRecording}
               onMouseEnter={() => playSound.hover()}

@@ -5,24 +5,24 @@
 /* Lo-fi Rainbow Color System - Muted, harmonious palette */
 :root {
   --ink: #111215;
-  --paper: #F7F0E2;  /* Current background color */
-  --panel: #FFF9F2;  /* Current panel background */
-  
+  --paper: #f7f0e2; /* Current background color */
+  --panel: #fff9f2; /* Current panel background */
+
   /* Narrow lo-fi rainbow - desaturated and harmonious */
-  --violet: #9D7CE2;   /* desat violet (was #e263fb) */
-  --magenta: #DA7AD1;  /* dusty magenta (was #fb63c8) */
-  --pink: #EA8FB4;     /* chalk pink (was #fb637c) */
-  --coral: #E79A86;    /* soft coral (was #fb9663) */
-  --amber: #E6BF6B;    /* muted amber (was #fbe263) */
-  --lime: #B4D47A;     /* chalk lime (was #d1f77e) */
-  
+  --violet: #9d7ce2; /* desat violet (was #e263fb) */
+  --magenta: #da7ad1; /* dusty magenta (was #fb63c8) */
+  --pink: #ea8fb4; /* chalk pink (was #fb637c) */
+  --coral: #e79a86; /* soft coral (was #fb9663) */
+  --amber: #e6bf6b; /* muted amber (was #fbe263) */
+  --lime: #b4d47a; /* chalk lime (was #d1f77e) */
+
   /* Subtle gradient for Stage header */
-  --stage-grad: linear-gradient(180deg, #ECE6FB 0%, #F9EAE7 60%, #FBF7ED 100%);
-  
+  --stage-grad: linear-gradient(180deg, #ece6fb 0%, #f9eae7 60%, #fbf7ed 100%);
+
   /* Consistent sizing tokens */
-  --r: 22px;         /* panel outer radius */
-  --r-inner: 18px;   /* panel inner radius */
-  --b: 3px;          /* standard border width */
+  --r: 22px; /* panel outer radius */
+  --r-inner: 18px; /* panel inner radius */
+  --b: 3px; /* standard border width */
 }
 
 /* Reset styles preserved from original */

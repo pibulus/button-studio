@@ -88,7 +88,7 @@ export default function ShipPanel(
             class="w-full h-12 px-6 rounded-2xl border-2 font-bold text-sm transition-all hover:shadow-md active:scale-95 bg-yellow-200 hover:bg-yellow-300 text-black"
             style={{
               borderColor: "rgba(0,0,0,0.85)",
-              boxShadow: "4px 4px 0px rgba(0,0,0,0.85)"
+              boxShadow: "4px 4px 0px rgba(0,0,0,0.85)",
             }}
           >
             📄 Export as HTML
@@ -101,7 +101,7 @@ export default function ShipPanel(
             class="w-full h-12 px-6 rounded-2xl border-2 font-bold text-sm transition-all hover:shadow-md active:scale-95 bg-yellow-200 hover:bg-yellow-300 text-black"
             style={{
               borderColor: "rgba(0,0,0,0.85)",
-              boxShadow: "4px 4px 0px rgba(0,0,0,0.85)"
+              boxShadow: "4px 4px 0px rgba(0,0,0,0.85)",
             }}
           >
             📦 Export PWA (ZIP)
@@ -118,7 +118,7 @@ export default function ShipPanel(
             class="w-full h-12 px-6 rounded-2xl border-2 font-bold text-sm transition-all hover:shadow-md active:scale-95 bg-yellow-200 hover:bg-yellow-300 text-black"
             style={{
               borderColor: "rgba(0,0,0,0.85)",
-              boxShadow: "4px 4px 0px rgba(0,0,0,0.85)"
+              boxShadow: "4px 4px 0px rgba(0,0,0,0.85)",
             }}
           >
             📱 Save to Phone
@@ -131,7 +131,7 @@ export default function ShipPanel(
             class="w-full h-12 px-6 rounded-2xl border-2 font-bold text-sm transition-all hover:shadow-md active:scale-95 bg-yellow-200 hover:bg-yellow-300 text-black"
             style={{
               borderColor: "rgba(0,0,0,0.85)",
-              boxShadow: "4px 4px 0px rgba(0,0,0,0.85)"
+              boxShadow: "4px 4px 0px rgba(0,0,0,0.85)",
             }}
           >
             🔗 Copy Share Link

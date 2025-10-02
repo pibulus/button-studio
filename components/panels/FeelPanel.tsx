@@ -57,7 +57,8 @@ export default function FeelPanel({
               }`}
               style={{
                 borderColor: "rgba(0,0,0,0.85)",
-                boxShadow: customization.effects[effect as keyof ButtonCustomization["effects"]]
+                boxShadow: customization
+                    .effects[effect as keyof ButtonCustomization["effects"]]
                   ? "4px 4px 0px rgba(0,0,0,0.85)"
                   : "2px 2px 0px rgba(0,0,0,0.85)",
               }}
@@ -104,7 +105,8 @@ export default function FeelPanel({
               }`}
               style={{
                 borderColor: "rgba(0,0,0,0.85)",
-                boxShadow: customization.effects[effect as keyof ButtonCustomization["effects"]]
+                boxShadow: customization
+                    .effects[effect as keyof ButtonCustomization["effects"]]
                   ? "4px 4px 0px rgba(0,0,0,0.85)"
                   : "2px 2px 0px rgba(0,0,0,0.85)",
               }}

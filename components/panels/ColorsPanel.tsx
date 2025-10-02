@@ -164,10 +164,11 @@ export default function ColorsPanel({
             onMouseEnter={() => playSound.hover()}
             class="h-14 w-full rounded-2xl border-2 hover:scale-110 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95"
             style={{
-              background:
-                colorModes[colorMode.value].fillType === "solid"
-                  ? color as string
-                  : `linear-gradient(135deg, ${(color as string[])[0]}, ${(color as string[])[1]})`,
+              background: colorModes[colorMode.value].fillType === "solid"
+                ? color as string
+                : `linear-gradient(135deg, ${(color as string[])[0]}, ${
+                  (color as string[])[1]
+                })`,
               borderColor: "rgba(0,0,0,0.85)",
               boxShadow: "3px 3px 0px rgba(0,0,0,0.85)",
             }}
