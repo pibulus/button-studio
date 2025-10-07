@@ -770,21 +770,6 @@ export default function ButtonStudio() {
               />
             </CollapsiblePanel>
 
-            {/* Ship Accordion */}
-            <CollapsiblePanel
-              id="ship"
-              title="Ship"
-              color="yellow"
-              isExpanded={expandedPanels.value.ship}
-              onToggle={togglePanel}
-              index={2}
-            >
-              <ShipPanel
-                customization={customization.value}
-                apiKeyValue={apiKey.value}
-              />
-            </CollapsiblePanel>
-
             {/* Magic Accordion */}
             <CollapsiblePanel
               id="magic"
@@ -792,7 +777,7 @@ export default function ButtonStudio() {
               color="purple"
               isExpanded={expandedPanels.value.magic}
               onToggle={togglePanel}
-              index={3}
+              index={2}
             >
               <MagicPanel
                 customization={customization.value}
@@ -805,6 +790,21 @@ export default function ButtonStudio() {
                 onCustomPromptChange={(newPrompt) => {
                   customPrompt.value = newPrompt;
                 }}
+              />
+            </CollapsiblePanel>
+
+            {/* Ship Accordion */}
+            <CollapsiblePanel
+              id="ship"
+              title="Ship"
+              color="yellow"
+              isExpanded={expandedPanels.value.ship}
+              onToggle={togglePanel}
+              index={3}
+            >
+              <ShipPanel
+                customization={customization.value}
+                apiKeyValue={apiKey.value}
               />
             </CollapsiblePanel>
           </aside>
