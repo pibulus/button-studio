@@ -235,7 +235,7 @@ export default function VoiceButton({
 
       // Play error sound
       playSound.error();
-      hapticService.error();
+      hapticService.generalError();
 
       if (error instanceof VoiceButtonError) {
         errorMessage.value = error.message;
@@ -322,7 +322,7 @@ export default function VoiceButton({
 
       // Play error sound
       playSound.error();
-      hapticService.error();
+      hapticService.generalError();
 
       if (error instanceof VoiceButtonError) {
         errorMessage.value = error.message;

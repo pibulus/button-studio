@@ -27,7 +27,23 @@ export default function MagicPanel({
           </h4>
           <p class="text-sm text-gray-600 mb-3">
             {!apiKeyValue || apiKeyValue.trim() === ""
-              ? "⚠️ Add your API key to enable voice transcription - Get one at makersuite.google.com/app/apikey"
+              ? (
+                <>
+                  ⚠️ Add your API key to enable voice transcription -{" "}
+                  <a
+                    href="https://aistudio.google.com/app/apikey"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-purple-600 hover:text-purple-700 underline font-bold"
+                    onClick={() => {
+                      playSound.primaryClick();
+                      hapticService.buttonPress();
+                    }}
+                  >
+                    Get free API key →
+                  </a>
+                </>
+              )
               : "Voice transcription is automatically enabled with your API key"}
           </p>
           <input

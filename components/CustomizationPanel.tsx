@@ -111,7 +111,7 @@ export default function CustomizationPanel({
     } else {
       playSound.panelsCollapse?.() || playSound.secondaryClick();
     }
-    hapticService.lightTap();
+    hapticService.buttonPress();
   };
 
   return (

@@ -69,7 +69,7 @@ export default function PWAShareModal({
         }`;
 
       playSound.success();
-      hapticService.success();
+      hapticService.buttonSuccess();
       toast("PWA ready to share! 🎉", "success");
     } catch (error) {
       console.error("PWA generation error:", error);

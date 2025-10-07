@@ -141,6 +141,19 @@ class HapticService {
     return this.vibrate(HAPTIC_PATTERNS.RECORDING_STOP);
   }
 
+  // Slider interactions (for SizeShapePanel)
+  sliderGrab(): boolean {
+    return this.vibrate(HAPTIC_PATTERNS.BUTTON_PRESS);
+  }
+
+  sliderStep(): boolean {
+    return this.vibrate(HAPTIC_PATTERNS.SLIDER_STEP);
+  }
+
+  sliderRelease(): boolean {
+    return this.vibrate(HAPTIC_PATTERNS.SLIDER_RELEASE);
+  }
+
   // Success actions
   copySuccess(): boolean {
     return this.vibrate(HAPTIC_PATTERNS.COPY_SUCCESS);
