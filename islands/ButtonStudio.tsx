@@ -494,7 +494,7 @@ export default function ButtonStudio() {
   };
 
   return (
-    <div class="h-screen bg-[#F7F0E2] flex flex-col overflow-hidden">
+    <div class="min-h-screen bg-[#F7F0E2] flex flex-col">
       {/* Keyboard Shortcuts Modal */}
       <KeyboardShortcutsModal
         isOpen={showKeyboardModal.value}
@@ -592,8 +592,8 @@ export default function ButtonStudio() {
       </header>
 
       {/* Main Layout - Hybrid design with Toybox left, accordions right */}
-      <main class="max-w-[1280px] mx-auto w-full px-6 pt-6 pb-8 flex-1 overflow-hidden min-h-0">
-        <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(360px,420px)] gap-6 h-full items-start">
+      <main class="max-w-[1280px] mx-auto w-full px-6 pt-6 pb-8 flex-1">
+        <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(360px,420px)] gap-6 items-start">
           {/* LEFT: Stage + Toybox (always open) */}
           <div class="space-y-6">
             {/* Stage View - CHONKY CARD */}
@@ -738,15 +738,7 @@ export default function ButtonStudio() {
           </div>
 
           {/* RIGHT: Accordions (multi-open) */}
-          <aside
-            class="w-full h-full overflow-y-auto pr-1 custom-scrollbar space-y-4"
-            style={{
-              maxHeight: "calc(100vh - 260px)",
-              overflowY: "auto",
-              overflowX: "hidden",
-              paddingRight: "8px",
-            }}
-          >
+          <aside class="w-full space-y-4">
             {/* Design Accordion */}
             <CollapsiblePanel
               id="design"
