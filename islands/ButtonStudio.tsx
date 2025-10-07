@@ -20,6 +20,10 @@ import ShipPanel from "../components/panels/ShipPanel.tsx";
 import ColorsPanel from "../components/panels/ColorsPanel.tsx";
 import SizeShapePanel from "../components/panels/SizeShapePanel.tsx";
 
+// Import footer modals
+import { KofiModal, KofiButton } from "./KofiModal.tsx";
+import { AboutModal, AboutLink } from "./AboutModal.tsx";
+
 // ===================================================================
 // GLOBAL STATE - Main app state using Preact signals
 // ===================================================================
@@ -513,6 +517,10 @@ export default function ButtonStudio() {
         onClose={() => showKeyboardModal.value = false}
       />
 
+      {/* Footer Modals */}
+      <KofiModal kofiUsername="pibulus" />
+      <AboutModal />
+
       {/* Transcript Modal */}
       {showTranscriptModal.value && (
         <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -830,24 +838,11 @@ export default function ButtonStudio() {
       </main>
 
       {/* Footer */}
-      <footer class="mt-8 py-3 border-t-2 border-black/10 bg-[#FFF8F0]">
-        <div class="max-w-[1280px] mx-auto px-6 flex items-center justify-between text-xs text-black/60">
-          <span class="font-medium">🎸 Pablo • v1.0</span>
-          <div class="flex gap-4">
-            <a
-              href="https://github.com/pibulus/button-studio"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="hover:text-black/90 transition-colors font-medium"
-            >
-              GitHub
-            </a>
-            <a
-              href="mailto:pablo@buttonstudio.app"
-              class="hover:text-black/90 transition-colors font-medium"
-            >
-              Say Hi
-            </a>
+      <footer class="mt-8 py-6 border-t-4 border-black/80 bg-[#FFE5B4]">
+        <div class="max-w-[1280px] mx-auto px-6">
+          <div class="flex items-center justify-center gap-4">
+            <AboutLink label="Made by Pablo 🎸" />
+            <KofiButton size="sm" label="☕ Support" />
           </div>
         </div>
       </footer>
