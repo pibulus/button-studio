@@ -608,9 +608,9 @@ export default function ButtonStudio() {
             <div
               class="rounded-3xl border-[4px] border-black/80 shadow-[0_6px_0_#00000066] bg-[rgba(255,255,255,0.85)]"
             >
-              <div class="px-4 py-3 rounded-t-3xl bg-gradient-to-r from-white/60 to-white/20 border-b-[3px] border-black/80">
+              <div class="px-4 py-3 rounded-t-3xl bg-gradient-to-r from-pink-100 to-pink-50 border-b-[3px] border-black/80">
                 <div class="flex items-center justify-between">
-                  <span class="text-sm font-semibold tracking-wide">Stage View</span>
+                  <span class="text-sm font-semibold tracking-wide text-black">Stage View</span>
                 </div>
               </div>
               <div class="p-4">
@@ -718,9 +718,9 @@ export default function ButtonStudio() {
 
             {/* Colors (ALWAYS OPEN) */}
             <div class="rounded-3xl border-[4px] border-black/80 shadow-[0_6px_0_#00000066] bg-[rgba(255,255,255,0.85)]">
-              <div class="px-4 py-3 rounded-t-3xl bg-gradient-to-r from-white/60 to-white/20 border-b-[3px] border-black/80">
+              <div class="px-4 py-3 rounded-t-3xl bg-gradient-to-r from-cyan-100 to-cyan-50 border-b-[3px] border-black/80">
                 <div class="flex items-center justify-between">
-                  <span class="text-sm font-semibold tracking-wide">Colors</span>
+                  <span class="text-sm font-semibold tracking-wide text-black">Colors</span>
                 </div>
               </div>
               <div class="p-4">
@@ -733,9 +733,9 @@ export default function ButtonStudio() {
 
             {/* Size & Shape (ALWAYS OPEN) */}
             <div class="rounded-3xl border-[4px] border-black/80 shadow-[0_6px_0_#00000066] bg-[rgba(255,255,255,0.85)]">
-              <div class="px-4 py-3 rounded-t-3xl bg-gradient-to-r from-white/60 to-white/20 border-b-[3px] border-black/80">
+              <div class="px-4 py-3 rounded-t-3xl bg-gradient-to-r from-yellow-100 to-yellow-50 border-b-[3px] border-black/80">
                 <div class="flex items-center justify-between">
-                  <span class="text-sm font-semibold tracking-wide">Size & Shape</span>
+                  <span class="text-sm font-semibold tracking-wide text-black">Size & Shape</span>
                 </div>
               </div>
               <div class="p-4">

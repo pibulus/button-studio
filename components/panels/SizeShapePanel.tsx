@@ -21,50 +21,52 @@ export default function SizeShapePanel({
     <>
       <style>
         {`
-          /* Big chunky slider thumbs */
+          /* Big chunky slider thumbs - Cyan edition */
           .chunky-slider::-webkit-slider-thumb {
             appearance: none;
-            width: 32px !important;
-            height: 32px !important;
-            background: linear-gradient(135deg, #FFFFFF 0%, #FFF3B8 100%) !important;
+            width: 40px !important;
+            height: 40px !important;
+            background: linear-gradient(135deg, #67E8F9 0%, #06B6D4 100%) !important;
             border: 3px solid rgba(0,0,0,0.9) !important;
             border-radius: 50% !important;
             cursor: grab !important;
             box-shadow: 0 2px 0 0 rgba(0,0,0,0.2), 0 4px 8px rgba(0,0,0,0.15) !important;
             transition: all 0.2s ease !important;
           }
-          
+
           .chunky-slider::-webkit-slider-thumb:hover {
             transform: scale(1.1) !important;
             box-shadow: 0 3px 0 0 rgba(0,0,0,0.25), 0 6px 12px rgba(0,0,0,0.2) !important;
+            background: linear-gradient(135deg, #22D3EE 0%, #0891B2 100%) !important;
           }
-          
+
           .chunky-slider::-webkit-slider-thumb:active {
             cursor: grabbing !important;
             transform: scale(0.95) !important;
-            background: linear-gradient(135deg, #FFD4A3 0%, #FFF3B8 100%) !important;
+            background: linear-gradient(135deg, #06B6D4 0%, #0E7490 100%) !important;
           }
-          
+
           .chunky-slider::-moz-range-thumb {
-            width: 32px !important;
-            height: 32px !important;
-            background: linear-gradient(135deg, #FFFFFF 0%, #FFF3B8 100%) !important;
+            width: 40px !important;
+            height: 40px !important;
+            background: linear-gradient(135deg, #67E8F9 0%, #06B6D4 100%) !important;
             border: 3px solid rgba(0,0,0,0.9) !important;
             border-radius: 50% !important;
             cursor: grab !important;
             box-shadow: 0 2px 0 0 rgba(0,0,0,0.2), 0 4px 8px rgba(0,0,0,0.15) !important;
             transition: all 0.2s ease !important;
           }
-          
+
           .chunky-slider::-moz-range-thumb:hover {
             transform: scale(1.1) !important;
             box-shadow: 0 3px 0 0 rgba(0,0,0,0.25), 0 6px 12px rgba(0,0,0,0.2) !important;
+            background: linear-gradient(135deg, #22D3EE 0%, #0891B2 100%) !important;
           }
-          
+
           .chunky-slider::-moz-range-thumb:active {
             cursor: grabbing !important;
             transform: scale(0.95) !important;
-            background: linear-gradient(135deg, #FFD4A3 0%, #FFF3B8 100%) !important;
+            background: linear-gradient(135deg, #06B6D4 0%, #0E7490 100%) !important;
           }
         `}
       </style>
