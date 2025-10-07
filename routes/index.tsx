@@ -65,6 +65,42 @@ export default function Home() {
         {/* Performance */}
         <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
         <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+
+        {/* Canonical URL */}
+        <link rel="canonical" href="https://buttonstudio.app/" />
+
+        {/* Structured Data - JSON-LD */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebApplication",
+            "name": "ButtonStudio",
+            "alternateName": "ButtonStudio - Voice Button Design Lab",
+            "url": "https://buttonstudio.app",
+            "description": "Design and customize beautiful voice recording buttons with real-time transcription. Export as HTML, PWA, or share your designs.",
+            "applicationCategory": "DeveloperApplication",
+            "operatingSystem": "Web Browser",
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "USD"
+            },
+            "featureList": [
+              "Voice recording buttons",
+              "Real-time transcription with Gemini AI",
+              "Visual customization",
+              "Export as HTML or PWA",
+              "Share button designs"
+            ],
+            "browserRequirements": "Requires JavaScript. Modern browser with Web Audio API support.",
+            "screenshot": "https://buttonstudio.app/og-image.png",
+            "creator": {
+              "@type": "Person",
+              "name": "Pablo Alvarado",
+              "url": "https://github.com/pibulus"
+            }
+          })}
+        </script>
       </Head>
 
       <ButtonStudio />

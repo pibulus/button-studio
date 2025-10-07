@@ -495,6 +495,14 @@ export default function ButtonStudio() {
 
   return (
     <div class="min-h-screen bg-[#F7F0E2] flex flex-col">
+      {/* Skip to main content - Accessibility */}
+      <a
+        href="#main-content"
+        class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-black focus:text-white focus:rounded-lg focus:font-bold"
+      >
+        Skip to main content
+      </a>
+
       {/* Keyboard Shortcuts Modal */}
       <KeyboardShortcutsModal
         isOpen={showKeyboardModal.value}
@@ -592,7 +600,7 @@ export default function ButtonStudio() {
       </header>
 
       {/* Main Layout - Hybrid design with Toybox left, accordions right */}
-      <main class="max-w-[1280px] mx-auto w-full px-6 pt-6 pb-8 flex-1">
+      <main id="main-content" class="max-w-[1280px] mx-auto w-full px-6 pt-6 pb-8 flex-1">
         <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(360px,420px)] gap-6 items-start">
           {/* LEFT: Stage + Toybox (always open) */}
           <div class="space-y-6">
@@ -624,6 +632,7 @@ export default function ButtonStudio() {
 
                   {/* Magic Shuffle Button */}
                   <button
+                    aria-label="Randomize button design"
                     onClick={(e) => {
                       const btn = e.currentTarget;
                       btn.style.transform = "scale(0.9)";
@@ -688,6 +697,7 @@ export default function ButtonStudio() {
                     class="flex-1 rounded-full border-[3px] border-black/80 px-4 py-2 bg-white/80 font-bold text-center hover:bg-white/90 focus:bg-amber-50 focus:outline-none transition-colors"
                   />
                   <button
+                    aria-label="Reset button label to default"
                     onClick={() => {
                       handleCustomizationChange({
                         ...customization.value,

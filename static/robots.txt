@@ -1,0 +1,15 @@
+# ButtonStudio - Voice Button Design Lab
+# https://buttonstudio.app
+
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://buttonstudio.app/sitemap.xml
+
+# Crawl rate
+Crawl-delay: 0
+
+# Security
+Disallow: /api/
+Disallow: /_fresh/
