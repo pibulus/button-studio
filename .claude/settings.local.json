@@ -1,38 +1,11 @@
 {
   "permissions": {
     "allow": [
-      "Bash(deno task:*)",
-      "Bash(ls:*)",
-      "Bash(rm:*)",
-      "Bash(find:*)",
-      "Bash(rg:*)",
-      "Bash(grep:*)",
-      "Bash(git restore:*)",
-      "Bash(git add:*)",
-      "Bash(git remote add:*)",
-      "Bash(git push:*)",
-      "Bash(deployctl deploy:*)",
-      "Bash(deno check:*)",
-      "Bash(git checkout:*)",
-      "Bash(mkdir:*)",
-      "Bash(cp:*)",
-      "Bash(deno fmt:*)",
-      "Bash(git fetch:*)",
-      "mcp__puppeteer__puppeteer_navigate",
       "Bash(curl:*)",
-      "mcp__sequential-thinking__sequentialthinking_tools",
-      "Bash(git commit:*)",
-      "Bash(deno run:*)",
-      "Bash(osascript:*)",
-      "Bash(open *.html)",
-      "Bash(open http://localhost:*)",
-      "Bash(sed:*)",
-      "Bash(mv:*)",
-      "mcp__voice-mode__converse",
-      "WebSearch",
-      "WebFetch(domain:docs.anthropic.com)"
+      "Read(//Users/pabloalvarado/Projects/active/apps/**)"
     ],
     "deny": [],
+    "ask": [],
     "additionalDirectories": [
       "/Users/pabloalvarado"
     ]

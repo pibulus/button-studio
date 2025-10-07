@@ -34,7 +34,7 @@ const showTranscriptModal = signal<boolean>(false);
 const showKeyboardModal = signal<boolean>(false);
 const apiKey = signal<string>("");
 const customPrompt = signal<string>("");
-const voiceEnabled = signal<boolean>(false); // Voice recording on/off toggle
+const voiceEnabled = signal<boolean>(true); // Voice recording on/off toggle - default ON when API key added
 
 // Load saved panel state from localStorage or use defaults
 const getSavedPanelState = () => {
@@ -498,7 +498,7 @@ export default function ButtonStudio() {
     } else {
       playSound.panelsCollapse?.() || playSound.secondaryClick();
     }
-    hapticService.lightTap();
+    hapticService.buttonPress();
   };
 
   return (
@@ -570,7 +570,7 @@ export default function ButtonStudio() {
         <div class="flex items-center justify-between">
           <div>
             <h1
-              class="text-8xl font-black tracking-tighter leading-none"
+              class="text-4xl sm:text-6xl lg:text-8xl font-black tracking-tighter leading-none"
               style={{
                 fontWeight: 900,
                 letterSpacing: "-0.03em",
@@ -581,7 +581,7 @@ export default function ButtonStudio() {
               }}
             >
               ButtonStudio<span
-                class="text-6xl text-fuchsia-500"
+                class="text-3xl sm:text-4xl lg:text-6xl text-fuchsia-500"
                 style={{
                   background:
                     "linear-gradient(135deg, #FF00FF 0%, #FF69B4 100%)",
@@ -624,10 +624,11 @@ export default function ButtonStudio() {
               isExpanded={expandedPanels.value.stageView}
               onToggle={togglePanel}
               index={0}
-              showToggle={true}
+              showToggle={!!apiKey.value}
               toggleValue={voiceEnabled.value}
               onToggleChange={(value) => {
                 voiceEnabled.value = value;
+                playSound.primaryClick();
               }}
               toggleLabel="Voice"
             >
@@ -819,10 +820,10 @@ export default function ButtonStudio() {
               />
             </CollapsiblePanel>
 
-            {/* Ship Accordion */}
+            {/* Share Accordion */}
             <CollapsiblePanel
               id="ship"
-              title="Ship"
+              title="Share"
               color="yellow"
               isExpanded={expandedPanels.value.ship}
               onToggle={togglePanel}

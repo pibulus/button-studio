@@ -66,18 +66,21 @@ export default function ShipPanel(
       }
 
       playSound.success();
-      hapticService.success();
+      hapticService.buttonSuccess();
     } catch (error) {
       toast(`Export failed: ${error.message}`, "error");
       playSound.error();
-      hapticService.error();
+      hapticService.generalError();
     }
   };
 
   return (
     <div class="space-y-2">
       <div>
-        <h4 class="text-lg font-black text-gray-900 mb-2">Export Options</h4>
+        <h4 class="text-lg font-black text-gray-900 mb-2">Share Your Button</h4>
+        <p class="text-sm text-gray-600 mb-3">
+          Export your button to use anywhere!
+        </p>
 
         {/* Export Buttons */}
         <div class="space-y-2">
@@ -91,9 +94,10 @@ export default function ShipPanel(
               boxShadow: "4px 4px 0px rgba(0,0,0,0.85)",
             }}
           >
-            📄 Export as HTML
+            📄 Download HTML File
           </button>
 
+          {/* COMMENTED OUT: PWA ZIP Export - not useful for most users
           <button
             onClick={() => handleExport("pwa")}
             onMouseEnter={() => playSound.hover()}
@@ -106,8 +110,9 @@ export default function ShipPanel(
           >
             📦 Export PWA (ZIP)
           </button>
+          */}
 
-          {/* NEW: Save to Phone Button */}
+          {/* Save to Phone Button */}
           <button
             onClick={() => {
               playSound.primaryClick();
@@ -139,15 +144,15 @@ export default function ShipPanel(
         </div>
       </div>
 
-      {/* Export Info - More compact */}
+      {/* Export Info - More compact and friendly */}
       <div class="mt-2 p-2 bg-yellow-50 rounded-xl border-2 border-yellow-300">
-        <h5 class="font-bold text-xs mb-1">Export Features:</h5>
-        <ul class="text-xs space-y-0.5">
-          <li>• HTML: Self-contained single file</li>
-          <li>• PWA: Installable web app with icons</li>
-          <li>• Share: URL with encoded design</li>
+        <h5 class="font-bold text-xs mb-1">What can I do?</h5>
+        <ul class="text-xs space-y-0.5 text-gray-700">
+          <li>• <strong>HTML File</strong> - Works on any website</li>
+          <li>• <strong>Save to Phone</strong> - Add to home screen like an app</li>
+          <li>• <strong>Share Link</strong> - Send your design to friends</li>
           {apiKeyValue && (
-            <li class="text-green-700">✓ AI transcription included</li>
+            <li class="text-green-700 font-bold">✓ Voice transcription included in exports!</li>
           )}
         </ul>
       </div>

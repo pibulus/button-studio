@@ -189,7 +189,7 @@ export default function VoiceButton({
 
       // Play recording start sound
       playSound.recordingStart();
-      hapticService.recordingStart();
+      hapticService.startRecording();
 
       if (enableHaptics) {
         triggerHapticFeedback(HapticPatterns.recordStart);
@@ -299,7 +299,7 @@ export default function VoiceButton({
 
       // Play success sound
       playSound.success();
-      hapticService.success();
+      hapticService.buttonSuccess();
 
       if (enableHaptics) {
         triggerHapticFeedback(HapticPatterns.success);
