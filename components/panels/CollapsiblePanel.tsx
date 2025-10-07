@@ -2,6 +2,7 @@ import { ComponentChildren } from "preact";
 import { playSound } from "../../utils/audio/soundMapping.ts";
 import { throttleSound } from "../../utils/audio/throttledSound.ts";
 import { gradientSynth } from "../../utils/audio/gradientSynth.ts";
+import { hapticService } from "../../utils/audio/hapticService.ts";
 
 interface CollapsiblePanelProps {
   id: string;
@@ -13,6 +14,10 @@ interface CollapsiblePanelProps {
   size?: "small" | "medium" | "large";
   index?: number;
   special?: boolean;
+  showToggle?: boolean;
+  toggleValue?: boolean;
+  onToggleChange?: (value: boolean) => void;
+  toggleLabel?: string;
 }
 
 // 🎨 Clean three-wrapper pattern for perfect rendering
@@ -28,6 +33,10 @@ export default function CollapsiblePanel({
   size = "medium",
   index = 0,
   special = false,
+  showToggle = false,
+  toggleValue = false,
+  onToggleChange,
+  toggleLabel = "Enable",
 }: CollapsiblePanelProps) {
   // Lo-fi rainbow palette - lighter, softer colors for better visibility
   const getPanelColor = (colorKey: string) => {
@@ -113,15 +122,38 @@ export default function CollapsiblePanel({
                 {title}
               </span>
             </div>
-            <span
-              class="transition-transform duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] text-2xl"
-              style={{
-                transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)",
-                willChange: "transform",
-              }}
-            >
-              ▾
-            </span>
+            <div class="flex items-center gap-3">
+              {/* Optional toggle switch */}
+              {showToggle && onToggleChange && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent panel collapse
+                    onToggleChange(!toggleValue);
+                    playSound.primaryClick();
+                    hapticService.buttonPress();
+                  }}
+                  class="flex items-center gap-2 px-3 py-1.5 rounded-full border-2 border-black/80 font-bold text-sm transition-all hover:scale-105 active:scale-95"
+                  style={{
+                    background: toggleValue ? "#4ade80" : "#f87171",
+                    color: "rgba(0,0,0,0.9)",
+                    boxShadow: "2px 2px 0px rgba(0,0,0,0.3)",
+                  }}
+                >
+                  <span class="text-base">{toggleValue ? "🎤" : "🔇"}</span>
+                  <span>{toggleValue ? "ON" : "OFF"}</span>
+                </button>
+              )}
+              <span
+                class="transition-transform duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] text-2xl"
+                style={{
+                  transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)",
+                  willChange: "transform",
+                }}
+              >
+                ▾
+              </span>
+            </div>
           </button>
 
           {/* Content body */}

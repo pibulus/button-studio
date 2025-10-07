@@ -30,6 +30,7 @@ const showTranscriptModal = signal<boolean>(false);
 const showKeyboardModal = signal<boolean>(false);
 const apiKey = signal<string>("");
 const customPrompt = signal<string>("");
+const voiceEnabled = signal<boolean>(false); // Voice recording on/off toggle
 
 // Load saved panel state from localStorage or use defaults
 const getSavedPanelState = () => {
@@ -615,13 +616,19 @@ export default function ButtonStudio() {
               isExpanded={expandedPanels.value.stageView}
               onToggle={togglePanel}
               index={0}
+              showToggle={true}
+              toggleValue={voiceEnabled.value}
+              onToggleChange={(value) => {
+                voiceEnabled.value = value;
+              }}
+              toggleLabel="Voice"
             >
               <div class="rounded-3xl border-[3px] border-black/80 p-8 bg-gradient-to-b from-white/60 to-white/20 min-h-[260px] flex items-center justify-center relative">
                 <div style={{ width: "240px" }}>
                   <VoiceButton
                     customization={customization.value}
                     onCustomizationChange={handleCustomizationChange}
-                    voiceEnabled={!!apiKey.value}
+                    voiceEnabled={voiceEnabled.value && !!apiKey.value}
                     apiKey={apiKey.value}
                     customPrompt={customPrompt.value}
                     showWaveform={false}
