@@ -811,32 +811,26 @@ export default function ButtonStudio() {
         </div>
       </main>
 
-      {/* Footer - Better balanced height */}
-      <footer
-        class="bg-white h-14 shrink-0"
-        style={{
-          borderTop: "2px solid rgba(0,0,0,0.08)",
-          background: "linear-gradient(to bottom, #FFFFFF 0%, #FAFAFA 100%)",
-        }}
-      >
-        <div class="max-w-[1280px] mx-auto h-full px-6 flex items-center justify-between text-sm text-neutral-600">
-          <span class="font-medium">Made with 🔥 by Pablo • v1.0.0</span>
-          <nav class="space-x-6">
+      {/* Footer */}
+      <footer class="mt-8 py-3 border-t-2 border-black/10 bg-[#FFF8F0]">
+        <div class="max-w-[1280px] mx-auto px-6 flex items-center justify-between text-xs text-black/60">
+          <span class="font-medium">🎸 Pablo • v1.0</span>
+          <div class="flex gap-4">
             <a
-              href="https://github.com/pablojosalvarado"
+              href="https://github.com/pibulus/button-studio"
               target="_blank"
               rel="noopener noreferrer"
-              class="hover:text-neutral-900 transition-colors font-medium"
+              class="hover:text-black/90 transition-colors font-medium"
             >
               GitHub
             </a>
             <a
               href="mailto:pablo@buttonstudio.app"
-              class="hover:text-neutral-900 transition-colors font-medium"
+              class="hover:text-black/90 transition-colors font-medium"
             >
-              Feedback
+              Say Hi
             </a>
-          </nav>
+          </div>
         </div>
       </footer>
     </div>

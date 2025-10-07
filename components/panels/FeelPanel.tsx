@@ -117,30 +117,6 @@ export default function FeelPanel({
         </div>
       </div>
 
-      {/* Preset Themes */}
-      <div>
-        <h4 class="text-lg font-black text-gray-900 mb-3">Preset Themes</h4>
-        <div class="grid grid-cols-2 gap-3">
-          {Object.entries(buttonThemes).map(([key, theme]) => (
-            <button
-              type="button"
-              key={key}
-              onClick={() => {
-                applyTheme(theme);
-                playSound.selectionSelect();
-                hapticService.success();
-              }}
-              class="h-12 px-6 rounded-2xl border-2 font-bold text-sm transition-all capitalize hover:shadow-md active:scale-95 bg-white hover:bg-orange-50 text-black"
-              style={{
-                borderColor: "rgba(0,0,0,0.85)",
-                boxShadow: "2px 2px 0px rgba(0,0,0,0.85)",
-              }}
-            >
-              {theme.name}
-            </button>
-          ))}
-        </div>
-      </div>
     </div>
   );
 }
