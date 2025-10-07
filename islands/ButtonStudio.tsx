@@ -44,7 +44,10 @@ const getSavedPanelState = () => {
     }
   }
   return {
-    design: true,  // Start with design open
+    stageView: true,  // Left side - always open by default
+    colors: true,     // Left side - always open by default
+    sizeShape: true,  // Left side - always open by default
+    design: true,     // Right side - start with design open
     feel: false,
     ship: false,
     magic: false,
@@ -602,149 +605,147 @@ export default function ButtonStudio() {
       {/* Main Layout - Hybrid design with Toybox left, accordions right */}
       <main id="main-content" class="max-w-[1280px] mx-auto w-full px-6 pt-6 pb-8 flex-1">
         <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(360px,420px)] gap-6 items-start">
-          {/* LEFT: Stage + Toybox (always open) */}
-          <div class="space-y-6">
-            {/* Stage View - CHONKY CARD */}
-            <div
-              class="rounded-3xl border-[4px] border-black/80 shadow-[0_6px_0_#00000066] bg-[rgba(255,255,255,0.85)]"
+          {/* LEFT: Stage + Toybox */}
+          <div class="space-y-4">
+            {/* Stage View - CollapsiblePanel */}
+            <CollapsiblePanel
+              id="stageView"
+              title="Stage View"
+              color="pink"
+              isExpanded={expandedPanels.value.stageView}
+              onToggle={togglePanel}
+              index={0}
             >
-              <div class="px-4 py-3 rounded-t-3xl bg-pink-100 border-b-[3px] border-black/80">
-                <div class="flex items-center justify-between">
-                  <span class="text-sm font-semibold tracking-wide text-black">Stage View</span>
-                </div>
-              </div>
-              <div class="p-4">
-                <div class="rounded-3xl border-[3px] border-black/80 p-8 bg-gradient-to-b from-white/60 to-white/20 min-h-[260px] flex items-center justify-center relative">
-                  <div style={{ width: "240px" }}>
-                    <VoiceButton
-                      customization={customization.value}
-                      onCustomizationChange={handleCustomizationChange}
-                      voiceEnabled={!!apiKey.value}
-                      apiKey={apiKey.value}
-                      customPrompt={customPrompt.value}
-                      showWaveform={false}
-                      onComplete={(result) => {
-                        transcriptResult.value = result.text;
-                        showTranscriptModal.value = true;
-                      }}
-                    />
-                  </div>
-
-                  {/* Magic Shuffle Button */}
-                  <button
-                    aria-label="Randomize button design"
-                    onClick={(e) => {
-                      const btn = e.currentTarget;
-                      btn.style.transform = "scale(0.9)";
-                      setTimeout(() => {
-                        btn.style.transform = "scale(1.1)";
-                      }, 100);
-                      setTimeout(() => {
-                        btn.style.transform = "scale(1)";
-                      }, 200);
-
-                      const squishAudio = new Audio("/sounds/grab-pop.mp3");
-                      squishAudio.volume = 0.4;
-                      squishAudio.play().catch(() => {});
-                      hapticService.buttonPress();
-
-                      const event = new CustomEvent("surpriseMe");
-                      document.dispatchEvent(event);
+              <div class="rounded-3xl border-[3px] border-black/80 p-8 bg-gradient-to-b from-white/60 to-white/20 min-h-[260px] flex items-center justify-center relative">
+                <div style={{ width: "240px" }}>
+                  <VoiceButton
+                    customization={customization.value}
+                    onCustomizationChange={handleCustomizationChange}
+                    voiceEnabled={!!apiKey.value}
+                    apiKey={apiKey.value}
+                    customPrompt={customPrompt.value}
+                    showWaveform={false}
+                    onComplete={(result) => {
+                      transcriptResult.value = result.text;
+                      showTranscriptModal.value = true;
                     }}
-                    onMouseEnter={(e) => {
-                      playSound.hover();
-                      e.currentTarget.style.transform = "scale(1.1) rotate(5deg)";
-                      e.currentTarget.style.background = "linear-gradient(135deg, #FFF3B8 0%, #FFD4A3 100%)";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = "scale(1) rotate(0deg)";
-                      e.currentTarget.style.background = "linear-gradient(135deg, #FFFFFF 0%, #FFF3B8 100%)";
-                    }}
-                    class="absolute bottom-4 right-4 h-[56px] w-[56px] rounded-[20px] flex items-center justify-center text-[28px] font-black transition-all duration-200 active:scale-95"
-                    style={{
-                      border: "3px solid rgba(0,0,0,0.88)",
-                      background: "linear-gradient(135deg, #FFFFFF 0%, #FFF3B8 100%)",
-                      filter: "drop-shadow(4px 4px 0px rgba(0,0,0,0.35))",
-                    }}
-                    title="Surprise Me!"
-                  >
-                    🎲
-                  </button>
-                </div>
-                
-                {/* Label Input */}
-                <div class="mt-4 flex gap-3">
-                  <input
-                    type="text"
-                    value={customization.value.content.value}
-                    onInput={(e) => {
-                      const newValue = (e.target as HTMLInputElement).value;
-                      handleCustomizationChange({
-                        ...customization.value,
-                        content: {
-                          ...customization.value.content,
-                          value: newValue,
-                        },
-                      });
-                    }}
-                    onFocus={() => {
-                      playSound.primaryClick();
-                      hapticService.buttonPress();
-                    }}
-                    onMouseEnter={() => playSound.hover()}
-                    placeholder="Boop me!"
-                    maxLength={25}
-                    class="flex-1 rounded-full border-[3px] border-black/80 px-4 py-2 bg-white/80 font-bold text-center hover:bg-white/90 focus:bg-amber-50 focus:outline-none transition-colors"
                   />
-                  <button
-                    aria-label="Reset button label to default"
-                    onClick={() => {
-                      handleCustomizationChange({
-                        ...customization.value,
-                        content: {
-                          ...customization.value.content,
-                          value: "Boop me!",
-                        },
-                      });
-                      playSound.primaryClick();
-                    }}
-                    class="rounded-full border-[3px] border-black/80 px-4 py-2 bg-yellow-300 font-bold hover:bg-yellow-400 transition-colors"
-                  >
-                    Reset
-                  </button>
                 </div>
-              </div>
-            </div>
 
-            {/* Colors (ALWAYS OPEN) */}
-            <div class="rounded-3xl border-[4px] border-black/80 shadow-[0_6px_0_#00000066] bg-[rgba(255,255,255,0.85)]">
-              <div class="px-4 py-3 rounded-t-3xl bg-cyan-100 border-b-[3px] border-black/80">
-                <div class="flex items-center justify-between">
-                  <span class="text-sm font-semibold tracking-wide text-black">Colors</span>
-                </div>
-              </div>
-              <div class="p-4">
-                <ColorsPanel
-                  customization={customization.value}
-                  onChange={handleCustomizationChange}
-                />
-              </div>
-            </div>
+                {/* Magic Shuffle Button */}
+                <button
+                  aria-label="Randomize button design"
+                  onClick={(e) => {
+                    const btn = e.currentTarget;
+                    btn.style.transform = "scale(0.9)";
+                    setTimeout(() => {
+                      btn.style.transform = "scale(1.1)";
+                    }, 100);
+                    setTimeout(() => {
+                      btn.style.transform = "scale(1)";
+                    }, 200);
 
-            {/* Size & Shape (ALWAYS OPEN) */}
-            <div class="rounded-3xl border-[4px] border-black/80 shadow-[0_6px_0_#00000066] bg-[rgba(255,255,255,0.85)]">
-              <div class="px-4 py-3 rounded-t-3xl bg-yellow-100 border-b-[3px] border-black/80">
-                <div class="flex items-center justify-between">
-                  <span class="text-sm font-semibold tracking-wide text-black">Size & Shape</span>
-                </div>
+                    const squishAudio = new Audio("/sounds/grab-pop.mp3");
+                    squishAudio.volume = 0.4;
+                    squishAudio.play().catch(() => {});
+                    hapticService.buttonPress();
+
+                    const event = new CustomEvent("surpriseMe");
+                    document.dispatchEvent(event);
+                  }}
+                  onMouseEnter={(e) => {
+                    playSound.hover();
+                    e.currentTarget.style.transform = "scale(1.1) rotate(5deg)";
+                    e.currentTarget.style.background = "linear-gradient(135deg, #FFF3B8 0%, #FFD4A3 100%)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "scale(1) rotate(0deg)";
+                    e.currentTarget.style.background = "linear-gradient(135deg, #FFFFFF 0%, #FFF3B8 100%)";
+                  }}
+                  class="absolute bottom-4 right-4 h-[56px] w-[56px] rounded-[20px] flex items-center justify-center text-[28px] font-black transition-all duration-200 active:scale-95"
+                  style={{
+                    border: "3px solid rgba(0,0,0,0.88)",
+                    background: "linear-gradient(135deg, #FFFFFF 0%, #FFF3B8 100%)",
+                    filter: "drop-shadow(4px 4px 0px rgba(0,0,0,0.35))",
+                  }}
+                  title="Surprise Me!"
+                >
+                  🎲
+                </button>
               </div>
-              <div class="p-4">
-                <SizeShapePanel
-                  customization={customization.value}
-                  updateAppearance={updateAppearance}
+
+              {/* Label Input */}
+              <div class="mt-4 flex gap-3">
+                <input
+                  type="text"
+                  value={customization.value.content.value}
+                  onInput={(e) => {
+                    const newValue = (e.target as HTMLInputElement).value;
+                    handleCustomizationChange({
+                      ...customization.value,
+                      content: {
+                        ...customization.value.content,
+                        value: newValue,
+                      },
+                    });
+                  }}
+                  onFocus={() => {
+                    playSound.primaryClick();
+                    hapticService.buttonPress();
+                  }}
+                  onMouseEnter={() => playSound.hover()}
+                  placeholder="Boop me!"
+                  maxLength={25}
+                  class="flex-1 rounded-full border-[3px] border-black/80 px-4 py-2 bg-white/80 font-bold text-center hover:bg-white/90 focus:bg-amber-50 focus:outline-none transition-colors"
                 />
+                <button
+                  aria-label="Reset button label to default"
+                  onClick={() => {
+                    handleCustomizationChange({
+                      ...customization.value,
+                      content: {
+                        ...customization.value.content,
+                        value: "Boop me!",
+                      },
+                    });
+                    playSound.primaryClick();
+                  }}
+                  class="rounded-full border-[3px] border-black/80 px-4 py-2 bg-yellow-300 font-bold hover:bg-yellow-400 transition-colors"
+                >
+                  Reset
+                </button>
               </div>
-            </div>
+            </CollapsiblePanel>
+
+            {/* Colors - CollapsiblePanel */}
+            <CollapsiblePanel
+              id="colors"
+              title="Colors"
+              color="violet"
+              isExpanded={expandedPanels.value.colors}
+              onToggle={togglePanel}
+              index={1}
+            >
+              <ColorsPanel
+                customization={customization.value}
+                onChange={handleCustomizationChange}
+              />
+            </CollapsiblePanel>
+
+            {/* Size & Shape - CollapsiblePanel */}
+            <CollapsiblePanel
+              id="sizeShape"
+              title="Size & Shape"
+              color="yellow"
+              isExpanded={expandedPanels.value.sizeShape}
+              onToggle={togglePanel}
+              index={2}
+            >
+              <SizeShapePanel
+                customization={customization.value}
+                updateAppearance={updateAppearance}
+              />
+            </CollapsiblePanel>
           </div>
 
           {/* RIGHT: Accordions (multi-open) */}
