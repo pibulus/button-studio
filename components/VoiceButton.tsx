@@ -365,7 +365,8 @@ export default function VoiceButton({
   }
 
   async function toggleRecording() {
-    await playClickSound();
+    // Play sound in parallel - don't await to preserve iOS user gesture chain
+    playClickSound();
 
     // Check if voice is enabled before doing API calls
     if (!voiceEnabled) {

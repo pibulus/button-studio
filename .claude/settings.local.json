@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Bash(curl:*)",
-      "Read(//Users/pabloalvarado/Projects/active/apps/**)"
+      "Read(//Users/pabloalvarado/Projects/active/apps/**)",
+      "Bash(ipconfig:*)"
     ],
     "deny": [],
     "ask": [],

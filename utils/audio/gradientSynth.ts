@@ -39,6 +39,14 @@ class GradientSynthesizer {
     if (!this.audioContext) {
       this.audioContext = new AudioContext();
     }
+
+    // Resume suspended context (browser autoplay policy)
+    if (this.audioContext.state === "suspended") {
+      this.audioContext.resume().catch(() => {
+        // Silent fail - will work on next interaction
+      });
+    }
+
     return this.audioContext;
   }
 
@@ -48,6 +56,12 @@ class GradientSynthesizer {
 
     try {
       const context = this.getContext();
+
+      // Skip if context isn't running yet (browser autoplay policy)
+      if (context.state !== "running") {
+        return;
+      }
+
       const oscillator = context.createOscillator();
       const gainNode = context.createGain();
 
