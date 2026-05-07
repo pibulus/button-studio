@@ -16,6 +16,7 @@ export function generateStandaloneHTML(
     autoCopy?: boolean;
     autoStopOnSilence?: boolean;
     silenceDuration?: number;
+    showInstallGuide?: boolean;
   } = {},
 ): string {
   const buttonStylesObj = generateButtonStyles(customization);
@@ -44,6 +45,14 @@ export function generateStandaloneHTML(
     <!-- Custom styles for button -->
     <style>
         ${getCustomCSS(customization)}
+
+        body {
+            background:
+                radial-gradient(circle at 20% 20%, rgba(255, 105, 180, 0.18), transparent 28%),
+                radial-gradient(circle at 82% 18%, rgba(120, 210, 255, 0.20), transparent 30%),
+                #f7f0e2;
+            color: #111215;
+        }
         
         /* Recording animation */
         .recording {
@@ -65,9 +74,11 @@ export function generateStandaloneHTML(
             transform: scale(1) translateY(0px);
             transition: transform 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         }
+
+        ${options.showInstallGuide ? getInstallGuideCSS() : ""}
     </style>
 </head>
-<body class="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center p-8">
+<body class="min-h-screen flex items-center justify-center p-8">
     
     <!-- Main Button Container -->
     <div class="text-center">
@@ -102,7 +113,7 @@ export function generateStandaloneHTML(
         </div>
         
         <!-- API Key Setup (shown when no key) -->
-        <div id="api-setup" class="mt-4 max-w-lg mx-auto p-6 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border-2 border-dashed border-blue-200 ${
+        <div id="api-setup" class="mt-4 max-w-lg mx-auto p-6 bg-gradient-to-r from-pink-50 to-yellow-50 rounded-lg border-2 border-dashed border-pink-200 ${
     options.apiKey ? "hidden" : ""
   }">
             <h3 class="text-xl font-bold mb-3 text-center">🚀 Enable AI Transcription</h3>
@@ -110,15 +121,15 @@ export function generateStandaloneHTML(
             
             <div class="space-y-3 text-sm">
                 <div class="flex items-center space-x-3">
-                    <span class="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold text-xs">1</span>
-                    <span>Visit <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-blue-600 underline font-medium">Google AI Studio</a></span>
+                    <span class="bg-pink-500 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold text-xs">1</span>
+                    <span>Visit <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-pink-700 underline font-medium">Google AI Studio</a></span>
                 </div>
                 <div class="flex items-center space-x-3">
-                    <span class="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold text-xs">2</span>
+                    <span class="bg-pink-500 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold text-xs">2</span>
                     <span>Click "Create API key" → "Create API key in new project"</span>
                 </div>
                 <div class="flex items-center space-x-3">
-                    <span class="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold text-xs">3</span>
+                    <span class="bg-pink-500 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold text-xs">3</span>
                     <span>Copy your key and paste below:</span>
                 </div>
             </div>
@@ -127,10 +138,10 @@ export function generateStandaloneHTML(
                 <input 
                     type="password" 
                     id="api-key-input" 
-                    placeholder="Paste your Gemini API key here..." 
-                    class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none font-mono text-sm"
+                    placeholder="Gemini API key" 
+                    class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-pink-500 focus:outline-none font-mono text-sm"
                 >
-                <button onclick="saveApiKey()" class="w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white py-3 px-4 rounded-lg font-bold hover:from-blue-600 hover:to-purple-600 transition-all">
+                <button onclick="saveApiKey()" class="w-full bg-gradient-to-r from-pink-400 to-yellow-300 text-black py-3 px-4 rounded-lg font-black hover:from-pink-500 hover:to-yellow-400 transition-all">
                     ✨ Save & Start Transcribing
                 </button>
             </div>
@@ -144,7 +155,7 @@ export function generateStandaloneHTML(
         <div id="transcript" class="mt-4 max-w-lg mx-auto p-4 bg-white rounded-lg shadow-md hidden">
             <h3 class="text-lg font-bold mb-2">Transcript:</h3>
             <p id="transcript-text" class="text-gray-800 font-mono text-sm bg-gray-50 p-3 rounded border"></p>
-            <button onclick="copyTranscript()" class="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                <button onclick="copyTranscript()" class="mt-2 px-4 py-2 bg-pink-500 text-white rounded hover:bg-pink-600">
                 Copy to Clipboard
             </button>
         </div>
@@ -154,12 +165,14 @@ export function generateStandaloneHTML(
       ? `
         <!-- ButtonSpa Attribution -->
         <div class="mt-8 text-sm text-gray-500">
-            Created with <a href="https://buttonspa.app" class="text-blue-500 hover:underline">ButtonSpa</a>
+            Created with <a href="https://buttonspa.app" class="text-pink-600 hover:underline">ButtonSpa</a>
         </div>
         `
       : ""
   }
     </div>
+
+    ${options.showInstallGuide ? getInstallGuideMarkup() : ""}
 
     <script>
         // Voice Button Functionality
@@ -195,6 +208,11 @@ export function generateStandaloneHTML(
             // Hide API setup, show ready state
             document.getElementById('api-setup').classList.add('hidden');
             document.getElementById('status').textContent = '🎉 AI Transcription enabled! Click to record';
+            setTimeout(() => {
+                if (typeof showInstallBanner === 'function') {
+                    showInstallBanner();
+                }
+            }, 600);
             
             // Show success feedback
             const button = document.querySelector('#api-setup button');
@@ -233,6 +251,8 @@ export function generateStandaloneHTML(
         const status = document.getElementById('status');
         const transcriptDiv = document.getElementById('transcript');
         const transcriptText = document.getElementById('transcript-text');
+
+        ${options.showInstallGuide ? getInstallGuideScript() : ""}
         
         // Button interaction handlers
         function handleMouseDown() {
@@ -669,5 +689,204 @@ function getCustomCSS(customization: ButtonCustomization): string {
     `
       : ""
   }
+  `;
+}
+
+function getInstallGuideCSS(): string {
+  return `
+        body {
+            padding-bottom: calc(2rem + env(safe-area-inset-bottom));
+        }
+
+        .install-banner {
+            position: fixed;
+            left: max(16px, env(safe-area-inset-left));
+            right: max(16px, env(safe-area-inset-right));
+            bottom: max(16px, env(safe-area-inset-bottom));
+            z-index: 50;
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            max-width: 560px;
+            margin: 0 auto;
+            padding: 14px;
+            border: 3px solid #111215;
+            border-radius: 18px;
+            background: #fffaf2;
+            box-shadow: 5px 5px 0 rgba(17, 18, 21, 0.88);
+            text-align: left;
+        }
+
+        .install-banner.is-visible {
+            display: flex;
+        }
+
+        .install-banner__copy {
+            min-width: 0;
+        }
+
+        .install-banner__title {
+            margin: 0;
+            font-size: 14px;
+            font-weight: 900;
+            line-height: 1.15;
+        }
+
+        .install-banner__body {
+            margin: 3px 0 0;
+            color: #4b5563;
+            font-size: 12px;
+            line-height: 1.3;
+        }
+
+        .install-banner__actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .install-banner__button {
+            min-height: 44px;
+            padding: 0 14px;
+            border: 2px solid #111215;
+            border-radius: 12px;
+            background: #111215;
+            color: white;
+            font-size: 13px;
+            font-weight: 900;
+            white-space: nowrap;
+        }
+
+        .install-banner__button[hidden] {
+            display: none;
+        }
+
+        .install-banner__close {
+            width: 44px;
+            height: 44px;
+            border: 2px solid #111215;
+            border-radius: 12px;
+            background: #fff;
+            color: #111215;
+            font-size: 22px;
+            line-height: 1;
+            font-weight: 900;
+        }
+
+        @media (max-width: 420px) {
+            .install-banner {
+                align-items: stretch;
+            }
+
+            .install-banner__actions {
+                flex-direction: column;
+            }
+        }
+
+        @media (display-mode: standalone) {
+            .install-banner {
+                display: none !important;
+            }
+        }
+    `;
+}
+
+function getInstallGuideMarkup(): string {
+  return `
+    <aside id="install-banner" class="install-banner" aria-live="polite">
+        <div class="install-banner__copy">
+            <p id="install-title" class="install-banner__title">Save this button</p>
+            <p id="install-body" class="install-banner__body">Install it on your home screen for one-tap recording.</p>
+        </div>
+        <div class="install-banner__actions">
+            <button id="install-action" type="button" class="install-banner__button">Install</button>
+            <button id="install-dismiss" type="button" class="install-banner__close" aria-label="Dismiss install help">×</button>
+        </div>
+    </aside>
+  `;
+}
+
+function getInstallGuideScript(): string {
+  return `
+        let deferredInstallPrompt = null;
+        const installBanner = document.getElementById('install-banner');
+        const installTitle = document.getElementById('install-title');
+        const installBody = document.getElementById('install-body');
+        const installAction = document.getElementById('install-action');
+        const installDismiss = document.getElementById('install-dismiss');
+        const installDismissedKey = 'buttonspa-install-dismissed';
+
+        function isStandaloneApp() {
+            return window.matchMedia('(display-mode: standalone)').matches ||
+                window.navigator.standalone === true;
+        }
+
+        function isIOSDevice() {
+            return /iPhone|iPad|iPod/i.test(navigator.userAgent) ||
+                (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+        }
+
+        function isApiSetupVisible() {
+            const apiSetup = document.getElementById('api-setup');
+            return apiSetup && !apiSetup.classList.contains('hidden');
+        }
+
+        function showInstallBanner() {
+            if (!installBanner || isStandaloneApp()) return;
+            if (isApiSetupVisible()) return;
+
+            const dismissedAt = Number(localStorage.getItem(installDismissedKey) || 0);
+            const dismissedRecently = dismissedAt && Date.now() - dismissedAt < 7 * 24 * 60 * 60 * 1000;
+            if (dismissedRecently) return;
+
+            if (isIOSDevice()) {
+                installTitle.textContent = 'Save this button to Home Screen';
+                installBody.textContent = 'Open in Safari, tap Share, then Add to Home Screen.';
+                installAction.hidden = true;
+            } else if (deferredInstallPrompt) {
+                installTitle.textContent = 'Install this button';
+                installBody.textContent = 'Add it as a tiny app with its own custom icon.';
+                installAction.hidden = false;
+                installAction.textContent = 'Install';
+            } else {
+                installTitle.textContent = 'Save this button';
+                installBody.textContent = 'Use your browser menu to install or add it to the home screen.';
+                installAction.hidden = true;
+            }
+
+            installBanner.classList.add('is-visible');
+        }
+
+        window.addEventListener('beforeinstallprompt', (event) => {
+            event.preventDefault();
+            deferredInstallPrompt = event;
+            showInstallBanner();
+        });
+
+        window.addEventListener('appinstalled', () => {
+            deferredInstallPrompt = null;
+            installBanner?.classList.remove('is-visible');
+            localStorage.setItem(installDismissedKey, String(Date.now()));
+        });
+
+        installAction?.addEventListener('click', async () => {
+            if (!deferredInstallPrompt) return;
+
+            deferredInstallPrompt.prompt();
+            await deferredInstallPrompt.userChoice;
+            deferredInstallPrompt = null;
+            installBanner?.classList.remove('is-visible');
+        });
+
+        installDismiss?.addEventListener('click', () => {
+            localStorage.setItem(installDismissedKey, String(Date.now()));
+            installBanner?.classList.remove('is-visible');
+        });
+
+        window.addEventListener('load', () => {
+            setTimeout(showInstallBanner, 900);
+        });
   `;
 }

@@ -3,9 +3,8 @@
 // ===================================================================
 
 import { signal } from "@preact/signals";
-import { useRef } from "preact/hooks";
+import { useEffect } from "preact/hooks";
 import { ButtonCustomization } from "../types/customization.ts";
-import { ButtonExporter } from "../utils/export/ButtonExporter.ts";
 import { playSound } from "../utils/audio/soundMapping.ts";
 import { hapticService } from "../utils/audio/hapticService.ts";
 import { toast } from "./Toast.tsx";
@@ -31,11 +30,14 @@ export default function PWAShareModal({
   customization,
   apiKey = "",
 }: PWAShareModalProps) {
-  if (!isOpen) return null;
+  const customizationKey = JSON.stringify(customization);
 
-  const generatePWA = async () => {
+  const generatePWA = (options: { quiet?: boolean } = {}) => {
     isGenerating.value = true;
-    playSound.primaryClick();
+
+    if (!options.quiet) {
+      playSound.primaryClick();
+    }
 
     try {
       // Encode the button configuration as URL-safe base64 with UTF-8 support
@@ -51,7 +53,7 @@ export default function PWAShareModal({
       );
 
       // Create the real URL that will serve the PWA
-      const baseUrl = window.location.origin;
+      const baseUrl = globalThis.location.origin;
       let url = `${baseUrl}/b/${urlSafeId}`;
 
       // Add encrypted API key if requested
@@ -68,9 +70,11 @@ export default function PWAShareModal({
           encodeURIComponent(url)
         }`;
 
-      playSound.success();
-      hapticService.buttonSuccess();
-      toast("PWA ready to share! 🎉", "success");
+      if (!options.quiet) {
+        playSound.success();
+        hapticService.buttonSuccess();
+        toast("PWA ready to share! 🎉", "success");
+      }
     } catch (error) {
       console.error("PWA generation error:", error);
       toast("Failed to generate PWA", "error");
@@ -80,6 +84,22 @@ export default function PWAShareModal({
     }
   };
 
+  useEffect(() => {
+    if (!isOpen) return;
+
+    pwaUrl.value = "";
+    qrCodeUrl.value = "";
+    isGenerating.value = false;
+    includeApiKey.value = false;
+    pin.value = "";
+
+    if (!apiKey) {
+      generatePWA({ quiet: true });
+    }
+  }, [isOpen, customizationKey, apiKey]);
+
+  if (!isOpen) return null;
+
   const copyLink = () => {
     navigator.clipboard.writeText(pwaUrl.value);
     playSound.success();
@@ -88,13 +108,8 @@ export default function PWAShareModal({
   };
 
   const openOnPhone = () => {
-    window.open(pwaUrl.value, "_blank");
+    globalThis.open(pwaUrl.value, "_blank");
   };
-
-  // Auto-generate on open only if no API key
-  if (isOpen && !pwaUrl.value && !isGenerating.value && !apiKey) {
-    generatePWA();
-  }
 
   return (
     <div class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
@@ -109,6 +124,7 @@ export default function PWAShareModal({
               </p>
             </div>
             <button
+              type="button"
               onClick={onClose}
               class="text-white text-2xl hover:scale-110 transition-transform"
             >
@@ -172,7 +188,8 @@ export default function PWAShareModal({
                 </div>
 
                 <button
-                  onClick={generatePWA}
+                  type="button"
+                  onClick={() => generatePWA()}
                   disabled={includeApiKey.value && !isValidPIN(pin.value)}
                   class="w-full py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-2xl font-black hover:from-purple-600 hover:to-pink-600 transition-all disabled:opacity-50"
                 >
@@ -220,6 +237,7 @@ export default function PWAShareModal({
                 {/* Action Buttons */}
                 <div class="space-y-3">
                   <button
+                    type="button"
                     onClick={copyLink}
                     class="w-full py-4 bg-black text-white rounded-2xl font-black hover:bg-gray-800 transition-colors flex items-center justify-center gap-2"
                   >
@@ -227,6 +245,7 @@ export default function PWAShareModal({
                   </button>
 
                   <button
+                    type="button"
                     onClick={openOnPhone}
                     class="w-full py-4 bg-purple-500 text-white rounded-2xl font-black hover:bg-purple-600 transition-colors flex items-center justify-center gap-2"
                   >
@@ -289,7 +308,8 @@ export default function PWAShareModal({
               <div class="text-center py-12">
                 <p class="text-gray-600">Failed to generate PWA</p>
                 <button
-                  onClick={generatePWA}
+                  type="button"
+                  onClick={() => generatePWA()}
                   class="mt-4 px-6 py-2 bg-black text-white rounded-xl font-bold"
                 >
                   Try Again

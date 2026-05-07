@@ -98,7 +98,9 @@ self.addEventListener("fetch", (event) => {
       .catch(() => {
         // Offline fallback for navigation requests
         if (event.request.mode === "navigate") {
-          return caches.match("/");
+          return caches.match(event.request).then((response) =>
+            response || caches.match("/")
+          );
         }
       }),
   );
@@ -109,6 +111,28 @@ self.addEventListener("message", (event) => {
   if (event.data && event.data.type === "SKIP_WAITING") {
     self.skipWaiting();
   }
+
+  if (event.data && event.data.type === "CACHE_URLS") {
+    const urls = Array.isArray(event.data.urls) ? event.data.urls : [];
+    const sameOriginUrls = urls
+      .map((url) => {
+        try {
+          return new URL(url, self.location.origin);
+        } catch {
+          return null;
+        }
+      })
+      .filter((url) => url && url.origin === self.location.origin)
+      .map((url) => url.href);
+
+    event.waitUntil(
+      caches.open(CACHE_NAME)
+        .then((cache) => cache.addAll(sameOriginUrls))
+        .catch((error) => {
+          console.warn("Could not cache requested PWA URLs:", error);
+        }),
+    );
+  }
 });
 
 // Background sync for offline transcriptions (future feature)
@@ -118,7 +142,8 @@ self.addEventListener("sync", (event) => {
   }
 });
 
-async function syncTranscriptions() {
+function syncTranscriptions() {
   // Future: Sync offline transcriptions when back online
   console.log("📤 Syncing offline transcriptions...");
+  return Promise.resolve();
 }

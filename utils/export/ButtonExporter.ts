@@ -14,12 +14,25 @@ import {
 import { generateShareLink } from "./shareLink.ts";
 import { generateStandaloneHTML } from "./templates/html-standalone.ts";
 
+interface ButtonExporterOptions extends ExportOptions {
+  apiKey?: string;
+  customPrompt?: string;
+  manifestPath?: string;
+  serviceWorkerPath?: string;
+  icon192Path?: string;
+  icon512Path?: string;
+  appleTouchIconPath?: string;
+}
+
 export class ButtonExporter {
   customization: ButtonCustomization;
   apiKey?: string;
   customPrompt?: string;
 
-  constructor(customization?: ButtonCustomization, options?: any) {
+  constructor(
+    customization?: ButtonCustomization,
+    options?: ButtonExporterOptions,
+  ) {
     // Handle both old and new constructor signatures
     if (customization && !options) {
       this.customization = customization;
@@ -36,7 +49,10 @@ export class ButtonExporter {
   // HTML STANDALONE EXPORT - Self-contained file
   // ===================================================================
 
-  generateHTML(customization: ButtonCustomization, options: any = {}) {
+  generateHTML(
+    customization: ButtonCustomization,
+    options: ButtonExporterOptions = {},
+  ) {
     // Update internal state
     this.customization = customization;
     this.apiKey = options.apiKey;
@@ -82,7 +98,10 @@ export class ButtonExporter {
   // PWA EXPORT - Progressive Web App package
   // ===================================================================
 
-  generatePWA(customization: ButtonCustomization, options: any = {}) {
+  generatePWA(
+    customization: ButtonCustomization,
+    options: ButtonExporterOptions = {},
+  ) {
     // Update internal state
     this.customization = customization;
     this.apiKey = options.apiKey;
@@ -93,6 +112,10 @@ export class ButtonExporter {
       includeAI: options.includeAI && !!options.apiKey,
       apiKey: options.apiKey,
       customPrompt: this.customPrompt,
+      autoStart: options.autoStart,
+      autoCopy: options.autoCopy,
+      autoStopOnSilence: options.autoStopOnSilence,
+      silenceDuration: options.silenceDuration,
     });
     const serviceWorker = this.generateServiceWorker();
     const icon192 = this.generateIconDataURL(192);
@@ -376,7 +399,10 @@ export class ButtonExporter {
     };
   }
 
-  generatePWAHTML(appName: string, options: any): string {
+  generatePWAHTML(
+    appName: string,
+    options: ButtonExporterOptions,
+  ): string {
     // Enhanced HTML with PWA features
     const manifestPath = options.manifestPath || "./manifest.json";
     const serviceWorkerPath = options.serviceWorkerPath || "./sw.js";
@@ -388,7 +414,18 @@ export class ButtonExporter {
       apiKey: options.apiKey,
       customPrompt: this.customPrompt,
       customBranding: options.customBranding,
+      autoStart: options.autoStart,
+      autoCopy: options.autoCopy,
+      autoStopOnSilence: options.autoStopOnSilence,
+      silenceDuration: options.silenceDuration,
+      showInstallGuide: true,
     });
+    const pwaAssetUrls = JSON.stringify([
+      manifestPath,
+      icon192Path,
+      icon512Path,
+      appleTouchIconPath,
+    ]);
 
     // Add PWA meta tags and service worker registration
     return baseHTML.replace(
@@ -416,6 +453,13 @@ export class ButtonExporter {
           navigator.serviceWorker.register('${serviceWorkerPath}')
             .then((registration) => {
               console.log('SW registered: ', registration);
+              navigator.serviceWorker.ready.then((readyRegistration) => {
+                const worker = readyRegistration.active || registration.active || navigator.serviceWorker.controller;
+                worker?.postMessage({
+                  type: 'CACHE_URLS',
+                  urls: [window.location.href, ...${pwaAssetUrls}],
+                });
+              });
             })
             .catch((registrationError) => {
               console.log('SW registration failed: ', registrationError);
