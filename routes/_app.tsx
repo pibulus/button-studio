@@ -22,7 +22,7 @@ export default function App({ Component }: PageProps) {
         <meta name="theme-color" content="#FF69B4" />
         <meta
           name="description"
-          content="Make cute buttons that do real things. Design voice buttons, export them as tiny apps, and save them to your phone."
+          content="Design polished voice buttons with real-time transcription, then share, embed, or install them as tiny apps."
         />
 
         {/* Open Graph / Social Media */}
@@ -30,11 +30,11 @@ export default function App({ Component }: PageProps) {
         <meta property="og:url" content="https://buttonspa.app/" />
         <meta
           property="og:title"
-          content="ButtonSpa - Voice Button Designer"
+          content="ButtonSpa - Make Cute Buttons That Do Real Things"
         />
         <meta
           property="og:description"
-          content="Make cute buttons that do real things. Design polished voice buttons, then share, embed, or install them as tiny apps."
+          content="Design polished voice buttons with real-time transcription, then share, embed, or install them as tiny apps."
         />
         <meta property="og:image" content="/og-image.png" />
 
@@ -43,11 +43,11 @@ export default function App({ Component }: PageProps) {
         <meta property="twitter:url" content="https://buttonspa.app/" />
         <meta
           property="twitter:title"
-          content="ButtonSpa - Voice Button Designer"
+          content="ButtonSpa - Make Cute Buttons That Do Real Things"
         />
         <meta
           property="twitter:description"
-          content="Make cute buttons that do real things. Design polished voice buttons, then share, embed, or install them as tiny apps."
+          content="Design polished voice buttons with real-time transcription, then share, embed, or install them as tiny apps."
         />
         <meta property="twitter:image" content="/og-image.png" />
 

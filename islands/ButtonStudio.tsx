@@ -737,7 +737,7 @@ export default function ButtonStudio() {
                   onMouseEnter={() => playSound.hover()}
                   placeholder="Boop me!"
                   maxLength={25}
-                  class="flex-1 rounded-full border-[3px] border-black/80 px-4 py-2 bg-white/80 font-bold text-center hover:bg-white/90 focus:bg-amber-50 focus:outline-none transition-colors"
+                  class="min-w-0 flex-1 rounded-full border-[3px] border-black/80 px-4 py-2 bg-white/80 font-bold text-center hover:bg-white/90 focus:bg-amber-50 focus:outline-none transition-colors"
                 />
                 <button
                   aria-label="Reset button label to default"
@@ -751,7 +751,7 @@ export default function ButtonStudio() {
                     });
                     playSound.primaryClick();
                   }}
-                  class="rounded-full border-[3px] border-black/80 px-4 py-2 bg-yellow-300 font-bold hover:bg-yellow-400 transition-colors"
+                  class="shrink-0 rounded-full border-[3px] border-black/80 px-4 py-2 bg-yellow-300 font-bold hover:bg-yellow-400 transition-colors"
                 >
                   Reset
                 </button>
