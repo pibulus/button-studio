@@ -2,5 +2,5 @@
   <rect width="192" height="192" rx="40" fill="#ff60e0"/>
   <circle cx="96" cy="96" r="50" fill="white" opacity="0.9"/>
   <circle cx="96" cy="96" r="20" fill="#ff60e0"/>
-  <text x="96" y="160" text-anchor="middle" font-family="system-ui" font-size="20" font-weight="bold" fill="white">Button</text>
+  <text x="96" y="160" text-anchor="middle" font-family="system-ui" font-size="24" font-weight="bold" fill="white">Spa</text>
 </svg>

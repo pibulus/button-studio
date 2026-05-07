@@ -17,7 +17,7 @@
  * onMouseEnter={() => playSound.gradientPanelsRed()}  // Specific color
  * onMouseEnter={() => playSound.gradientPanel('red')} // Helper method
  *
- * @author ButtonStudio Audio Team
+ * @author ButtonSpa Audio Team
  * @version 3.1.0 - Improved with TypeScript types and helpers
  */
 

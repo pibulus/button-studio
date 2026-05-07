@@ -12,9 +12,9 @@
 
 ## 🎨 THE PROJECT VIBE
 
-**ButtonStudio** (yes he thinks it sounds like buttholestudio lol) is the
-**"Figma for buttons"** - a beautiful design studio for creating customizable
-interactive buttons.
+**ButtonSpa** (yes he thinks it sounds like buttholestudio lol) is the **"Figma
+for buttons"** - a beautiful design studio for creating customizable interactive
+buttons.
 
 **Current State:** MASSIVE Soft Stack transformation complete! We went from
 basic tool to **creative playground with soul**.

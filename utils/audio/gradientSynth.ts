@@ -18,7 +18,7 @@
  * - CollapsiblePanel.tsx calls gradientSynth.playGradientTone(color)
  * - Replaces the file-based gradient sounds from soundConfig.ts
  *
- * @author ButtonStudio Audio Team
+ * @author ButtonSpa Audio Team
  * @version 1.0.0 - Synthetic gradient system
  */
 

@@ -2,9 +2,9 @@
 
 ## Overview
 
-ButtonStudio features a sophisticated gradient sound system where different
-colored UI panels play distinct tones, creating a musical interface that
-provides spatial awareness and enhances the user experience.
+ButtonSpa features a sophisticated gradient sound system where different colored
+UI panels play distinct tones, creating a musical interface that provides
+spatial awareness and enhances the user experience.
 
 ## Architecture
 
@@ -43,7 +43,7 @@ files:
 - **Ship Panel**: `yellow` - Mid-high pluck tone
 - **Magic Panel**: `purple` - Highest glass tone
 
-### ButtonStudio (Left side panels)
+### ButtonSpa (Left side panels)
 
 - **Colors Panel**: `cyan` - Low glass tone
 - **Size & Shape Panel**: `green` - Mid select tone

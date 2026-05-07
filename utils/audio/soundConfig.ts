@@ -4,7 +4,7 @@
  * Portable, modular sound system that can be easily transferred between apps.
  * All sound mappings, categories, and file assignments are centralized here.
  *
- * @author ButtonStudio Audio Team
+ * @author ButtonSpa Audio Team
  * @version 3.0.0 - Universal Portable System
  */
 
@@ -223,7 +223,7 @@ export const APP_SOUND_PRESETS = {
     volume: 0.5,
   },
 
-  // Rich - Full audio experience like ButtonStudio
+  // Rich - Full audio experience like ButtonSpa
   rich: {
     enabled: Object.keys(SOUND_CATEGORIES),
     volume: 0.7,

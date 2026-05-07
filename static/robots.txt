@@ -1,4 +1,4 @@
-# ButtonStudio - Voice Button Design Lab
+# ButtonSpa - Tiny Action App Builder
 # https://buttonspa.app
 
 User-agent: *

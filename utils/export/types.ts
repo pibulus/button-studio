@@ -1,5 +1,5 @@
 // ===================================================================
-// EXPORT SYSTEM TYPES - ButtonStudio export functionality
+// EXPORT SYSTEM TYPES - ButtonSpa export functionality
 // ===================================================================
 
 import { ButtonCustomization } from "../../types/customization.ts";

@@ -6,7 +6,7 @@ import { ButtonCustomization } from "../../types/customization.ts";
 import { ShareLinkData } from "./types.ts";
 
 const CURRENT_VERSION = 1;
-const URL_PREFIX = "bs://"; // ButtonStudio protocol
+const URL_PREFIX = "bs://"; // ButtonSpa protocol
 
 // Encode button customization into a shareable URL
 export function generateShareLink(

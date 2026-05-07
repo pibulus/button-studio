@@ -6,12 +6,11 @@ export default function Home() {
     <>
       <Head>
         <title>
-          ButtonStudio - Voice Button Design Lab | Create Beautiful Voice
-          Buttons
+          ButtonSpa - Make Cute Buttons That Do Real Things
         </title>
         <meta
           name="description"
-          content="Design and customize beautiful voice recording buttons with real-time transcription. Export as HTML, PWA, or share your designs. The Figma for voice buttons."
+          content="Design polished voice buttons with real-time transcription, then share, embed, or install them as tiny apps."
         />
 
         {/* Mobile */}
@@ -26,11 +25,11 @@ export default function Home() {
         {/* SEO and Open Graph */}
         <meta
           property="og:title"
-          content="ButtonStudio - Voice Button Design Lab"
+          content="ButtonSpa - Make Cute Buttons That Do Real Things"
         />
         <meta
           property="og:description"
-          content="Design beautiful voice recording buttons with real-time transcription. Export as HTML, PWA, or share your designs."
+          content="Design polished voice buttons with real-time transcription, then share, embed, or install them as tiny apps."
         />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://buttonspa.app" />
@@ -40,11 +39,11 @@ export default function Home() {
         <meta name="twitter:card" content="summary_large_image" />
         <meta
           name="twitter:title"
-          content="ButtonStudio - Voice Button Design Lab"
+          content="ButtonSpa - Make Cute Buttons That Do Real Things"
         />
         <meta
           name="twitter:description"
-          content="Design beautiful voice recording buttons with real-time transcription."
+          content="Design polished voice buttons with real-time transcription, then share, embed, or install them as tiny apps."
         />
         <meta name="twitter:image" content="/og-image.png" />
 
@@ -74,31 +73,33 @@ export default function Home() {
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "WebApplication",
-            "name": "ButtonStudio",
-            "alternateName": "ButtonStudio - Voice Button Design Lab",
+            "name": "ButtonSpa",
+            "alternateName": "ButtonSpa - Tiny Action App Builder",
             "url": "https://buttonspa.app",
-            "description": "Design and customize beautiful voice recording buttons with real-time transcription. Export as HTML, PWA, or share your designs.",
-            "applicationCategory": "DeveloperApplication",
+            "description":
+              "Design polished voice buttons with real-time transcription, then share, embed, or install them as tiny apps.",
+            "applicationCategory": "ProductivityApplication",
             "operatingSystem": "Web Browser",
             "offers": {
               "@type": "Offer",
               "price": "0",
-              "priceCurrency": "USD"
+              "priceCurrency": "USD",
             },
             "featureList": [
               "Voice recording buttons",
               "Real-time transcription with Gemini AI",
               "Visual customization",
               "Export as HTML or PWA",
-              "Share button designs"
+              "Shareable and installable button pages",
             ],
-            "browserRequirements": "Requires JavaScript. Modern browser with Web Audio API support.",
+            "browserRequirements":
+              "Requires JavaScript. Modern browser with Web Audio API support.",
             "screenshot": "https://buttonspa.app/og-image.png",
             "creator": {
               "@type": "Person",
               "name": "Pablo Alvarado",
-              "url": "https://github.com/pibulus"
-            }
+              "url": "https://github.com/pibulus",
+            },
           })}
         </script>
       </Head>

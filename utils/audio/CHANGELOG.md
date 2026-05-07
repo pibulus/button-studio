@@ -1,4 +1,4 @@
-# ButtonStudio Audio System Changelog
+# ButtonSpa Audio System Changelog
 
 ## Version 2.0.0 - Button-Perfect Sound System (Current)
 

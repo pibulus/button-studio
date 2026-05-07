@@ -116,7 +116,6 @@ export default function FeelPanel({
           ))}
         </div>
       </div>
-
     </div>
   );
 }

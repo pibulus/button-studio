@@ -81,7 +81,7 @@ export function AboutModal() {
                 class="text-3xl font-bold font-mono"
                 style="color: var(--color-text, #0A0A0A)"
               >
-                About ButtonStudio
+                About ButtonSpa
               </h2>
               <button
                 onClick={closeAboutModal}
@@ -96,7 +96,7 @@ export function AboutModal() {
               class="text-lg font-mono font-bold"
               style="color: var(--color-accent, #FF69B4)"
             >
-              The Figma for voice buttons 🎤
+              Tiny action apps, starting with voice buttons.
             </p>
           </div>
 
@@ -110,7 +110,9 @@ export function AboutModal() {
               class="text-base sm:text-lg leading-relaxed"
               style="color: var(--color-text, #0A0A0A)"
             >
-              I'm Pablo. I build tools with personality and soul. ButtonStudio lets you design beautiful voice recording buttons with real-time AI transcription.
+              I'm Pablo. I build tools with personality and soul. ButtonSpa lets
+              you design beautiful voice recording buttons with real-time AI
+              transcription.
             </p>
 
             {/* What it's for */}
@@ -122,7 +124,9 @@ export function AboutModal() {
                 class="text-sm sm:text-base font-medium"
                 style="color: var(--color-text, #0A0A0A)"
               >
-                Design custom voice buttons. Export as HTML, PWA, or embeddable code. Add voice interfaces to any website. Powered by Google Gemini AI.
+                Design custom voice buttons. Export as HTML, PWA, or embeddable
+                code. Save them to your phone as tiny apps. Powered by Google
+                Gemini AI.
               </p>
               <p
                 class="text-sm sm:text-base font-medium"

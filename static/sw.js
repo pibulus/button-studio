@@ -1,7 +1,7 @@
-// ButtonStudio Service Worker v1.0
+// ButtonSpa Service Worker v1.0
 // Enables offline functionality and PWA features
 
-const CACHE_NAME = "buttonstudio-v1";
+const CACHE_NAME = "buttonspa-v1";
 const urlsToCache = [
   "/",
   "/styles.css",
@@ -31,7 +31,9 @@ self.addEventListener("activate", (event) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
           if (
-            cacheName !== CACHE_NAME && cacheName.startsWith("buttonstudio-")
+            cacheName !== CACHE_NAME &&
+            (cacheName.startsWith("buttonspa-") ||
+              cacheName.startsWith("buttonstudio-"))
           ) {
             console.log("🗑️ Removing old cache:", cacheName);
             return caches.delete(cacheName);

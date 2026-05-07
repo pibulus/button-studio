@@ -10,7 +10,7 @@ working apps.
 
 Transform this flow from demo to reality:
 
-1. User designs button in ButtonStudio
+1. User designs button in ButtonSpa
 2. Clicks "📱 Save to Phone"
 3. Gets REAL URL (not fake demo)
 4. Opens on phone → Installs as app
@@ -30,7 +30,7 @@ Transform this flow from demo to reality:
 
 ### 🚫 Not Working (Fake/Demo):
 
-- URL is fake: `buttonstudio.app/b/${randomId}`
+- URL is fake: `buttonspa.app/b/${randomId}`
 - No actual hosting happens
 - QR code points to nowhere
 - Can't actually install on phone
@@ -73,7 +73,7 @@ const { data } = await supabase
   .single();
 
 // Serve from edge function
-// buttonstudio.app/b/[id]
+// buttonspa.app/b/[id]
 ```
 
 **Pros**: Short URLs, can track analytics **Cons**: Needs Supabase setup

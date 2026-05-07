@@ -1,4 +1,4 @@
-# ButtonStudio Audio Documentation Index
+# ButtonSpa Audio Documentation Index
 
 ## 📚 **Complete Documentation Library**
 

@@ -1,5 +1,5 @@
 /**
- * Haptic Service for ButtonStudio
+ * Haptic Service for ButtonSpa
  * Provides vibration feedback for mobile devices
  * Adapted from RiffRap's haptic patterns
  */
@@ -41,6 +41,9 @@ export const HAPTIC_PATTERNS = {
 } as const;
 
 class HapticService {
+  private static readonly STORAGE_KEY = "buttonspa-haptics-enabled";
+  private static readonly LEGACY_STORAGE_KEY = "buttonstudio-haptics-enabled";
+
   private isMobile: boolean;
   private isSupported: boolean;
   private enabled: boolean;
@@ -57,7 +60,8 @@ class HapticService {
 
   private initializeSettings(): void {
     if (typeof localStorage !== "undefined") {
-      const storedValue = localStorage.getItem("buttonstudio-haptics-enabled");
+      const storedValue = localStorage.getItem(HapticService.STORAGE_KEY) ??
+        localStorage.getItem(HapticService.LEGACY_STORAGE_KEY);
       if (storedValue === "false") {
         this.enabled = false;
       }
@@ -65,7 +69,7 @@ class HapticService {
 
     if (typeof window !== "undefined") {
       (window as any).hapticsEnabled = this.enabled;
-      console.log("📳 ButtonStudio haptics enabled:", this.enabled);
+      console.log("📳 ButtonSpa haptics enabled:", this.enabled);
     }
   }
 
@@ -176,7 +180,8 @@ class HapticService {
   enable(): void {
     this.enabled = true;
     if (typeof localStorage !== "undefined") {
-      localStorage.setItem("buttonstudio-haptics-enabled", "true");
+      localStorage.setItem(HapticService.STORAGE_KEY, "true");
+      localStorage.setItem(HapticService.LEGACY_STORAGE_KEY, "true");
     }
 
     // Give immediate feedback
@@ -186,7 +191,8 @@ class HapticService {
   disable(): void {
     this.enabled = false;
     if (typeof localStorage !== "undefined") {
-      localStorage.setItem("buttonstudio-haptics-enabled", "false");
+      localStorage.setItem(HapticService.STORAGE_KEY, "false");
+      localStorage.setItem(HapticService.LEGACY_STORAGE_KEY, "false");
     }
   }
 

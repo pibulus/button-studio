@@ -1,6 +1,6 @@
 # 🎵 Sound System Evolution Plan
 
-> ButtonStudio → Universal SoftStack Sound System
+> ButtonSpa → Universal SoftStack Sound System
 
 ## 🚨 CURRENT STATUS - READY FOR NEXT CLAUDE!
 
@@ -10,7 +10,7 @@
 
 ## 🎯 Mission
 
-Transform ButtonStudio's sound system into a **portable, modular, extensible**
+Transform ButtonSpa's sound system into a **portable, modular, extensible**
 audio framework that can power any SoftStack app (and beyond). Think:
 **"Tailwind for Sound"** - utility-first, composable, theme-able.
 
@@ -92,10 +92,10 @@ sound-packs/
 
 - [x] Run `./scripts/convert-sounds.sh` to process Kenney sounds
 - [x] Create route `/sound-demo` for GradientSoundDemo
-- [x] Create manifest.json with proper ButtonStudio mappings
+- [x] Create manifest.json with proper ButtonSpa mappings
 - [x] Fix import syntax for Deno compatibility (assert → with)
 - [x] Test demo at http://localhost:8001/sound-demo
-- [ ] Update ButtonStudio components to use SoundPack system
+- [ ] Update ButtonSpa components to use SoundPack system
 - [ ] Replace current soundService calls with new system
 - [ ] Add pack switcher UI in CustomizationPanel
 
@@ -180,7 +180,7 @@ sounds.on("packLoaded", (packName) => console.log(`Loaded: ${packName}`));
 
 ## 📁 File Organization
 
-### Current ButtonStudio
+### Current ButtonSpa
 
 ```
 utils/audio/
@@ -217,7 +217,7 @@ utils/audio/
 ## 🎯 Success Metrics
 
 - ✅ Can swap sound packs with one line of code
-- ✅ Works in ButtonStudio without breaking anything
+- ✅ Works in ButtonSpa without breaking anything
 - ✅ Can be copied to any other project easily
 - ✅ Performance: <50ms load time per sound
 - ✅ Bundle size: <10KB core (excluding sound files)
@@ -235,11 +235,11 @@ partially complete:
 - ✅ Sound pack system fully functional
 - ✅ 100 Kenney sounds converted and organized
 - ✅ Demo page at http://localhost:8001/sound-demo showing the modular system
-- ✅ Manifest properly maps sounds to ButtonStudio UI categories
+- ✅ Manifest properly maps sounds to ButtonSpa UI categories
 
 **What's NOT Done:**
 
-- ❌ ButtonStudio still uses old soundService (not SoundPack)
+- ❌ ButtonSpa still uses old soundService (not SoundPack)
 - ❌ No UI for switching between sound packs
 - ❌ Export system doesn't include new sound packs
 
@@ -266,7 +266,7 @@ simplicity.
    - Load Kenney pack on app init
    - Gradually migrate components
 
-2. **Add to ButtonStudio main app**:
+2. **Add to ButtonSpa main app**:
    - Initialize SoundPackManager in ButtonStudio.tsx
    - Keep old system as fallback during transition
 

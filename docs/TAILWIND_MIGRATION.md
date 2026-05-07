@@ -36,7 +36,7 @@ colors: {
 
 - **CollapsiblePanel**: Now uses `bg-panel-{color}` classes with inline style
   fallbacks
-- **ButtonStudio**: Both Colors and Size sections wrapped in CollapsiblePanel
+- **ButtonSpa**: Both Colors and Size sections wrapped in CollapsiblePanel
   components
 
 ## UI Improvements

@@ -1,4 +1,4 @@
-# Button Studio Optimization Plan
+# ButtonSpa Optimization Plan
 
 > Living document - Future instances may have better ideas or improvements! Last
 > updated: 2025-08-24
@@ -37,7 +37,7 @@
 ### 1.2 Performance Issues (REAL)
 
 - [ ] **Issue**: Multiple Deno processes running (potential memory accumulation)
-- [ ] **Issue**: Wrong app on port 8000 (QRBuddy instead of ButtonStudio)
+- [ ] **Issue**: Wrong app on port 8000 (QRBuddy instead of ButtonSpa)
 - [ ] **Fix**: Kill orphaned processes, restart correct app
 
 ### 1.3 Component Size Issues (ACTUAL)
@@ -157,7 +157,7 @@ This plan is **flexible and evolving**! Key findings:
 - Performance is decent but could use lazy loading
 - Security fix for Gemini API needs verification
 
-The goal is a **fast, juicy, reliable** Button Studio that feels great to use!
+The goal is a **fast, juicy, reliable** ButtonSpa that feels great to use!
 
 ---
 

@@ -36,7 +36,7 @@ export function generateStandaloneHTML(
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${customization.content.label || "Voice Button"}</title>
-    <meta name="description" content="Custom voice recording button created with ButtonStudio">
+    <meta name="description" content="Custom voice recording button created with ButtonSpa">
     
     <!-- Tailwind CSS CDN for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -152,9 +152,9 @@ export function generateStandaloneHTML(
         ${
     !options.customBranding
       ? `
-        <!-- ButtonStudio Attribution -->
+        <!-- ButtonSpa Attribution -->
         <div class="mt-8 text-sm text-gray-500">
-            Created with <a href="https://buttonspa.app" class="text-blue-500 hover:underline">ButtonStudio</a>
+            Created with <a href="https://buttonspa.app" class="text-blue-500 hover:underline">ButtonSpa</a>
         </div>
         `
       : ""

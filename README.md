@@ -1,28 +1,13 @@
-# 🎨 ButtonStudio.app
+# ButtonSpa.app
 
-```
-██████╗ ██╗   ██╗████████╗████████╗ ██████╗ ███╗   ██╗
-██╔══██╗██║   ██║╚══██╔══╝╚══██╔══╝██╔═══██╗████╗  ██║
-██████╔╝██║   ██║   ██║      ██║   ██║   ██║██╔██╗ ██║
-██╔══██╗██║   ██║   ██║      ██║   ██║   ██║██║╚██╗██║
-██████╔╝╚██████╔╝   ██║      ██║   ╚██████╔╝██║ ╚████║
-╚═════╝  ╚═════╝    ╚═╝      ╚═╝    ╚═════╝ ╚═╝  ╚═══╝
-                                                        
- ███████╗████████╗██╗   ██╗██████╗ ██╗ ██████╗ 
- ██╔════╝╚══██╔══╝██║   ██║██╔══██╗██║██╔═══██╗
- ███████╗   ██║   ██║   ██║██║  ██║██║██║   ██║
- ╚════██║   ██║   ██║   ██║██║  ██║██║██║   ██║
- ███████║   ██║   ╚██████╔╝██████╔╝██║╚██████╔╝
- ╚══════╝   ╚═╝    ╚═════╝ ╚═════╝ ╚═╝ ╚═════╝
-```
+> **Make cute buttons that do real things.**
 
-> **A lush, clean, minimal button generator with serious vibes** ✨
+ButtonSpa is a playful builder for tiny action apps. Today it helps you design
+beautiful voice recording buttons with real-time Gemini transcription, tactile
+effects, and PWA export. The wider shape is simple: polished buttons that can be
+shared, embedded, installed, and eventually wired to webhooks or APIs.
 
-Create beautiful, customizable voice recording buttons with real-time
-transcription, modular effects, and that _perfect_ tactile feel. Built with Deno
-Fresh and packed with **soft neo toybrut** aesthetics.
-
-## 🌟 Features That Slap
+## Core Features
 
 ### 🎮 **Modular Effects System**
 
@@ -33,7 +18,7 @@ Fresh and packed with **soft neo toybrut** aesthetics.
 - **💓 Pulse** - Smooth opacity pulse
 - **🌈 Rainbow** - Flowing gradient border magic
 
-### 🎨 **Lush Design Studio**
+### 🎨 **Lush Button Builder**
 
 - **Live preview** with instant updates
 - **Warm color palette** inspired by succulent morning dew
@@ -53,6 +38,7 @@ Fresh and packed with **soft neo toybrut** aesthetics.
 ### 🛠️ **Developer Friendly**
 
 - **Export HTML/CSS** - grab your button code instantly
+- **PWA packaging** - save a button to your phone as a tiny app
 - **TypeScript throughout** - fully typed for safety
 - **Modular architecture** - easy to extend and customize
 - **Performance optimized** - GPU-accelerated animations
@@ -79,7 +65,7 @@ Visit `http://localhost:8000` and start creating buttons that spark joy! 🎉
    colors
 2. **Add Effects** - Click effect buttons to bring your button to life
 3. **Configure Voice** - Add your Gemini API key for transcription magic
-4. **Export & Share** - Copy the generated HTML/CSS or share your creation
+4. **Export & Share** - Save as HTML, share a link, or install as a tiny app
 
 ## 🧬 Tech Stack
 
@@ -101,7 +87,7 @@ Visit `http://localhost:8000` and start creating buttons that spark joy! 🎉
 
 ## 🤝 Contributing
 
-ButtonStudio thrives on good vibes and creative energy! Feel free to:
+ButtonSpa thrives on good vibes and creative energy! Feel free to:
 
 - 🐛 Report bugs with detailed reproduction steps
 - 💡 Suggest new effects or features
@@ -119,11 +105,11 @@ artisanal craftsmanship.
 
 ---
 
-**Made with 💖 for the button lovers, voice note enthusiasts, and anyone who
-believes UI should spark joy.**
+**Made for button lovers, voice note enthusiasts, and anyone who believes tiny
+interfaces can still have a pulse.**
 
 ```
 ╭──────────────────────────────────╮
-│  🎨 Happy button making! ✨       │
+│  Happy button making.            │
 ╰──────────────────────────────────╯
 ```

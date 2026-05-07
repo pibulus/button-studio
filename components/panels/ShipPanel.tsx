@@ -97,7 +97,8 @@ export default function ShipPanel(
             📄 Download HTML File
           </button>
 
-          {/* COMMENTED OUT: PWA ZIP Export - not useful for most users
+          {
+            /* COMMENTED OUT: PWA ZIP Export - not useful for most users
           <button
             onClick={() => handleExport("pwa")}
             onMouseEnter={() => playSound.hover()}
@@ -110,7 +111,8 @@ export default function ShipPanel(
           >
             📦 Export PWA (ZIP)
           </button>
-          */}
+          */
+          }
 
           {/* Save to Phone Button */}
           <button
@@ -148,11 +150,19 @@ export default function ShipPanel(
       <div class="mt-2 p-2 bg-yellow-50 rounded-xl border-2 border-yellow-300">
         <h5 class="font-bold text-xs mb-1">What can I do?</h5>
         <ul class="text-xs space-y-0.5 text-gray-700">
-          <li>• <strong>HTML File</strong> - Works on any website</li>
-          <li>• <strong>Save to Phone</strong> - Add to home screen like an app</li>
-          <li>• <strong>Share Link</strong> - Send your design to friends</li>
+          <li>
+            • <strong>HTML File</strong> - Works on any website
+          </li>
+          <li>
+            • <strong>Save to Phone</strong> - Add to home screen like an app
+          </li>
+          <li>
+            • <strong>Share Link</strong> - Send your design to friends
+          </li>
           {apiKeyValue && (
-            <li class="text-green-700 font-bold">✓ Voice transcription included in exports!</li>
+            <li class="text-green-700 font-bold">
+              ✓ Voice transcription included in exports!
+            </li>
           )}
         </ul>
       </div>

@@ -1,10 +1,10 @@
-# ButtonStudio: The Vision
+# ButtonSpa: The Vision
 
 _Single-button micro-app platform that changes everything_
 
 ## 🎯 **THE BIG PICTURE**
 
-ButtonStudio isn't just a button designer - it's **the Figma of micro-apps**. A
+ButtonSpa isn't just a button designer - it's **the Figma of micro-apps**. A
 focused, profitable platform that lets anyone create single-purpose interactive
 buttons that feel amazing, connect to APIs, and deploy as PWAs.
 
@@ -231,7 +231,7 @@ interface ButtonExport {
 - **Zapier**: Too complex, enterprise-focused
 - **Glide/Bubble**: Full apps, overwhelming
 - **Carrd**: Static, no interaction
-- **ButtonStudio**: Perfect middle ground
+- **ButtonSpa**: Perfect middle ground
 
 ### **Unique Differentiators**
 
@@ -279,9 +279,9 @@ interface ButtonExport {
 
 ### **Year 1: The Button Platform**
 
-ButtonStudio becomes the go-to tool for interactive micro-experiences.
-Developers use it for prototypes, creators use it for engagement, businesses use
-it for customer interaction.
+ButtonSpa becomes the go-to tool for interactive micro-experiences. Developers
+use it for prototypes, creators use it for engagement, businesses use it for
+customer interaction.
 
 ### **Year 3: The Micro-App Ecosystem**
 
@@ -291,8 +291,8 @@ app" movement.
 
 ### **Year 5: The Interaction Standard**
 
-ButtonStudio's export format becomes a web standard. Browsers natively support
-".button" files. QR codes automatically launch ButtonStudio experiences.
+ButtonSpa's export format becomes a web standard. Browsers natively support
+".button" files. QR codes automatically launch ButtonSpa experiences.
 
 ---
 

@@ -1,0 +1,35 @@
+# Launch hints for Launch Arsenal.
+# Edit aggressively. These fields should pin the app's real audience, problem, and promise.
+name: ButtonSpa.app
+slug: buttonspa
+app_type: web-app
+audience: people who talk faster than they type and want cute tools that still do useful work
+problem: "most transcription and automation tools feel cold, slow, or built like subscription bait"
+promise: "ButtonSpa - Make cute buttons that do real things."
+cta: Reply if you want the link.
+differentiators:
+  - >-
+      I'm Pablo. I build tools with personality and soul. ButtonSpa lets you
+      design beautiful voice buttons with real-time AI transcription, then save
+      them as tiny apps.
+  - "Make cute buttons that do real things."
+  - "A playful builder for tiny action apps, starting with voice buttons."
+proof_points:
+  - "\U0001FAC1 Breathe - Gentle breathing animation"
+  - ⬆️ Bounce - Satisfying vertical bounce
+  - "\U0001F41B Wiggle - Playful rotation wiggle"
+  - ✨ Glow - Dynamic glow that matches your button color
+objections:
+  - "Still wants a human pass on audience, proof, and the sharpest angle."
+keywords:
+  seed:
+    - ButtonSpa.app
+    - button spa
+    - web app
+  audience: people who talk faster than they type and want cute tools that still do useful work
+  intent:
+    - voice transcription
+    - tiny action apps
+    - save to phone
+manual_notes:
+  - Lead with voice buttons today. Let webhooks and APIs feel like the next natural room in the spa.

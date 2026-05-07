@@ -5,10 +5,11 @@ code in this repository.
 
 ## Project Overview
 
-ButtonStudio is a Deno Fresh application that creates customizable voice
-recording buttons with real-time transcription using Google Gemini. It features
-a visual design studio for creating personalized voice buttons with extensive
-customization options.
+ButtonSpa is a Deno Fresh application for making cute buttons that do real
+things. Its current wedge is customizable voice recording buttons with real-time
+Google Gemini transcription, share/export flows, and PWA installation. The
+broader product direction is tiny action apps: polished buttons that can later
+connect to webhooks and APIs.
 
 ## Key Technologies
 
@@ -56,7 +57,7 @@ deno task update
 2. **CustomizationPanel** (`components/CustomizationPanel.tsx`): Main design
    interface with collapsible sections and color-coded panels
 3. **ButtonStudio** (`islands/ButtonStudio.tsx`): Main island that orchestrates
-   the entire button design experience
+   the ButtonSpa design experience
 4. **EmojiPicker** (`components/EmojiPicker.tsx`): Custom emoji/text selection
    interface
 5. **Toast** (`components/Toast.tsx`): Notification system for user feedback
@@ -228,9 +229,9 @@ The app uses Google Gemini 2.0 Flash for speech-to-text transcription:
 
 ## 🚀 Complete Export System
 
-ButtonStudio transforms from a design tool into a **complete platform** with
-full export capabilities. Users can design beautiful voice buttons and deploy
-them anywhere.
+ButtonSpa transforms from a design tool into a **complete platform** with full
+export capabilities. Users can design beautiful voice buttons and deploy them
+anywhere.
 
 ### Export Architecture
 
@@ -263,7 +264,7 @@ const result = exporter.generatePWA({
   includeAI: true, // Gemini transcription
   autoStart: true, // Auto-record on app load
   autoCopy: true, // Auto-copy transcript to clipboard
-  customBranding: false, // Keep ButtonStudio attribution
+  customBranding: false, // Keep ButtonSpa attribution
 });
 ```
 

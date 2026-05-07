@@ -1,5 +1,5 @@
 /**
- * Web Audio API Synthesis Engine for ButtonStudio
+ * Web Audio API Synthesis Engine for ButtonSpa
  *
  * Creates warm, analog-style button feedback sounds using pure Web Audio API.
  * These sounds are designed to feel like actual button presses - quick, subtle,
@@ -19,7 +19,7 @@
  * // Generate exportable code
  * const code = synthEngine.generateSoundCode(SOUND_PRESETS.amber)
  *
- * @author ButtonStudio Audio Team
+ * @author ButtonSpa Audio Team
  * @version 2.0.0 - Abstract color naming, button-optimized timing
  */
 
@@ -325,7 +325,7 @@ export class SynthEngine {
   // Generate standalone JavaScript code for button export (no dependencies)
   generateSoundCode(config: SynthConfig): string {
     return `
-// Generated ButtonStudio sound - ${config.type}
+// Generated ButtonSpa sound - ${config.type}
 function playButtonSound() {
   if (typeof AudioContext === 'undefined') return;
   

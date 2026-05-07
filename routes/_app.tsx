@@ -8,11 +8,11 @@ export default function App({ Component }: PageProps) {
           name="viewport"
           content="width=device-width, initial-scale=1.0, viewport-fit=cover"
         />
-        <title>ButtonStudio - Voice Button Designer</title>
+        <title>ButtonSpa - Voice Button Designer</title>
 
         {/* PWA & iOS App Meta Tags */}
-        <meta name="application-name" content="ButtonStudio" />
-        <meta name="apple-mobile-web-app-title" content="ButtonStudio" />
+        <meta name="application-name" content="ButtonSpa" />
+        <meta name="apple-mobile-web-app-title" content="ButtonSpa" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta
           name="apple-mobile-web-app-status-bar-style"
@@ -22,21 +22,33 @@ export default function App({ Component }: PageProps) {
         <meta name="theme-color" content="#FF69B4" />
         <meta
           name="description"
-          content="Design and customize beautiful voice recording buttons with AI transcription"
+          content="Make cute buttons that do real things. Design voice buttons, export them as tiny apps, and save them to your phone."
         />
 
         {/* Open Graph / Social Media */}
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://buttonspa.app/" />
-        <meta property="og:title" content="ButtonStudio - Voice Button Designer" />
-        <meta property="og:description" content="Design beautiful voice recording buttons with AI transcription. Export as HTML, PWA, or embed anywhere." />
+        <meta
+          property="og:title"
+          content="ButtonSpa - Voice Button Designer"
+        />
+        <meta
+          property="og:description"
+          content="Make cute buttons that do real things. Design polished voice buttons, then share, embed, or install them as tiny apps."
+        />
         <meta property="og:image" content="/og-image.png" />
 
         {/* Twitter Card */}
         <meta property="twitter:card" content="summary_large_image" />
         <meta property="twitter:url" content="https://buttonspa.app/" />
-        <meta property="twitter:title" content="ButtonStudio - Voice Button Designer" />
-        <meta property="twitter:description" content="Design beautiful voice recording buttons with AI transcription. Export as HTML, PWA, or embed anywhere." />
+        <meta
+          property="twitter:title"
+          content="ButtonSpa - Voice Button Designer"
+        />
+        <meta
+          property="twitter:description"
+          content="Make cute buttons that do real things. Design polished voice buttons, then share, embed, or install them as tiny apps."
+        />
         <meta property="twitter:image" content="/og-image.png" />
 
         {/* iOS Icon Support - Multiple Sizes */}

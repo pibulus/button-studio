@@ -249,7 +249,7 @@ export default function PWAShareModal({
                     <div class="flex gap-2">
                       <span>🎤</span>
                       <span>
-                        Tap the icon → Opens just your button (no ButtonStudio)
+                        Tap the icon → Opens just your button (no ButtonSpa)
                       </span>
                     </div>
                     <div class="flex gap-2">

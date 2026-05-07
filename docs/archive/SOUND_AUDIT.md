@@ -1,4 +1,4 @@
-# ButtonStudio CustomizationPanel - Sound Audit Report
+# ButtonSpa CustomizationPanel - Sound Audit Report
 
 ## 🎯 **Audit Summary**
 

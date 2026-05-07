@@ -21,8 +21,8 @@ import ColorsPanel from "../components/panels/ColorsPanel.tsx";
 import SizeShapePanel from "../components/panels/SizeShapePanel.tsx";
 
 // Import footer modals
-import { KofiModal, KofiButton } from "./KofiModal.tsx";
-import { AboutModal, AboutLink } from "./AboutModal.tsx";
+import { KofiButton, KofiModal } from "./KofiModal.tsx";
+import { AboutLink, AboutModal } from "./AboutModal.tsx";
 
 // ===================================================================
 // GLOBAL STATE - Main app state using Preact signals
@@ -38,8 +38,8 @@ const voiceEnabled = signal<boolean>(true); // Voice recording on/off toggle - d
 
 // Load saved panel state from localStorage or use defaults
 const getSavedPanelState = () => {
-  if (typeof window !== 'undefined') {
-    const saved = localStorage.getItem('buttonStudioPanels');
+  if (typeof window !== "undefined") {
+    const saved = localStorage.getItem("buttonStudioPanels");
     if (saved) {
       try {
         return JSON.parse(saved);
@@ -49,10 +49,10 @@ const getSavedPanelState = () => {
     }
   }
   return {
-    stageView: true,  // Left side - always open by default
-    colors: true,     // Left side - always open by default
-    sizeShape: true,  // Left side - always open by default
-    design: true,     // Right side - start with design open
+    stageView: true, // Left side - always open by default
+    colors: true, // Left side - always open by default
+    sizeShape: true, // Left side - always open by default
+    design: true, // Right side - start with design open
     feel: false,
     ship: false,
     magic: false,
@@ -68,8 +68,8 @@ export default function ButtonStudio() {
     // Initialize audio context on first user interaction for better browser support
     const initAudio = () => {
       playSound.primaryClick();
-      document.removeEventListener('click', initAudio);
-      document.removeEventListener('touchstart', initAudio);
+      document.removeEventListener("click", initAudio);
+      document.removeEventListener("touchstart", initAudio);
     };
 
     // Try to play welcome sound after delay, or wait for interaction
@@ -78,15 +78,15 @@ export default function ButtonStudio() {
         playSound.primaryClick();
       } catch {
         // Wait for user interaction if autoplay is blocked
-        document.addEventListener('click', initAudio);
-        document.addEventListener('touchstart', initAudio);
+        document.addEventListener("click", initAudio);
+        document.addEventListener("touchstart", initAudio);
       }
     }, 800);
 
     return () => {
       clearTimeout(timer);
-      document.removeEventListener('click', initAudio);
-      document.removeEventListener('touchstart', initAudio);
+      document.removeEventListener("click", initAudio);
+      document.removeEventListener("touchstart", initAudio);
     };
   }, []);
 
@@ -94,37 +94,40 @@ export default function ButtonStudio() {
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
       // Check if user is typing in an input field
-      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+      if (
+        e.target instanceof HTMLInputElement ||
+        e.target instanceof HTMLTextAreaElement
+      ) {
         return;
       }
 
       // Cmd/Ctrl shortcuts
       if (e.metaKey || e.ctrlKey) {
         switch (e.key) {
-          case 's':
+          case "s":
             e.preventDefault();
             // Trigger shuffle (surprise)
             document.dispatchEvent(new CustomEvent("surpriseMe"));
             break;
-          case 'd':
+          case "d":
             e.preventDefault();
             // Toggle design panel
-            togglePanel('design');
+            togglePanel("design");
             break;
-          case 'f':
+          case "f":
             e.preventDefault();
             // Toggle feel panel
-            togglePanel('feel');
+            togglePanel("feel");
             break;
-          case 'e':
+          case "e":
             e.preventDefault();
             // Toggle ship (export) panel
-            togglePanel('ship');
+            togglePanel("ship");
             break;
-          case 'm':
+          case "m":
             e.preventDefault();
             // Toggle magic panel
-            togglePanel('magic');
+            togglePanel("magic");
             break;
         }
       }
@@ -132,7 +135,17 @@ export default function ButtonStudio() {
       // Number keys for quick theme switching (1-9)
       if (!e.metaKey && !e.ctrlKey && !e.altKey && /^[1-9]$/.test(e.key)) {
         const themeIndex = parseInt(e.key) - 1;
-        const themes = ["soft", "flamingo", "voice", "amber", "ocean", "forest", "sunset", "midnight", "cosmic"];
+        const themes = [
+          "soft",
+          "flamingo",
+          "voice",
+          "amber",
+          "ocean",
+          "forest",
+          "sunset",
+          "midnight",
+          "cosmic",
+        ];
         if (themes[themeIndex]) {
           customization.value = {
             ...customization.value,
@@ -146,24 +159,30 @@ export default function ButtonStudio() {
       }
 
       // Space bar to test button (when not in input)
-      if (e.key === ' ' && !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement)) {
+      if (
+        e.key === " " &&
+        !(e.target instanceof HTMLInputElement ||
+          e.target instanceof HTMLTextAreaElement)
+      ) {
         e.preventDefault();
-        const button = document.querySelector('.voice-button-main') as HTMLElement;
+        const button = document.querySelector(
+          ".voice-button-main",
+        ) as HTMLElement;
         if (button) {
           button.click();
         }
       }
 
       // Show keyboard shortcuts help
-      if (e.key === '?' && e.shiftKey) {
+      if (e.key === "?" && e.shiftKey) {
         e.preventDefault();
         showKeyboardModal.value = true;
         playSound.primaryClick();
       }
     };
 
-    document.addEventListener('keydown', handleKeyPress);
-    return () => document.removeEventListener('keydown', handleKeyPress);
+    document.addEventListener("keydown", handleKeyPress);
+    return () => document.removeEventListener("keydown", handleKeyPress);
   }, []);
 
   // Shuffle handler - FULL RANDOMIZATION MAGIC! 🎲
@@ -488,8 +507,8 @@ export default function ButtonStudio() {
     expandedPanels.value = newState;
 
     // Save to localStorage for persistence
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('buttonStudioPanels', JSON.stringify(newState));
+    if (typeof window !== "undefined") {
+      localStorage.setItem("buttonStudioPanels", JSON.stringify(newState));
     }
 
     // Use correct sound based on expand/collapse action
@@ -570,17 +589,17 @@ export default function ButtonStudio() {
         <div class="flex items-center justify-between">
           <div>
             <h1
-              class="text-4xl sm:text-6xl lg:text-8xl font-black tracking-tighter leading-none"
+              class="text-4xl sm:text-6xl lg:text-8xl font-black tracking-normal leading-none"
               style={{
                 fontWeight: 900,
-                letterSpacing: "-0.03em",
+                letterSpacing: "0",
                 lineHeight: 0.9,
                 WebkitFontSmoothing: "antialiased",
                 textRendering: "optimizeLegibility",
                 textShadow: "4px 4px 0px rgba(255,183,255,0.2)",
               }}
             >
-              ButtonStudio<span
+              ButtonSpa<span
                 class="text-3xl sm:text-4xl lg:text-6xl text-fuchsia-500"
                 style={{
                   background:
@@ -602,7 +621,7 @@ export default function ButtonStudio() {
                 textShadow: "0 1px 0 rgba(255,255,255,0.6)",
               }}
             >
-              Voice buttons that actually work
+              Make cute buttons that do real things.
             </p>
           </div>
           <div class="flex items-center gap-2">
@@ -612,7 +631,10 @@ export default function ButtonStudio() {
       </header>
 
       {/* Main Layout - Hybrid design with Toybox left, accordions right */}
-      <main id="main-content" class="max-w-[1280px] mx-auto w-full px-6 pt-6 pb-8 flex-1">
+      <main
+        id="main-content"
+        class="max-w-[1280px] mx-auto w-full px-6 pt-6 pb-8 flex-1"
+      >
         <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(360px,420px)] gap-6 items-start">
           {/* LEFT: Stage + Toybox */}
           <div class="space-y-4">
@@ -672,16 +694,19 @@ export default function ButtonStudio() {
                   onMouseEnter={(e) => {
                     playSound.hover();
                     e.currentTarget.style.transform = "scale(1.1) rotate(5deg)";
-                    e.currentTarget.style.background = "linear-gradient(135deg, #FFF3B8 0%, #FFD4A3 100%)";
+                    e.currentTarget.style.background =
+                      "linear-gradient(135deg, #FFF3B8 0%, #FFD4A3 100%)";
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.transform = "scale(1) rotate(0deg)";
-                    e.currentTarget.style.background = "linear-gradient(135deg, #FFFFFF 0%, #FFF3B8 100%)";
+                    e.currentTarget.style.background =
+                      "linear-gradient(135deg, #FFFFFF 0%, #FFF3B8 100%)";
                   }}
                   class="absolute bottom-4 right-4 h-[56px] w-[56px] rounded-[20px] flex items-center justify-center text-[28px] font-black transition-all duration-200 active:scale-95"
                   style={{
                     border: "3px solid rgba(0,0,0,0.88)",
-                    background: "linear-gradient(135deg, #FFFFFF 0%, #FFF3B8 100%)",
+                    background:
+                      "linear-gradient(135deg, #FFFFFF 0%, #FFF3B8 100%)",
                     filter: "drop-shadow(4px 4px 0px rgba(0,0,0,0.35))",
                   }}
                   title="Surprise Me!"

@@ -15,7 +15,9 @@ export default function LoadingSpinner({
 
   return (
     <div
-      class={`${sizeClasses[size]} animate-spin rounded-full border-3 border-t-transparent`}
+      class={`${
+        sizeClasses[size]
+      } animate-spin rounded-full border-3 border-t-transparent`}
       style={{
         borderColor: color,
         borderTopColor: "transparent",

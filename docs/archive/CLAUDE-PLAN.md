@@ -1,4 +1,4 @@
-# ButtonStudio: Ultimate Lush Voice Button Plan
+# ButtonSpa: Ultimate Lush Voice Button Plan
 
 _From Research to Reality - Technical Implementation Guide_
 
@@ -348,7 +348,7 @@ const voiceStates = {
   {/* Header: Export & Settings */}
   <header className="flex justify-between items-center mb-8">
     <h1 className="text-2xl md:text-3xl font-black text-neutral-800">
-      ButtonStudio
+      ButtonSpa
     </h1>
     <CodeExporter customization={customization} />
   </header>
@@ -381,7 +381,7 @@ function generateButtonCode(customization: ButtonCustomization): string {
   const { appearance, content, voice } = customization;
 
   return `
-<!-- ButtonStudio Generated Voice Button -->
+<!-- ButtonSpa Generated Voice Button -->
 <button 
   className="voice-button ${getThemeClasses(customization)}"
   style={{

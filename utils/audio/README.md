@@ -1,4 +1,4 @@
-# ButtonStudio Audio System
+# ButtonSpa Audio System
 
 Version 3.0.0 - Modular audio feedback system with 100% UI coverage.
 

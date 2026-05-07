@@ -1,18 +1,20 @@
-# 🔧 TINKER.md - Button Studio Quick Reference
+# 🔧 TINKER.md - ButtonSpa Quick Reference
 
-*For when you haven't touched this in 6 months and need to change something NOW*
+_For when you haven't touched this in 6 months and need to change something NOW_
 
 ---
 
 ## 🚀 START HERE - RUN THE DAMN THING
 
 ### Dev Mode
+
 ```bash
 deno task start
 # Opens at http://localhost:8000
 ```
 
 ### Production Build
+
 ```bash
 deno task build
 deno task preview
@@ -34,9 +36,10 @@ button_studio/
 ```
 
 ### The 5 Files That Matter Most:
+
 1. **routes/index.tsx** - Homepage with the pitch
 2. **routes/button-lab.tsx** - The actual button designer
-3. **islands/ButtonDesigner.tsx** - Main interactive component
+3. **islands/ButtonStudio.tsx** - Main interactive component
 4. **static/styles.css** - Global styles if any
 5. **deno.json** - Config and scripts
 
@@ -45,13 +48,15 @@ button_studio/
 ## 🎯 QUICK WINS - 80% OF WHAT YOU'LL CHANGE
 
 ### 1. Change the Main Text/Copy
+
 ```
 File: routes/index.tsx
 Line: Look for the <h1> and <p> tags
-What: "The Figma for voice buttons" → Your new tagline
+What: "Make cute buttons that do real things." → Your new tagline
 ```
 
 ### 2. Change Colors/Theme
+
 ```
 File: tailwind.config.ts
 Look for: theme colors
@@ -60,8 +65,9 @@ Options: Add your pablo palette colors
 ```
 
 ### 3. Change Default Button Style
+
 ```
-File: islands/ButtonDesigner.tsx
+File: islands/ButtonStudio.tsx
 Look for: defaultButtonStyle or initial state
 Current: Probably some pastel setup
 Change to: Your preferred defaults
@@ -72,6 +78,7 @@ Change to: Your preferred defaults
 ## 🔧 COMMON TWEAKS
 
 ### Add a New Page/Route
+
 ```bash
 # Create new route file:
 Create: routes/newpage.tsx
@@ -81,6 +88,7 @@ Visit: http://localhost:8000/newpage
 ```
 
 ### Change Port
+
 ```bash
 File: deno.json
 Look for: PORT=8000
@@ -88,6 +96,7 @@ Change to: PORT=3000 (or whatever)
 ```
 
 ### Add/Remove Feature
+
 ```bash
 # Find the feature:
 grep -r "feature_name" .
@@ -97,10 +106,11 @@ grep -r "feature_name" .
 ```
 
 ### Change App Name/Title
+
 ```bash
 File: routes/_app.tsx
 Look for: <title> in the <head>
-Change: "Button Studio" → "Your Name"
+Change: "ButtonSpa" → "Your Name"
 ```
 
 ---
@@ -108,6 +118,7 @@ Change: "Button Studio" → "Your Name"
 ## 💥 WHEN SHIT BREAKS - TOP 3 FIXES
 
 ### 1. Port Already in Use
+
 ```bash
 # Find what's using port 8000:
 lsof -i :8000
@@ -119,6 +130,7 @@ kill -9 [PID]
 ```
 
 ### 2. Dependencies Fucked
+
 ```bash
 # Clear Deno cache:
 rm deno.lock
@@ -129,6 +141,7 @@ rm -rf _fresh
 ```
 
 ### 3. Build Fails
+
 ```bash
 # Clean everything:
 rm -rf _fresh node_modules
@@ -143,15 +156,17 @@ deno task start
 ## 🚦 DEPLOYMENT - SHIP IT
 
 ### One-Liner Deploy
+
 ```bash
 # Deno Deploy (if connected):
-deployctl deploy --prod --project=button-studio
+deployctl deploy --prod --project=pabloalvara-button-stud-57
 
 # Or push to GitHub and let Deno Deploy auto-deploy
 git push origin main
 ```
 
 ### Manual Deploy Steps
+
 1. Build it: `deno task build`
 2. Test it: `deno task preview`
 3. Push it: `git push origin main`
@@ -180,4 +195,4 @@ git push origin main
 
 ---
 
-*Your voice button design studio - shipped at buttonstudio.app*
+_Your tiny action app builder - shipped at buttonspa.app_

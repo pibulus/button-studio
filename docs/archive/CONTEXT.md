@@ -28,7 +28,7 @@
 ### What Users Actually Want:
 
 - Design button → Save to phone → Opens as standalone app
-- Just the button, no ButtonStudio UI
+- Just the button, no ButtonSpa UI
 - Share with friends who get the same button
 - Works offline (future: local Whisper)
 
@@ -46,7 +46,7 @@ PWA icon matches button design perfectly:
 
 ### URL Structure:
 
-Planned format: `buttonstudio.app/b/[id]`
+Planned format: `buttonspa.app/b/[id]`
 
 - Short and memorable
 - Can encode config or use database
@@ -77,7 +77,7 @@ Planned format: `buttonstudio.app/b/[id]`
 - Pablo's QR code generator with beautiful gradients
 - Same tech stack (Deno/Fresh)
 - Could integrate for better looking QR codes
-- Has gradient themes that match ButtonStudio aesthetic
+- Has gradient themes that match ButtonSpa aesthetic
 
 ## Environment Notes
 

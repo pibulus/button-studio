@@ -1,5 +1,5 @@
 {
-  "description": "Button Studio - Team-shared project settings",
+  "description": "ButtonSpa - Team-shared project settings",
   "permissions": {
     "allow": [
       "Bash(deno:*)",
@@ -15,7 +15,7 @@
     ]
   },
   "environment": {
-    "PROJECT_NAME": "Button Studio",
+    "PROJECT_NAME": "ButtonSpa",
     "DENO_VERSION": "1.46.3"
   }
 }

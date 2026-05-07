@@ -1,4 +1,4 @@
-# ButtonStudio Audio - Quick Reference
+# ButtonSpa Audio - Quick Reference
 
 ## 🚀 **Quick Start**
 

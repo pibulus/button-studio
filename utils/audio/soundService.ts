@@ -1,5 +1,5 @@
 /**
- * Sound Service for ButtonStudio
+ * Sound Service for ButtonSpa
  * Adapted from RiffRap's excellent sound system
  * Provides centralized UI sound effects for the application
  */
@@ -20,7 +20,10 @@ const defaultConfig = {
   basePath: "/sounds/", // Base path to sound files
 };
 
-// Sound file mappings for ButtonStudio UI interactions
+const SOUND_STORAGE_KEY = "buttonspa-sounds-enabled";
+const LEGACY_SOUND_STORAGE_KEY = "buttonstudio-sounds-enabled";
+
+// Sound file mappings for ButtonSpa UI interactions
 const soundFiles = {
   // Button interactions
   buttonHover: "scroll-haptic",
@@ -60,7 +63,8 @@ const soundFiles = {
 // Initialize sound settings from localStorage
 function initSoundSettings() {
   if (typeof localStorage !== "undefined") {
-    const storedValue = localStorage.getItem("buttonstudio-sounds-enabled");
+    const storedValue = localStorage.getItem(SOUND_STORAGE_KEY) ??
+      localStorage.getItem(LEGACY_SOUND_STORAGE_KEY);
     if (storedValue === "false") {
       soundsEnabled = false;
     }
@@ -70,7 +74,7 @@ function initSoundSettings() {
   if (typeof window !== "undefined") {
     (window as unknown as { soundsEnabled: boolean }).soundsEnabled =
       soundsEnabled;
-    console.log("🔊 ButtonStudio sound effects enabled:", soundsEnabled);
+    console.log("🔊 ButtonSpa sound effects enabled:", soundsEnabled);
   }
 }
 
@@ -87,7 +91,7 @@ function playSound(soundName: keyof typeof soundFiles, options: {
   // If sound name isn't in our mapping, log an error
   if (!soundFiles[soundName]) {
     console.warn(
-      `Sound "${soundName}" not found in ButtonStudio sound library`,
+      `Sound "${soundName}" not found in ButtonSpa sound library`,
     );
     return Promise.reject(new Error(`Sound "${soundName}" not found`));
   }
@@ -137,7 +141,7 @@ function playSound(soundName: keyof typeof soundFiles, options: {
   });
 }
 
-// ButtonStudio-specific sound functions
+// ButtonSpa-specific sound functions
 export const buttonStudioSounds = {
   // Button interactions
   playButtonHover: () => playSound("buttonHover", { volume: 0.05 }),
@@ -193,7 +197,8 @@ export function isSoundEnabled(): boolean {
 export function setSoundEnabled(enabled: boolean): void {
   soundsEnabled = enabled;
   if (typeof localStorage !== "undefined") {
-    localStorage.setItem("buttonstudio-sounds-enabled", enabled.toString());
+    localStorage.setItem(SOUND_STORAGE_KEY, enabled.toString());
+    localStorage.setItem(LEGACY_SOUND_STORAGE_KEY, enabled.toString());
   }
 
   // Show feedback

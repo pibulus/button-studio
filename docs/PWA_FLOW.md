@@ -1,10 +1,10 @@
-# 🎯 ButtonStudio PWA Flow - The Complete Picture
+# 🎯 ButtonSpa PWA Flow - The Complete Picture
 
 ## What We're Building
 
 **THE FLOW:**
 
-1. Design your button in ButtonStudio
+1. Design your button in ButtonSpa
 2. Click "📱 Save to Phone"
 3. Get QR code + link
 4. Scan/open on phone
@@ -30,7 +30,7 @@ Scans with phone
 
 ```
 Opens link →
-Sees their button (full screen, no ButtonStudio UI) →
+Sees their button (full screen, no ButtonSpa UI) →
 Banner: "Install this button as an app!" →
 Follows 2-3 steps →
 Button appears on home screen
@@ -60,7 +60,7 @@ Done!
 
 ### Next Steps (To Build)
 
-- 🔄 Real hosting at buttonstudio.app/b/[id]
+- 🔄 Real hosting at buttonspa.app/b/[id]
 - 🔄 Offline support with service worker
 - 🔄 Local Whisper integration option
 - 🔄 QRBuddy integration for beautiful QR codes
@@ -72,7 +72,7 @@ Done!
 ```javascript
 // Generate temporary URL (24 hours)
 const url = await uploadToNetlify(pwaFiles);
-// buttonstudio.app/temp/[hash]
+// buttonspa.app/temp/[hash]
 ```
 
 ### Option 2: Permanent Links (Better)
@@ -80,14 +80,14 @@ const url = await uploadToNetlify(pwaFiles);
 ```javascript
 // Store in Supabase/KV
 const id = await saveButton(customization);
-// buttonstudio.app/b/[id]
+// buttonspa.app/b/[id]
 ```
 
 ### Option 3: Edge Functions (Best)
 
 ```javascript
 // Dynamic generation on-demand
-// buttonstudio.app/b/[encoded-config]
+// buttonspa.app/b/[encoded-config]
 // No storage needed!
 ```
 
@@ -96,9 +96,9 @@ const id = await saveButton(customization);
 Since you have QRBuddy, we could:
 
 ```javascript
-// In ButtonStudio
+// In ButtonSpa
 const qrConfig = {
-  url: `buttonstudio.app/b/${buttonId}`,
+  url: `buttonspa.app/b/${buttonId}`,
   gradient: customization.appearance.gradient,
   style: "soft-brutal",
 };
@@ -133,7 +133,7 @@ const qrCode = await generateQRBuddy(qrConfig);
 
 ```javascript
 // Three options:
-1. User enters in ButtonStudio → Embedded in PWA
+1. User enters in ButtonSpa → Embedded in PWA
 2. User enters after install → Stored locally
 3. No key → Falls back to local Whisper (if available)
 ```
@@ -154,7 +154,7 @@ const pwaDataUrl = btoa(JSON.stringify({
   icon: iconData,
 }));
 
-const url = `buttonstudio.app/pwa#${pwaDataUrl}`;
+const url = `buttonspa.app/pwa#${pwaDataUrl}`;
 ```
 
 ## 📊 Success Metrics
