@@ -18,10 +18,10 @@ export class GeminiTranscriptionPlugin implements TranscriptionPlugin {
   readonly name = "Google Gemini";
   readonly version = "1.0.0";
   readonly description =
-    "High-quality transcription using Google Gemini 2.0 Flash";
+    "High-quality transcription using Google Gemini 2.5 Flash";
 
   private apiKey?: string;
-  private model = "gemini-2.0-flash-exp";
+  private model = "gemini-2.5-flash";
   private customPrompt?: string;
 
   /**
@@ -31,7 +31,7 @@ export class GeminiTranscriptionPlugin implements TranscriptionPlugin {
   async configure(config: GeminiConfig): Promise<void> {
     // Store API key from UI input (browser-compatible approach)
     this.apiKey = config.apiKey;
-    this.model = config.model || "gemini-2.0-flash-exp";
+    this.model = config.model || "gemini-2.5-flash";
     this.customPrompt = config.customPrompt;
 
     // Validate API key is provided
@@ -226,11 +226,11 @@ export class GeminiAIService {
   private genAI: any;
   private model: any;
 
-  constructor(apiKey: string, modelName = "gemini-2.0-flash-exp") {
+  constructor(apiKey: string, modelName = "gemini-2.5-flash") {
     // Initialized when needed
   }
 
-  async init(apiKey: string, modelName = "gemini-2.0-flash-exp") {
+  async init(apiKey: string, modelName = "gemini-2.5-flash") {
     const { GoogleGenerativeAI } = await import(
       "https://esm.sh/@google/generative-ai@0.2.1"
     );
