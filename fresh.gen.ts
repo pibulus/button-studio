@@ -5,6 +5,10 @@
 import * as $_404 from "./routes/_404.tsx";
 import * as $_app from "./routes/_app.tsx";
 import * as $b_id_ from "./routes/b/[id].tsx";
+import * as $b_apple_touch_icon_png from "./routes/b/apple-touch-icon.png.ts";
+import * as $b_icon_192_png from "./routes/b/icon-192.png.ts";
+import * as $b_icon_512_png from "./routes/b/icon-512.png.ts";
+import * as $b_manifest_json from "./routes/b/manifest.json.ts";
 import * as $button_lab from "./routes/button-lab.tsx";
 import * as $index from "./routes/index.tsx";
 import * as $sound_demo from "./routes/sound-demo.tsx";
@@ -19,6 +23,10 @@ const manifest = {
     "./routes/_404.tsx": $_404,
     "./routes/_app.tsx": $_app,
     "./routes/b/[id].tsx": $b_id_,
+    "./routes/b/apple-touch-icon.png.ts": $b_apple_touch_icon_png,
+    "./routes/b/icon-192.png.ts": $b_icon_192_png,
+    "./routes/b/icon-512.png.ts": $b_icon_512_png,
+    "./routes/b/manifest.json.ts": $b_manifest_json,
     "./routes/button-lab.tsx": $button_lab,
     "./routes/index.tsx": $index,
     "./routes/sound-demo.tsx": $sound_demo,

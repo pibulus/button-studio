@@ -316,17 +316,29 @@ export class ButtonExporter {
       .replace(/^-|-$/g, "");
   }
 
-  private generatePWAManifest(appName: string): PWAManifest {
+  generatePWAManifest(
+    appName: string,
+    options: {
+      startUrl?: string;
+      scope?: string;
+      icon192?: string;
+      icon512?: string;
+      iconType?: string;
+    } = {},
+  ): PWAManifest {
     const themeColor = this.customization.appearance.fillType === "solid"
       ? this.customization.appearance.solidColor
       : this.customization.appearance.gradient.start;
+    const icon192 = options.icon192 || "icon-192.png";
+    const icon512 = options.icon512 || "icon-512.png";
+    const iconType = options.iconType || "image/png";
 
     return {
       name: appName,
       short_name: appName.slice(0, 12),
       description: `Voice recording button: ${appName}`,
-      start_url: "./",
-      scope: "./",
+      start_url: options.startUrl || "./",
+      scope: options.scope || "./",
       display: "standalone",
       display_override: ["window-controls-overlay", "standalone", "minimal-ui"],
       background_color: "#ffffff",
@@ -337,29 +349,40 @@ export class ButtonExporter {
       dir: "ltr",
       icons: [
         {
-          src: "icon-192.png",
+          src: icon192,
           sizes: "192x192",
-          type: "image/png",
-          purpose: "maskable any",
+          type: iconType,
+          purpose: "any",
         },
         {
-          src: "icon-512.png",
+          src: icon512,
           sizes: "512x512",
-          type: "image/png",
-          purpose: "maskable any",
+          type: iconType,
+          purpose: "any",
         },
         {
-          src: "icon-192.png",
+          src: icon192,
           sizes: "192x192",
-          type: "image/png",
-          purpose: "apple-touch-icon",
+          type: iconType,
+          purpose: "maskable",
+        },
+        {
+          src: icon512,
+          sizes: "512x512",
+          type: iconType,
+          purpose: "maskable",
         },
       ],
     };
   }
 
-  private generatePWAHTML(appName: string, options: any): string {
+  generatePWAHTML(appName: string, options: any): string {
     // Enhanced HTML with PWA features
+    const manifestPath = options.manifestPath || "./manifest.json";
+    const serviceWorkerPath = options.serviceWorkerPath || "./sw.js";
+    const icon192Path = options.icon192Path || "./icon-192.png";
+    const icon512Path = options.icon512Path || "./icon-512.png";
+    const appleTouchIconPath = options.appleTouchIconPath || icon192Path;
     const baseHTML = generateStandaloneHTML(this.customization, {
       includeAI: options.includeAI && !!options.apiKey,
       apiKey: options.apiKey,
@@ -372,7 +395,7 @@ export class ButtonExporter {
       "<head>",
       `<head>
     <!-- PWA Meta Tags -->
-    <link rel="manifest" href="./manifest.json">
+    <link rel="manifest" href="${manifestPath}">
     <meta name="theme-color" content="${
         this.customization.appearance.fillType === "solid"
           ? this.customization.appearance.solidColor
@@ -381,15 +404,16 @@ export class ButtonExporter {
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="${appName}">
-    <link rel="apple-touch-icon" href="./icon-192.png">
-    <link rel="apple-touch-icon" sizes="192x192" href="./icon-192.png">
-    <link rel="apple-touch-icon" sizes="512x512" href="./icon-512.png">
+    <link rel="apple-touch-icon" href="${appleTouchIconPath}">
+    <link rel="apple-touch-icon" sizes="180x180" href="${appleTouchIconPath}">
+    <link rel="apple-touch-icon" sizes="192x192" href="${icon192Path}">
+    <link rel="apple-touch-icon" sizes="512x512" href="${icon512Path}">
     
     <!-- Service Worker Registration -->
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./sw.js')
+          navigator.serviceWorker.register('${serviceWorkerPath}')
             .then((registration) => {
               console.log('SW registered: ', registration);
             })
@@ -402,7 +426,7 @@ export class ButtonExporter {
     );
   }
 
-  private generateServiceWorker(): string {
+  generateServiceWorker(): string {
     return `// ButtonSpa PWA Service Worker
 const CACHE_NAME = 'voice-button-v1';
 const urlsToCache = [
@@ -434,7 +458,7 @@ self.addEventListener('fetch', (event) => {
    * Generate a PNG data URL icon that matches the button design
    * Uses SVG foreignObject to render the actual button HTML/CSS
    */
-  private generateIconDataURL(size: number): string {
+  generateIconDataURL(size: number): string {
     const { customization } = this;
     const { appearance, content, effects } = customization;
 

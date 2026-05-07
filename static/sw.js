@@ -1,15 +1,19 @@
 // ButtonSpa Service Worker v1.0
 // Enables offline functionality and PWA features
 
-const CACHE_NAME = "buttonspa-v1";
+const CACHE_NAME = "buttonspa-v2";
 const urlsToCache = [
   "/",
   "/styles.css",
   "/manifest.json",
+  "/icon-192.png",
+  "/icon-512.png",
   "/icon-192.svg",
   "/icon-512.svg",
-  "/apple-touch-icon.svg",
+  "/apple-touch-icon.png",
   "/favicon.ico",
+  "/favicon-32x32.png",
+  "/favicon-16x16.png",
 ];
 
 // Install event - cache essential files
