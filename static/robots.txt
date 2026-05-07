@@ -1,11 +1,11 @@
 # ButtonStudio - Voice Button Design Lab
-# https://buttonstudio.app
+# https://buttonspa.app
 
 User-agent: *
 Allow: /
 
 # Sitemap location
-Sitemap: https://buttonstudio.app/sitemap.xml
+Sitemap: https://buttonspa.app/sitemap.xml
 
 # Crawl rate
 Crawl-delay: 0

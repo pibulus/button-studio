@@ -33,7 +33,7 @@ export default function Home() {
           content="Design beautiful voice recording buttons with real-time transcription. Export as HTML, PWA, or share your designs."
         />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://buttonstudio.app" />
+        <meta property="og:url" content="https://buttonspa.app" />
         <meta property="og:image" content="/og-image.png" />
 
         {/* Twitter Card */}
@@ -67,7 +67,7 @@ export default function Home() {
         <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
 
         {/* Canonical URL */}
-        <link rel="canonical" href="https://buttonstudio.app/" />
+        <link rel="canonical" href="https://buttonspa.app/" />
 
         {/* Structured Data - JSON-LD */}
         <script type="application/ld+json">
@@ -76,7 +76,7 @@ export default function Home() {
             "@type": "WebApplication",
             "name": "ButtonStudio",
             "alternateName": "ButtonStudio - Voice Button Design Lab",
-            "url": "https://buttonstudio.app",
+            "url": "https://buttonspa.app",
             "description": "Design and customize beautiful voice recording buttons with real-time transcription. Export as HTML, PWA, or share your designs.",
             "applicationCategory": "DeveloperApplication",
             "operatingSystem": "Web Browser",
@@ -93,7 +93,7 @@ export default function Home() {
               "Share button designs"
             ],
             "browserRequirements": "Requires JavaScript. Modern browser with Web Audio API support.",
-            "screenshot": "https://buttonstudio.app/og-image.png",
+            "screenshot": "https://buttonspa.app/og-image.png",
             "creator": {
               "@type": "Person",
               "name": "Pablo Alvarado",

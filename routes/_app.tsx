@@ -27,14 +27,14 @@ export default function App({ Component }: PageProps) {
 
         {/* Open Graph / Social Media */}
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://buttonstudio.app/" />
+        <meta property="og:url" content="https://buttonspa.app/" />
         <meta property="og:title" content="ButtonStudio - Voice Button Designer" />
         <meta property="og:description" content="Design beautiful voice recording buttons with AI transcription. Export as HTML, PWA, or embed anywhere." />
         <meta property="og:image" content="/og-image.png" />
 
         {/* Twitter Card */}
         <meta property="twitter:card" content="summary_large_image" />
-        <meta property="twitter:url" content="https://buttonstudio.app/" />
+        <meta property="twitter:url" content="https://buttonspa.app/" />
         <meta property="twitter:title" content="ButtonStudio - Voice Button Designer" />
         <meta property="twitter:description" content="Design beautiful voice recording buttons with AI transcription. Export as HTML, PWA, or embed anywhere." />
         <meta property="twitter:image" content="/og-image.png" />

@@ -154,7 +154,7 @@ export function generateStandaloneHTML(
       ? `
         <!-- ButtonStudio Attribution -->
         <div class="mt-8 text-sm text-gray-500">
-            Created with <a href="https://buttonstudio.app" class="text-blue-500 hover:underline">ButtonStudio</a>
+            Created with <a href="https://buttonspa.app" class="text-blue-500 hover:underline">ButtonStudio</a>
         </div>
         `
       : ""
