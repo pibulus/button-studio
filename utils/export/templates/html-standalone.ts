@@ -30,14 +30,23 @@ export function generateStandaloneHTML(
     })
     .join("; ");
   const buttonId = `voice-button-${Date.now()}`;
+  const appName = escapeHTML(customization.content.label || "Action Button");
+  const pageDescription =
+    "A tiny action app made with ButtonSpa. Open it, tap the button, and let it do useful work.";
 
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${customization.content.label || "Voice Button"}</title>
-    <meta name="description" content="Custom voice recording button created with ButtonSpa">
+    <title>${appName} - ButtonSpa</title>
+    <meta name="description" content="${pageDescription}">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="${appName} - ButtonSpa Tiny App">
+    <meta property="og:description" content="${pageDescription}">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="${appName} - ButtonSpa Tiny App">
+    <meta name="twitter:description" content="${pageDescription}">
     
     <!-- Tailwind CSS CDN for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -83,7 +92,7 @@ export function generateStandaloneHTML(
     <!-- Main Button Container -->
     <div class="text-center">
         <h1 class="text-3xl font-bold text-gray-800 mb-8">
-            ${customization.content.label || "Voice Button"}
+            ${appName}
         </h1>
         
         <!-- Voice Button -->
@@ -558,6 +567,25 @@ export function generateStandaloneHTML(
 </html>`;
 }
 
+function escapeHTML(value: string): string {
+  return value.replace(/[&<>"']/g, (char) => {
+    switch (char) {
+      case "&":
+        return "&amp;";
+      case "<":
+        return "&lt;";
+      case ">":
+        return "&gt;";
+      case '"':
+        return "&quot;";
+      case "'":
+        return "&#39;";
+      default:
+        return char;
+    }
+  });
+}
+
 function getCustomCSS(customization: ButtonCustomization): string {
   // Generate custom CSS based on customization
   const { appearance, interactions, effects } = customization;
@@ -798,7 +826,7 @@ function getInstallGuideMarkup(): string {
     <aside id="install-banner" class="install-banner" aria-live="polite">
         <div class="install-banner__copy">
             <p id="install-title" class="install-banner__title">Save this button</p>
-            <p id="install-body" class="install-banner__body">Install it on your home screen for one-tap recording.</p>
+            <p id="install-body" class="install-banner__body">Install it on your home screen for one-tap action.</p>
         </div>
         <div class="install-banner__actions">
             <button id="install-action" type="button" class="install-banner__button">Install</button>

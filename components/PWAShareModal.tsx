@@ -73,7 +73,7 @@ export default function PWAShareModal({
       if (!options.quiet) {
         playSound.success();
         hapticService.buttonSuccess();
-        toast("PWA ready to share! 🎉", "success");
+        toast("Tiny app link ready! 🎉", "success");
       }
     } catch (error) {
       console.error("PWA generation error:", error);
@@ -118,9 +118,9 @@ export default function PWAShareModal({
         <div class="bg-gradient-to-r from-purple-500 to-pink-500 p-6 text-white">
           <div class="flex justify-between items-center">
             <div>
-              <h2 class="text-2xl font-black">Save Button as App</h2>
+              <h2 class="text-2xl font-black">Save as Tiny App</h2>
               <p class="text-sm opacity-90 mt-1">
-                Install on your phone's home screen
+                Give this button its own home screen icon.
               </p>
             </div>
             <button
@@ -147,9 +147,11 @@ export default function PWAShareModal({
               // PIN Setup UI (only show if API key exists)
               <div class="space-y-4">
                 <div class="text-center">
-                  <h3 class="text-xl font-bold mb-2">🔐 Share with API Key?</h3>
+                  <h3 class="text-xl font-bold mb-2">
+                    🔐 Keep voice transcription with it?
+                  </h3>
                   <p class="text-sm text-gray-600">
-                    Include your transcription features
+                    Protect the Gemini key with a PIN before sharing.
                   </p>
                 </div>
 
@@ -163,7 +165,7 @@ export default function PWAShareModal({
                           (e.target as HTMLInputElement).checked}
                       class="w-5 h-5 rounded"
                     />
-                    <span class="font-medium">Include API Key (Protected)</span>
+                    <span class="font-medium">Include API key with PIN</span>
                   </label>
 
                   {includeApiKey.value && (
@@ -193,7 +195,7 @@ export default function PWAShareModal({
                   disabled={includeApiKey.value && !isValidPIN(pin.value)}
                   class="w-full py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-2xl font-black hover:from-purple-600 hover:to-pink-600 transition-all disabled:opacity-50"
                 >
-                  Generate Share Link
+                  Create Install Link
                 </button>
               </div>
             )
@@ -210,7 +212,7 @@ export default function PWAShareModal({
                     />
                   </div>
                   <p class="mt-3 text-sm text-gray-600">
-                    📱 Scan with your phone's camera
+                    📱 Scan to open this button.
                   </p>
                 </div>
 
@@ -241,7 +243,7 @@ export default function PWAShareModal({
                     onClick={copyLink}
                     class="w-full py-4 bg-black text-white rounded-2xl font-black hover:bg-gray-800 transition-colors flex items-center justify-center gap-2"
                   >
-                    <span>📋</span> Copy Link
+                    <span>📋</span> Copy Install Link
                   </button>
 
                   <button
@@ -249,38 +251,38 @@ export default function PWAShareModal({
                     onClick={openOnPhone}
                     class="w-full py-4 bg-purple-500 text-white rounded-2xl font-black hover:bg-purple-600 transition-colors flex items-center justify-center gap-2"
                   >
-                    <span>📲</span> Open on This Device
+                    <span>📲</span> Open Button
                   </button>
                 </div>
 
                 {/* What Happens Next */}
                 <div class="border-t pt-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-4">
                   <h3 class="font-bold mb-3 text-purple-800">
-                    ✨ What You Get:
+                    ✨ What happens next
                   </h3>
                   <div class="space-y-2 text-sm text-gray-700">
                     <div class="flex gap-2">
                       <span>📱</span>
                       <span>
-                        Your button becomes an app icon on your home screen
+                        Home screen icon generated from this button
                       </span>
                     </div>
                     <div class="flex gap-2">
-                      <span>🎤</span>
+                      <span>🔘</span>
                       <span>
-                        Tap the icon → Opens just your button (no ButtonSpa)
+                        Opens straight to the action, without the studio
                       </span>
                     </div>
                     <div class="flex gap-2">
                       <span>📋</span>
                       <span>
-                        Record → Get transcription → Auto-copies to clipboard
+                        Voice buttons record, transcribe, and copy text
                       </span>
                     </div>
                     <div class="flex gap-2">
                       <span>🔗</span>
                       <span>
-                        Share this link with friends → They get the same button!
+                        Share the link to send the same tiny app
                       </span>
                     </div>
                   </div>
@@ -288,10 +290,10 @@ export default function PWAShareModal({
 
                 {/* Simple Install Steps */}
                 <div class="mt-4 p-3 bg-yellow-50 rounded-xl border-2 border-yellow-200">
-                  <p class="text-xs font-bold text-yellow-800 mb-2">
-                    📲 How to Install:
+                  <p class="text-sm font-bold text-yellow-800 mb-2">
+                    📲 Install steps
                   </p>
-                  <div class="text-xs space-y-1">
+                  <div class="text-sm space-y-1">
                     <div>
                       <span class="font-bold">iPhone:</span>{" "}
                       Open in Safari → Tap Share → Add to Home Screen

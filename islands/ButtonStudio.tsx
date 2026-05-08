@@ -10,6 +10,7 @@ import {
 } from "../types/customization.ts";
 import { hapticService } from "../utils/audio/hapticService.ts";
 import { playSound } from "../utils/audio/soundMapping.ts";
+import { BRAND_SUPPORTING_COPY, BRAND_TAGLINE } from "../utils/brand.ts";
 
 // Import panel components directly
 import CollapsiblePanel from "../components/panels/CollapsiblePanel.tsx";
@@ -135,23 +136,18 @@ export default function ButtonStudio() {
       // Number keys for quick theme switching (1-9)
       if (!e.metaKey && !e.ctrlKey && !e.altKey && /^[1-9]$/.test(e.key)) {
         const themeIndex = parseInt(e.key) - 1;
-        const themes = [
-          "soft",
-          "flamingo",
-          "voice",
-          "amber",
-          "ocean",
-          "forest",
-          "sunset",
-          "midnight",
-          "cosmic",
+        const themes: ButtonTheme[] = [
+          "minimal",
+          "warm",
+          "professional",
+          "lush",
         ];
         if (themes[themeIndex]) {
           customization.value = {
             ...customization.value,
             appearance: {
               ...customization.value.appearance,
-              theme: themes[themeIndex] as any,
+              theme: themes[themeIndex],
             },
           };
           playSound.selectionSelect();
@@ -550,6 +546,7 @@ export default function ButtonStudio() {
                   ✨ Voice Magic Result
                 </h2>
                 <button
+                  type="button"
                   onClick={() => showTranscriptModal.value = false}
                   class="text-gray-400 hover:text-gray-600 text-2xl font-bold"
                 >
@@ -563,6 +560,7 @@ export default function ButtonStudio() {
               </div>
               <div class="flex gap-3">
                 <button
+                  type="button"
                   onClick={() => {
                     navigator.clipboard.writeText(transcriptResult.value);
                   }}
@@ -572,6 +570,7 @@ export default function ButtonStudio() {
                   📋 Copy Magic
                 </button>
                 <button
+                  type="button"
                   onClick={() => showTranscriptModal.value = false}
                   class="flex-1 bg-gray-200 text-black px-4 py-3 rounded-xl font-bold hover:bg-gray-300 transition-colors border-2 border-black"
                   style={{ boxShadow: "4px 4px 0px #000000" }}
@@ -603,7 +602,7 @@ export default function ButtonStudio() {
                 class="text-3xl sm:text-4xl lg:text-6xl text-fuchsia-500"
                 style={{
                   background:
-                    "linear-gradient(135deg, #FF00FF 0%, #FF69B4 100%)",
+                    "linear-gradient(135deg, #E64AA0 0%, #FF7A59 100%)",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                   filter: "drop-shadow(2px 2px 0px rgba(0,0,0,0.1))",
@@ -621,7 +620,18 @@ export default function ButtonStudio() {
                 textShadow: "0 1px 0 rgba(255,255,255,0.6)",
               }}
             >
-              Make cute buttons that do real things.
+              {BRAND_TAGLINE}
+            </p>
+            <p
+              class="text-[15px] sm:text-base font-semibold max-w-[620px]"
+              style={{
+                marginTop: "8px",
+                letterSpacing: "0",
+                color: "rgba(0,0,0,0.62)",
+                lineHeight: 1.45,
+              }}
+            >
+              {BRAND_SUPPORTING_COPY}
             </p>
           </div>
           <div class="flex items-center gap-2">
@@ -641,7 +651,7 @@ export default function ButtonStudio() {
             {/* Stage View - CollapsiblePanel */}
             <CollapsiblePanel
               id="stageView"
-              title="Stage View"
+              title="Your Button"
               color="pink"
               isExpanded={expandedPanels.value.stageView}
               onToggle={togglePanel}
@@ -672,6 +682,7 @@ export default function ButtonStudio() {
 
                 {/* Magic Shuffle Button */}
                 <button
+                  type="button"
                   aria-label="Randomize button design"
                   onClick={(e) => {
                     const btn = e.currentTarget;
@@ -740,6 +751,7 @@ export default function ButtonStudio() {
                   class="min-w-0 flex-1 rounded-full border-[3px] border-black/80 px-4 py-2 bg-white/80 font-bold text-center hover:bg-white/90 focus:bg-amber-50 focus:outline-none transition-colors"
                 />
                 <button
+                  type="button"
                   aria-label="Reset button label to default"
                   onClick={() => {
                     handleCustomizationChange({
@@ -761,7 +773,7 @@ export default function ButtonStudio() {
             {/* Colors - CollapsiblePanel */}
             <CollapsiblePanel
               id="colors"
-              title="Colors"
+              title="Paint"
               color="violet"
               isExpanded={expandedPanels.value.colors}
               onToggle={togglePanel}
@@ -776,7 +788,7 @@ export default function ButtonStudio() {
             {/* Size & Shape - CollapsiblePanel */}
             <CollapsiblePanel
               id="sizeShape"
-              title="Size & Shape"
+              title="Shape"
               color="yellow"
               isExpanded={expandedPanels.value.sizeShape}
               onToggle={togglePanel}
@@ -794,7 +806,7 @@ export default function ButtonStudio() {
             {/* Design Accordion */}
             <CollapsiblePanel
               id="design"
-              title="Design"
+              title="Style"
               color="red"
               isExpanded={expandedPanels.value.design}
               onToggle={togglePanel}
@@ -809,7 +821,7 @@ export default function ButtonStudio() {
             {/* Feel Accordion */}
             <CollapsiblePanel
               id="feel"
-              title="Feel"
+              title="Motion"
               color="orange"
               isExpanded={expandedPanels.value.feel}
               onToggle={togglePanel}
@@ -825,7 +837,7 @@ export default function ButtonStudio() {
             {/* Magic Accordion */}
             <CollapsiblePanel
               id="magic"
-              title="Magic"
+              title="Action"
               color="purple"
               isExpanded={expandedPanels.value.magic}
               onToggle={togglePanel}
@@ -848,7 +860,7 @@ export default function ButtonStudio() {
             {/* Share Accordion */}
             <CollapsiblePanel
               id="ship"
-              title="Share"
+              title="Ship"
               color="yellow"
               isExpanded={expandedPanels.value.ship}
               onToggle={togglePanel}

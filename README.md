@@ -2,10 +2,11 @@
 
 > **Make cute buttons that do real things.**
 
-ButtonSpa is a playful builder for tiny action apps. Today it helps you design
-beautiful voice recording buttons with real-time Gemini transcription, tactile
-effects, and PWA export. The wider shape is simple: polished buttons that can be
-shared, embedded, installed, and eventually wired to webhooks or APIs.
+ButtonSpa is a playful builder for tiny action apps: APIs, webhooks, and useful
+workflows wrapped in buttons people actually want to tap. Today it starts with
+voice transcription, tactile effects, and PWA export. The wider shape is simple:
+polished buttons that can be shared, embedded, installed, and wired to whatever
+work needs one good tap.
 
 ## Core Features
 

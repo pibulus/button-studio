@@ -1,5 +1,6 @@
 import { useEffect } from "preact/hooks";
 import { signal } from "@preact/signals";
+import { BRAND_TAGLINE } from "../utils/brand.ts";
 
 /**
  * 🎸 About Modal Component
@@ -84,6 +85,7 @@ export function AboutModal() {
                 About ButtonSpa
               </h2>
               <button
+                type="button"
                 onClick={closeAboutModal}
                 class="text-3xl leading-none font-bold transition-transform hover:scale-110"
                 style="color: var(--color-text, #0A0A0A)"
@@ -96,7 +98,7 @@ export function AboutModal() {
               class="text-lg font-mono font-bold"
               style="color: var(--color-accent, #FF69B4)"
             >
-              Tiny action apps, starting with voice buttons.
+              {BRAND_TAGLINE}
             </p>
           </div>
 
@@ -110,9 +112,11 @@ export function AboutModal() {
               class="text-base sm:text-lg leading-relaxed"
               style="color: var(--color-text, #0A0A0A)"
             >
-              I'm Pablo. I build tools with personality and soul. ButtonSpa lets
-              you design beautiful voice recording buttons with real-time AI
-              transcription.
+              ButtonSpa is a playful builder for tiny action apps: buttons that
+              look good, feel good, and do useful work. The first treatment is
+              voice transcription, but the shape is bigger: APIs, webhooks,
+              diaries, recipe helpers, creative workflows, and whatever else is
+              better as one good tap.
             </p>
 
             {/* What it's for */}
@@ -124,15 +128,15 @@ export function AboutModal() {
                 class="text-sm sm:text-base font-medium"
                 style="color: var(--color-text, #0A0A0A)"
               >
-                Design custom voice buttons. Export as HTML, PWA, or embeddable
-                code. Save them to your phone as tiny apps. Powered by Google
-                Gemini AI.
+                Design a button, give it an action, then share it, embed it,
+                download it, or save it to your phone as a tiny app.
               </p>
               <p
                 class="text-sm sm:text-base font-medium"
                 style="color: var(--color-text, #0A0A0A)"
               >
-                It's visual, it's powerful, and it actually works. Free.
+                Soft on the outside. Practical in the middle. Free while it
+                grows.
               </p>
             </div>
 
@@ -239,6 +243,7 @@ export function AboutLink({
 }: AboutLinkProps) {
   return (
     <button
+      type="button"
       onClick={openAboutModal}
       class={`px-3 py-2 text-sm border-3 rounded-xl font-mono font-bold shadow-brutal transition-all hover:scale-105 active:scale-95 ${className}`}
       style="background-color: var(--color-accent, #FF69B4); color: var(--color-base, #FAF9F6); border-color: var(--color-border, #0A0A0A);"

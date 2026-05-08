@@ -39,7 +39,7 @@ export function createHostedButtonExporter(id: string): {
   return {
     customization,
     exporter: new ButtonExporter(customization),
-    appName: customization.content.label || "Voice Button",
+    appName: customization.content.label || "Action Button",
   };
 }
 

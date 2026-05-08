@@ -1,4 +1,6 @@
 import { type PageProps } from "$fresh/server.ts";
+import { BRAND_NAME } from "../utils/brand.ts";
+
 export default function App({ Component }: PageProps) {
   return (
     <html lang="en">
@@ -8,48 +10,16 @@ export default function App({ Component }: PageProps) {
           name="viewport"
           content="width=device-width, initial-scale=1.0, viewport-fit=cover"
         />
-        <title>ButtonSpa - Voice Button Designer</title>
-
         {/* PWA & iOS App Meta Tags */}
-        <meta name="application-name" content="ButtonSpa" />
-        <meta name="apple-mobile-web-app-title" content="ButtonSpa" />
+        <meta name="application-name" content={BRAND_NAME} />
+        <meta name="apple-mobile-web-app-title" content={BRAND_NAME} />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta
           name="apple-mobile-web-app-status-bar-style"
           content="black-translucent"
         />
         <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="theme-color" content="#FF69B4" />
-        <meta
-          name="description"
-          content="Design polished voice buttons with real-time transcription, then share, embed, or install them as tiny apps."
-        />
-
-        {/* Open Graph / Social Media */}
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://buttonspa.app/" />
-        <meta
-          property="og:title"
-          content="ButtonSpa - Make Cute Buttons That Do Real Things"
-        />
-        <meta
-          property="og:description"
-          content="Design polished voice buttons with real-time transcription, then share, embed, or install them as tiny apps."
-        />
-        <meta property="og:image" content="/og-image.png" />
-
-        {/* Twitter Card */}
-        <meta property="twitter:card" content="summary_large_image" />
-        <meta property="twitter:url" content="https://buttonspa.app/" />
-        <meta
-          property="twitter:title"
-          content="ButtonSpa - Make Cute Buttons That Do Real Things"
-        />
-        <meta
-          property="twitter:description"
-          content="Design polished voice buttons with real-time transcription, then share, embed, or install them as tiny apps."
-        />
-        <meta property="twitter:image" content="/og-image.png" />
+        <meta name="theme-color" content="#F7F0E2" />
 
         {/* iOS Icon Support - Multiple Sizes */}
         <link

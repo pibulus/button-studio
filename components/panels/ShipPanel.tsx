@@ -77,13 +77,43 @@ export default function ShipPanel(
   return (
     <div class="space-y-2">
       <div>
-        <h4 class="text-lg font-black text-gray-900 mb-2">Share Your Button</h4>
+        <h4 class="text-lg font-black text-gray-900 mb-2">Ship Your Button</h4>
         <p class="text-sm text-gray-600 mb-3">
-          Export your button to use anywhere!
+          Turn this design into a link, a phone app, or a standalone file.
         </p>
 
         {/* Export Buttons */}
         <div class="space-y-2">
+          {/* Save to Phone Button */}
+          <button
+            onClick={() => {
+              playSound.primaryClick();
+              showPWAModal.value = true;
+            }}
+            onMouseEnter={() => playSound.hover()}
+            type="button"
+            class="w-full h-12 px-6 rounded-2xl border-2 font-bold text-sm transition-all hover:shadow-md active:scale-95 bg-yellow-200 hover:bg-yellow-300 text-black"
+            style={{
+              borderColor: "rgba(0,0,0,0.85)",
+              boxShadow: "4px 4px 0px rgba(0,0,0,0.85)",
+            }}
+          >
+            📱 Save as Tiny App
+          </button>
+
+          <button
+            onClick={() => handleExport("share")}
+            onMouseEnter={() => playSound.hover()}
+            type="button"
+            class="w-full h-12 px-6 rounded-2xl border-2 font-bold text-sm transition-all hover:shadow-md active:scale-95 bg-yellow-200 hover:bg-yellow-300 text-black"
+            style={{
+              borderColor: "rgba(0,0,0,0.85)",
+              boxShadow: "4px 4px 0px rgba(0,0,0,0.85)",
+            }}
+          >
+            🔗 Copy Design Link
+          </button>
+
           <button
             onClick={() => handleExport("html")}
             onMouseEnter={() => playSound.hover()}
@@ -94,7 +124,7 @@ export default function ShipPanel(
               boxShadow: "4px 4px 0px rgba(0,0,0,0.85)",
             }}
           >
-            📄 Download HTML File
+            📄 Download HTML
           </button>
 
           {
@@ -113,55 +143,25 @@ export default function ShipPanel(
           </button>
           */
           }
-
-          {/* Save to Phone Button */}
-          <button
-            onClick={() => {
-              playSound.primaryClick();
-              showPWAModal.value = true;
-            }}
-            onMouseEnter={() => playSound.hover()}
-            type="button"
-            class="w-full h-12 px-6 rounded-2xl border-2 font-bold text-sm transition-all hover:shadow-md active:scale-95 bg-yellow-200 hover:bg-yellow-300 text-black"
-            style={{
-              borderColor: "rgba(0,0,0,0.85)",
-              boxShadow: "4px 4px 0px rgba(0,0,0,0.85)",
-            }}
-          >
-            📱 Save to Phone
-          </button>
-
-          <button
-            onClick={() => handleExport("share")}
-            onMouseEnter={() => playSound.hover()}
-            type="button"
-            class="w-full h-12 px-6 rounded-2xl border-2 font-bold text-sm transition-all hover:shadow-md active:scale-95 bg-yellow-200 hover:bg-yellow-300 text-black"
-            style={{
-              borderColor: "rgba(0,0,0,0.85)",
-              boxShadow: "4px 4px 0px rgba(0,0,0,0.85)",
-            }}
-          >
-            🔗 Copy Share Link
-          </button>
         </div>
       </div>
 
       {/* Export Info - More compact and friendly */}
       <div class="mt-2 p-2 bg-yellow-50 rounded-xl border-2 border-yellow-300">
-        <h5 class="font-bold text-xs mb-1">What can I do?</h5>
-        <ul class="text-xs space-y-0.5 text-gray-700">
+        <h5 class="font-bold text-xs mb-1">Best exits</h5>
+        <ul class="text-xs sm:text-sm space-y-1 text-gray-700">
           <li>
-            • <strong>HTML File</strong> - Works on any website
+            • <strong>Tiny app</strong> - home screen button with its own icon
           </li>
           <li>
-            • <strong>Save to Phone</strong> - Add to home screen like an app
+            • <strong>Design link</strong> - send the editable button
           </li>
           <li>
-            • <strong>Share Link</strong> - Send your design to friends
+            • <strong>HTML</strong> - drop it into a site
           </li>
           {apiKeyValue && (
             <li class="text-green-700 font-bold">
-              ✓ Voice transcription included in exports!
+              ✓ Voice transcription included in exports
             </li>
           )}
         </ul>

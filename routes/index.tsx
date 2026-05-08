@@ -1,35 +1,32 @@
 import { Head } from "$fresh/runtime.ts";
 import ButtonStudio from "../islands/ButtonStudio.tsx";
+import {
+  BRAND_DESCRIPTION,
+  BRAND_NAME,
+  BRAND_OG_DESCRIPTION,
+  BRAND_OG_TITLE,
+  BRAND_SHORT_DESCRIPTION,
+  BRAND_TITLE,
+} from "../utils/brand.ts";
 
 export default function Home() {
   return (
     <>
       <Head>
-        <title>
-          ButtonSpa - Make Cute Buttons That Do Real Things
-        </title>
+        <title>{BRAND_TITLE}</title>
         <meta
           name="description"
-          content="Design polished voice buttons with real-time transcription, then share, embed, or install them as tiny apps."
+          content={BRAND_DESCRIPTION}
         />
-
-        {/* Mobile */}
-        <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta
-          name="apple-mobile-web-app-status-bar-style"
-          content="black-translucent"
-        />
-        <meta name="theme-color" content="#FFF8F0" />
 
         {/* SEO and Open Graph */}
         <meta
           property="og:title"
-          content="ButtonSpa - Make Cute Buttons That Do Real Things"
+          content={BRAND_OG_TITLE}
         />
         <meta
           property="og:description"
-          content="Design polished voice buttons with real-time transcription, then share, embed, or install them as tiny apps."
+          content={BRAND_OG_DESCRIPTION}
         />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://buttonspa.app" />
@@ -39,19 +36,13 @@ export default function Home() {
         <meta name="twitter:card" content="summary_large_image" />
         <meta
           name="twitter:title"
-          content="ButtonSpa - Make Cute Buttons That Do Real Things"
+          content={BRAND_OG_TITLE}
         />
         <meta
           name="twitter:description"
-          content="Design polished voice buttons with real-time transcription, then share, embed, or install them as tiny apps."
+          content={BRAND_OG_DESCRIPTION}
         />
         <meta name="twitter:image" content="/og-image.png" />
-
-        {/* PWA */}
-        <link rel="manifest" href="/manifest.json" />
-        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-        <link rel="icon" type="image/png" href="/favicon.png" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
         {/* Fonts */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -73,11 +64,10 @@ export default function Home() {
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "WebApplication",
-            "name": "ButtonSpa",
+            "name": BRAND_NAME,
             "alternateName": "ButtonSpa - Tiny Action App Builder",
             "url": "https://buttonspa.app",
-            "description":
-              "Design polished voice buttons with real-time transcription, then share, embed, or install them as tiny apps.",
+            "description": BRAND_DESCRIPTION,
             "applicationCategory": "ProductivityApplication",
             "operatingSystem": "Web Browser",
             "offers": {
@@ -86,11 +76,13 @@ export default function Home() {
               "priceCurrency": "USD",
             },
             "featureList": [
-              "Voice recording buttons",
-              "Real-time transcription with Gemini AI",
-              "Visual customization",
-              "Export as HTML or PWA",
-              "Shareable and installable button pages",
+              "Tiny action app builder",
+              "API and webhook button direction",
+              "Voice transcription starter action",
+              "Shareable button links",
+              "Home screen install for iPhone and Android",
+              "Standalone HTML export",
+              BRAND_SHORT_DESCRIPTION,
             ],
             "browserRequirements":
               "Requires JavaScript. Modern browser with Web Audio API support.",

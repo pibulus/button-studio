@@ -1,7 +1,7 @@
 {
   "name": "ButtonSpa - Tiny Action App Builder",
   "short_name": "ButtonSpa",
-  "description": "Make cute buttons that do real things.",
+  "description": "Turn APIs and useful workflows into tappable tiny apps.",
   "start_url": "/",
   "display": "standalone",
   "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
@@ -41,9 +41,9 @@
   ],
   "shortcuts": [
     {
-      "name": "New Button",
-      "short_name": "New",
-      "description": "Create a new voice button",
+      "name": "Make a Button",
+      "short_name": "Make",
+      "description": "Design a new action button",
       "url": "/",
       "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
     }

@@ -20,7 +20,7 @@ export default function MagicPanel({
       {onApiKeyChange && (
         <div>
           <h4 class="text-lg font-black text-gray-900 mb-2">
-            Gemini API Key
+            Voice Starter
             {apiKeyValue && apiKeyValue.trim() !== "" && (
               <span class="ml-2 text-green-600">✓ Voice Active</span>
             )}
@@ -29,7 +29,8 @@ export default function MagicPanel({
             {!apiKeyValue || apiKeyValue.trim() === ""
               ? (
                 <>
-                  ⚠️ Add your API key to enable voice transcription -{" "}
+                  Voice transcription is the first ButtonSpa action. Paste a
+                  Gemini key to turn recordings into copied text.{" "}
                   <a
                     href="https://aistudio.google.com/app/apikey"
                     target="_blank"
@@ -40,11 +41,11 @@ export default function MagicPanel({
                       hapticService.buttonPress();
                     }}
                   >
-                    Get free API key →
+                    Get a free Gemini key →
                   </a>
                 </>
               )
-              : "Voice transcription is automatically enabled with your API key"}
+              : "Voice transcription is on. Recordings will be transcribed and copied."}
           </p>
           <input
             type="password"
@@ -69,10 +70,10 @@ export default function MagicPanel({
       {onCustomPromptChange && (
         <div>
           <h4 class="text-lg font-black text-gray-900 mb-2">
-            Custom Instructions
+            Transcript Treatment
           </h4>
           <p class="text-sm text-gray-600 mb-3">
-            Add special instructions for transcription (optional)
+            Tell ButtonSpa how to clean up the transcript.
           </p>
           <textarea
             value={customPromptValue}
