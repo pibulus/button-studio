@@ -75,7 +75,7 @@ brutalist"**
 
 ### **Current Status:**
 
-- **API Key**: Hardcoded Pablo's key `AIzaSyA2PKYfE6wa9x5reTh_3iZiFHZAyMnCZAE`
+- **API Key**: Historical hardcoded key reference redacted; do not commit keys
 - **Model**: `gemini-2.0-flash`
 - **Endpoint**: `generativelanguage.googleapis.com/v1beta/models/`
 - **Format**: REST API with base64 audio, following Pablo's curl example
@@ -322,3 +322,19 @@ overwhelming.
 
 **🧁 SOFT STACK FOUNDATION IS SOLID! Ready for color picker magic next session!
 🚀**
+
+---
+
+## 2026-05-08 - ButtonSpa PWA Wrap
+
+- Rebranded the app surface from ButtonStudio/Button Studio to ButtonSpa and
+  `buttonspa.app`.
+- Made hosted button PWAs generate manifest icons and Apple touch icons from the
+  actual saved button design, so installed mini apps look like the button the
+  user made.
+- Polished the save-to-phone path: fresh generated links per design, iOS/Android
+  install guidance, offline caching for the specific hosted button, and real iOS
+  splash assets.
+- Fixed the GitHub deploy blocker by removing strict dotenv loading from
+  `main.ts` and `dev.ts`; Gemini keys stay user-provided in the browser instead
+  of being required at build time.
