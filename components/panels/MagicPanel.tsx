@@ -8,6 +8,45 @@ interface MagicPanelProps {
   onCustomPromptChange?: (prompt: string) => void;
 }
 
+const outputPresets = [
+  {
+    label: "Diary",
+    prompt:
+      "Turn this recording into a warm diary entry with a short title, a reflective tone, and one small takeaway at the end.",
+  },
+  {
+    label: "Recipe",
+    prompt:
+      "Turn this recording into a recipe with a title, ingredients, steps, and any timing or serving notes that were mentioned.",
+  },
+  {
+    label: "Reflection",
+    prompt:
+      "Turn this recording into a clear reflection with the main idea, what it might mean, and one next step.",
+  },
+  {
+    label: "Meeting notes",
+    prompt:
+      "Turn this recording into meeting notes with decisions, action items, owners, and open questions.",
+  },
+  {
+    label: "To-do list",
+    prompt:
+      "Turn this recording into a tidy to-do list. Group related tasks and make each item start with an action verb.",
+  },
+  {
+    label: "Clean text",
+    prompt:
+      "Transcribe this audio clearly, remove filler words, fix obvious punctuation, and return only the cleaned-up text.",
+  },
+];
+
+const outputPlaceholder = [
+  "Diary entry with a warm title",
+  "Recipe with ingredients and steps",
+  "Short reflection with one takeaway",
+].join("\n");
+
 export default function MagicPanel({
   apiKeyValue = "",
   onApiKeyChange,
@@ -70,11 +109,28 @@ export default function MagicPanel({
       {onCustomPromptChange && (
         <div>
           <h4 class="text-lg font-black text-gray-900 mb-2">
-            Transcript Treatment
+            Output Style
           </h4>
           <p class="text-sm text-gray-600 mb-3">
-            Tell ButtonSpa how to clean up the transcript.
+            Tell ButtonSpa what the button should turn your input into.
           </p>
+          <div class="grid grid-cols-2 gap-2 mb-3">
+            {outputPresets.map((preset) => (
+              <button
+                type="button"
+                key={preset.label}
+                onClick={() => {
+                  onCustomPromptChange(preset.prompt);
+                  playSound.primaryClick();
+                  hapticService.buttonPress();
+                }}
+                onMouseEnter={() => playSound.hover()}
+                class="min-h-[44px] rounded-xl border-2 border-black bg-white px-3 py-2 text-sm font-black text-left hover:bg-purple-50 active:scale-95 transition-all"
+              >
+                {preset.label}
+              </button>
+            ))}
+          </div>
           <textarea
             value={customPromptValue}
             onChange={(e) =>
@@ -83,8 +139,8 @@ export default function MagicPanel({
               playSound.primaryClick();
               hapticService.buttonPress();
             }}
-            placeholder="e.g., 'Format as bullet points' or 'Use proper capitalization'"
-            rows={3}
+            placeholder={outputPlaceholder}
+            rows={5}
             class="w-full px-4 py-3 rounded-xl border-3 border-black font-mono text-sm focus:outline-none focus:ring-4 focus:ring-purple-300 bg-white resize-none"
           />
         </div>

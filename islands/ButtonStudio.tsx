@@ -20,6 +20,7 @@ import MagicPanel from "../components/panels/MagicPanel.tsx";
 import ShipPanel from "../components/panels/ShipPanel.tsx";
 import ColorsPanel from "../components/panels/ColorsPanel.tsx";
 import SizeShapePanel from "../components/panels/SizeShapePanel.tsx";
+import ToastContainer, { toast } from "../components/Toast.tsx";
 
 // Import footer modals
 import { KofiButton, KofiModal } from "./KofiModal.tsx";
@@ -31,7 +32,7 @@ import { AboutLink, AboutModal } from "./AboutModal.tsx";
 
 const customization = signal<ButtonCustomization>(defaultCustomization);
 const transcriptResult = signal<string>("");
-const showTranscriptModal = signal<boolean>(false);
+const resultCopied = signal<boolean>(false);
 const showKeyboardModal = signal<boolean>(false);
 const apiKey = signal<string>("");
 const customPrompt = signal<string>("");
@@ -295,7 +296,7 @@ export default function ButtonStudio() {
 
       // Pick 1-2 random effects
       const numEffects = Math.random() < 0.6 ? 1 : 2;
-      const selectedEffects = [];
+      const selectedEffects: Array<(typeof effectKeys)[number]> = [];
 
       for (let i = 0; i < numEffects; i++) {
         let randomEffect;
@@ -476,22 +477,8 @@ export default function ButtonStudio() {
     };
   };
 
-  const applyTheme = (theme: ButtonTheme) => {
-    customization.value = {
-      ...customization.value,
-      appearance: {
-        ...customization.value.appearance,
-        ...theme.appearance,
-      },
-      interactions: {
-        ...customization.value.interactions,
-        ...theme.interactions,
-      },
-      effects: {
-        ...customization.value.effects,
-        ...theme.effects,
-      },
-    };
+  const applyTheme = (_theme: ButtonTheme) => {
+    void _theme;
   };
 
   const togglePanel = (panelId: string) => {
@@ -509,9 +496,9 @@ export default function ButtonStudio() {
 
     // Use correct sound based on expand/collapse action
     if (isExpanding) {
-      playSound.panelsExpand?.() || playSound.primaryClick();
+      playSound.panelExpand?.() || playSound.primaryClick();
     } else {
-      playSound.panelsCollapse?.() || playSound.secondaryClick();
+      playSound.panelCollapse?.() || playSound.secondaryClick();
     }
     hapticService.buttonPress();
   };
@@ -535,53 +522,7 @@ export default function ButtonStudio() {
       {/* Footer Modals */}
       <KofiModal kofiUsername="pibulus" />
       <AboutModal />
-
-      {/* Transcript Modal */}
-      {showTranscriptModal.value && (
-        <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full mx-4 max-h-[80vh] overflow-auto border-4 border-black">
-            <div class="p-6">
-              <div class="flex justify-between items-center mb-4">
-                <h2 class="text-2xl font-black text-black">
-                  ✨ Voice Magic Result
-                </h2>
-                <button
-                  type="button"
-                  onClick={() => showTranscriptModal.value = false}
-                  class="text-gray-400 hover:text-gray-600 text-2xl font-bold"
-                >
-                  ✕
-                </button>
-              </div>
-              <div class="bg-gray-50 rounded-xl p-6 mb-6 border-2 border-gray-200">
-                <p class="text-gray-900 text-lg leading-relaxed font-medium">
-                  {transcriptResult.value || "No transcript available"}
-                </p>
-              </div>
-              <div class="flex gap-3">
-                <button
-                  type="button"
-                  onClick={() => {
-                    navigator.clipboard.writeText(transcriptResult.value);
-                  }}
-                  class="flex-1 bg-orange-400 text-black px-4 py-3 rounded-xl font-bold hover:bg-orange-500 transition-colors border-2 border-black"
-                  style={{ boxShadow: "4px 4px 0px #000000" }}
-                >
-                  📋 Copy Magic
-                </button>
-                <button
-                  type="button"
-                  onClick={() => showTranscriptModal.value = false}
-                  class="flex-1 bg-gray-200 text-black px-4 py-3 rounded-xl font-bold hover:bg-gray-300 transition-colors border-2 border-black"
-                  style={{ boxShadow: "4px 4px 0px #000000" }}
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      <ToastContainer />
 
       {/* Header - Enhanced with better presence */}
       <header class="max-w-[1280px] mx-auto w-full px-6 pt-12 pb-8 shrink-0">
@@ -675,7 +616,7 @@ export default function ButtonStudio() {
                     showWaveform={false}
                     onComplete={(result) => {
                       transcriptResult.value = result.text;
-                      showTranscriptModal.value = true;
+                      resultCopied.value = false;
                     }}
                   />
                 </div>
@@ -768,6 +709,100 @@ export default function ButtonStudio() {
                   Reset
                 </button>
               </div>
+
+              {transcriptResult.value && (
+                <div class="mt-4 rounded-[22px] border-[3px] border-black/80 bg-white overflow-hidden">
+                  <div class="flex items-center justify-between gap-3 px-4 py-3 bg-[#D8F0A6] border-b-[3px] border-black/20">
+                    <div>
+                      <h3 class="text-lg font-black text-black">Output</h3>
+                      <p class="text-xs sm:text-sm font-bold text-black/60">
+                        Final result after the action and prompt.
+                      </p>
+                    </div>
+                    <span class="shrink-0 rounded-full border-2 border-black/70 bg-white px-3 py-1 text-xs font-black">
+                      {resultCopied.value ? "Copied" : "Ready"}
+                    </span>
+                  </div>
+                  <textarea
+                    value={transcriptResult.value}
+                    onInput={(e) => {
+                      transcriptResult.value =
+                        (e.target as HTMLTextAreaElement).value;
+                      resultCopied.value = false;
+                    }}
+                    class="block w-full min-h-[180px] max-h-[360px] resize-y bg-[#FFFDF7] p-4 text-base leading-relaxed font-medium text-gray-900 focus:outline-none"
+                    aria-label="Button output"
+                  />
+                  <div class="flex flex-col sm:flex-row gap-3 p-4 bg-[#FFF9F2] border-t-2 border-black/10">
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        try {
+                          await navigator.clipboard.writeText(
+                            transcriptResult.value,
+                          );
+                          resultCopied.value = true;
+                          playSound.success();
+                          hapticService.copySuccess();
+                          toast.success("Output copied");
+                        } catch {
+                          toast.error("Could not copy output");
+                          playSound.error();
+                        }
+                      }}
+                      class="flex-1 bg-black text-white px-4 py-3 rounded-xl font-black hover:bg-gray-800 transition-colors border-2 border-black"
+                      style={{ boxShadow: "4px 4px 0px #000000" }}
+                    >
+                      Copy Output
+                    </button>
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        try {
+                          if (navigator.share) {
+                            await navigator.share({
+                              title: "ButtonSpa output",
+                              text: transcriptResult.value,
+                            });
+                            playSound.success();
+                            hapticService.buttonSuccess();
+                            return;
+                          }
+
+                          await navigator.clipboard.writeText(
+                            transcriptResult.value,
+                          );
+                          resultCopied.value = true;
+                          toast.success("Output copied");
+                          playSound.success();
+                          hapticService.copySuccess();
+                        } catch (error) {
+                          if ((error as Error).name !== "AbortError") {
+                            toast.error("Could not share output");
+                            playSound.error();
+                          }
+                        }
+                      }}
+                      class="flex-1 bg-[#BFE8FF] text-black px-4 py-3 rounded-xl font-black hover:bg-[#A9DDF9] transition-colors border-2 border-black"
+                      style={{ boxShadow: "4px 4px 0px #000000" }}
+                    >
+                      Share
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        transcriptResult.value = "";
+                        resultCopied.value = false;
+                        playSound.secondaryClick();
+                      }}
+                      class="flex-1 bg-white text-black px-4 py-3 rounded-xl font-black hover:bg-gray-100 transition-colors border-2 border-black"
+                      style={{ boxShadow: "4px 4px 0px #000000" }}
+                    >
+                      Clear
+                    </button>
+                  </div>
+                </div>
+              )}
             </CollapsiblePanel>
 
             {/* Colors - CollapsiblePanel */}
@@ -844,8 +879,6 @@ export default function ButtonStudio() {
               index={2}
             >
               <MagicPanel
-                customization={customization.value}
-                onChange={handleCustomizationChange}
                 apiKeyValue={apiKey.value}
                 onApiKeyChange={(newApiKey) => {
                   apiKey.value = newApiKey;
@@ -869,6 +902,7 @@ export default function ButtonStudio() {
               <ShipPanel
                 customization={customization.value}
                 apiKeyValue={apiKey.value}
+                customPromptValue={customPrompt.value}
               />
             </CollapsiblePanel>
           </aside>

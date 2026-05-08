@@ -8,27 +8,22 @@ import { ButtonCustomization } from "../types/customization.ts";
 import { playSound } from "../utils/audio/soundMapping.ts";
 import { hapticService } from "../utils/audio/hapticService.ts";
 import { toast } from "./Toast.tsx";
-import { encryptWithPIN, isValidPIN } from "../utils/simpleEncrypt.ts";
 
 interface PWAShareModalProps {
   isOpen: boolean;
   onClose: () => void;
   customization: ButtonCustomization;
-  apiKey?: string;
 }
 
 // State for the generated PWA URL
 const pwaUrl = signal<string>("");
 const isGenerating = signal<boolean>(false);
 const qrCodeUrl = signal<string>("");
-const includeApiKey = signal<boolean>(false);
-const pin = signal<string>("");
 
 export default function PWAShareModal({
   isOpen,
   onClose,
   customization,
-  apiKey = "",
 }: PWAShareModalProps) {
   const customizationKey = JSON.stringify(customization);
 
@@ -54,13 +49,7 @@ export default function PWAShareModal({
 
       // Create the real URL that will serve the PWA
       const baseUrl = globalThis.location.origin;
-      let url = `${baseUrl}/b/${urlSafeId}`;
-
-      // Add encrypted API key if requested
-      if (includeApiKey.value && apiKey && pin.value && isValidPIN(pin.value)) {
-        const encryptedKey = encryptWithPIN(apiKey, pin.value);
-        url += `?k=${encryptedKey}`;
-      }
+      const url = `${baseUrl}/b/${urlSafeId}`;
 
       pwaUrl.value = url;
 
@@ -73,11 +62,11 @@ export default function PWAShareModal({
       if (!options.quiet) {
         playSound.success();
         hapticService.buttonSuccess();
-        toast("Tiny app link ready! 🎉", "success");
+        toast.success("Tiny app link ready");
       }
     } catch (error) {
       console.error("PWA generation error:", error);
-      toast("Failed to generate PWA", "error");
+      toast.error("Failed to generate PWA");
       playSound.error();
     } finally {
       isGenerating.value = false;
@@ -90,21 +79,17 @@ export default function PWAShareModal({
     pwaUrl.value = "";
     qrCodeUrl.value = "";
     isGenerating.value = false;
-    includeApiKey.value = false;
-    pin.value = "";
 
-    if (!apiKey) {
-      generatePWA({ quiet: true });
-    }
-  }, [isOpen, customizationKey, apiKey]);
+    generatePWA({ quiet: true });
+  }, [isOpen, customizationKey]);
 
   if (!isOpen) return null;
 
   const copyLink = () => {
     navigator.clipboard.writeText(pwaUrl.value);
     playSound.success();
-    hapticService.success();
-    toast("Link copied! 📋", "success");
+    hapticService.buttonSuccess();
+    toast.success("Link copied");
   };
 
   const openOnPhone = () => {
@@ -142,63 +127,6 @@ export default function PWAShareModal({
                 <p class="text-gray-600 font-bold">Creating your app...</p>
               </div>
             )
-            : !pwaUrl.value && apiKey
-            ? (
-              // PIN Setup UI (only show if API key exists)
-              <div class="space-y-4">
-                <div class="text-center">
-                  <h3 class="text-xl font-bold mb-2">
-                    🔐 Keep voice transcription with it?
-                  </h3>
-                  <p class="text-sm text-gray-600">
-                    Protect the Gemini key with a PIN before sharing.
-                  </p>
-                </div>
-
-                <div class="bg-yellow-50 border-2 border-yellow-200 rounded-xl p-4">
-                  <label class="flex items-center gap-3 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={includeApiKey.value}
-                      onChange={(e) =>
-                        includeApiKey.value =
-                          (e.target as HTMLInputElement).checked}
-                      class="w-5 h-5 rounded"
-                    />
-                    <span class="font-medium">Include API key with PIN</span>
-                  </label>
-
-                  {includeApiKey.value && (
-                    <div class="mt-3">
-                      <label class="block text-sm font-medium mb-1">
-                        Set PIN (4-6 digits)
-                      </label>
-                      <input
-                        type="number"
-                        value={pin.value}
-                        onInput={(e) =>
-                          pin.value = (e.target as HTMLInputElement).value}
-                        placeholder="1234"
-                        maxLength={6}
-                        class="w-full px-3 py-2 border-2 border-gray-300 rounded-lg font-mono text-center text-lg"
-                      />
-                      <p class="text-xs text-gray-500 mt-1">
-                        Share this PIN separately with friends
-                      </p>
-                    </div>
-                  )}
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => generatePWA()}
-                  disabled={includeApiKey.value && !isValidPIN(pin.value)}
-                  class="w-full py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-2xl font-black hover:from-purple-600 hover:to-pink-600 transition-all disabled:opacity-50"
-                >
-                  Create Install Link
-                </button>
-              </div>
-            )
             : pwaUrl.value
             ? (
               <div class="space-y-6">
@@ -220,21 +148,6 @@ export default function PWAShareModal({
                 <div class="bg-gray-100 rounded-xl p-3 font-mono text-sm break-all">
                   {pwaUrl.value}
                 </div>
-
-                {/* PIN Display if used */}
-                {includeApiKey.value && pin.value && (
-                  <div class="bg-green-50 border-2 border-green-300 rounded-xl p-4">
-                    <p class="font-bold text-green-800 mb-1">
-                      🔐 PIN Protected
-                    </p>
-                    <p class="text-2xl font-mono font-black text-center">
-                      {pin.value}
-                    </p>
-                    <p class="text-xs text-gray-600 mt-2">
-                      Share this PIN with your friends separately
-                    </p>
-                  </div>
-                )}
 
                 {/* Action Buttons */}
                 <div class="space-y-3">
@@ -276,7 +189,7 @@ export default function PWAShareModal({
                     <div class="flex gap-2">
                       <span>📋</span>
                       <span>
-                        Voice buttons record, transcribe, and copy text
+                        Voice buttons can turn recordings into useful output
                       </span>
                     </div>
                     <div class="flex gap-2">

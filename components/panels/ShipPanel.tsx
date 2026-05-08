@@ -9,15 +9,33 @@ import PWAShareModal from "../PWAShareModal.tsx";
 interface ShipPanelProps {
   customization: ButtonCustomization;
   apiKeyValue?: string;
+  customPromptValue?: string;
 }
 
 // State for PWA share modal
 const showPWAModal = signal(false);
 
 export default function ShipPanel(
-  { customization, apiKeyValue = "" }: ShipPanelProps,
+  {
+    customization,
+    apiKeyValue: _apiKeyValue = "",
+    customPromptValue = "",
+  }: ShipPanelProps,
 ) {
-  const handleExport = async (type: "html" | "pwa" | "share") => {
+  const exportCustomization = customPromptValue.trim()
+    ? {
+      ...customization,
+      api: {
+        provider: "gemini" as const,
+        apiKey: "",
+        model: "gemini-2.5-flash",
+        customPrompt: customPromptValue.trim(),
+        temperature: customization.api?.temperature ?? 0.2,
+      },
+    }
+    : customization;
+
+  const handleExport = async (type: "html" | "share") => {
     const exporter = new ButtonExporter();
 
     try {
@@ -25,9 +43,9 @@ export default function ShipPanel(
       hapticService.buttonPress();
 
       if (type === "html") {
-        const result = await exporter.generateHTML(customization, {
-          includeAI: !!apiKeyValue,
-          apiKey: apiKeyValue,
+        const result = await exporter.generateHTML(exportCustomization, {
+          includeAI: true,
+          customPrompt: customPromptValue,
         });
         const blob = new Blob([result.html], { type: "text/html" });
         const url = URL.createObjectURL(blob);
@@ -36,39 +54,17 @@ export default function ShipPanel(
         a.download = result.filename;
         a.click();
         URL.revokeObjectURL(url);
-        toast("HTML exported! 🎉", "success");
-      } else if (type === "pwa") {
-        const result = await exporter.generatePWA(customization, {
-          includeAI: !!apiKeyValue,
-          apiKey: apiKeyValue,
-        });
-        const zip = await import("https://deno.land/x/zip@v1.2.5/mod.ts");
-        const archive = new zip.ZipWriter(new zip.BlobWriter());
-
-        await archive.add("index.html", new zip.TextReader(result.html));
-        await archive.add("manifest.json", new zip.TextReader(result.manifest));
-        await archive.add("sw.js", new zip.TextReader(result.serviceWorker));
-        await archive.add("icon-192.png", new zip.TextReader(result.icon192));
-        await archive.add("icon-512.png", new zip.TextReader(result.icon512));
-
-        const blob = await archive.close();
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = result.filename;
-        a.click();
-        URL.revokeObjectURL(url);
-        toast("PWA exported! 📱", "success");
+        toast.success("HTML exported");
       } else if (type === "share") {
-        const shareUrl = exporter.generateShareLink(customization);
+        const shareUrl = exporter.generateShareLink(exportCustomization);
         await navigator.clipboard.writeText(shareUrl);
-        toast("Share link copied! 🔗", "success");
+        toast.success("Design link copied");
       }
 
       playSound.success();
       hapticService.buttonSuccess();
     } catch (error) {
-      toast(`Export failed: ${error.message}`, "error");
+      toast.error(`Export failed: ${(error as Error).message}`);
       playSound.error();
       hapticService.generalError();
     }
@@ -159,11 +155,9 @@ export default function ShipPanel(
           <li>
             • <strong>HTML</strong> - drop it into a site
           </li>
-          {apiKeyValue && (
-            <li class="text-green-700 font-bold">
-              ✓ Voice transcription included in exports
-            </li>
-          )}
+          <li class="text-green-700 font-bold">
+            Your Gemini key stays out of exports
+          </li>
         </ul>
       </div>
 
@@ -171,8 +165,7 @@ export default function ShipPanel(
       <PWAShareModal
         isOpen={showPWAModal.value}
         onClose={() => showPWAModal.value = false}
-        customization={customization}
-        apiKey={apiKeyValue}
+        customization={exportCustomization}
       />
     </div>
   );

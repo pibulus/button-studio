@@ -5,6 +5,9 @@
 import { ButtonCustomization } from "../../../types/customization.ts";
 import { generateButtonStyles } from "../../../types/customization.ts";
 
+const DEFAULT_OUTPUT_PROMPT =
+  "Transcribe this audio file accurately and completely, removing any redundant 'ums,' 'likes, 'uhs', and similar filler words. Return only the cleaned-up transcription, with no additional text.";
+
 export function generateStandaloneHTML(
   customization: ButtonCustomization,
   options: {
@@ -31,6 +34,14 @@ export function generateStandaloneHTML(
     .join("; ");
   const buttonId = `voice-button-${Date.now()}`;
   const appName = escapeHTML(customization.content.label || "Action Button");
+  const buttonStyleAttr = escapeAttribute(buttonStyles);
+  const buttonContent = escapeHTML(
+    customization.content.value || "Boop me!",
+  );
+  const outputPrompt = options.customPrompt?.trim() ||
+    customization.api?.customPrompt?.trim() ||
+    DEFAULT_OUTPUT_PROMPT;
+  const outputPromptScript = JSON.stringify(outputPrompt);
   const pageDescription =
     "A button app made with ButtonSpa. Open it, tap the button, and let it do useful work.";
 
@@ -48,9 +59,6 @@ export function generateStandaloneHTML(
     <meta name="twitter:title" content="${appName} - ButtonSpa Tiny App">
     <meta name="twitter:description" content="${pageDescription}">
     
-    <!-- Tailwind CSS CDN for styling -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
     <!-- Custom styles for button -->
     <style>
         ${getCustomCSS(customization)}
@@ -61,6 +69,229 @@ export function generateStandaloneHTML(
                 radial-gradient(circle at 82% 18%, rgba(120, 210, 255, 0.20), transparent 30%),
                 #f7f0e2;
             color: #111215;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 32px;
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            box-sizing: border-box;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: inherit;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .buttonspa-shell {
+            width: min(100%, 560px);
+            text-align: center;
+        }
+
+        .buttonspa-title {
+            margin: 0 0 32px;
+            color: #1f2937;
+            font-size: clamp(28px, 7vw, 44px);
+            font-weight: 900;
+            line-height: 1.05;
+        }
+
+        .status {
+            margin-top: 24px;
+            color: #4b5563;
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .setup-card,
+        .output-card {
+            width: min(100%, 560px);
+            margin: 18px auto 0;
+            border: 3px solid #111215;
+            border-radius: 22px;
+            background: #fffaf2;
+            box-shadow: 6px 6px 0 rgba(17, 18, 21, 0.82);
+            overflow: hidden;
+            text-align: left;
+        }
+
+        .setup-card {
+            padding: 20px;
+            border-style: dashed;
+            background: linear-gradient(135deg, #fff1f7, #fff7d6);
+        }
+
+        .setup-title,
+        .output-title {
+            margin: 0;
+            color: #111215;
+            font-size: 20px;
+            font-weight: 900;
+            line-height: 1.15;
+        }
+
+        .setup-body {
+            margin: 8px 0 16px;
+            color: #4b5563;
+            font-size: 14px;
+            line-height: 1.45;
+        }
+
+        .setup-steps {
+            display: grid;
+            gap: 10px;
+            margin: 0 0 16px;
+            padding: 0;
+            list-style: none;
+            color: #374151;
+            font-size: 14px;
+            line-height: 1.35;
+        }
+
+        .step-badge {
+            display: inline-flex;
+            width: 24px;
+            height: 24px;
+            align-items: center;
+            justify-content: center;
+            margin-right: 8px;
+            border-radius: 999px;
+            background: #ec4899;
+            color: white;
+            font-size: 12px;
+            font-weight: 900;
+        }
+
+        .api-input {
+            width: 100%;
+            min-height: 48px;
+            padding: 12px 14px;
+            border: 2px solid #111215;
+            border-radius: 12px;
+            background: white;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 14px;
+        }
+
+        .api-input:focus {
+            outline: 4px solid rgba(236, 72, 153, 0.25);
+        }
+
+        .primary-action,
+        .secondary-action {
+            min-height: 48px;
+            border: 2px solid #111215;
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 15px;
+            font-weight: 900;
+            cursor: pointer;
+            transition: transform 120ms ease, background 120ms ease;
+        }
+
+        .primary-action {
+            width: 100%;
+            margin-top: 12px;
+            background: linear-gradient(135deg, #f9a8d4, #fde68a);
+            color: #111215;
+        }
+
+        .secondary-action {
+            background: #111215;
+            color: white;
+            flex: 1;
+        }
+
+        .primary-action:active,
+        .secondary-action:active {
+            transform: translateY(2px) scale(0.98);
+        }
+
+        .privacy-note {
+            margin: 12px 0 0;
+            color: #6b7280;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        .output-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 14px 16px;
+            border-bottom: 3px solid rgba(17, 18, 21, 0.18);
+            background: #d8f0a6;
+        }
+
+        .output-subtitle {
+            margin: 4px 0 0;
+            color: rgba(17, 18, 21, 0.62);
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .output-pill {
+            flex-shrink: 0;
+            border: 2px solid rgba(17, 18, 21, 0.72);
+            border-radius: 999px;
+            background: white;
+            padding: 6px 10px;
+            font-size: 12px;
+            font-weight: 900;
+        }
+
+        .output-text {
+            width: 100%;
+            min-height: 180px;
+            max-height: 42vh;
+            resize: vertical;
+            border: 0;
+            background: #fffdf7;
+            color: #111827;
+            padding: 16px;
+            font: 600 16px/1.6 ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        .output-text:focus {
+            outline: 4px solid rgba(216, 240, 166, 0.45);
+        }
+
+        .output-actions {
+            display: flex;
+            gap: 12px;
+            padding: 14px;
+            border-top: 2px solid rgba(17, 18, 21, 0.1);
+            background: #fff9f2;
+        }
+
+        .attribution {
+            margin-top: 32px;
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .attribution a,
+        .setup-card a {
+            color: #be185d;
+            font-weight: 800;
+        }
+
+        @media (max-width: 520px) {
+            body {
+                align-items: flex-start;
+                padding: 24px 16px;
+            }
+
+            .output-actions {
+                flex-direction: column;
+            }
         }
         
         /* Recording animation */
@@ -87,11 +318,11 @@ export function generateStandaloneHTML(
         ${options.showInstallGuide ? getInstallGuideCSS() : ""}
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-8">
+<body>
     
     <!-- Main Button Container -->
-    <div class="text-center">
-        <h1 class="text-3xl font-bold text-gray-800 mb-8">
+    <main class="buttonspa-shell">
+        <h1 class="buttonspa-title">
             ${appName}
         </h1>
         
@@ -99,7 +330,7 @@ export function generateStandaloneHTML(
         <button 
             id="${buttonId}"
             class="voice-button transition-all duration-200 ease-out touch-manipulation"
-            style="${buttonStyles}"
+            style="${buttonStyleAttr}"
             onmousedown="handleMouseDown()"
             onmouseup="handleMouseUp()"
             onmouseleave="handleMouseUp()"
@@ -108,78 +339,81 @@ export function generateStandaloneHTML(
             onclick="handleButtonClick()"
         >
             <span class="button-content">
-                ${
-    customization.content.type === "emoji"
-      ? customization.content.value
-      : customization.content.value || "Boop me!"
-  }
+                ${buttonContent}
             </span>
         </button>
         
         <!-- Status Display -->
-        <div id="status" class="mt-6 text-lg font-medium text-gray-600">
+        <div id="status" class="status">
             ${options.autoStart ? "Ready to auto-record..." : "Click to record"}
         </div>
         
         <!-- API Key Setup (shown when no key) -->
-        <div id="api-setup" class="mt-4 max-w-lg mx-auto p-6 bg-gradient-to-r from-pink-50 to-yellow-50 rounded-lg border-2 border-dashed border-pink-200 ${
-    options.apiKey ? "hidden" : ""
+        <div id="api-setup" class="setup-card ${
+    options.includeAI === false ? "hidden" : ""
   }">
-            <h3 class="text-xl font-bold mb-3 text-center">🚀 Enable AI Transcription</h3>
-            <p class="text-gray-600 mb-4 text-center">Get a free Gemini API key in 2 minutes:</p>
+            <h3 class="setup-title">Enable ButtonSpa output</h3>
+            <p class="setup-body">Paste a Gemini key to let this button turn recordings into useful text. The key stays in this browser.</p>
             
-            <div class="space-y-3 text-sm">
-                <div class="flex items-center space-x-3">
-                    <span class="bg-pink-500 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold text-xs">1</span>
-                    <span>Visit <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-pink-700 underline font-medium">Google AI Studio</a></span>
-                </div>
-                <div class="flex items-center space-x-3">
-                    <span class="bg-pink-500 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold text-xs">2</span>
-                    <span>Click "Create API key" → "Create API key in new project"</span>
-                </div>
-                <div class="flex items-center space-x-3">
-                    <span class="bg-pink-500 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold text-xs">3</span>
-                    <span>Copy your key and paste below:</span>
-                </div>
-            </div>
+            <ol class="setup-steps">
+                <li><span class="step-badge">1</span>Visit <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer">Google AI Studio</a></li>
+                <li><span class="step-badge">2</span>Create an API key</li>
+                <li><span class="step-badge">3</span>Paste it below</li>
+            </ol>
             
-            <div class="mt-4 space-y-3">
+            <div>
                 <input 
                     type="password" 
                     id="api-key-input" 
                     placeholder="Gemini API key" 
-                    class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-pink-500 focus:outline-none font-mono text-sm"
+                    class="api-input"
                 >
-                <button onclick="saveApiKey()" class="w-full bg-gradient-to-r from-pink-400 to-yellow-300 text-black py-3 px-4 rounded-lg font-black hover:from-pink-500 hover:to-yellow-400 transition-all">
-                    ✨ Save & Start Transcribing
+                <button onclick="saveApiKey()" class="primary-action">
+                    Save & Start
                 </button>
             </div>
             
-            <p class="text-xs text-gray-500 mt-3 text-center">
-                🔒 Your API key stays private in your browser only
+            <p class="privacy-note">
+                Your API key is saved only in this browser.
             </p>
         </div>
 
-        <!-- Transcript Display -->
-        <div id="transcript" class="mt-4 max-w-lg mx-auto p-4 bg-white rounded-lg shadow-md hidden">
-            <h3 class="text-lg font-bold mb-2">Transcript:</h3>
-            <p id="transcript-text" class="text-gray-800 font-mono text-sm bg-gray-50 p-3 rounded border"></p>
-                <button onclick="copyTranscript()" class="mt-2 px-4 py-2 bg-pink-500 text-white rounded hover:bg-pink-600">
-                Copy to Clipboard
-            </button>
+        <!-- Output Display -->
+        <div id="transcript" class="output-card hidden">
+            <div class="output-header">
+                <div>
+                    <h3 class="output-title">Output</h3>
+                    <p class="output-subtitle">Edit it, copy it, or share it.</p>
+                </div>
+                <span id="output-state" class="output-pill">Ready</span>
+            </div>
+            <textarea
+                id="transcript-text"
+                class="output-text"
+                aria-label="Button output"
+                oninput="currentTranscript = this.value"
+            ></textarea>
+            <div class="output-actions">
+                <button onclick="copyTranscript(this)" class="secondary-action">
+                    Copy Output
+                </button>
+                <button onclick="shareOutput(this)" class="secondary-action">
+                    Share
+                </button>
+            </div>
         </div>
         
         ${
     !options.customBranding
       ? `
         <!-- ButtonSpa Attribution -->
-        <div class="mt-8 text-sm text-gray-500">
-            Created with <a href="https://buttonspa.app" class="text-pink-600 hover:underline">ButtonSpa</a>
+        <div class="attribution">
+            Created with <a href="https://buttonspa.app">ButtonSpa</a>
         </div>
         `
       : ""
   }
-    </div>
+    </main>
 
     ${options.showInstallGuide ? getInstallGuideMarkup() : ""}
 
@@ -189,11 +423,8 @@ export function generateStandaloneHTML(
         let audioChunks = [];
         let isRecording = false;
         let currentTranscript = '';
-        let userApiKey = ${
-    options.apiKey
-      ? `'${options.apiKey}'`
-      : 'localStorage.getItem("gemini-api-key") || null'
-  };
+        let userApiKey = localStorage.getItem("gemini-api-key") || null;
+        const outputPrompt = ${outputPromptScript};
         
         // API Key Management
         function saveApiKey() {
@@ -234,7 +465,7 @@ export function generateStandaloneHTML(
         
         // Check API key on load
         window.addEventListener('load', () => {
-            if (userApiKey && !${options.apiKey ? "true" : "false"}) {
+            if (userApiKey) {
                 document.getElementById('api-setup').classList.add('hidden');
                 document.getElementById('status').textContent = 'Click to record';
             }
@@ -379,30 +610,32 @@ export function generateStandaloneHTML(
         
         async function processAudio(audioBlob) {
             ${
-    options.includeAI && options.apiKey
+    options.includeAI !== false
       ? `
             try {
                 // Convert audio to base64 for Gemini API
                 const base64Audio = await blobToBase64(audioBlob);
                 
                 // Call Gemini API for transcription
-                const apiKey = userApiKey || '${options.apiKey || ""}';
+                const apiKey = userApiKey;
                 if (!apiKey) {
                     status.textContent = 'Please set up your API key first';
+                    document.getElementById('api-setup').classList.remove('hidden');
                     return;
                 }
                 
                 const response = await fetch(
-                    \`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=\${apiKey}\`,
+                    'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent',
                     {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
+                            'x-goog-api-key': apiKey,
                         },
                         body: JSON.stringify({
                             contents: [{
                                 parts: [{
-                                    text: "Transcribe this audio file accurately and completely, removing any redundant 'ums,' 'likes, 'uhs', and similar filler words. Return only the cleaned-up transcription, with no additional text."
+                                    text: outputPrompt
                                 }, {
                                     inline_data: {
                                         mime_type: audioBlob.type,
@@ -432,16 +665,14 @@ export function generateStandaloneHTML(
             }
             `
       : `
-            // No AI transcription - show API setup prompt
-            status.textContent = 'Recording saved! Set up API key above for transcription ⬆️';
-            document.getElementById('api-setup').classList.remove('hidden');
+            status.textContent = 'Recording complete.';
             `
   }
         }
         
         function showTranscript(transcript) {
             currentTranscript = transcript;
-            transcriptText.textContent = transcript;
+            transcriptText.value = transcript;
             transcriptDiv.classList.remove('hidden');
             
             ${
@@ -449,28 +680,52 @@ export function generateStandaloneHTML(
       ? `
             // Auto-copy transcript to clipboard
             navigator.clipboard.writeText(transcript).then(() => {
-                status.textContent = 'Transcription complete! Auto-copied to clipboard ✅';
+                document.getElementById('output-state').textContent = 'Copied';
+                status.textContent = 'Your output is ready and copied';
             }).catch(() => {
-                status.textContent = 'Transcription complete! (Auto-copy failed)';
+                document.getElementById('output-state').textContent = 'Ready';
+                status.textContent = 'Your output is ready';
             });
             `
       : `
-            status.textContent = 'Transcription complete!';
+            document.getElementById('output-state').textContent = 'Ready';
+            status.textContent = 'Your output is ready';
             `
   }
         }
         
-        function copyTranscript() {
+        function copyTranscript(trigger) {
             if (currentTranscript) {
                 navigator.clipboard.writeText(currentTranscript).then(() => {
-                    // Show temporary feedback
-                    const button = event.target;
-                    const originalText = button.textContent;
-                    button.textContent = 'Copied!';
+                    document.getElementById('output-state').textContent = 'Copied';
+                    const originalText = trigger.textContent;
+                    trigger.textContent = 'Copied';
                     setTimeout(() => {
-                        button.textContent = originalText;
+                        trigger.textContent = originalText;
                     }, 2000);
+                }).catch(() => {
+                    status.textContent = 'Could not copy output';
                 });
+            }
+        }
+
+        async function shareOutput(trigger) {
+            if (!currentTranscript) return;
+
+            try {
+                if (navigator.share) {
+                    await navigator.share({
+                        title: '${appName} output',
+                        text: currentTranscript,
+                    });
+                    return;
+                }
+
+                copyTranscript(trigger);
+            } catch (error) {
+                if (error && error.name !== 'AbortError') {
+                    status.textContent = 'Could not share output';
+                }
             }
         }
         
@@ -584,6 +839,10 @@ function escapeHTML(value: string): string {
         return char;
     }
   });
+}
+
+function escapeAttribute(value: string): string {
+  return escapeHTML(value);
 }
 
 function getCustomCSS(customization: ButtonCustomization): string {

@@ -55,12 +55,11 @@ export class ButtonExporter {
   ) {
     // Update internal state
     this.customization = customization;
-    this.apiKey = options.apiKey;
+    this.customPrompt = options.customPrompt ?? this.customPrompt;
 
     const html = generateStandaloneHTML(customization, {
-      includeAI: options.includeAI && !!options.apiKey,
-      apiKey: options.apiKey,
-      customPrompt: this.customPrompt,
+      includeAI: options.includeAI ?? true,
+      customPrompt: options.customPrompt ?? this.customPrompt,
       customBranding: options.customBranding,
     });
 
@@ -73,8 +72,7 @@ export class ButtonExporter {
   generateHTMLOld(options: ExportOptions = {}): ExportResult {
     try {
       const html = generateStandaloneHTML(this.customization, {
-        includeAI: options.includeAI && !!this.apiKey,
-        apiKey: this.apiKey,
+        includeAI: options.includeAI ?? true,
         customPrompt: this.customPrompt,
         customBranding: options.customBranding,
       });
@@ -89,7 +87,7 @@ export class ButtonExporter {
     } catch (error) {
       return {
         success: false,
-        error: `HTML export failed: ${error.message}`,
+        error: `HTML export failed: ${(error as Error).message}`,
       };
     }
   }
@@ -104,14 +102,13 @@ export class ButtonExporter {
   ) {
     // Update internal state
     this.customization = customization;
-    this.apiKey = options.apiKey;
+    this.customPrompt = options.customPrompt ?? this.customPrompt;
 
     const appName = customization.content.label || "Action Button";
     const manifest = this.generatePWAManifest(appName);
     const html = this.generatePWAHTML(appName, {
-      includeAI: options.includeAI && !!options.apiKey,
-      apiKey: options.apiKey,
-      customPrompt: this.customPrompt,
+      includeAI: options.includeAI ?? true,
+      customPrompt: options.customPrompt ?? this.customPrompt,
       autoStart: options.autoStart,
       autoCopy: options.autoCopy,
       autoStopOnSilence: options.autoStopOnSilence,
@@ -182,7 +179,7 @@ export class ButtonExporter {
     } catch (error) {
       return {
         success: false,
-        error: `PWA export failed: ${error.message}`,
+        error: `PWA export failed: ${(error as Error).message}`,
       };
     }
   }
@@ -209,7 +206,7 @@ export class ButtonExporter {
       const shareLink = generateShareLink(this.customization, {
         title: options.title || this.customization.content.label,
         description: options.description,
-        includeApiKey: !!this.apiKey,
+        includeApiKey: false,
       });
 
       return {
@@ -219,7 +216,7 @@ export class ButtonExporter {
     } catch (error) {
       return {
         success: false,
-        error: `Share link generation failed: ${error.message}`,
+        error: `Share link generation failed: ${(error as Error).message}`,
       };
     }
   }
@@ -269,7 +266,7 @@ export class ButtonExporter {
     } catch (error) {
       return {
         success: false,
-        error: `Mobile template export failed: ${error.message}`,
+        error: `Mobile template export failed: ${(error as Error).message}`,
       };
     }
   }
@@ -316,7 +313,7 @@ export class ButtonExporter {
     } catch (error) {
       return {
         success: false,
-        error: `Embed code generation failed: ${error.message}`,
+        error: `Embed code generation failed: ${(error as Error).message}`,
       };
     }
   }
@@ -410,9 +407,8 @@ export class ButtonExporter {
     const icon512Path = options.icon512Path || "./icon-512.png";
     const appleTouchIconPath = options.appleTouchIconPath || icon192Path;
     const baseHTML = generateStandaloneHTML(this.customization, {
-      includeAI: options.includeAI && !!options.apiKey,
-      apiKey: options.apiKey,
-      customPrompt: this.customPrompt,
+      includeAI: options.includeAI ?? true,
+      customPrompt: options.customPrompt ?? this.customPrompt,
       customBranding: options.customBranding,
       autoStart: options.autoStart,
       autoCopy: options.autoCopy,
@@ -518,10 +514,10 @@ self.addEventListener('fetch', (event) => {
 
     // Build shadow style
     const shadowStyle = effects.shadow
-      ? `box-shadow: ${effects.shadowOffsetX || 4}px ${
-        effects.shadowOffsetY || 4
-      }px ${effects.shadowBlur || 0}px ${effects.shadowColor || "#000000"};`
+      ? "box-shadow: 4px 4px 0px #000000;"
       : "";
+    const textColor = appearance.textColor === "white" ? "#ffffff" : "#000000";
+    const iconContent = escapeHTML(content.value || content.label || "🎤");
 
     // Scale emoji/text appropriately
     const fontSize = content.type === "emoji"
@@ -544,9 +540,7 @@ self.addEventListener('fetch', (event) => {
               width: ${buttonSize}px;
               height: ${buttonSize}px;
               border-radius: ${borderRadius}px;
-              border: ${borderWidth}px solid ${
-      appearance.borderColor || "#000"
-    };
+              border: ${borderWidth}px solid #000000;
               ${backgroundStyle}
               ${shadowStyle}
               display: flex;
@@ -554,14 +548,12 @@ self.addEventListener('fetch', (event) => {
               justify-content: center;
               font-size: ${fontSize}px;
               font-weight: bold;
-              color: ${
-      content.type === "text" ? (appearance.textColor || "#000") : "inherit"
-    };
+              color: ${content.type === "text" ? textColor : "inherit"};
               font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
               overflow: hidden;
               position: relative;
             ">
-              ${content.value || content.label || "🎤"}
+              ${iconContent}
             </div>
           </div>
         </foreignObject>
@@ -707,4 +699,23 @@ const styles = StyleSheet.create({
 - Submit to app stores`;
     }
   }
+}
+
+function escapeHTML(value: string): string {
+  return value.replace(/[&<>"']/g, (char) => {
+    switch (char) {
+      case "&":
+        return "&amp;";
+      case "<":
+        return "&lt;";
+      case ">":
+        return "&gt;";
+      case '"':
+        return "&quot;";
+      case "'":
+        return "&#39;";
+      default:
+        return char;
+    }
+  });
 }

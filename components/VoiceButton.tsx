@@ -170,9 +170,9 @@ export default function VoiceButton({
       copyToClipboard(transcript.value).then((success) => {
         isClipboardSuccess.value = success;
         if (success) {
-          toast.success("Voice magic copied! 🎤✨");
+          toast.success("Output copied");
         } else {
-          toast.error("Oops, clipboard magic failed!");
+          toast.error("Could not copy output");
         }
       });
     }

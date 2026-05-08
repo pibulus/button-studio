@@ -76,9 +76,9 @@ export default function Home() {
               "priceCurrency": "USD",
             },
             "featureList": [
-              "Tiny action app builder",
-              "API and webhook button direction",
-              "Voice transcription starter action",
+              "Buttons that do useful things",
+              "Prompt-shaped outputs like diaries, recipes, and notes",
+              "Voice transcription starter button",
               "Shareable button links",
               "Home screen install for iPhone and Android",
               "Standalone HTML export",

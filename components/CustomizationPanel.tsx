@@ -81,22 +81,8 @@ export default function CustomizationPanel({
     });
   };
 
-  const applyTheme = (theme: ButtonTheme) => {
-    onChange({
-      ...customization,
-      appearance: {
-        ...customization.appearance,
-        ...theme.appearance,
-      },
-      interactions: {
-        ...customization.interactions,
-        ...theme.interactions,
-      },
-      effects: {
-        ...customization.effects,
-        ...theme.effects,
-      },
-    });
+  const applyTheme = (_theme: ButtonTheme) => {
+    void _theme;
   };
 
   const togglePanel = (panelId: string) => {
@@ -107,9 +93,9 @@ export default function CustomizationPanel({
     };
     // Use correct sound based on expand/collapse action
     if (isExpanding) {
-      playSound.panelsExpand?.() || playSound.primaryClick();
+      playSound.panelExpand?.() || playSound.primaryClick();
     } else {
-      playSound.panelsCollapse?.() || playSound.secondaryClick();
+      playSound.panelCollapse?.() || playSound.secondaryClick();
     }
     hapticService.buttonPress();
   };
@@ -189,6 +175,7 @@ export default function CustomizationPanel({
         <ShipPanel
           customization={customization}
           apiKeyValue={apiKeyValue}
+          customPromptValue={customPromptValue}
         />
       </CollapsiblePanel>
 
@@ -199,7 +186,7 @@ export default function CustomizationPanel({
         color="purple"
         isExpanded={expandedPanels.value.magic}
         onToggle={togglePanel}
-        special={true}
+        special
         index={5}
       >
         <MagicPanel
