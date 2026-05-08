@@ -65,7 +65,7 @@ export default function Home() {
             "@context": "https://schema.org",
             "@type": "WebApplication",
             "name": BRAND_NAME,
-            "alternateName": "ButtonSpa - Tiny Action App Builder",
+            "alternateName": "ButtonSpa - Buttons That Do Things",
             "url": "https://buttonspa.app",
             "description": BRAND_DESCRIPTION,
             "applicationCategory": "ProductivityApplication",

@@ -2,7 +2,7 @@
 
 > **Make cute buttons that do real things.**
 
-ButtonSpa is a playful builder for tiny action apps: APIs, webhooks, and useful
+ButtonSpa is a playful builder for buttons that do things: useful little
 workflows wrapped in buttons people actually want to tap. Today it starts with
 voice transcription, tactile effects, and PWA export. The wider shape is simple:
 polished buttons that can be shared, embedded, installed, and wired to whatever

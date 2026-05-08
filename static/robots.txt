@@ -1,4 +1,4 @@
-# ButtonSpa - Tiny Action App Builder
+# ButtonSpa - Make Buttons That Do Things
 # https://buttonspa.app
 
 User-agent: *

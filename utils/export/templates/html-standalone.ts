@@ -32,7 +32,7 @@ export function generateStandaloneHTML(
   const buttonId = `voice-button-${Date.now()}`;
   const appName = escapeHTML(customization.content.label || "Action Button");
   const pageDescription =
-    "A tiny action app made with ButtonSpa. Open it, tap the button, and let it do useful work.";
+    "A button app made with ButtonSpa. Open it, tap the button, and let it do useful work.";
 
   return `<!DOCTYPE html>
 <html lang="en">

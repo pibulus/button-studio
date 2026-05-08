@@ -112,11 +112,11 @@ export function AboutModal() {
               class="text-base sm:text-lg leading-relaxed"
               style="color: var(--color-text, #0A0A0A)"
             >
-              ButtonSpa is a playful builder for tiny action apps: buttons that
-              look good, feel good, and do useful work. The first treatment is
-              voice transcription, but the shape is bigger: APIs, webhooks,
-              diaries, recipe helpers, creative workflows, and whatever else is
-              better as one good tap.
+              ButtonSpa is a playful builder for buttons that do things: useful
+              little workflows wrapped in something nice to tap. The first
+              treatment is voice transcription, but the shape is bigger:
+              diaries, recipe helpers, reminders, creative workflows, and
+              whatever else is better as one good button.
             </p>
 
             {/* What it's for */}
@@ -128,7 +128,7 @@ export function AboutModal() {
                 class="text-sm sm:text-base font-medium"
                 style="color: var(--color-text, #0A0A0A)"
               >
-                Design a button, give it an action, then share it, embed it,
+                Design a button, give it a job, then share it, embed it,
                 download it, or save it to your phone as a tiny app.
               </p>
               <p

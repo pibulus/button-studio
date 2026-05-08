@@ -359,7 +359,7 @@ export class ButtonExporter {
     return {
       name: appName,
       short_name: appName.slice(0, 12),
-      description: `ButtonSpa tiny action app: ${appName}`,
+      description: `ButtonSpa button app: ${appName}`,
       start_url: options.startUrl || "./",
       scope: options.scope || "./",
       display: "standalone",

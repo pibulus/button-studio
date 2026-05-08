@@ -1,7 +1,7 @@
 {
-  "name": "ButtonSpa - Tiny Action App Builder",
+  "name": "ButtonSpa - Buttons That Do Things",
   "short_name": "ButtonSpa",
-  "description": "Turn APIs and useful workflows into tappable tiny apps.",
+  "description": "Make custom buttons for useful little workflows.",
   "start_url": "/",
   "display": "standalone",
   "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
