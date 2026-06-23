@@ -15,8 +15,10 @@ export function isSafari(): boolean {
 
 // Check if running as installed PWA
 export function isStandalone(): boolean {
-  return (window.navigator as any).standalone === true ||
-    window.matchMedia("(display-mode: standalone)").matches;
+  return (globalThis.navigator as unknown as Record<string, unknown>)
+        .standalone ===
+      true ||
+    globalThis.matchMedia("(display-mode: standalone)").matches;
 }
 
 // iOS Audio Context singleton - must be created from user gesture
@@ -32,8 +34,9 @@ export async function initializeIOSAudio(): Promise<AudioContext> {
   try {
     // Create or resume audio context
     if (!audioContext) {
-      audioContext =
-        new (window.AudioContext || (window as any).webkitAudioContext)();
+      audioContext = new (globalThis.AudioContext ||
+        (globalThis as Record<string, unknown>)
+          .webkitAudioContext as typeof AudioContext)();
     }
 
     // iOS requires resuming the context from a user gesture
@@ -101,7 +104,7 @@ export async function requestMicrophonePermission(): Promise<boolean> {
         if (result.state === "denied") {
           return false;
         }
-      } catch (e) {
+      } catch {
         // iOS Safari doesn't support permissions.query for microphone
         console.log("Permissions API not available for microphone");
       }
@@ -187,13 +190,13 @@ export function fixIOSViewportHeight(): void {
   if (!isIOS()) return;
 
   const setViewportHeight = () => {
-    const vh = window.innerHeight * 0.01;
+    const vh = globalThis.innerHeight * 0.01;
     document.documentElement.style.setProperty("--vh", `${vh}px`);
   };
 
   setViewportHeight();
-  window.addEventListener("resize", setViewportHeight);
-  window.addEventListener("orientationchange", setViewportHeight);
+  globalThis.addEventListener("resize", setViewportHeight);
+  globalThis.addEventListener("orientationchange", setViewportHeight);
 }
 
 // Handle iOS PWA status bar
@@ -209,7 +212,8 @@ export function setupIOSStatusBar(): void {
   );
   if (metaTag) {
     // Change based on theme or time of day
-    const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDark =
+      globalThis.matchMedia("(prefers-color-scheme: dark)").matches;
     metaTag.setAttribute("content", isDark ? "black-translucent" : "default");
   }
 }

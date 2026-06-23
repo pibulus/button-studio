@@ -8,7 +8,6 @@ import PWAShareModal from "../PWAShareModal.tsx";
 
 interface ShipPanelProps {
   customization: ButtonCustomization;
-  apiKeyValue?: string;
   customPromptValue?: string;
 }
 
@@ -18,7 +17,6 @@ const showPWAModal = signal(false);
 export default function ShipPanel(
   {
     customization,
-    apiKeyValue: _apiKeyValue = "",
     customPromptValue = "",
   }: ShipPanelProps,
 ) {

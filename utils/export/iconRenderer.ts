@@ -196,7 +196,7 @@ function getFittedFontSize(label: string, buttonSize: number): number {
   return Math.round(Math.max(12, Math.min(buttonSize * 0.22, widthBasedSize)));
 }
 
-async function ensureResvgReady(requestUrl: string): Promise<void> {
+function ensureResvgReady(requestUrl: string): Promise<void> {
   if (!resvgReady) {
     const wasmUrl = new URL("/vendor/resvg/index_bg.wasm", requestUrl);
     resvgReady = initWasm(fetch(wasmUrl));
@@ -205,7 +205,7 @@ async function ensureResvgReady(requestUrl: string): Promise<void> {
   return resvgReady;
 }
 
-async function getIconFont(requestUrl: string): Promise<Uint8Array> {
+function getIconFont(requestUrl: string): Promise<Uint8Array> {
   if (!iconFontReady) {
     const fontUrl = new URL("/vendor/fonts/inter.ttf", requestUrl);
     iconFontReady = fetch(fontUrl)

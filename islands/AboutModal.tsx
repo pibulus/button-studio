@@ -5,7 +5,7 @@ import { BRAND_TAGLINE } from "../utils/brand.ts";
 /**
  * 🎸 About Modal Component
  *
- * Showcase modal explaining ASCIIFIER's purpose and Pablo's rapid dev approach.
+ * Showcase modal explaining ButtonSpa's purpose and Pablo's rapid dev approach.
  *
  * FEATURES:
  * - Project narrative & tech stack showcase

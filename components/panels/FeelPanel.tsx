@@ -1,8 +1,4 @@
-import {
-  ButtonCustomization,
-  ButtonTheme,
-  buttonThemes,
-} from "../../types/customization.ts";
+import { ButtonCustomization, ButtonTheme } from "../../types/customization.ts";
 import { playSound } from "../../utils/audio/soundMapping.ts";
 import { hapticService } from "../../utils/audio/hapticService.ts";
 
@@ -18,7 +14,7 @@ interface FeelPanelProps {
 export default function FeelPanel({
   customization,
   updateEffect,
-  applyTheme,
+  applyTheme: _applyTheme,
 }: FeelPanelProps) {
   return (
     <div class="space-y-3">

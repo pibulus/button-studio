@@ -9,7 +9,7 @@ import {
 } from "../../utils/export/hostedPwa.ts";
 
 export const handler: Handlers = {
-  GET(req, ctx) {
+  GET(_req, ctx) {
     const { id } = ctx.params;
     const hostedButton = createHostedButtonExporter(id);
 

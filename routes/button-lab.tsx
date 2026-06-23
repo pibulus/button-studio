@@ -186,15 +186,13 @@ export default function ButtonLab() {
               <VoiceButton
                 customization={{
                   ...defaultCustomization,
-                  content: { text: variant.name, autoScale: true },
+                  content: { type: "text", value: variant.name },
                   appearance: {
-                    fill: "#FFB6C1",
-                    border: "#000000",
-                    shadow: "#000000",
+                    ...defaultCustomization.appearance,
+                    solidColor: "#FFB6C1",
+                    scale: 1.0,
                   },
-                  size: { width: 140, height: 140 },
                 }}
-                customCSS={variant.className}
               />
               <p class="mt-2 text-sm text-gray-600">{variant.description}</p>
             </div>

@@ -34,9 +34,16 @@ const customization = signal<ButtonCustomization>(defaultCustomization);
 const transcriptResult = signal<string>("");
 const resultCopied = signal<boolean>(false);
 const showKeyboardModal = signal<boolean>(false);
-const apiKey = signal<string>("");
 const customPrompt = signal<string>("");
-const voiceEnabled = signal<boolean>(true); // Voice recording on/off toggle - default ON when API key added
+const hasPaid = signal<boolean>(
+  typeof localStorage !== "undefined"
+    ? localStorage.getItem("buttonspa-premium") === "true"
+    : false,
+);
+const sessionId = typeof crypto !== "undefined"
+  ? crypto.randomUUID()
+  : Math.random().toString(36).slice(2);
+const voiceEnabled = signal<boolean>(true);
 
 // Load saved panel state from localStorage or use defaults
 const getSavedPanelState = () => {
@@ -90,6 +97,30 @@ export default function ButtonStudio() {
       document.removeEventListener("click", initAudio);
       document.removeEventListener("touchstart", initAudio);
     };
+  }, []);
+
+  // Restore premium status from localStorage or server
+  useEffect(() => {
+    const token = typeof localStorage !== "undefined"
+      ? localStorage.getItem("buttonspa-premium-token")
+      : null;
+
+    if (token) {
+      fetch(`/api/premium/status?token=${encodeURIComponent(token)}`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.hasPaid) {
+            hasPaid.value = true;
+            localStorage.setItem("buttonspa-premium", "true");
+          } else {
+            // Token invalid — clear stale premium
+            hasPaid.value = false;
+            localStorage.removeItem("buttonspa-premium");
+            localStorage.removeItem("buttonspa-premium-token");
+          }
+        })
+        .catch(() => {/* offline — trust localStorage */});
+    }
   }, []);
 
   // Keyboard shortcuts for power users
@@ -496,9 +527,15 @@ export default function ButtonStudio() {
 
     // Use correct sound based on expand/collapse action
     if (isExpanding) {
-      playSound.panelExpand?.() || playSound.primaryClick();
+      try {
+        playSound.panelExpand?.();
+      } catch { /* optional */ }
+      playSound.primaryClick();
     } else {
-      playSound.panelCollapse?.() || playSound.secondaryClick();
+      try {
+        playSound.panelCollapse?.();
+      } catch { /* optional */ }
+      playSound.secondaryClick();
     }
     hapticService.buttonPress();
   };
@@ -597,7 +634,7 @@ export default function ButtonStudio() {
               isExpanded={expandedPanels.value.stageView}
               onToggle={togglePanel}
               index={0}
-              showToggle={!!apiKey.value}
+              showToggle
               toggleValue={voiceEnabled.value}
               onToggleChange={(value) => {
                 voiceEnabled.value = value;
@@ -609,9 +646,10 @@ export default function ButtonStudio() {
                 <div style={{ width: "240px" }}>
                   <VoiceButton
                     customization={customization.value}
+                    hasPaid={hasPaid.value}
+                    sessionId={sessionId}
                     onCustomizationChange={handleCustomizationChange}
-                    voiceEnabled={voiceEnabled.value && !!apiKey.value}
-                    apiKey={apiKey.value}
+                    voiceEnabled={voiceEnabled.value}
                     customPrompt={customPrompt.value}
                     showWaveform={false}
                     onComplete={(result) => {
@@ -879,9 +917,24 @@ export default function ButtonStudio() {
               index={2}
             >
               <MagicPanel
-                apiKeyValue={apiKey.value}
-                onApiKeyChange={(newApiKey) => {
-                  apiKey.value = newApiKey;
+                hasPaid={hasPaid.value}
+                onUnlockPremium={async () => {
+                  try {
+                    const res = await fetch("/api/checkout", {
+                      method: "POST",
+                    });
+                    if (res.ok) {
+                      const { checkoutUrl } = await res.json();
+                      globalThis.location.assign(checkoutUrl);
+                      return;
+                    }
+                  } catch { /* fall through to dev mode */ }
+                  // Dev mode: toggle premium directly
+                  hasPaid.value = true;
+                  if (typeof localStorage !== "undefined") {
+                    localStorage.setItem("buttonspa-premium", "true");
+                  }
+                  toast.success("Premium unlocked! (dev mode)");
                 }}
                 customPromptValue={customPrompt.value}
                 onCustomPromptChange={(newPrompt) => {
@@ -901,7 +954,6 @@ export default function ButtonStudio() {
             >
               <ShipPanel
                 customization={customization.value}
-                apiKeyValue={apiKey.value}
                 customPromptValue={customPrompt.value}
               />
             </CollapsiblePanel>

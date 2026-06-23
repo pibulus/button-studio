@@ -94,8 +94,7 @@ export default function SizeShapePanel({
                     {slider.label}
                   </span>
                   <span class="text-sm font-bold text-black/90 tabular-nums">
-                    {slider.id === "borderWidth" ||
-                        slider.id === "shadowDistance"
+                    {slider.id === "borderWidth"
                       ? `${value}px`
                       : slider.id === "roundness"
                       ? `${value}%`
@@ -110,7 +109,7 @@ export default function SizeShapePanel({
                     step={slider.step}
                     value={value}
                     onMouseDown={() => {
-                      playSound.sliderGrab();
+                      playSound.primaryClick();
                       hapticService.sliderGrab();
                     }}
                     onChange={(e) => {

@@ -25,7 +25,7 @@ import { SOUND_CATEGORIES } from "./soundConfig.ts";
 import { soundService } from "./soundService.ts";
 import { buttonSounds } from "./synthEngine.ts";
 import { throttleSound } from "./throttledSound.ts";
-import type { GradientPanelColor, PlaySoundInterface } from "./soundTypes.ts";
+import type { PlaySoundInterface } from "./soundTypes.ts";
 
 /**
  * Dynamic Sound Mapping - Connects config to actual playback
@@ -36,22 +36,18 @@ import type { GradientPanelColor, PlaySoundInterface } from "./soundTypes.ts";
 
 // Create dynamic sound mapping from config
 function createSoundMapping() {
-  const mapping: Record<string, any> = {};
+  // deno-lint-ignore no-explicit-any
+  const mapping: Record<string, Record<string, any>> = {};
 
-  // Map each category from config to actual sound functions
   for (
     const [categoryName, categoryConfig] of Object.entries(SOUND_CATEGORIES)
   ) {
     mapping[categoryName] = {};
 
-    // For each action in the category, create the actual function call
     for (const [actionName, soundGetter] of Object.entries(categoryConfig)) {
       if (typeof soundGetter === "function" && actionName !== "description") {
         mapping[categoryName][actionName] = () => {
-          // Get the sound file path from config
-          const soundFile = soundGetter();
-
-          // Play the sound file directly using soundService
+          const soundFile = (soundGetter as () => string)();
           soundService.playCustomSound(soundFile)?.catch(() => {});
         };
       }
@@ -73,7 +69,7 @@ SOUND_MAPPING.soundPreview = {
       sage: buttonSounds.playSage,
       pearl: buttonSounds.playPearl,
     };
-    return soundMap[soundType]?.() || buttonSounds.playSlate();
+    return soundMap[soundType]?.() ?? buttonSounds.playSlate();
   },
   hover: () => soundService.playButtonHover(),
 };
@@ -90,19 +86,16 @@ SOUND_MAPPING.soundPreview = {
  * onMouseEnter={() => playSound.hover()}
  */
 
-// Auto-generate clean playSound interface from categories
 function createPlaySoundInterface(): PlaySoundInterface {
+  // deno-lint-ignore no-explicit-any
   const playSound: Record<string, any> = {};
 
-  // Generate functions for each category and action
   for (const [categoryName, categoryConfig] of Object.entries(SOUND_MAPPING)) {
-    if (typeof categoryConfig === "object") {
+    if (typeof categoryConfig === "object" && categoryConfig !== null) {
       for (
         const [actionName, actionFunction] of Object.entries(categoryConfig)
       ) {
         if (typeof actionFunction === "function") {
-          // Create camelCase function names: primaryButtons.click -> primaryClick
-          // BUT keep "Panels" for gradientPanels!
           let cleanCategoryName = categoryName;
           if (categoryName !== "gradientPanels") {
             cleanCategoryName = categoryName
@@ -113,39 +106,36 @@ function createPlaySoundInterface(): PlaySoundInterface {
           }
           const functionName = cleanCategoryName +
             actionName.charAt(0).toUpperCase() + actionName.slice(1);
-          playSound[functionName] = actionFunction;
+          playSound[functionName] = actionFunction as () => void;
         }
       }
     }
   }
 
-  // Add universal hover function (most commonly used)
   playSound.hover = () => soundService.playButtonHover()?.catch(() => {});
 
-  // Add special convenience functions
-  playSound.soundPreview = SOUND_MAPPING.soundPreview.preview;
+  playSound.soundPreview = SOUND_MAPPING.soundPreview
+    .preview as unknown as () => void;
 
-  // Add throttled versions for high-frequency sounds
   playSound.sliderStepThrottled = throttleSound(
-    playSound.sliderStep || (() => {}),
+    playSound.sliderStep ?? (() => {}),
     150,
     "slider-step",
   );
 
   playSound.hoverThrottled = throttleSound(
-    playSound.hover || (() => {}),
+    playSound.hover ?? (() => {}),
     200,
     "hover",
   );
 
-  // Add feedback sounds as direct methods for easier discovery
   playSound.success = () => soundService.playSuccess();
   playSound.error = () => soundService.playError();
-  playSound.warning = () => soundService.playError(); // Using error sound for warnings
-  playSound.completion = () => soundService.playSuccess(); // Using success for completion
+  playSound.warning = () => soundService.playError();
+  playSound.completion = () => soundService.playSuccess();
   playSound.celebration = () => soundService.playCelebration();
 
-  return playSound as PlaySoundInterface;
+  return playSound as unknown as PlaySoundInterface;
 }
 
 export const playSound: PlaySoundInterface = createPlaySoundInterface();
@@ -204,7 +194,8 @@ export function getAvailableSounds(): string[] {
 export function getSoundCategories() {
   return Object.entries(SOUND_CATEGORIES).map(([name, config]) => ({
     name,
-    description: (config as any).description || "No description",
+    description: (config as Record<string, unknown>).description as string ||
+      "No description",
     actions: Object.keys(config).filter((k) => k !== "description"),
   }));
 }

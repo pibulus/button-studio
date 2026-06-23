@@ -58,7 +58,7 @@ export default function EmojiPicker(
         type="button"
         onClick={() => {
           isOpen.value = !isOpen.value;
-          playSound.panelOpen();
+          playSound.primaryClick();
           hapticService.buttonPress();
         }}
         onMouseEnter={() => playSound.hover()}

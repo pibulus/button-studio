@@ -96,6 +96,7 @@ export default function ColorsPanel({
       <div class="grid grid-cols-2 gap-4 mb-6">
         {(["pastel", "neon", "classic", "gradient"] as const).map((mode) => (
           <button
+            type="button"
             key={mode}
             onClick={() => {
               colorMode.value = mode;
@@ -131,6 +132,7 @@ export default function ColorsPanel({
       <div class="grid grid-cols-6 gap-3">
         {colorModes[colorMode.value].colors.map((color, index) => (
           <button
+            type="button"
             key={index}
             onClick={() => {
               const currentMode = colorModes[colorMode.value];

@@ -1,6 +1,6 @@
 // Register Service Worker for ButtonSpa PWA
 if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
+  globalThis.addEventListener("load", () => {
     navigator.serviceWorker.register("/sw.js")
       .then((registration) => {
         console.log("✅ ServiceWorker registered:", registration.scope);
@@ -23,8 +23,8 @@ if ("serviceWorker" in navigator) {
               console.log("🔄 New version available! Refresh to update.");
 
               // Show update notification to user (optional)
-              if (window.showUpdateNotification) {
-                window.showUpdateNotification();
+              if (globalThis.showUpdateNotification) {
+                globalThis.showUpdateNotification();
               }
             }
           });
@@ -37,19 +37,20 @@ if ("serviceWorker" in navigator) {
 
   // Handle controller change (new SW activated)
   navigator.serviceWorker.addEventListener("controllerchange", () => {
-    window.location.reload();
+    globalThis.location.reload();
   });
 }
 
 // iOS PWA Detection
-if (window.navigator.standalone === true) {
+if (globalThis.navigator.standalone === true) {
   document.body.classList.add("ios-standalone");
   console.log("📱 Running as iOS PWA");
 }
 
 // Add to Home Screen prompt for iOS
 if (
-  /iPhone|iPad|iPod/i.test(navigator.userAgent) && !window.navigator.standalone
+  /iPhone|iPad|iPod/i.test(navigator.userAgent) &&
+  !globalThis.navigator.standalone
 ) {
   // Check if user has dismissed the prompt before
   const dismissed = localStorage.getItem("ios-install-dismissed");
@@ -60,8 +61,8 @@ if (
   // Show prompt if not dismissed or dismissed more than 7 days ago
   if (!dismissed || daysSinceDismissed > 7) {
     setTimeout(() => {
-      if (window.showIOSInstallPrompt) {
-        window.showIOSInstallPrompt();
+      if (globalThis.showIOSInstallPrompt) {
+        globalThis.showIOSInstallPrompt();
       }
     }, 3000); // Show after 3 seconds
   }

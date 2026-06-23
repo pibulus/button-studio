@@ -38,6 +38,7 @@ export default function AudioSettings() {
     <div class="relative">
       {/* Settings button */}
       <button
+        type="button"
         onClick={() => {
           showSettings.value = !showSettings.value;
           playSound.primaryClick();
@@ -74,6 +75,7 @@ export default function AudioSettings() {
               <p class="text-xs text-gray-600">Interface feedback sounds</p>
             </div>
             <button
+              type="button"
               onClick={toggleSound}
               onMouseEnter={() => playSound.hover()}
               class={`w-12 h-6 rounded-full border-2 border-black transition-all duration-300 flex items-center ${
@@ -95,6 +97,7 @@ export default function AudioSettings() {
               <p class="text-xs text-gray-600">Vibration feedback</p>
             </div>
             <button
+              type="button"
               onClick={toggleHaptics}
               onMouseEnter={() => playSound.hover()}
               class={`w-12 h-6 rounded-full border-2 border-black transition-all duration-300 flex items-center ${
@@ -111,6 +114,7 @@ export default function AudioSettings() {
 
           {/* Sound test button */}
           <button
+            type="button"
             onClick={() => {
               playSound.celebration();
               hapticService.celebration();

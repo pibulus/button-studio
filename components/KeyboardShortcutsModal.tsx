@@ -37,6 +37,7 @@ export default function KeyboardShortcutsModal({
               ⌨️ Keyboard Shortcuts
             </h2>
             <button
+              type="button"
               onClick={() => {
                 playSound.secondaryClick();
                 onClose();

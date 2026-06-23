@@ -1,4 +1,4 @@
-import { useEffect, useState } from "preact/hooks";
+import { useEffect } from "preact/hooks";
 import { signal } from "@preact/signals";
 
 /**
@@ -109,6 +109,7 @@ export function KofiModal({
                 {title}
               </h2>
               <button
+                type="button"
                 onClick={closeKofiModal}
                 class="text-3xl leading-none font-bold transition-transform hover:scale-110"
                 style="color: var(--color-text, #0A0A0A)"
@@ -214,6 +215,7 @@ export function KofiButton({
 
   return (
     <button
+      type="button"
       onClick={openKofiModal}
       class={`inline-flex items-center gap-2 border-3 rounded-xl font-mono font-bold shadow-brutal transition-all hover:scale-105 ${
         sizeClasses[size]

@@ -4,6 +4,10 @@
 
 import * as $_404 from "./routes/_404.tsx";
 import * as $_app from "./routes/_app.tsx";
+import * as $api_checkout from "./routes/api/checkout.ts";
+import * as $api_premium_status from "./routes/api/premium/status.ts";
+import * as $api_square_webhook from "./routes/api/square/webhook.ts";
+import * as $api_transcribe from "./routes/api/transcribe.ts";
 import * as $b_id_ from "./routes/b/[id].tsx";
 import * as $b_apple_touch_icon_png from "./routes/b/apple-touch-icon.png.ts";
 import * as $b_icon_192_png from "./routes/b/icon-192.png.ts";
@@ -11,6 +15,7 @@ import * as $b_icon_512_png from "./routes/b/icon-512.png.ts";
 import * as $b_manifest_json from "./routes/b/manifest.json.ts";
 import * as $button_lab from "./routes/button-lab.tsx";
 import * as $index from "./routes/index.tsx";
+import * as $premium_success from "./routes/premium/success.tsx";
 import * as $sound_demo from "./routes/sound-demo.tsx";
 import * as $AboutModal from "./islands/AboutModal.tsx";
 import * as $ButtonStudio from "./islands/ButtonStudio.tsx";
@@ -22,6 +27,10 @@ const manifest = {
   routes: {
     "./routes/_404.tsx": $_404,
     "./routes/_app.tsx": $_app,
+    "./routes/api/checkout.ts": $api_checkout,
+    "./routes/api/premium/status.ts": $api_premium_status,
+    "./routes/api/square/webhook.ts": $api_square_webhook,
+    "./routes/api/transcribe.ts": $api_transcribe,
     "./routes/b/[id].tsx": $b_id_,
     "./routes/b/apple-touch-icon.png.ts": $b_apple_touch_icon_png,
     "./routes/b/icon-192.png.ts": $b_icon_192_png,
@@ -29,6 +38,7 @@ const manifest = {
     "./routes/b/manifest.json.ts": $b_manifest_json,
     "./routes/button-lab.tsx": $button_lab,
     "./routes/index.tsx": $index,
+    "./routes/premium/success.tsx": $premium_success,
     "./routes/sound-demo.tsx": $sound_demo,
   },
   islands: {

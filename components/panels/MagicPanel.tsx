@@ -2,8 +2,8 @@ import { playSound } from "../../utils/audio/soundMapping.ts";
 import { hapticService } from "../../utils/audio/hapticService.ts";
 
 interface MagicPanelProps {
-  apiKeyValue?: string;
-  onApiKeyChange?: (apiKey: string) => void;
+  hasPaid?: boolean;
+  onUnlockPremium?: () => void;
   customPromptValue?: string;
   onCustomPromptChange?: (prompt: string) => void;
 }
@@ -48,62 +48,55 @@ const outputPlaceholder = [
 ].join("\n");
 
 export default function MagicPanel({
-  apiKeyValue = "",
-  onApiKeyChange,
+  hasPaid = false,
+  onUnlockPremium,
   customPromptValue = "",
   onCustomPromptChange,
 }: MagicPanelProps) {
   return (
     <div class="space-y-4">
-      {/* API Key Input */}
-      {onApiKeyChange && (
-        <div>
-          <h4 class="text-lg font-black text-gray-900 mb-2">
-            Voice Starter
-            {apiKeyValue && apiKeyValue.trim() !== "" && (
-              <span class="ml-2 text-green-600">✓ Voice Active</span>
-            )}
-          </h4>
-          <p class="text-sm text-gray-600 mb-3">
-            {!apiKeyValue || apiKeyValue.trim() === ""
-              ? (
-                <>
-                  Voice transcription is the first ButtonSpa action. Paste a
-                  Gemini key to turn recordings into copied text.{" "}
-                  <a
-                    href="https://aistudio.google.com/app/apikey"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="text-purple-600 hover:text-purple-700 underline font-bold"
-                    onClick={() => {
-                      playSound.primaryClick();
-                      hapticService.buttonPress();
-                    }}
-                  >
-                    Get a free Gemini key →
-                  </a>
-                </>
-              )
-              : "Voice transcription is on. Recordings will be transcribed and copied."}
-          </p>
-          <input
-            type="password"
-            value={apiKeyValue}
-            onChange={(e) =>
-              onApiKeyChange((e.target as HTMLInputElement).value)}
-            onFocus={() => {
-              playSound.primaryClick();
-              hapticService.buttonPress();
-            }}
-            placeholder="AIza..."
-            class={`w-full px-4 py-3 rounded-xl border-3 font-mono text-sm focus:outline-none focus:ring-4 focus:ring-purple-300 ${
-              apiKeyValue && apiKeyValue.trim() !== ""
-                ? "border-green-500 bg-green-50"
-                : "border-orange-500 bg-orange-50"
+      {/* Tier Badge */}
+      <div>
+        <h4 class="text-lg font-black text-gray-900 mb-2">
+          Voice AI
+        </h4>
+        <div class="flex items-center gap-3 mb-3">
+          <span
+            class={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-black border-2 ${
+              hasPaid
+                ? "bg-purple-200 border-purple-500 text-purple-800"
+                : "bg-amber-100 border-amber-500 text-amber-800"
             }`}
-          />
+          >
+            {hasPaid ? "✨ Premium" : "🆓 Free"}
+          </span>
+          <span class="text-sm text-gray-600 font-medium">
+            {hasPaid
+              ? "All models · Unlimited transcriptions"
+              : "20/day · Fast models"}
+          </span>
         </div>
-      )}
+        {!hasPaid && (
+          <div class="p-3 rounded-xl bg-gradient-to-r from-purple-100 to-pink-100 border-2 border-purple-300 mb-3">
+            <p class="text-sm font-bold text-purple-900 mb-2">
+              Unlock premium AI models, unlimited use, and custom prompts.
+            </p>
+            <button
+              type="button"
+              onClick={() => {
+                onUnlockPremium?.();
+                playSound.celebration();
+                hapticService.celebration();
+              }}
+              onMouseEnter={() => playSound.hover()}
+              class="w-full px-4 py-2 bg-purple-600 text-white rounded-xl font-black text-sm hover:bg-purple-700 active:scale-95 transition-all"
+              style={{ boxShadow: "3px 3px 0px #4C1D95" }}
+            >
+              Unlock Premium · $9/year
+            </button>
+          </div>
+        )}
+      </div>
 
       {/* Custom Prompt */}
       {onCustomPromptChange && (

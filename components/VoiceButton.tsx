@@ -7,15 +7,11 @@ import {
   HapticPatterns,
   triggerHapticFeedback,
 } from "../utils/audio.ts";
-import {
-  initializeIOSAudio,
-  initializeIOSSupport,
-  isIOS,
-  writeToClipboardIOS,
-} from "../utils/iosSafariSupport.ts";
+import { initializeIOSAudio, isIOS } from "../utils/iosSafariSupport.ts";
 import {
   ButtonSize,
   ButtonState,
+  ErrorCode,
   ThemeId,
   VoiceButtonError,
 } from "../types/core.ts";
@@ -23,10 +19,7 @@ import { OutputPlugin, TranscriptionPlugin } from "../types/plugins.ts";
 import {
   ButtonCustomization,
   defaultCustomization,
-  generateButtonClasses,
-  generateButtonStyles,
 } from "../types/customization.ts";
-import { SOUND_PRESETS, synthEngine } from "../utils/audio/synthEngine.ts";
 import { toast } from "./Toast.tsx";
 import { playSound } from "../utils/audio/soundMapping.ts";
 import { hapticService } from "../utils/audio/hapticService.ts";
@@ -107,7 +100,8 @@ interface VoiceButtonProps {
   showWaveform?: boolean;
 
   // API Configuration
-  apiKey?: string;
+  hasPaid?: boolean;
+  sessionId?: string;
   customPrompt?: string;
 
   // Event callbacks (like Pablo's onComplete pattern)
@@ -120,26 +114,27 @@ interface VoiceButtonProps {
 export default function VoiceButton({
   customization = defaultCustomization,
   voiceEnabled = false,
-  onVoiceToggle,
-  apiKey = "",
+  onVoiceToggle: _onVoiceToggle,
+  hasPaid = false,
+  sessionId = "",
   customPrompt = "",
-  theme = "amber",
-  size = "large",
-  customSize,
-  squishiness,
-  chonkiness,
-  customText,
-  buttonShape = "square",
-  buttonConfig,
+  theme: _theme = "amber",
+  size: _size = "large",
+  customSize: _customSize,
+  squishiness: _squishiness,
+  chonkiness: _chonkiness,
+  customText: _customText,
+  buttonShape: _buttonShape = "square",
+  buttonConfig: _buttonConfig,
   enableHaptics = true,
-  showTimer = true,
+  showTimer: _showTimer = true,
   showWaveform = true,
   maxDuration = 300, // 5 minutes like Pablo's setup
   onComplete,
   onError,
   onStateChange,
-  onCustomizationChange,
-  ...props
+  onCustomizationChange: _onCustomizationChange,
+  ..._props
 }: VoiceButtonProps) {
   const recorderRef = useRef<AudioRecorder>();
   const analyzerRef = useRef<AudioAnalyzer>();
@@ -188,7 +183,7 @@ export default function VoiceButton({
       buttonState.value = "requesting";
 
       // Play recording start sound
-      playSound.recordingStart();
+      playSound.primaryClick();
       hapticService.startRecording();
 
       if (enableHaptics) {
@@ -243,7 +238,7 @@ export default function VoiceButton({
       } else {
         const voiceError = new VoiceButtonError(
           "Failed to start recording",
-          "RECORDING_FAILED" as any,
+          "RECORDING_FAILED" as ErrorCode,
         );
         errorMessage.value = voiceError.message;
         onError?.(voiceError);
@@ -273,27 +268,50 @@ export default function VoiceButton({
       const recorder = recorderRef.current!;
       const audioBlob = await recorder.stopRecording();
 
-      // Check if API key is provided
-      if (!apiKey || apiKey.trim() === "") {
+      // Convert audio to base64 for the proxy
+      const audioBase64 = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const result = reader.result as string;
+          resolve(result.split(",")[1]);
+        };
+        reader.onerror = () => reject(new Error("Failed to read audio"));
+        reader.readAsDataURL(audioBlob.data);
+      });
+
+      // Call the ButtonSpa proxy endpoint
+      const response = await fetch("/api/transcribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          audioBase64,
+          mimeType: audioBlob.data.type,
+          prompt: customPrompt || undefined,
+          sessionId: sessionId || crypto.randomUUID(),
+          hasPaid,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+
+        if (response.status === 429) {
+          throw new VoiceButtonError(
+            errorData.upgrade
+              ? "Daily limit reached! Unlock premium for unlimited transcriptions — $9/year."
+              : "Daily limit reached. Come back tomorrow or upgrade.",
+            "INVALID_CONFIG" as ErrorCode,
+          );
+        }
+
         throw new VoiceButtonError(
-          "Please enter your Gemini API key in the Magic panel to enable transcription",
-          "INVALID_CONFIG" as any,
+          errorData.error || "Transcription failed",
+          "TRANSCRIPTION_FAILED" as ErrorCode,
         );
       }
 
-      // Use real Gemini transcription with API key
-      const { GeminiTranscriptionPlugin } = await import(
-        "../plugins/transcription/gemini.ts"
-      );
-      const geminiPlugin = new GeminiTranscriptionPlugin();
-
-      // Configure and transcribe
-      await geminiPlugin.configure({
-        apiKey: apiKey,
-        customPrompt: customPrompt,
-      });
-      const result = await geminiPlugin.transcribe(audioBlob);
-      transcript.value = result.text;
+      const data = await response.json();
+      transcript.value = data.text;
 
       buttonState.value = "success";
 
@@ -330,7 +348,7 @@ export default function VoiceButton({
       } else {
         const voiceError = new VoiceButtonError(
           "Failed to process recording",
-          "TRANSCRIPTION_FAILED" as any,
+          "TRANSCRIPTION_FAILED" as ErrorCode,
         );
         errorMessage.value = voiceError.message;
         onError?.(voiceError);
@@ -347,24 +365,24 @@ export default function VoiceButton({
   // ===================================================================
 
   // Play button sound using the configured sound type
-  async function playClickSound() {
+  function playClickSound() {
     // Always play sound regardless of voice mode for better UX
     if (!customization.sound.enabled) return;
 
     try {
       // Use universal playSound system
       if (buttonState.value === "recording") {
-        playSound.recordingStop();
+        playSound.success();
       } else {
         playSound.primaryClick();
       }
       hapticService.buttonPress();
-    } catch (error) {
+    } catch {
       // Silently fail if audio context not available
     }
   }
 
-  async function toggleRecording() {
+  function toggleRecording() {
     // Play sound in parallel - don't await to preserve iOS user gesture chain
     playClickSound();
 
@@ -414,16 +432,6 @@ export default function VoiceButton({
       default:
         return "Ready";
     }
-  }
-
-  // Format timer (like Pablo's covertSecToMinAndHour)
-  function formatTimer(seconds: number): string {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    const sec = remainingSeconds < 10
-      ? `0${remainingSeconds}`
-      : `${remainingSeconds}`;
-    return `${minutes}:${sec}`;
   }
 
   // ===================================================================
@@ -519,8 +527,7 @@ export default function VoiceButton({
     let stateAnimations = "";
 
     // Effect-based animations (MODULAR!) - Using CSS classes instead of Tailwind animate syntax
-    let effectClasses = [];
-    let hasRainbow = config.effects.rainbowGlow;
+    const effectClasses: string[] = [];
 
     // Transform effects (these conflict with each other - only apply the first one)
     if (
@@ -582,14 +589,12 @@ export default function VoiceButton({
       : `linear-gradient(${config.appearance.gradient.direction}deg, ${config.appearance.gradient.start}, ${config.appearance.gradient.end})`;
 
     // Calculate dynamic size and styling with sliders
-    const dynamicScale = config.appearance.scale;
     const dynamicRoundness = config.appearance.roundness;
     const shadowType = config.appearance.shadowType;
     const borderWidth = config.appearance.borderWidth;
     const shape = config.appearance.shape;
     const borderStyle = config.appearance.borderStyle;
     const hoverEffect = config.interactions.hoverEffect;
-    const clickAnimation = config.interactions.clickAnimation;
     const textTransform = config.interactions.textTransform;
     const fontWeight = config.interactions.fontWeight;
 
@@ -607,9 +612,7 @@ export default function VoiceButton({
         case "circle":
           return "50%";
         case "square":
-          return `${Math.min(dynamicRoundness, 20)}px`; // Allow roundness on squares too, max 20px
-        case "rounded":
-          return `${dynamicRoundness}px`;
+          return `${Math.min(dynamicRoundness, 20)}px`;
         default:
           return `${dynamicRoundness}px`;
       }
@@ -630,7 +633,7 @@ export default function VoiceButton({
     let hoverClasses = "";
     let hoverStyles = {};
 
-    switch (hoverEffect) {
+    switch (hoverEffect as string) {
       case "lift":
         hoverClasses = "hover-lift";
         hoverStyles = {
@@ -666,7 +669,7 @@ export default function VoiceButton({
         borderRadius: getBorderRadius(),
         borderStyle: borderStyle,
         borderWidth: `${borderWidth}px`,
-        textTransform: textTransform as any,
+        textTransform: textTransform as string,
         fontWeight: fontWeight === "bold"
           ? "bold"
           : fontWeight === "light"
@@ -692,7 +695,7 @@ export default function VoiceButton({
             : shadowStyle),
         ...shapeDimensions,
         ...hoverStyles,
-      } as any,
+      } as const,
     };
   };
 
@@ -836,6 +839,7 @@ export default function VoiceButton({
           ? (
             <div class="rainbow-wrapper">
               <button
+                type="button"
                 class={`${getButtonStyles().className} voice-button voice-button-main`}
                 style={getButtonStyles().style}
                 onClick={toggleRecording}
@@ -888,6 +892,7 @@ export default function VoiceButton({
           )
           : (
             <button
+              type="button"
               class={`${getButtonStyles().className} voice-button voice-button-main`}
               style={getButtonStyles().style}
               onClick={toggleRecording}
@@ -953,6 +958,7 @@ export default function VoiceButton({
             {errorMessage.value}
           </p>
           <button
+            type="button"
             class="text-red-600 hover:text-red-700 font-medium underline"
             onClick={resetToIdle}
           >
@@ -966,7 +972,7 @@ export default function VoiceButton({
 
 // Button Icon Component (theme-aware and sophisticated)
 function ButtonIcon(
-  { state, theme, scale = 1 }: {
+  { state, theme: _theme, scale = 1 }: {
     state: ButtonState;
     theme?: string;
     scale?: number;
@@ -1065,7 +1071,13 @@ function ButtonIcon(
 
 // Recording Content Component - Handles different visual feedback types
 function RecordingContent(
-  { recordingConfig, duration, originalContent, buttonState, theme }: {
+  {
+    recordingConfig,
+    duration,
+    originalContent,
+    buttonState: _buttonState,
+    theme: _theme,
+  }: {
     recordingConfig: ButtonCustomization["recording"];
     duration: number;
     originalContent: string;
@@ -1168,58 +1180,4 @@ function RecordingContent(
         </div>
       );
   }
-}
-
-// Waveform Visualizer Component (like Pablo's AudioVisualizer.svelte)
-function WaveformVisualizer(
-  { analyzer, theme }: { analyzer?: AudioAnalyzer; theme?: string },
-) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    if (!analyzer || !canvasRef.current) return;
-
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d")!;
-
-    function draw() {
-      if (!analyzer || !canvas || !ctx) return;
-
-      const waveformData = analyzer.getWaveformData();
-      const { width, height } = canvas;
-
-      // Clear canvas
-      ctx.clearRect(0, 0, width, height);
-
-      // Draw waveform bars
-      const barWidth = width / waveformData.length;
-      const centerY = height / 2;
-
-      // Use theme-appropriate colors
-      const color = theme === "flamingo-brutalist" ? "#FF6B9D" : "#f59e0b";
-      ctx.fillStyle = color;
-
-      waveformData.forEach((value, index) => {
-        const barHeight = value * height * 0.8; // Scale to 80% of canvas height
-        const x = index * barWidth;
-        const y = centerY - barHeight / 2;
-
-        ctx.fillRect(x, y, barWidth - 1, barHeight);
-      });
-
-      requestAnimationFrame(draw);
-    }
-
-    draw();
-  }, [analyzer]);
-
-  return (
-    <canvas
-      ref={canvasRef}
-      width={400}
-      height={80}
-      class="w-full h-20 rounded-lg"
-      style={{ background: "transparent" }}
-    />
-  );
 }

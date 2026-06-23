@@ -18,20 +18,21 @@ export class GeminiTranscriptionPlugin implements TranscriptionPlugin {
   readonly name = "Google Gemini";
   readonly version = "1.0.0";
   readonly description =
-    "High-quality transcription using Google Gemini 2.5 Flash";
+    "High-quality transcription using Google Gemini 3.5 Flash";
 
   private apiKey?: string;
-  private model = "gemini-2.5-flash";
+  private model = "gemini-3.5-flash";
   private customPrompt?: string;
 
   /**
    * Configure the plugin with API credentials and optional settings
    * @param config - Configuration including API key and optional model/prompt
    */
+  // deno-lint-ignore require-await
   async configure(config: GeminiConfig): Promise<void> {
     // Store API key from UI input (browser-compatible approach)
     this.apiKey = config.apiKey;
-    this.model = config.model || "gemini-2.5-flash";
+    this.model = config.model || "gemini-3.5-flash";
     this.customPrompt = config.customPrompt;
 
     // Validate API key is provided
@@ -48,7 +49,7 @@ export class GeminiTranscriptionPlugin implements TranscriptionPlugin {
     return typeof config === "object" &&
       config !== null &&
       "apiKey" in config &&
-      typeof (config as any).apiKey === "string";
+      typeof (config as Record<string, unknown>).apiKey === "string";
   }
 
   /**
@@ -158,6 +159,7 @@ export class GeminiTranscriptionPlugin implements TranscriptionPlugin {
     }
   }
 
+  // deno-lint-ignore require-await
   async getLanguages(): Promise<Language[]> {
     // Gemini supports many languages, but we'll start with common ones
     return [
@@ -173,6 +175,7 @@ export class GeminiTranscriptionPlugin implements TranscriptionPlugin {
     ];
   }
 
+  // deno-lint-ignore require-await
   async estimateCost(audio: AudioBlob): Promise<number> {
     // Rough estimation: Gemini pricing is ~$0.075 per minute of audio
     const durationMinutes = audio.duration / 60;
@@ -184,7 +187,7 @@ export class GeminiTranscriptionPlugin implements TranscriptionPlugin {
    * @param blob - Audio blob to convert
    * @returns Base64 encoded string
    */
-  private async blobToBase64(blob: Blob): Promise<string> {
+  private blobToBase64(blob: Blob): Promise<string> {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
 
@@ -223,14 +226,16 @@ export class GeminiTranscriptionPlugin implements TranscriptionPlugin {
 // ENHANCED GEMINI SERVICE - Additional AI features
 // ===================================================================
 export class GeminiAIService {
+  // deno-lint-ignore no-explicit-any
   private genAI: any;
+  // deno-lint-ignore no-explicit-any
   private model: any;
 
-  constructor(apiKey: string, modelName = "gemini-2.5-flash") {
+  constructor(_apiKey: string, _modelName = "gemini-3.5-flash") {
     // Initialized when needed
   }
 
-  async init(apiKey: string, modelName = "gemini-2.5-flash") {
+  async init(apiKey: string, modelName = "gemini-3.5-flash") {
     const { GoogleGenerativeAI } = await import(
       "https://esm.sh/@google/generative-ai@0.2.1"
     );
@@ -239,7 +244,7 @@ export class GeminiAIService {
   }
 
   // Pablo's extractActionItems implementation
-  async extractActionItems(text: string): Promise<any[]> {
+  async extractActionItems(text: string): Promise<unknown[]> {
     try {
       console.log("🤖 Extracting action items with Gemini");
       const prompt =
@@ -309,7 +314,7 @@ export class GeminiAIService {
   }
 
   // Pablo's extractKeywords implementation
-  async extractKeywords(text: string): Promise<any> {
+  async extractKeywords(text: string): Promise<unknown> {
     if (!text) return { nodes: [], edges: [] };
 
     try {

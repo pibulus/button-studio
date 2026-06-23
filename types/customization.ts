@@ -463,22 +463,10 @@ function enhanceColorForIntensity(
   return color; // Pastel stays as-is
 }
 
-function enhanceColorsForIntensity(gradient: {
-  colors: [string, string];
-  type: "linear" | "radial";
-  direction: number;
-}, intensity: ColorIntensity) {
-  return {
-    start: enhanceColorForIntensity(gradient.start, intensity),
-    end: enhanceColorForIntensity(gradient.end, intensity),
-    direction: gradient.direction,
-  };
-}
-
 export function generateButtonClasses(
   customization: ButtonCustomization,
 ): string {
-  const theme = buttonThemes[customization.appearance.theme];
+  const _theme = buttonThemes[customization.appearance.theme];
 
   const dynamicClasses = [
     "rounded-[var(--button-radius)]",

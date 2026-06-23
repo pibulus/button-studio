@@ -1,6 +1,7 @@
 import { signal } from "@preact/signals";
 import { hapticService } from "../utils/audio/hapticService.ts";
 import { playSound } from "../utils/audio/soundMapping.ts";
+import type { SoundTheme } from "../utils/audio/soundTypes.ts";
 import { ButtonCustomization } from "../types/customization.ts";
 
 // Simple state for playing indicator
@@ -16,7 +17,7 @@ export default function SoundPicker(
 ) {
   // Ensure sound property exists with default
   const currentSound = customization?.sound || { type: "amber", enabled: true };
-  const playSoundPreview = (soundName: string) => {
+  const playSoundPreview = (soundName: SoundTheme) => {
     if (isPlaying.value) return;
 
     try {
@@ -27,7 +28,7 @@ export default function SoundPicker(
         ...customization,
         sound: {
           ...currentSound,
-          type: soundName as "slate" | "amber" | "coral" | "sage" | "pearl",
+          type: soundName,
         },
       });
 
@@ -84,7 +85,7 @@ export default function SoundPicker(
             <button
               key={preset.id}
               type="button"
-              onClick={() => playSoundPreview(preset.id)}
+              onClick={() => playSoundPreview(preset.id as SoundTheme)}
               onMouseEnter={() => {
                 if (!isPlaying.value) {
                   playSound.hover();

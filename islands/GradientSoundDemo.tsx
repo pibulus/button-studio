@@ -17,7 +17,7 @@ import kenneyManifest from "../static/sounds/kenney/manifest.json" with {
 // Initialize the sound pack manager
 const packManager = new SoundPackManager();
 const packLoaded = signal(false);
-const currentPack = signal("kenney");
+const _currentPack = signal("kenney");
 
 // Load the Kenney pack on component mount
 if (typeof window !== "undefined") {
@@ -29,7 +29,13 @@ if (typeof window !== "undefined") {
 }
 
 // Demo gradients with different color schemes and sound mappings
-const gradients = {
+interface GradientInfo {
+  name: string;
+  colors: string[];
+  soundPath: string;
+}
+
+const gradients: Record<string, GradientInfo> = {
   purple: {
     name: "Purple Dream",
     colors: ["#faf5ff", "#e9d5ff", "#d8b4fe", "#c084fc", "#a855f7", "#9333ea"],
@@ -82,6 +88,7 @@ export default function GradientSoundDemo() {
         <div class="flex gap-4 flex-wrap">
           {Object.entries(gradients).map(([key, g]) => (
             <button
+              type="button"
               key={key}
               onClick={() => selectedGradient.value = key}
               class={`px-4 py-2 rounded-lg transition-all ${
@@ -143,6 +150,7 @@ export default function GradientSoundDemo() {
               <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
                 {gradient.colors.map((color, index) => (
                   <button
+                    type="button"
                     key={index}
                     onClick={() => sounds[index] && sounds[index]()}
                     style={{ backgroundColor: color }}

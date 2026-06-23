@@ -96,7 +96,7 @@ export class AudioRecorder {
   }
 
   // Stop recording and return AudioBlob with metadata (validates minimum length)
-  async stopRecording(): Promise<AudioBlob> {
+  stopRecording(): Promise<AudioBlob> {
     return new Promise((resolve, reject) => {
       if (!this.mediaRecorder || this.mediaRecorder.state !== "recording") {
         reject(
@@ -226,7 +226,7 @@ export class AudioAnalyzer {
   private source?: MediaStreamAudioSourceNode;
 
   // Connect to audio stream for real-time waveform analysis
-  async connectToStream(stream: MediaStream): Promise<void> {
+  connectToStream(stream: MediaStream): void {
     try {
       this.audioContext = new AudioContext();
       this.analyser = this.audioContext.createAnalyser();
@@ -295,7 +295,7 @@ export async function copyToClipboard(text: string): Promise<boolean> {
 }
 
 // Trigger haptic feedback on mobile (configurable vibration patterns)
-export function triggerHapticFeedback(pattern: number[] = [50]): void {
+export function triggerHapticFeedback(pattern: readonly number[] = [50]): void {
   if ("vibrate" in navigator) {
     navigator.vibrate(pattern);
   }

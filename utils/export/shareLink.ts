@@ -100,18 +100,22 @@ function decompressString(str: string): string {
 }
 
 // Validate that a customization object is complete and valid
-export function validateCustomization(customization: any): boolean {
+export function validateCustomization(
+  customization: Record<string, unknown>,
+): boolean {
   try {
-    // Basic structure validation
+    const a = customization.appearance as Record<string, unknown> | undefined;
+    const i = customization.interactions as Record<string, unknown> | undefined;
+    const c = customization.content as Record<string, unknown> | undefined;
     return (
       customization &&
       typeof customization === "object" &&
-      customization.appearance &&
-      customization.interactions &&
-      customization.content &&
-      customization.content.value &&
-      typeof customization.appearance.scale === "number" &&
-      typeof customization.interactions.squishPower === "number"
+      !!a &&
+      !!i &&
+      !!c &&
+      !!c.value &&
+      typeof a.scale === "number" &&
+      typeof i.squishPower === "number"
     );
   } catch {
     return false;

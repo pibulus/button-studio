@@ -30,13 +30,13 @@ export default function CollapsiblePanel({
   color = "light",
   isExpanded,
   onToggle,
-  size = "medium",
+  size: _size = "medium",
   index = 0,
   special = false,
   showToggle = false,
   toggleValue = false,
   onToggleChange,
-  toggleLabel = "Enable",
+  toggleLabel: _toggleLabel = "Enable",
 }: CollapsiblePanelProps) {
   // Lo-fi rainbow palette - lighter, softer colors for better visibility
   const getPanelColor = (colorKey: string) => {

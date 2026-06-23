@@ -58,6 +58,8 @@ const soundFiles = {
   copy: "download",
   undo: "undo",
   processing: "thinking-ambient",
+  errorBanjo: "error-banjo",
+  computerReady: "computer-ready",
 };
 
 // Initialize sound settings from localStorage
@@ -184,8 +186,8 @@ export const buttonStudioSounds = {
   playCopy: () => playSound("copy"),
   playUndo: () => playSound("undo"),
   playProcessing: () => playSound("processing", { volume: 0.1 }),
-  playWarning: () => playSound("error-banjo"),
-  playCompletion: () => playSound("computer-ready"),
+  playWarning: () => playSound("errorBanjo"),
+  playCompletion: () => playSound("computerReady"),
 };
 
 // Check if sounds are enabled (from localStorage + memory)

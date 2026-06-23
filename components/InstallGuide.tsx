@@ -11,7 +11,7 @@ interface InstallGuideProps {
 }
 
 export default function InstallGuide(
-  { appName, appUrl, iconUrl }: InstallGuideProps,
+  { appName, appUrl: _appUrl, iconUrl }: InstallGuideProps,
 ) {
   const [platform, setPlatform] = useState<"ios" | "android" | "desktop">(
     "desktop",
@@ -30,8 +30,9 @@ export default function InstallGuide(
 
     // Check if already installed as PWA
     const standalone =
-      window.matchMedia("(display-mode: standalone)").matches ||
-      (window.navigator as any).standalone === true;
+      globalThis.matchMedia("(display-mode: standalone)").matches ||
+      (globalThis.navigator as unknown as Record<string, unknown>)
+          .standalone === true;
     setIsStandalone(standalone);
 
     // Auto-show instructions on mobile
@@ -92,6 +93,7 @@ export default function InstallGuide(
       {/* Floating Install Prompt (mobile only) */}
       {platform !== "desktop" && !showInstructions && (
         <button
+          type="button"
           onClick={() => setShowInstructions(true)}
           class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-6 py-3 bg-black text-white rounded-full shadow-2xl font-bold flex items-center gap-2 animate-bounce"
         >
@@ -106,6 +108,7 @@ export default function InstallGuide(
           {/* Header */}
           <div class="bg-gradient-to-r from-purple-500 to-pink-500 text-white p-6">
             <button
+              type="button"
               onClick={() => setShowInstructions(false)}
               class="absolute top-6 right-6 text-2xl"
             >
@@ -172,6 +175,7 @@ export default function InstallGuide(
           {/* Bottom CTA */}
           <div class="p-6 bg-gray-50 border-t">
             <button
+              type="button"
               onClick={() => setShowInstructions(false)}
               class="w-full py-4 bg-black text-white rounded-2xl font-black text-lg"
             >

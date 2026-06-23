@@ -309,7 +309,7 @@ export class SoundPack {
       const actions = this.manifest.sounds[category];
       if (!actions) continue;
 
-      for (const [action, config] of Object.entries(actions)) {
+      for (const [_action, config] of Object.entries(actions)) {
         const file = typeof config === "string" ? config : config.default;
         const fileName = this.getBestFormat(file);
         const url = `${this.basePath}/${this.manifest.name}/${fileName}`;
@@ -378,6 +378,7 @@ export class SoundPackManager {
   /**
    * Load a sound pack
    */
+  // deno-lint-ignore require-await
   async loadPack(
     name: string,
     manifest: SoundPackManifest,
@@ -447,7 +448,6 @@ export class SoundPackManager {
   ): Promise<AudioBufferSourceNode | void> {
     const [category] = path.split(".");
 
-    // Determine which pack to use
     const packName = this.categoryOverrides.get(category) || this.activePack;
     if (!packName) {
       console.warn(`No pack available for sound: ${path}`);
@@ -460,7 +460,7 @@ export class SoundPackManager {
       return;
     }
 
-    return pack.play(path, options);
+    return await pack.play(path, options);
   }
 
   /**

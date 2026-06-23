@@ -349,33 +349,9 @@ export function generateStandaloneHTML(
         </div>
         
         <!-- API Key Setup (shown when no key) -->
-        <div id="api-setup" class="setup-card ${
-    options.includeAI === false ? "hidden" : ""
-  }">
-            <h3 class="setup-title">Enable ButtonSpa output</h3>
-            <p class="setup-body">Paste a Gemini key to let this button turn recordings into useful text. The key stays in this browser.</p>
-            
-            <ol class="setup-steps">
-                <li><span class="step-badge">1</span>Visit <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer">Google AI Studio</a></li>
-                <li><span class="step-badge">2</span>Create an API key</li>
-                <li><span class="step-badge">3</span>Paste it below</li>
-            </ol>
-            
-            <div>
-                <input 
-                    type="password" 
-                    id="api-key-input" 
-                    placeholder="Gemini API key" 
-                    class="api-input"
-                >
-                <button onclick="saveApiKey()" class="primary-action">
-                    Save & Start
-                </button>
-            </div>
-            
-            <p class="privacy-note">
-                Your API key is saved only in this browser.
-            </p>
+        <div id="api-setup" class="setup-card hidden">
+            <h3 class="setup-title">AI Transcription Ready</h3>
+            <p class="setup-body">This button uses ButtonSpa's AI to turn recordings into text. Just tap and record — no setup needed.</p>
         </div>
 
         <!-- Output Display -->
@@ -423,54 +399,9 @@ export function generateStandaloneHTML(
         let audioChunks = [];
         let isRecording = false;
         let currentTranscript = '';
-        let userApiKey = localStorage.getItem("gemini-api-key") || null;
         const outputPrompt = ${outputPromptScript};
-        
-        // API Key Management
-        function saveApiKey() {
-            const input = document.getElementById('api-key-input');
-            const apiKey = input.value.trim();
-            
-            if (!apiKey) {
-                alert('Please enter your API key');
-                return;
-            }
-            
-            if (!apiKey.startsWith('AIza')) {
-                alert('Invalid API key format. Gemini API keys start with "AIza"');
-                return;
-            }
-            
-            // Save to localStorage
-            localStorage.setItem('gemini-api-key', apiKey);
-            userApiKey = apiKey;
-            
-            // Hide API setup, show ready state
-            document.getElementById('api-setup').classList.add('hidden');
-            document.getElementById('status').textContent = '🎉 AI Transcription enabled! Click to record';
-            setTimeout(() => {
-                if (typeof showInstallBanner === 'function') {
-                    showInstallBanner();
-                }
-            }, 600);
-            
-            // Show success feedback
-            const button = document.querySelector('#api-setup button');
-            const originalText = button.textContent;
-            button.textContent = '✅ Saved!';
-            setTimeout(() => {
-                button.textContent = originalText;
-            }, 2000);
-        }
-        
-        // Check API key on load
-        window.addEventListener('load', () => {
-            if (userApiKey) {
-                document.getElementById('api-setup').classList.add('hidden');
-                document.getElementById('status').textContent = 'Click to record';
-            }
-        });
-        
+        const TRANSCRIBE_URL = "https://buttonspa.app/api/transcribe";
+
         ${
     options.autoStopOnSilence
       ? `
@@ -613,43 +544,25 @@ export function generateStandaloneHTML(
     options.includeAI !== false
       ? `
             try {
-                // Convert audio to base64 for Gemini API
+                // Convert audio to base64
                 const base64Audio = await blobToBase64(audioBlob);
                 
-                // Call Gemini API for transcription
-                const apiKey = userApiKey;
-                if (!apiKey) {
-                    status.textContent = 'Please set up your API key first';
-                    document.getElementById('api-setup').classList.remove('hidden');
-                    return;
-                }
-                
-                const response = await fetch(
-                    'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent',
-                    {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'x-goog-api-key': apiKey,
-                        },
-                        body: JSON.stringify({
-                            contents: [{
-                                parts: [{
-                                    text: outputPrompt
-                                }, {
-                                    inline_data: {
-                                        mime_type: audioBlob.type,
-                                        data: base64Audio
-                                    }
-                                }]
-                            }]
-                        })
-                    }
-                );
+                // Call ButtonSpa's transcription proxy
+                const response = await fetch(TRANSCRIBE_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        audioBase64: base64Audio,
+                        mimeType: audioBlob.type,
+                        prompt: outputPrompt,
+                        sessionId: 'export-' + Date.now(),
+                        hasPaid: false,
+                    })
+                });
                 
                 if (response.ok) {
                     const result = await response.json();
-                    const transcript = result.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+                    const transcript = result.text;
                     
                     if (transcript) {
                         showTranscript(transcript);
@@ -657,11 +570,16 @@ export function generateStandaloneHTML(
                         status.textContent = 'No speech detected';
                     }
                 } else {
-                    throw new Error('Transcription failed');
+                    const err = await response.json().catch(() => ({}));
+                    if (response.status === 429) {
+                        status.textContent = 'Daily limit reached. Upgrade at buttonspa.app for unlimited use.';
+                    } else {
+                        throw new Error(err.error || 'Transcription failed');
+                    }
                 }
             } catch (error) {
                 console.error('Transcription error:', error);
-                status.textContent = 'Transcription failed. Please try again.';
+                status.textContent = 'Transcription failed. Check your connection and try again.';
             }
             `
       : `

@@ -16,7 +16,7 @@ connect to webhooks and APIs.
 - **Framework**: Deno Fresh 1.7.3 (file-based routing, islands architecture)
 - **Runtime**: Deno (TypeScript-first, no Node.js dependencies)
 - **Frontend**: Preact with signals for reactive state management
-- **Styling**: Twind (Tailwind CSS-in-JS) with extensive custom theme
+- **Styling**: Tailwind CSS with extensive custom theme
 - **Audio**: Web APIs (MediaRecorder, AudioContext) with custom waveform
   analysis
 - **AI**: Google Gemini for speech-to-text transcription
@@ -45,7 +45,7 @@ deno task update
 ### Core Application Structure
 
 - **Entry Points**: `main.ts` (production), `dev.ts` (development)
-- **Configuration**: `fresh.config.ts` (Fresh + Twind setup)
+- **Configuration**: `fresh.config.ts` (Fresh + Tailwind setup)
 - **Routes**: File-based routing in `routes/` directory
 - **Islands**: Interactive components in `islands/` (client-side hydration)
 - **Components**: Reusable UI components in `components/`
@@ -54,19 +54,15 @@ deno task update
 
 1. **VoiceButton** (`components/VoiceButton.tsx`): Main voice recording
    component with configurable appearance, recording states, and transcription
-2. **CustomizationPanel** (`components/CustomizationPanel.tsx`): Main design
-   interface with collapsible sections and color-coded panels
-3. **ButtonStudio** (`islands/ButtonStudio.tsx`): Main island that orchestrates
+2. **ButtonStudio** (`islands/ButtonStudio.tsx`): Main island that orchestrates
    the ButtonSpa design experience
-4. **EmojiPicker** (`components/EmojiPicker.tsx`): Custom emoji/text selection
+3. **EmojiPicker** (`components/EmojiPicker.tsx`): Custom emoji/text selection
    interface
-5. **Toast** (`components/Toast.tsx`): Notification system for user feedback
-6. **AudioSettings** (`components/AudioSettings.tsx`): Global audio/haptic
+4. **Toast** (`components/Toast.tsx`): Notification system for user feedback
+5. **AudioSettings** (`components/AudioSettings.tsx`): Global audio/haptic
    toggle controls
-7. **SoundPicker** (`components/SoundPicker.tsx`): Sound theme selection
+6. **SoundPicker** (`components/SoundPicker.tsx`): Sound theme selection
    interface
-8. **SoundDesigner** (`islands/SoundDesigner.tsx`): Advanced sound customization
-   studio
 
 ### State Management Pattern
 
@@ -115,12 +111,10 @@ onToggle={() => playSound.panelOpen()}
   controls
 - **SoundPicker** (`components/SoundPicker.tsx`): Sound theme selection
   interface
-- **SoundDesigner** (`islands/SoundDesigner.tsx`): Advanced sound customization
-  studio
 
 ### Design System ("Soft Stack")
 
-Custom Twind theme with three main design languages:
+Three main design languages implemented via Tailwind CSS:
 
 - **Soft Stack**: Warm, friendly aesthetic with rounded corners and gentle
   shadows
@@ -146,7 +140,7 @@ Custom Twind theme with three main design languages:
 ├── plugins/         # AI transcription plugins
 ├── static/          # Static assets
 │   └── sounds/      # Audio files (MP3)
-└── twind.config.ts  # Comprehensive design system
+├── tailwind.config.ts  # Comprehensive design system
 ```
 
 ## Development Patterns
@@ -171,26 +165,10 @@ recording, and transcription failures.
 
 ### Styling Approach
 
-- Twind for utility-first CSS with extensive custom theme
+- Tailwind CSS for utility-first styling with extensive custom theme
 - Dynamic inline styles for user-customizable properties
 - State-based animations using CSS classes
 - Custom slider styling for design controls
-
-### CustomizationPanel Color System
-
-The `CustomizationPanel` uses a color-coded design system for visual
-organization:
-
-- **Panel Headers**: Each collapsible panel has a distinct color (red, orange,
-  pink, yellow, cyan, purple, green, blue)
-- **Color Mapping**: Uses `getBackgroundColor()` function to map color keys to
-  Tailwind classes
-- **Button Theming**: Panel buttons inherit colors from their parent panel via
-  `getButtonColors()`
-- **Available Colors**: lightest, light, medium, warm, cool, deep, effects,
-  recording, juice
-- **CSS Scoping**: Juice sliders use `.juice-slider` class with `!important`
-  declarations for specificity
 
 ## Testing and Quality
 
@@ -241,8 +219,8 @@ anywhere.
   mobile app generators
 - **Share Links** (`utils/export/shareLink.ts`): URL-safe encoding/decoding with
   compression
-- **Export UI** (integrated in `CustomizationPanel.tsx`): Brutalist design with
-  power user options
+- **Export UI** (integrated in `ShipPanel.tsx`): Brutalist design with power
+  user options
 
 ### Export Formats
 

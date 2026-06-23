@@ -49,7 +49,7 @@ class HapticService {
   private enabled: boolean;
 
   constructor() {
-    this.isMobile = typeof window !== "undefined" &&
+    this.isMobile = typeof globalThis !== "undefined" &&
       globalThis.innerWidth <= 768;
     this.isSupported = typeof navigator !== "undefined" &&
       "vibrate" in navigator;
@@ -67,19 +67,19 @@ class HapticService {
       }
     }
 
-    if (typeof window !== "undefined") {
-      (window as any).hapticsEnabled = this.enabled;
+    if (typeof globalThis !== "undefined") {
+      (globalThis as Record<string, unknown>).hapticsEnabled = this.enabled;
       console.log("📳 ButtonSpa haptics enabled:", this.enabled);
     }
   }
 
-  vibrate(pattern: number | number[]): boolean {
+  vibrate(pattern: number | readonly number[]): boolean {
     if (!this.enabled || !this.isSupported || !this.isMobile) {
       return false;
     }
 
     try {
-      navigator.vibrate(pattern);
+      navigator.vibrate(pattern as number | number[]);
       return true;
     } catch (e) {
       console.log(`Vibration failed: ${(e as Error).message}`);
@@ -145,17 +145,9 @@ class HapticService {
     return this.vibrate(HAPTIC_PATTERNS.RECORDING_STOP);
   }
 
-  // Slider interactions (for SizeShapePanel)
+  // Slider grab (for SizeShapePanel)
   sliderGrab(): boolean {
     return this.vibrate(HAPTIC_PATTERNS.BUTTON_PRESS);
-  }
-
-  sliderStep(): boolean {
-    return this.vibrate(HAPTIC_PATTERNS.SLIDER_STEP);
-  }
-
-  sliderRelease(): boolean {
-    return this.vibrate(HAPTIC_PATTERNS.SLIDER_RELEASE);
   }
 
   // Success actions
