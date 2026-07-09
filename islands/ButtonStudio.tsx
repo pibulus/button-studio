@@ -1,6 +1,7 @@
 import { signal } from "@preact/signals";
-import { useEffect } from "preact/hooks";
+import { useEffect, useRef } from "preact/hooks";
 import VoiceButton from "../components/VoiceButton.tsx";
+import MiniButtonPreview from "../components/MiniButtonPreview.tsx";
 import AudioSettings from "../components/AudioSettings.tsx";
 import KeyboardShortcutsModal from "../components/KeyboardShortcutsModal.tsx";
 import {
@@ -10,7 +11,7 @@ import {
 } from "../types/customization.ts";
 import { hapticService } from "../utils/audio/hapticService.ts";
 import { playSound } from "../utils/audio/soundMapping.ts";
-import { BRAND_SUPPORTING_COPY, BRAND_TAGLINE } from "../utils/brand.ts";
+import { BRAND_TAGLINE } from "../utils/brand.ts";
 
 // Import panel components directly
 import CollapsiblePanel from "../components/panels/CollapsiblePanel.tsx";
@@ -27,6 +28,28 @@ import { KofiButton, KofiModal } from "./KofiModal.tsx";
 import { AboutLink, AboutModal } from "./AboutModal.tsx";
 
 // ===================================================================
+// DESIGN SUB-HEADER - shared label style for the merged Design panel's
+// three sub-sections (Color / Size & Shape / Border) so they read as
+// evenly-weighted parts of one panel rather than three bolted-together
+// mini-panels.
+// ===================================================================
+
+function DesignSubHeader({ label }: { label: string }) {
+  return (
+    <div class="flex items-center gap-2 mb-3">
+      <span
+        class="inline-block w-[10px] h-[10px] rounded-full border-2 border-black/80"
+        style={{ background: "#F4C0D5" }}
+      />
+      <h4 class="text-xs font-black uppercase tracking-wide text-black/70">
+        {label}
+      </h4>
+      <span class="flex-1 border-t-2 border-black/10" />
+    </div>
+  );
+}
+
+// ===================================================================
 // GLOBAL STATE - Main app state using Preact signals
 // ===================================================================
 
@@ -35,6 +58,7 @@ const transcriptResult = signal<string>("");
 const resultCopied = signal<boolean>(false);
 const showKeyboardModal = signal<boolean>(false);
 const customPrompt = signal<string>("");
+const customFormat = signal<"text" | "list" | "sections">("text");
 const hasPaid = signal<boolean>(
   typeof localStorage !== "undefined"
     ? localStorage.getItem("buttonspa-premium") === "true"
@@ -45,33 +69,69 @@ const sessionId = typeof crypto !== "undefined"
   : Math.random().toString(36).slice(2);
 const voiceEnabled = signal<boolean>(true);
 
-// Load saved panel state from localStorage or use defaults
+// Tracks whether the main "Your Button" stage is scrolled out of view on
+// mobile, so the sticky mini-preview bar knows when to show itself.
+const stageOutOfView = signal<boolean>(false);
+
+// Default panel state for the 5-panel structure: Your Button, Action
+// (magic), Design (merged Paint + Shape + Style), Motion (feel), Ship.
+const defaultPanelState = {
+  stageView: true, // Your Button - always open by default
+  magic: true, // Action - the actual product, open by default
+  design: true, // Design (merged Color + Size & Shape + Border) - open by default
+  feel: false, // Motion - closed by default
+  ship: false, // Ship - closed by default
+};
+
+// Load saved panel state from localStorage or use defaults. Returning users
+// may have state saved under the OLD 7-panel ids (colors/sizeShape/design
+// were separate panels, magic defaulted closed). We merge saved values over
+// the new defaults so: unknown old keys (colors, sizeShape) are simply
+// ignored, and any new key not present in old saved state (there are none
+// here, but this keeps us safe for future panel additions) falls back to
+// its default instead of leaving the accordion empty/broken.
 const getSavedPanelState = () => {
   if (typeof window !== "undefined") {
     const saved = localStorage.getItem("buttonStudioPanels");
     if (saved) {
       try {
-        return JSON.parse(saved);
+        const parsed = JSON.parse(saved);
+        if (parsed && typeof parsed === "object") {
+          return { ...defaultPanelState, ...parsed };
+        }
       } catch {
         // Fallback to defaults if parse fails
       }
     }
   }
-  return {
-    stageView: true, // Left side - always open by default
-    colors: true, // Left side - always open by default
-    sizeShape: true, // Left side - always open by default
-    design: true, // Right side - start with design open
-    feel: false,
-    ship: false,
-    magic: false,
-  };
+  return { ...defaultPanelState };
 };
 
-// Accordion panel state - only 4 panels on the right now
+// Accordion panel state - 5 panels total (2 left: stageView, magic; 3 right:
+// design, feel, ship)
 const expandedPanels = signal<Record<string, boolean>>(getSavedPanelState());
 
 export default function ButtonStudio() {
+  const stageRef = useRef<HTMLDivElement>(null);
+
+  // Sticky mobile preview - watch the "Your Button" stage and flip
+  // stageOutOfView on/off as it scrolls past the viewport. Only matters
+  // below lg:, but the observer is cheap enough to just always run.
+  useEffect(() => {
+    const el = stageRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        stageOutOfView.value = !entry.isIntersecting;
+      },
+      { threshold: 0, rootMargin: "-56px 0px 0px 0px" },
+    );
+    observer.observe(el);
+
+    return () => observer.disconnect();
+  }, []);
+
   // Welcome sound - with audio context initialization
   useEffect(() => {
     // Initialize audio context on first user interaction for better browser support
@@ -541,7 +601,11 @@ export default function ButtonStudio() {
   };
 
   return (
-    <div class="min-h-screen bg-[#F7F0E2] flex flex-col">
+    <div
+      class={`min-h-screen bg-[#F7F0E2] flex flex-col ${
+        stageOutOfView.value ? "pb-20 lg:pb-0" : ""
+      }`}
+    >
       {/* Skip to main content - Accessibility */}
       <a
         href="#main-content"
@@ -577,39 +641,22 @@ export default function ButtonStudio() {
               }}
             >
               ButtonSpa<span
-                class="text-3xl sm:text-4xl lg:text-6xl text-fuchsia-500"
-                style={{
-                  background:
-                    "linear-gradient(135deg, #E64AA0 0%, #FF7A59 100%)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  filter: "drop-shadow(2px 2px 0px rgba(0,0,0,0.1))",
-                }}
+                class="text-3xl sm:text-4xl lg:text-6xl align-baseline"
+                style={{ color: "#EA4C89" }}
               >
                 .app
               </span>
             </h1>
             <p
-              class="text-[18px] italic font-medium"
+              class="text-[19px] sm:text-[22px] font-bold max-w-[560px]"
               style={{
-                marginTop: "16px",
-                letterSpacing: "0.02em",
-                color: "rgba(0,0,0,0.7)",
-                textShadow: "0 1px 0 rgba(255,255,255,0.6)",
+                marginTop: "18px",
+                letterSpacing: "-0.01em",
+                color: "rgba(0,0,0,0.82)",
+                lineHeight: 1.25,
               }}
             >
               {BRAND_TAGLINE}
-            </p>
-            <p
-              class="text-[15px] sm:text-base font-semibold max-w-[620px]"
-              style={{
-                marginTop: "8px",
-                letterSpacing: "0",
-                color: "rgba(0,0,0,0.62)",
-                lineHeight: 1.45,
-              }}
-            >
-              {BRAND_SUPPORTING_COPY}
             </p>
           </div>
           <div class="flex items-center gap-2">
@@ -623,9 +670,9 @@ export default function ButtonStudio() {
         id="main-content"
         class="max-w-[1280px] mx-auto w-full px-6 pt-6 pb-8 flex-1"
       >
-        <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(360px,420px)] gap-6 items-start">
-          {/* LEFT: Stage + Toybox */}
-          <div class="space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_minmax(300px,360px)] lg:grid-cols-[minmax(0,1fr)_minmax(360px,420px)] gap-6 items-start">
+          {/* LEFT: Stage + Action */}
+          <div class="space-y-4" ref={stageRef}>
             {/* Stage View - CollapsiblePanel */}
             <CollapsiblePanel
               id="stageView"
@@ -748,14 +795,19 @@ export default function ButtonStudio() {
                 </button>
               </div>
 
+              {!transcriptResult.value && (
+                <div class="mt-4 rounded-[22px] border-[3px] border-dashed border-black/25 bg-white/30 p-6 text-center">
+                  <p class="text-sm font-bold text-black/40">
+                    Your output lands here.
+                  </p>
+                </div>
+              )}
+
               {transcriptResult.value && (
                 <div class="mt-4 rounded-[22px] border-[3px] border-black/80 bg-white overflow-hidden">
                   <div class="flex items-center justify-between gap-3 px-4 py-3 bg-[#D8F0A6] border-b-[3px] border-black/20">
                     <div>
                       <h3 class="text-lg font-black text-black">Output</h3>
-                      <p class="text-xs sm:text-sm font-bold text-black/60">
-                        Final result after the action and prompt.
-                      </p>
                     </div>
                     <span class="shrink-0 rounded-full border-2 border-black/70 bg-white px-3 py-1 text-xs font-black">
                       {resultCopied.value ? "Copied" : "Ready"}
@@ -843,78 +895,14 @@ export default function ButtonStudio() {
               )}
             </CollapsiblePanel>
 
-            {/* Colors - CollapsiblePanel */}
-            <CollapsiblePanel
-              id="colors"
-              title="Paint"
-              color="violet"
-              isExpanded={expandedPanels.value.colors}
-              onToggle={togglePanel}
-              index={1}
-            >
-              <ColorsPanel
-                customization={customization.value}
-                onChange={handleCustomizationChange}
-              />
-            </CollapsiblePanel>
-
-            {/* Size & Shape - CollapsiblePanel */}
-            <CollapsiblePanel
-              id="sizeShape"
-              title="Shape"
-              color="yellow"
-              isExpanded={expandedPanels.value.sizeShape}
-              onToggle={togglePanel}
-              index={2}
-            >
-              <SizeShapePanel
-                customization={customization.value}
-                updateAppearance={updateAppearance}
-              />
-            </CollapsiblePanel>
-          </div>
-
-          {/* RIGHT: Accordions (multi-open) */}
-          <aside class="w-full space-y-4">
-            {/* Design Accordion */}
-            <CollapsiblePanel
-              id="design"
-              title="Style"
-              color="red"
-              isExpanded={expandedPanels.value.design}
-              onToggle={togglePanel}
-              index={0}
-            >
-              <DesignPanel
-                customization={customization.value}
-                updateAppearance={updateAppearance}
-              />
-            </CollapsiblePanel>
-
-            {/* Feel Accordion */}
-            <CollapsiblePanel
-              id="feel"
-              title="Motion"
-              color="orange"
-              isExpanded={expandedPanels.value.feel}
-              onToggle={togglePanel}
-              index={1}
-            >
-              <FeelPanel
-                customization={customization.value}
-                updateEffect={updateEffect}
-                applyTheme={applyTheme}
-              />
-            </CollapsiblePanel>
-
-            {/* Magic Accordion */}
+            {/* Action - CollapsiblePanel (promoted: this is the product) */}
             <CollapsiblePanel
               id="magic"
               title="Action"
               color="purple"
               isExpanded={expandedPanels.value.magic}
               onToggle={togglePanel}
-              index={2}
+              index={1}
             >
               <MagicPanel
                 hasPaid={hasPaid.value}
@@ -934,32 +922,130 @@ export default function ButtonStudio() {
                   if (typeof localStorage !== "undefined") {
                     localStorage.setItem("buttonspa-premium", "true");
                   }
-                  toast.success("Premium unlocked! (dev mode)");
+                  toast.success(
+                    "You're a supporter now — thanks! 🎸 (dev mode)",
+                  );
                 }}
                 customPromptValue={customPrompt.value}
-                onCustomPromptChange={(newPrompt) => {
+                onCustomPromptChange={(newPrompt, newFormat) => {
                   customPrompt.value = newPrompt;
+                  if (newFormat) customFormat.value = newFormat;
                 }}
               />
             </CollapsiblePanel>
+          </div>
 
-            {/* Share Accordion */}
+          {/* RIGHT: Design (merged Color + Size & Shape + Border), Motion, Ship */}
+          <aside class="w-full space-y-4">
+            {
+              /* Design Accordion - merged Paint + Shape + Style into one
+                balanced panel with three evenly-weighted sub-sections */
+            }
+            <CollapsiblePanel
+              id="design"
+              title="Design"
+              color="red"
+              isExpanded={expandedPanels.value.design}
+              onToggle={togglePanel}
+              index={0}
+            >
+              <div class="space-y-6">
+                <section>
+                  <DesignSubHeader label="Color" />
+                  <ColorsPanel
+                    customization={customization.value}
+                    onChange={handleCustomizationChange}
+                  />
+                </section>
+
+                <section>
+                  <DesignSubHeader label="Size & Shape" />
+                  <SizeShapePanel
+                    customization={customization.value}
+                    updateAppearance={updateAppearance}
+                  />
+                </section>
+
+                <section>
+                  <DesignSubHeader label="Border" />
+                  <DesignPanel
+                    customization={customization.value}
+                    updateAppearance={updateAppearance}
+                  />
+                </section>
+              </div>
+            </CollapsiblePanel>
+
+            {/* Feel Accordion */}
+            <CollapsiblePanel
+              id="feel"
+              title="Motion"
+              color="orange"
+              isExpanded={expandedPanels.value.feel}
+              onToggle={togglePanel}
+              index={1}
+            >
+              <FeelPanel
+                customization={customization.value}
+                updateEffect={updateEffect}
+                applyTheme={applyTheme}
+              />
+            </CollapsiblePanel>
+
+            {/* Ship Accordion */}
             <CollapsiblePanel
               id="ship"
               title="Ship"
               color="yellow"
               isExpanded={expandedPanels.value.ship}
               onToggle={togglePanel}
-              index={3}
+              index={2}
             >
               <ShipPanel
                 customization={customization.value}
                 customPromptValue={customPrompt.value}
+                customFormatValue={customFormat.value}
               />
             </CollapsiblePanel>
           </aside>
         </div>
       </main>
+
+      {
+        /* Sticky mobile mini-preview - keeps the "live preview" promise
+          alive once the user scrolls past the main stage on small screens */
+      }
+      {stageOutOfView.value && (
+        <div
+          class="lg:hidden fixed bottom-0 left-0 right-0 z-40 flex items-center gap-3 px-4 py-3 bg-[#FFF9F2]/95 backdrop-blur border-t-[3px] border-black/80"
+          style={{
+            boxShadow: "0 -4px 0px rgba(0,0,0,0.15)",
+            paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))",
+          }}
+        >
+          <MiniButtonPreview customization={customization.value} />
+          <div class="min-w-0 flex-1">
+            <p class="text-sm font-black truncate">
+              {customization.value.content.value || "Your Button"}
+            </p>
+            <p class="text-xs font-bold text-black/50">Live preview</p>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              stageRef.current?.scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+              });
+              playSound.primaryClick();
+            }}
+            class="shrink-0 rounded-full border-2 border-black/80 bg-white px-3 py-1.5 text-xs font-black hover:bg-amber-50 active:scale-95 transition-all"
+            style={{ boxShadow: "2px 2px 0px rgba(0,0,0,0.85)" }}
+          >
+            ↑ Jump up
+          </button>
+        </div>
+      )}
 
       {/* Footer */}
       <footer class="mt-8 py-6 border-t-4 border-black/80 bg-[#FFE5B4]">

@@ -46,7 +46,7 @@ export const toast = {
 // Toast Container Component
 export default function ToastContainer() {
   return (
-    <div class="fixed top-4 right-4 z-50 space-y-2">
+    <div class="fixed top-[max(1rem,env(safe-area-inset-top))] left-4 right-4 sm:left-auto z-50 space-y-2 max-w-[calc(100vw-2rem)] sm:max-w-sm">
       {toasts.value.map((toast) => <ToastItem key={toast.id} toast={toast} />)}
     </div>
   );
@@ -55,9 +55,9 @@ export default function ToastContainer() {
 // Individual Toast Component
 function ToastItem({ toast: toastItem }: { toast: ToastMessage }) {
   const bgColor = {
-    success: "bg-flamingo-purple/90 text-white",
-    error: "bg-flamingo-coral/90 text-white",
-    info: "bg-flamingo-charcoal/90 text-white",
+    success: "bg-[var(--pink)]/95 text-black",
+    error: "bg-[#C1392B]/95 text-white",
+    info: "bg-[var(--ink)]/95 text-white",
   };
 
   const icon = {
@@ -70,8 +70,8 @@ function ToastItem({ toast: toastItem }: { toast: ToastMessage }) {
     <div
       class={`
       ${bgColor[toastItem.type]}
-      px-4 py-3 rounded-chunky border-3 border-white/20
-      font-chunky text-sm tracking-wide
+      px-4 py-3 rounded-2xl border-3 border-white/20
+      font-black text-sm tracking-wide
       transform animate-slide-in-right
       backdrop-blur-sm shadow-lg
       flex items-center gap-2

@@ -167,7 +167,9 @@ export default function VoiceButton({
         if (success) {
           toast.success("Output copied");
         } else {
-          toast.error("Could not copy output");
+          toast.error(
+            "Couldn't auto-copy — select the text to copy it manually.",
+          );
         }
       });
     }
@@ -279,18 +281,43 @@ export default function VoiceButton({
         reader.readAsDataURL(audioBlob.data);
       });
 
-      // Call the ButtonSpa proxy endpoint
-      const response = await fetch("/api/transcribe", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          audioBase64,
-          mimeType: audioBlob.data.type,
-          prompt: customPrompt || undefined,
-          sessionId: sessionId || crypto.randomUUID(),
-          hasPaid,
-        }),
-      });
+      // Guard against a hung API call — bail out after 30s so the button
+      // never gets stuck on "Transcribing..." with no way out.
+      const abortController = new AbortController();
+      const timeoutId = setTimeout(() => abortController.abort(), 30_000);
+
+      let response: Response;
+      try {
+        // Call the ButtonSpa proxy endpoint
+        response = await fetch("/api/transcribe", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            audioBase64,
+            mimeType: audioBlob.data.type,
+            prompt: customPrompt || undefined,
+            sessionId: sessionId || crypto.randomUUID(),
+            hasPaid,
+            premiumToken: (typeof localStorage !== "undefined"
+              ? localStorage.getItem("buttonspa-premium-token")
+              : null) ?? undefined,
+          }),
+          signal: abortController.signal,
+        });
+      } catch (fetchError) {
+        if (
+          fetchError instanceof DOMException &&
+          fetchError.name === "AbortError"
+        ) {
+          throw new VoiceButtonError(
+            "Taking too long — try again.",
+            "TRANSCRIPTION_API_ERROR" as ErrorCode,
+          );
+        }
+        throw fetchError;
+      } finally {
+        clearTimeout(timeoutId);
+      }
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
@@ -298,8 +325,8 @@ export default function VoiceButton({
         if (response.status === 429) {
           throw new VoiceButtonError(
             errorData.upgrade
-              ? "Daily limit reached! Unlock premium for unlimited transcriptions — $9/year."
-              : "Daily limit reached. Come back tomorrow or upgrade.",
+              ? "That's your 20 for today. Chip in at buttonspa.app to go unlimited."
+              : "That's your 20 for today — back tomorrow.",
             "INVALID_CONFIG" as ErrorCode,
           );
         }
@@ -311,6 +338,20 @@ export default function VoiceButton({
       }
 
       const data = await response.json();
+
+      // Server returns 200 with empty text when no speech was detected —
+      // that's not a success (nothing to show/copy) nor a hard failure.
+      if (!data.text || !data.text.trim()) {
+        buttonState.value = "idle";
+        errorMessage.value = "";
+        transcript.value = "";
+        recordingDuration.value = 0;
+        toast.info("No speech detected — try again");
+        playSound.secondaryClick();
+        hapticService.buttonPress();
+        return;
+      }
+
       transcript.value = data.text;
 
       buttonState.value = "success";
@@ -544,6 +585,7 @@ export default function VoiceButton({
     // Non-transform effects (these can work together)
     // NOTE: glow effect handled via inline styles now, not CSS class
     if (config.effects.pulse) effectClasses.push("effect-pulse");
+    if (config.effects.shine) effectClasses.push("effect-shine");
 
     const effectAnimations = effectClasses.join(" ");
 
@@ -623,35 +665,32 @@ export default function VoiceButton({
     // 🎮 JUICE CONTROLS - Dynamic interaction effects!
     const juiceSettings = config.interactions;
     const squishScale = 1 - (juiceSettings.squishPower / 100);
-    const bounceScale = 1 + (juiceSettings.bounceFactor / 100);
-    const hoverLift = juiceSettings.hoverLift;
     const animSpeed = juiceSettings.animationSpeed;
 
     // Use memoized easing curve for performance
 
-    // Dynamic hover effects with juice controls - Using CSS custom properties for dynamic values
+    // Dynamic hover effects with juice controls - Using CSS custom properties
+    // for dynamic values. Matches the real hoverEffect enum from
+    // types/customization.ts ("squish" | "grow" | "bright" | "tilt") and
+    // mirrors the export template's hover CSS (html-standalone.ts).
     let hoverClasses = "";
     let hoverStyles = {};
 
-    switch (hoverEffect as string) {
-      case "lift":
-        hoverClasses = "hover-lift";
+    switch (hoverEffect) {
+      case "squish":
+        hoverClasses = "hover-squish";
         hoverStyles = {
-          "--hover-scale": bounceScale,
-          "--hover-lift": `${hoverLift}px`,
+          "--hover-scale": squishScale,
         };
         break;
-      case "glow":
-        hoverClasses = "hover-glow";
-        hoverStyles = {
-          "--glow-color": hexToRgba(buttonColor, 0.6),
-        };
+      case "grow":
+        hoverClasses = "hover-grow";
         break;
-      case "pulse":
-        hoverClasses = "hover:animate-pulse";
+      case "bright":
+        hoverClasses = "hover-bright";
         break;
-      case "rotate":
-        hoverClasses = "hover:rotate-3";
+      case "tilt":
+        hoverClasses = "hover-tilt";
         break;
       default:
         hoverClasses = "hover-default";
@@ -659,6 +698,16 @@ export default function VoiceButton({
           "--hover-scale": 1 + juiceSettings.bounceFactor / 200,
         };
     }
+
+    // NEON boost - mirrors generateButtonStyles() in types/customization.ts
+    // so the studio preview pops the same way exported buttons do. Export
+    // only enhances gradient fills, so we match that condition exactly.
+    const isNeon = config.appearance.colorIntensity === "neon" &&
+      config.appearance.fillType === "gradient";
+    const neonFilter = isNeon ? "saturate(1.2) brightness(1.1)" : "none";
+    const neonBoxShadow = isNeon
+      ? `0 0 20px ${hexToRgba(buttonColor, 0.5)}, 0 4px 8px rgba(0,0,0,0.3)`
+      : null;
 
     return {
       className:
@@ -681,7 +730,15 @@ export default function VoiceButton({
         justifyContent: "center",
         color: "#000000",
         willChange: "transform, box-shadow, filter",
-        // FORCE glow effect via direct style override
+        // Neon filter is normally set inline, EXCEPT when hoverEffect is
+        // "bright" - inline styles always beat CSS :hover rules on
+        // specificity, so a "bright" hover would never be visible if we set
+        // `filter` inline here too. In that case the CSS class below owns
+        // `filter` for both resting and hover state, fed by --neon-filter.
+        ...(hoverEffect !== "bright" ? { filter: neonFilter } : {}),
+        "--neon-filter": neonFilter,
+        // FORCE glow effect via direct style override. Neon glow and effect
+        // glow can coexist - concatenate rather than overwrite.
         boxShadow: config.effects.glow
           ? (isPressed
             ? `2px 2px 0px #000000, 0 0 15px ${hexToRgba(buttonColor, 0.6)}`
@@ -692,6 +749,8 @@ export default function VoiceButton({
             ? (shadowType === "brutalist"
               ? "2px 2px 0px #000000"
               : "0 2px 4px rgba(0,0,0,0.2)")
+            : neonBoxShadow
+            ? `${shadowStyle}, ${neonBoxShadow}`
             : shadowStyle),
         ...shapeDimensions,
         ...hoverStyles,
@@ -711,20 +770,37 @@ export default function VoiceButton({
           transition: all 0.05s ease-out !important;
         }
         
-        /* Hover Effects - Custom CSS for dynamic values */
-        .hover-lift:hover {
-          transform: scale(var(--hover-scale)) translateY(calc(-1 * var(--hover-lift)));
+        /* Hover Effects - matches interactions.hoverEffect enum
+           ("squish" | "grow" | "bright" | "tilt") and mirrors the export
+           template's hover CSS (utils/export/templates/html-standalone.ts) */
+        .hover-squish:hover {
+          transform: scale(var(--hover-scale));
         }
-        
-        .hover-glow:hover {
-          box-shadow: 0 0 20px var(--glow-color), 0 0 40px var(--glow-color);
+
+        .hover-grow:hover {
+          transform: scale(1.05);
         }
-        
+
+        /* "bright" hover effect can't be set inline (inline styles beat
+           :hover rules on specificity), so this class owns filter for both
+           the resting neon state and the hover boost. */
+        .hover-bright {
+          filter: var(--neon-filter, none);
+        }
+
+        .hover-bright:hover {
+          filter: var(--neon-filter, none) brightness(1.1);
+        }
+
+        .hover-tilt:hover {
+          transform: rotate(2deg);
+        }
+
         .hover-default:hover {
           transform: scale(var(--hover-scale));
-          filter: brightness(1.1);
+          filter: var(--neon-filter, none) brightness(1.1);
         }
-        
+
         @keyframes breathe {
           0%, 100% { transform: scale(1); }
           50% { transform: scale(1.05); }
@@ -766,8 +842,32 @@ export default function VoiceButton({
         .effect-pulse {
           animation: pulse-effect 2s ease-in-out infinite;
         }
-        
-        
+
+        /* Shine effect - mirrors the export template's moving gloss sweep
+           (utils/export/templates/html-standalone.ts @keyframes shine) */
+        .effect-shine {
+          position: relative;
+          overflow: hidden;
+        }
+
+        .effect-shine::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+          animation: shine 3s infinite;
+          pointer-events: none;
+        }
+
+        @keyframes shine {
+          0% { left: -100%; }
+          50%, 100% { left: 100%; }
+        }
+
+
         @keyframes recording-pulse {
           0%, 100% { transform: scale(1); }
           50% { transform: scale(1.05); }

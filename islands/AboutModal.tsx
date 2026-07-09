@@ -68,7 +68,7 @@ export function AboutModal() {
       >
         {/* Modal */}
         <div
-          class="relative w-full max-w-3xl animate-modal-in"
+          class="relative w-full max-w-3xl max-h-[85vh] overflow-y-auto animate-modal-in"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}

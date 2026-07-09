@@ -93,7 +93,7 @@ export function KofiModal({
       >
         {/* Modal */}
         <div
-          class="relative w-full max-w-2xl animate-modal-in"
+          class="relative w-full max-w-2xl max-h-[85vh] overflow-y-auto animate-modal-in"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}

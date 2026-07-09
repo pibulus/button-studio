@@ -28,7 +28,7 @@ export default function KeyboardShortcutsModal({
       onClick={onClose}
     >
       <div
-        class="bg-white rounded-3xl shadow-2xl max-w-md w-full mx-4 border-4 border-black"
+        class="bg-white rounded-3xl shadow-2xl max-w-md w-full mx-4 border-4 border-black max-h-[85vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <div class="p-6">

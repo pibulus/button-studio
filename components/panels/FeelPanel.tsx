@@ -71,7 +71,7 @@ export default function FeelPanel({
         <div class="grid grid-cols-3 gap-3">
           {[
             { effect: "glow", label: "Glow" },
-            { effect: "flat", label: "Flat" },
+            { effect: "shadow", label: "Shadow" },
             { effect: "shine", label: "Shine" },
           ].map(({ effect, label }) => (
             <button

@@ -133,15 +133,15 @@ export default function CollapsiblePanel({
                     playSound.primaryClick();
                     hapticService.buttonPress();
                   }}
-                  class="flex items-center gap-2 px-3 py-1.5 rounded-full border-2 border-black/80 font-bold text-sm transition-all hover:scale-105 active:scale-95"
+                  class="flex items-center gap-2 px-3 py-1.5 rounded-full border-2 border-black/80 font-black text-sm transition-all hover:scale-105 active:scale-95"
                   style={{
-                    background: toggleValue ? "#4ade80" : "#f87171",
-                    color: "rgba(0,0,0,0.9)",
-                    boxShadow: "2px 2px 0px rgba(0,0,0,0.3)",
+                    background: toggleValue ? "#EA4C89" : "#F3E9DD",
+                    color: toggleValue ? "#FFFFFF" : "rgba(0,0,0,0.5)",
+                    boxShadow: "2px 2px 0px rgba(0,0,0,0.85)",
                   }}
                 >
-                  <span class="text-base">{toggleValue ? "🎤" : "🔇"}</span>
-                  <span>{toggleValue ? "ON" : "OFF"}</span>
+                  <span class="text-base">{toggleValue ? "🎙️" : "🔇"}</span>
+                  <span>{toggleValue ? "On" : "Off"}</span>
                 </button>
               )}
               <span
@@ -158,7 +158,7 @@ export default function CollapsiblePanel({
 
           {/* Content body */}
           <div
-            class={`panel-body overflow-hidden transition-[max-height,opacity] duration-200 ease-[cubic-bezier(0.4,0.0,0.2,1)] ${
+            class={`panel-body overflow-hidden transition-[max-height,opacity] duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
               isExpanded ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0"
             }`}
             style={{ willChange: "max-height" }}
