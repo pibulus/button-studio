@@ -68,26 +68,11 @@ export interface ButtonCustomization {
   // Effects - LUSH modular magic!
   effects: EffectToggles;
 
-  // Interaction Properties
-  feedback: {
-    haptic: boolean;
-    sound: boolean;
-    animation: "subtle" | "playful" | "professional";
-  };
-
   // Sound Configuration - NEW!
   sound: {
     enabled: boolean;
     type: "slate" | "amber" | "coral" | "sage" | "pearl";
     volume: number; // 0-100
-  };
-
-  // Voice Properties (preserve existing)
-  voice: {
-    enabled: boolean;
-    autoTranscribe: boolean;
-    clipboardCopy: boolean;
-    showWaveform: boolean;
   };
 
   // Recording Behavior - NEW!
@@ -97,16 +82,15 @@ export interface ButtonCustomization {
     pulseIntensity: number; // 0-100
     ringColor: string;
     keepSize: boolean; // Prevent layout shift
-    showWaveform: boolean; // During recording
   };
 
   // API Configuration
   api?: {
-    provider: "gemini" | "openai" | "custom";
-    apiKey: string;
-    model: string;
     customPrompt: string;
-    temperature: number; // 0-1 for creativity
+    // Output shape the exported button requests from /api/transcribe so it
+    // can render checklists/sections instead of a flat blob. Rides along
+    // with customPrompt through the whole export chain.
+    format?: "text" | "list" | "sections";
   };
 }
 
@@ -211,21 +195,10 @@ export const defaultCustomization: ButtonCustomization = {
     label: "Voice Button",
   },
   effects: defaultEffects,
-  feedback: {
-    haptic: true,
-    sound: true,
-    animation: "playful",
-  },
   sound: {
     enabled: true,
     type: "slate",
     volume: 70,
-  },
-  voice: {
-    enabled: true,
-    autoTranscribe: true,
-    clipboardCopy: true,
-    showWaveform: true,
   },
   recording: {
     visualFeedback: "timer",
@@ -233,7 +206,6 @@ export const defaultCustomization: ButtonCustomization = {
     pulseIntensity: 80,
     ringColor: "transparent",
     keepSize: true,
-    showWaveform: false,
   },
 };
 

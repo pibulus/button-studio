@@ -8,6 +8,7 @@ import { ButtonCustomization } from "../types/customization.ts";
 import { playSound } from "../utils/audio/soundMapping.ts";
 import { hapticService } from "../utils/audio/hapticService.ts";
 import { toast } from "./Toast.tsx";
+import { encodeHostedButtonConfig } from "../utils/export/hostedConfigCodec.ts";
 
 interface PWAShareModalProps {
   isOpen: boolean;
@@ -36,16 +37,7 @@ export default function PWAShareModal({
 
     try {
       // Encode the button configuration as URL-safe base64 with UTF-8 support
-      const configJson = JSON.stringify(customization);
-      // Convert to UTF-8 bytes first to handle emojis and special characters
-      const encoder = new TextEncoder();
-      const data = encoder.encode(configJson);
-      const base64 = btoa(String.fromCharCode(...data));
-      // Make it URL-safe by replacing characters
-      const urlSafeId = base64.replace(/\+/g, "-").replace(/\//g, "_").replace(
-        /=/g,
-        "",
-      );
+      const urlSafeId = encodeHostedButtonConfig(customization);
 
       // Create the real URL that will serve the PWA
       const baseUrl = globalThis.location.origin;
@@ -98,9 +90,9 @@ export default function PWAShareModal({
 
   return (
     <div class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
-      <div class="bg-white rounded-3xl shadow-2xl max-w-lg w-full border-4 border-black overflow-hidden">
+      <div class="bg-white rounded-3xl shadow-2xl max-w-lg w-full max-h-[85vh] overflow-y-auto border-4 border-black">
         {/* Header */}
-        <div class="bg-gradient-to-r from-purple-500 to-pink-500 p-6 text-white">
+        <div class="bg-gradient-to-r from-purple-500 to-pink-500 p-6 text-white rounded-t-3xl">
           <div class="flex justify-between items-center">
             <div>
               <h2 class="text-2xl font-black">Save as Tiny App</h2>
@@ -140,7 +132,7 @@ export default function PWAShareModal({
                     />
                   </div>
                   <p class="mt-3 text-sm text-gray-600">
-                    📱 Scan to open this button.
+                    Scan to open on your phone.
                   </p>
                 </div>
 
@@ -154,51 +146,18 @@ export default function PWAShareModal({
                   <button
                     type="button"
                     onClick={copyLink}
-                    class="w-full py-4 bg-black text-white rounded-2xl font-black hover:bg-gray-800 transition-colors flex items-center justify-center gap-2"
+                    class="w-full py-4 bg-black text-white rounded-2xl font-black hover:bg-gray-800 transition-colors"
                   >
-                    <span>📋</span> Copy Install Link
+                    Copy link
                   </button>
 
                   <button
                     type="button"
                     onClick={openOnPhone}
-                    class="w-full py-4 bg-purple-500 text-white rounded-2xl font-black hover:bg-purple-600 transition-colors flex items-center justify-center gap-2"
+                    class="w-full py-4 bg-purple-500 text-white rounded-2xl font-black hover:bg-purple-600 transition-colors"
                   >
-                    <span>📲</span> Open Button
+                    Open button
                   </button>
-                </div>
-
-                {/* What Happens Next */}
-                <div class="border-t pt-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-4">
-                  <h3 class="font-bold mb-3 text-purple-800">
-                    ✨ What happens next
-                  </h3>
-                  <div class="space-y-2 text-sm text-gray-700">
-                    <div class="flex gap-2">
-                      <span>📱</span>
-                      <span>
-                        Home screen icon generated from this button
-                      </span>
-                    </div>
-                    <div class="flex gap-2">
-                      <span>🔘</span>
-                      <span>
-                        Opens straight to the action, without the studio
-                      </span>
-                    </div>
-                    <div class="flex gap-2">
-                      <span>📋</span>
-                      <span>
-                        Voice buttons can turn recordings into useful output
-                      </span>
-                    </div>
-                    <div class="flex gap-2">
-                      <span>🔗</span>
-                      <span>
-                        Share the link to send the same tiny app
-                      </span>
-                    </div>
-                  </div>
                 </div>
 
                 {/* Simple Install Steps */}

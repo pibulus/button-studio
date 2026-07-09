@@ -3,22 +3,15 @@ import {
   defaultCustomization,
 } from "../../types/customization.ts";
 import { ButtonExporter } from "./ButtonExporter.ts";
+import { decodeHostedButtonConfig as decodeRawHostedConfig } from "./hostedConfigCodec.ts";
 
 export function decodeHostedButtonConfig(
   id: string,
 ): ButtonCustomization | null {
   try {
-    const base64 = id.replace(/-/g, "+").replace(/_/g, "/");
-    const padded = base64 + "==".substring(0, (4 - base64.length % 4) % 4);
-    const binaryString = atob(padded);
-    const bytes = new Uint8Array(binaryString.length);
-
-    for (let i = 0; i < binaryString.length; i++) {
-      bytes[i] = binaryString.charCodeAt(i);
-    }
-
-    const json = new TextDecoder().decode(bytes);
-    return normalizeHostedCustomization(JSON.parse(json));
+    return normalizeHostedCustomization(
+      decodeRawHostedConfig(id) as Partial<ButtonCustomization>,
+    );
   } catch (error) {
     console.error("Failed to decode button config:", error);
     return null;
@@ -85,17 +78,9 @@ function normalizeHostedCustomization(
       ...defaultCustomization.effects,
       ...(customization.effects || {}),
     },
-    feedback: {
-      ...defaultCustomization.feedback,
-      ...(customization.feedback || {}),
-    },
     sound: {
       ...defaultCustomization.sound,
       ...(customization.sound || {}),
-    },
-    voice: {
-      ...defaultCustomization.voice,
-      ...(customization.voice || {}),
     },
     recording: {
       ...defaultCustomization.recording,
@@ -113,6 +98,11 @@ function sanitizeHostedCustomization(
     customization.api?.customPrompt || "",
     2000,
   );
+  // Only allow the known output-format enum through from an untrusted URL.
+  const rawFormat = customization.api?.format;
+  const format = rawFormat === "list" || rawFormat === "sections"
+    ? rawFormat
+    : "text";
 
   return {
     ...customization,
@@ -235,15 +225,6 @@ function sanitizeHostedCustomization(
       shine: Boolean(customization.effects.shine),
       pulse: Boolean(customization.effects.pulse),
     },
-    feedback: {
-      haptic: Boolean(customization.feedback.haptic),
-      sound: Boolean(customization.feedback.sound),
-      animation: enumValue(customization.feedback.animation, [
-        "subtle",
-        "playful",
-        "professional",
-      ], defaultCustomization.feedback.animation),
-    },
     sound: {
       enabled: Boolean(customization.sound.enabled),
       type: enumValue(customization.sound.type, [
@@ -254,12 +235,6 @@ function sanitizeHostedCustomization(
         "pearl",
       ], defaultCustomization.sound.type),
       volume: clampNumber(customization.sound.volume, 0, 100),
-    },
-    voice: {
-      enabled: Boolean(customization.voice.enabled),
-      autoTranscribe: Boolean(customization.voice.autoTranscribe),
-      clipboardCopy: Boolean(customization.voice.clipboardCopy),
-      showWaveform: Boolean(customization.voice.showWaveform),
     },
     recording: {
       visualFeedback: enumValue(customization.recording.visualFeedback, [
@@ -280,17 +255,8 @@ function sanitizeHostedCustomization(
         defaultCustomization.recording.ringColor,
       ),
       keepSize: Boolean(customization.recording.keepSize),
-      showWaveform: Boolean(customization.recording.showWaveform),
     },
-    api: customPrompt
-      ? {
-        provider: "gemini",
-        apiKey: "",
-        model: "gemini-2.5-flash",
-        customPrompt,
-        temperature: 0.2,
-      }
-      : undefined,
+    api: customPrompt ? { customPrompt, format } : undefined,
   };
 }
 
@@ -302,6 +268,7 @@ function sanitizeText(value: string, maxLength: number): string {
       return code < 32 || code === 127 ? " " : char;
     })
     .join("")
+    .replace(/[<>]/g, "")
     .replace(/\s+/g, " ")
     .trim()
     .slice(0, maxLength);

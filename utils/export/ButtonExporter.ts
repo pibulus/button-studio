@@ -406,6 +406,12 @@ export class ButtonExporter {
     const icon192Path = options.icon192Path || "./icon-192.png";
     const icon512Path = options.icon512Path || "./icon-512.png";
     const appleTouchIconPath = options.appleTouchIconPath || icon192Path;
+    const safeAppName = escapeHTML(appName);
+    const themeColorAttr = escapeHTML(
+      this.customization.appearance.fillType === "solid"
+        ? this.customization.appearance.solidColor
+        : this.customization.appearance.gradient.start,
+    );
     const baseHTML = generateStandaloneHTML(this.customization, {
       includeAI: options.includeAI ?? true,
       customPrompt: options.customPrompt ?? this.customPrompt,
@@ -429,14 +435,10 @@ export class ButtonExporter {
       `<head>
     <!-- PWA Meta Tags -->
     <link rel="manifest" href="${manifestPath}">
-    <meta name="theme-color" content="${
-        this.customization.appearance.fillType === "solid"
-          ? this.customization.appearance.solidColor
-          : this.customization.appearance.gradient.start
-      }">
+    <meta name="theme-color" content="${themeColorAttr}">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="${appName}">
+    <meta name="apple-mobile-web-app-title" content="${safeAppName}">
     <link rel="apple-touch-icon" href="${appleTouchIconPath}">
     <link rel="apple-touch-icon" sizes="180x180" href="${appleTouchIconPath}">
     <link rel="apple-touch-icon" sizes="192x192" href="${icon192Path}">

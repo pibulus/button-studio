@@ -5,10 +5,12 @@ import { toast } from "../Toast.tsx";
 import { playSound } from "../../utils/audio/soundMapping.ts";
 import { hapticService } from "../../utils/audio/hapticService.ts";
 import PWAShareModal from "../PWAShareModal.tsx";
+import { encodeHostedButtonConfig } from "../../utils/export/hostedConfigCodec.ts";
 
 interface ShipPanelProps {
   customization: ButtonCustomization;
   customPromptValue?: string;
+  customFormatValue?: "text" | "list" | "sections";
 }
 
 // State for PWA share modal
@@ -18,17 +20,15 @@ export default function ShipPanel(
   {
     customization,
     customPromptValue = "",
+    customFormatValue = "text",
   }: ShipPanelProps,
 ) {
   const exportCustomization = customPromptValue.trim()
     ? {
       ...customization,
       api: {
-        provider: "gemini" as const,
-        apiKey: "",
-        model: "gemini-2.5-flash",
         customPrompt: customPromptValue.trim(),
-        temperature: customization.api?.temperature ?? 0.2,
+        format: customFormatValue,
       },
     }
     : customization;
@@ -54,7 +54,9 @@ export default function ShipPanel(
         URL.revokeObjectURL(url);
         toast.success("HTML exported");
       } else if (type === "share") {
-        const shareUrl = exporter.generateShareLink(exportCustomization);
+        const shareUrl = `${globalThis.location.origin}/b/${
+          encodeHostedButtonConfig(exportCustomization)
+        }`;
         await navigator.clipboard.writeText(shareUrl);
         toast.success("Design link copied");
       }
@@ -92,7 +94,7 @@ export default function ShipPanel(
               boxShadow: "4px 4px 0px rgba(0,0,0,0.85)",
             }}
           >
-            📱 Save as Tiny App
+            Save to phone
           </button>
 
           <button
@@ -105,7 +107,7 @@ export default function ShipPanel(
               boxShadow: "4px 4px 0px rgba(0,0,0,0.85)",
             }}
           >
-            🔗 Copy Design Link
+            Copy link
           </button>
 
           <button
@@ -118,7 +120,7 @@ export default function ShipPanel(
               boxShadow: "4px 4px 0px rgba(0,0,0,0.85)",
             }}
           >
-            📄 Download HTML
+            Export code
           </button>
 
           {
