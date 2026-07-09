@@ -143,26 +143,50 @@ export function generateStandaloneHTML(
             text-align: center;
         }
 
+        /* App name reads as a little pinned tag above the button, not a
+           stranded heading. Chunky border + hard shadow ties it to the
+           toy-brutalist card language below. */
         .buttonspa-title {
-            margin: 0 0 var(--space-3);
-            color: #1f2937;
-            font-size: clamp(22px, 6vw, 30px);
-            font-weight: 800;
+            display: inline-block;
+            margin: 0 0 var(--space-4);
+            padding: 6px 16px;
+            color: var(--ink);
+            background: #fffaf2;
+            border: 2px solid var(--ink);
+            border-radius: 999px;
+            box-shadow: 3px 3px 0 rgba(17, 18, 21, 0.82);
+            font-size: clamp(18px, 5vw, 24px);
+            font-weight: 900;
             letter-spacing: -0.01em;
-            line-height: 1.15;
+            line-height: 1.1;
+            transform: rotate(-1.5deg);
         }
 
         /* Hero button gets the biggest chunk of breathing room on either
-           side of it — it's the thing everything else orbits. */
+           side of it — it's the thing everything else orbits. A slow idle
+           breath makes it feel alive and tappable at rest. The breath only
+           runs at idle: press (.button-pressed/.button-released) and
+           recording (.recording) set their own transforms/animation, so we
+           scope breathe off when any of those classes are present to avoid
+           a fight in the cascade. */
         #${buttonId} {
             margin: 0 auto;
         }
 
+        #${buttonId}:not(.recording):not(.button-pressed):not(.button-released) {
+            animation: buttonspa-breathe 4s ease-in-out infinite;
+        }
+
+        @keyframes buttonspa-breathe {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+
         .status {
-            margin-top: var(--space-3);
+            margin-top: var(--space-4);
             color: var(--ink-soft);
             font-size: 14px;
-            font-weight: 600;
+            font-weight: 700;
             letter-spacing: 0.01em;
         }
 
@@ -651,7 +675,7 @@ export function generateStandaloneHTML(
         
         <!-- Status Display -->
         <div id="status" class="status">
-            ${options.autoStart ? "Ready to auto-record..." : "Click to record"}
+            ${options.autoStart ? "Warming up..." : "Tap me and talk"}
         </div>
 
         ${
