@@ -5,7 +5,7 @@ export default function PremiumSuccess() {
   return (
     <>
       <Head>
-        <title>Premium Unlocked — ButtonSpa</title>
+        <title>Thanks for chipping in — ButtonSpa</title>
         <meta name="robots" content="noindex" />
         <script defer src={asset("/js/premium-poll.js")} />
       </Head>
@@ -13,10 +13,10 @@ export default function PremiumSuccess() {
         <div class="text-center p-8 max-w-md">
           <div class="text-6xl mb-6">✨</div>
           <h1 class="text-3xl font-black text-gray-900 mb-4">
-            Checking payment...
+            Sorting you out...
           </h1>
           <p class="text-lg text-gray-600 mb-8">
-            Hang tight while we confirm your premium unlock.
+            One sec while we confirm — thanks for chipping in. 🎸
           </p>
           <div class="animate-spin text-4xl">🎰</div>
         </div>
