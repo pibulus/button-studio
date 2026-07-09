@@ -5,6 +5,14 @@ import {
 } from "../../utils/payments/squareClient.ts";
 import { saveCheckout } from "../../utils/payments/premiumStore.ts";
 
+// Exact-match allowlist — prevents the Origin header from being used to
+// redirect post-payment traffic to an attacker-controlled destination
+const ALLOWED_REDIRECT_ORIGINS = [
+  "https://buttonspa.app",
+  "https://www.buttonspa.app",
+  "http://localhost:8000",
+];
+
 export const handler: Handlers = {
   async POST(req) {
     if (!isSquareCheckoutConfigured()) {
@@ -18,7 +26,10 @@ export const handler: Handlers = {
 
     try {
       const checkoutId = crypto.randomUUID();
-      const origin = req.headers.get("origin") || "https://buttonspa.app";
+      const requestOrigin = req.headers.get("origin") || "";
+      const origin = ALLOWED_REDIRECT_ORIGINS.includes(requestOrigin)
+        ? requestOrigin
+        : "https://buttonspa.app";
       const redirectUrl = `${origin}/premium/success?checkout_id=${
         encodeURIComponent(checkoutId)
       }`;
@@ -28,7 +39,7 @@ export const handler: Handlers = {
         redirectUrl,
       });
 
-      saveCheckout({
+      await saveCheckout({
         id: checkoutId,
         status: "pending",
         providerOrderId: squareCheckout.providerOrderId,

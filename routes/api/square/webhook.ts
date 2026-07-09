@@ -35,7 +35,7 @@ export const handler: Handlers = {
         return new Response("OK", { status: 200 });
       }
 
-      const checkout = markCheckoutPaid(payment.order_id);
+      const checkout = await markCheckoutPaid(payment.order_id);
       if (checkout) {
         console.log(`[Square Webhook] ✅ Payment confirmed: ${checkout.id}`);
       }

@@ -6,14 +6,14 @@ import {
 } from "../../../utils/payments/premiumStore.ts";
 
 export const handler: Handlers = {
-  GET(req) {
+  async GET(req) {
     const url = new URL(req.url);
     const checkoutId = url.searchParams.get("checkout_id");
     const token = url.searchParams.get("token");
 
     // Check by premium token (already claimed)
     if (token) {
-      const valid = isPremiumTokenValid(token);
+      const valid = await isPremiumTokenValid(token);
       return new Response(
         JSON.stringify({ hasPaid: valid, token: valid ? token : undefined }),
         { headers: { "Content-Type": "application/json" } },
@@ -22,7 +22,7 @@ export const handler: Handlers = {
 
     // Check by checkout ID (polling after payment)
     if (checkoutId) {
-      const checkout = getCheckout(checkoutId);
+      const checkout = await getCheckout(checkoutId);
 
       if (!checkout) {
         return new Response(
@@ -32,7 +32,7 @@ export const handler: Handlers = {
       }
 
       if (checkout.status === "paid") {
-        const premiumToken = issuePremiumToken();
+        const premiumToken = await issuePremiumToken();
         return new Response(
           JSON.stringify({
             status: "paid",

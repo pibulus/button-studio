@@ -1,9 +1,11 @@
 // ===================================================================
-// PREMIUM STORE — Simple checkout persistence for ButtonSpa
-// Mirrors TalkType's paymentStore.js — in-memory with Deno KV-ready interface
+// PREMIUM STORE — Deno KV-backed checkout + entitlement persistence
+// Mirrors TalkType's paymentStore.js — durable across deploys/cold-starts
 // ===================================================================
 
 const CHECKOUT_TTL_MS = 2 * 60 * 60 * 1000; // 2 hours to complete payment
+const CHECKOUT_KV_EXPIRE_MS = 24 * 60 * 60 * 1000; // 24 hours KV retention
+const PREMIUM_TOKEN_EXPIRE_MS = 365 * 24 * 60 * 60 * 1000; // $9/year
 
 interface CheckoutRecord {
   id: string;
@@ -14,43 +16,63 @@ interface CheckoutRecord {
   paidAt?: string;
 }
 
-// In-memory store (replace with Deno KV for production)
-const checkouts = new Map<string, CheckoutRecord>();
+// Lazy singleton — Deno KV connection opened on first use
+let kv: Deno.Kv | null = null;
 
-// Cleanup expired checkouts periodically
-setInterval(() => {
-  const now = Date.now();
-  for (const [_id, record] of checkouts) {
-    if (
-      record.status === "pending" &&
-      now - new Date(record.createdAt).getTime() > CHECKOUT_TTL_MS
-    ) {
-      record.status = "expired";
-    }
+async function getKv(): Promise<Deno.Kv> {
+  if (!kv) {
+    kv = await Deno.openKv();
   }
-}, 60000);
-
-export function saveCheckout(record: CheckoutRecord): void {
-  checkouts.set(record.id, record);
+  return kv;
 }
 
-export function getCheckout(id: string): CheckoutRecord | undefined {
-  return checkouts.get(id);
+export async function saveCheckout(record: CheckoutRecord): Promise<void> {
+  const db = await getKv();
+  await db.set(["checkout", record.id], record, {
+    expireIn: CHECKOUT_KV_EXPIRE_MS,
+  });
 }
 
-export function markCheckoutPaid(
+export async function getCheckout(
+  id: string,
+): Promise<CheckoutRecord | undefined> {
+  const db = await getKv();
+  const entry = await db.get<CheckoutRecord>(["checkout", id]);
+  const record = entry.value ?? undefined;
+
+  if (
+    record &&
+    record.status === "pending" &&
+    Date.now() - new Date(record.createdAt).getTime() > CHECKOUT_TTL_MS
+  ) {
+    record.status = "expired";
+    await db.set(["checkout", id], record, {
+      expireIn: CHECKOUT_KV_EXPIRE_MS,
+    });
+  }
+
+  return record;
+}
+
+export async function markCheckoutPaid(
   providerOrderId: string,
-): CheckoutRecord | undefined {
-  for (const record of checkouts.values()) {
+): Promise<CheckoutRecord | undefined> {
+  const db = await getKv();
+  const entries = db.list<CheckoutRecord>({ prefix: ["checkout"] });
+
+  for await (const entry of entries) {
+    const record = entry.value;
     if (
       record.providerOrderId === providerOrderId &&
       record.status === "pending"
     ) {
       record.status = "paid";
       record.paidAt = new Date().toISOString();
+      await db.set(entry.key, record, { expireIn: CHECKOUT_KV_EXPIRE_MS });
       return record;
     }
   }
+
   return undefined;
 }
 
@@ -63,15 +85,17 @@ export function generatePremiumToken(): string {
     .replace(/=/g, "");
 }
 
-// Premium tokens that have been issued (paid checkouts)
-const premiumTokens = new Set<string>();
-
-export function issuePremiumToken(): string {
+export async function issuePremiumToken(): Promise<string> {
+  const db = await getKv();
   const token = generatePremiumToken();
-  premiumTokens.add(token);
+  await db.set(["premium_token", token], true, {
+    expireIn: PREMIUM_TOKEN_EXPIRE_MS,
+  });
   return token;
 }
 
-export function isPremiumTokenValid(token: string): boolean {
-  return premiumTokens.has(token);
+export async function isPremiumTokenValid(token: string): Promise<boolean> {
+  const db = await getKv();
+  const entry = await db.get(["premium_token", token]);
+  return entry.value === true;
 }
