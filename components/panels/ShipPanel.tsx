@@ -156,7 +156,7 @@ export default function ShipPanel(
             • <strong>HTML</strong> - drop it into a site
           </li>
           <li class="text-green-700 font-bold">
-            Your Gemini key stays out of exports
+            No API key needed — exports call ButtonSpa, not you
           </li>
         </ul>
       </div>

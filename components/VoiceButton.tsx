@@ -1053,13 +1053,13 @@ export default function VoiceButton({
 
       {/* Error Message Only When Needed */}
       {errorMessage.value && (
-        <div class="mt-4 text-center p-4 bg-red-50 rounded-2xl border border-red-200 max-w-sm">
-          <p class="text-red-800 font-medium mb-2">
+        <div class="mt-4 text-center p-4 bg-amber-50 rounded-2xl border border-amber-200 max-w-sm">
+          <p class="text-amber-800 font-medium mb-2">
             {errorMessage.value}
           </p>
           <button
             type="button"
-            class="text-red-600 hover:text-red-700 font-medium underline"
+            class="text-amber-700 hover:text-amber-800 font-medium underline"
             onClick={resetToIdle}
           >
             Dismiss

@@ -14,10 +14,11 @@ work needs one good tap.
 
 - **🫁 Breathe** - Gentle breathing animation
 - **⬆️ Bounce** - Satisfying vertical bounce
-- **🐛 Wiggle** - Playful rotation wiggle
 - **✨ Glow** - Dynamic glow that matches your button color
-- **💓 Pulse** - Smooth opacity pulse
-- **🌈 Rainbow** - Flowing gradient border magic
+- **🔲 Shadow** - Brutalist or diffused drop shadow
+- **✨ Shine** - Moving gloss sweep
+- **💓 Pulse** - Smooth opacity pulse (used by the recording state and the
+  shuffle/"surprise me" picker)
 
 ### 🎨 **Lush Button Builder**
 
@@ -30,7 +31,7 @@ work needs one good tap.
 
 ### 🎤 **Voice Magic**
 
-- **Real-time transcription** using Google Gemini
+- **Real-time transcription** - tap, talk, get clean text back
 - **Automatic clipboard copy** - your voice instantly becomes text
 - **Haptic feedback** on mobile devices
 - **Visual waveform** during recording
@@ -65,7 +66,9 @@ Visit `http://localhost:8000` and start creating buttons that spark joy! 🎉
 1. **Design Your Button** - Use the master controls to set size, shape, and
    colors
 2. **Add Effects** - Click effect buttons to bring your button to life
-3. **Configure Voice** - Add your Gemini API key for transcription magic
+3. **Set the Prompt** - Tell it what to do with your voice (transcribe,
+   translate, summarize, whatever) — no API key needed, ButtonSpa handles
+   transcription server-side
 4. **Export & Share** - Save as HTML, share a link, or install as a tiny app
 
 ## 🧬 Tech Stack
@@ -73,8 +76,9 @@ Visit `http://localhost:8000` and start creating buttons that spark joy! 🎉
 - **[Deno Fresh 1.7.3](https://fresh.deno.dev/)** - The edge-rendered web
   framework
 - **[Preact](https://preactjs.com/)** - Fast 3kB alternative to React
-- **[Twind](https://twind.dev/)** - Tailwind CSS-in-JS
-- **[Google Gemini](https://ai.google.dev/)** - AI-powered speech transcription
+- **[Tailwind CSS](https://tailwindcss.com/)** - utility styling
+- **Server-side transcription proxy** - buttonspa.app handles the AI call, so
+  exported/shared/installed buttons never carry or ask for an API key
 - **Web APIs** - MediaRecorder, AudioContext, Vibration for native feel
 
 ## 🎨 Design Philosophy
