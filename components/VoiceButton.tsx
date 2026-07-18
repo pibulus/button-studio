@@ -139,6 +139,28 @@ export default function VoiceButton({
   const recorderRef = useRef<AudioRecorder>();
   const analyzerRef = useRef<AudioAnalyzer>();
   const timerRef = useRef<number>();
+  const wakeLockRef = useRef<WakeLockSentinel | null>(null);
+
+  // Keep the screen awake through a take (family pattern) — a sleeping
+  // screen kills the recording, and maxDuration allows 5 minutes.
+  // Failures never block recording.
+  async function requestWakeLock() {
+    if (wakeLockRef.current || !("wakeLock" in navigator)) return;
+    if (document.visibilityState !== "visible") return;
+    try {
+      wakeLockRef.current = await navigator.wakeLock.request("screen");
+      wakeLockRef.current?.addEventListener("release", () => {
+        wakeLockRef.current = null;
+      });
+    } catch {
+      // Screen may sleep; recording continues.
+    }
+  }
+
+  function releaseWakeLock() {
+    wakeLockRef.current?.release().catch(() => {});
+    wakeLockRef.current = null;
+  }
 
   // Initialize audio recorder (like Pablo's mediaRecorder setup)
   useEffect(() => {
@@ -151,6 +173,7 @@ export default function VoiceButton({
         clearInterval(timerRef.current);
       }
       analyzerRef.current?.disconnect();
+      releaseWakeLock();
     };
   }, []);
 
@@ -204,6 +227,7 @@ export default function VoiceButton({
       await recorder.startRecording();
 
       buttonState.value = "recording";
+      void requestWakeLock();
 
       // Connect audio analyzer for waveform
       if (showWaveform) {
@@ -259,6 +283,7 @@ export default function VoiceButton({
         timerRef.current = undefined;
       }
 
+      releaseWakeLock();
       analyzerRef.current?.disconnect();
 
       if (enableHaptics) {

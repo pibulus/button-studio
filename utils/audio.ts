@@ -54,12 +54,9 @@ export class AudioRecorder {
       };
 
       this.mediaRecorder.onerror = (event) => {
+        // A throw inside an event handler lands nowhere a caller can catch it
+        // — log it; the failure surfaces via stop (empty/short blob) anyway.
         console.error("❌ MediaRecorder error:", event);
-        throw new VoiceButtonError(
-          "Recording failed",
-          ErrorCode.RECORDING_FAILED,
-          { event },
-        );
       };
 
       // Start recording
@@ -82,6 +79,12 @@ export class AudioRecorder {
         if (error.name === "NotFoundError") {
           throw new VoiceButtonError(
             "No microphone found",
+            ErrorCode.MICROPHONE_NOT_AVAILABLE,
+          );
+        }
+        if (error.name === "NotReadableError") {
+          throw new VoiceButtonError(
+            "Microphone is busy in another app — close it and try again",
             ErrorCode.MICROPHONE_NOT_AVAILABLE,
           );
         }
@@ -108,7 +111,22 @@ export class AudioRecorder {
         return;
       }
 
-      this.mediaRecorder.onstop = () => {
+      // The mic's REAL rate — browsers routinely ignore the 16kHz constraint
+      // (most mics run 44.1/48kHz). Read before cleanup stops the tracks.
+      const trackSampleRate = this.stream?.getAudioTracks()[0]?.getSettings?.()
+        ?.sampleRate;
+
+      // MediaRecorder.stop() can wedge and never fire onstop (family-wide
+      // lesson) — whoever arrives first between onstop and the watchdog
+      // finalizes; the other no-ops. Without this the promise never settles
+      // and the button hangs on "processing" forever.
+      let settled = false;
+      let wedgeTimeout: number | undefined;
+
+      const finalize = () => {
+        if (settled) return;
+        settled = true;
+        if (wedgeTimeout !== undefined) clearTimeout(wedgeTimeout);
         try {
           const mimeType = this.mediaRecorder?.mimeType || "audio/webm";
           const audioBlob = new Blob(this.audioChunks, { type: mimeType });
@@ -128,7 +146,7 @@ export class AudioRecorder {
             data: audioBlob,
             format: this.getFormatFromMimeType(mimeType),
             duration,
-            sampleRate: 16000, // We requested 16kHz above
+            sampleRate: trackSampleRate ?? 16000,
           };
 
           console.log("🎤 Recording stopped:", {
@@ -154,6 +172,16 @@ export class AudioRecorder {
           }
         }
       };
+
+      this.mediaRecorder.onstop = finalize;
+      wedgeTimeout = setTimeout(() => {
+        if (!settled) {
+          console.warn(
+            "⚠️ MediaRecorder onstop never fired — salvaging recorded chunks",
+          );
+          finalize();
+        }
+      }, 5_000) as unknown as number;
 
       this.mediaRecorder.stop();
     });
