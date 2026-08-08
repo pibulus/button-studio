@@ -21,30 +21,11 @@ export default function App({ Component }: PageProps) {
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="theme-color" content="#F7F0E2" />
 
-        {/* iOS Icon Support - Multiple Sizes */}
-        <link
-          rel="apple-touch-icon"
-          sizes="180x180"
-          href="/apple-touch-icon-180.png"
-        />
-        <link
-          rel="apple-touch-icon"
-          sizes="152x152"
-          href="/apple-touch-icon-152.png"
-        />
-        <link
-          rel="apple-touch-icon"
-          sizes="120x120"
-          href="/apple-touch-icon-120.png"
-        />
-        <link
-          rel="apple-touch-icon"
-          sizes="76x76"
-          href="/apple-touch-icon-76.png"
-        />
+        {/* iOS Icon */}
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
         {/* Standard Icons */}
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link
           rel="icon"
           type="image/png"
