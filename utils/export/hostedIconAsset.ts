@@ -35,7 +35,7 @@ export async function serveHostedIcon(
     req.url,
   );
 
-  return new Response(png, {
+  return new Response(png as BodyInit, {
     headers: getIconHeaders("image/png"),
   });
 }

@@ -121,7 +121,7 @@ export class AudioRecorder {
       // finalizes; the other no-ops. Without this the promise never settles
       // and the button hangs on "processing" forever.
       let settled = false;
-      let wedgeTimeout: number | undefined;
+      let wedgeTimeout: ReturnType<typeof setTimeout> | undefined = undefined;
 
       const finalize = () => {
         if (settled) return;
@@ -181,7 +181,7 @@ export class AudioRecorder {
           );
           finalize();
         }
-      }, 5_000) as unknown as number;
+      }, 5_000);
 
       this.mediaRecorder.stop();
     });
@@ -250,7 +250,7 @@ export class AudioRecorder {
 export class AudioAnalyzer {
   private audioContext?: AudioContext;
   private analyser?: AnalyserNode;
-  private dataArray?: Uint8Array;
+  private dataArray?: Uint8Array<ArrayBuffer>;
   private source?: MediaStreamAudioSourceNode;
 
   // Connect to audio stream for real-time waveform analysis
@@ -263,7 +263,9 @@ export class AudioAnalyzer {
       this.analyser.fftSize = 64; // Smaller = less detailed but smoother
       this.analyser.smoothingTimeConstant = 0.8;
 
-      this.dataArray = new Uint8Array(this.analyser.frequencyBinCount);
+      this.dataArray = new Uint8Array(
+        new ArrayBuffer(this.analyser.frequencyBinCount),
+      );
 
       this.source = this.audioContext.createMediaStreamSource(stream);
       this.source.connect(this.analyser);

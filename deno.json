@@ -22,7 +22,8 @@
   },
   "exclude": [
     "**/_fresh/*",
-    "node_modules/"
+    "node_modules/",
+    "docs/archive/"
   ],
   "imports": {
     "$fresh/": "https://deno.land/x/fresh@1.7.3/",
